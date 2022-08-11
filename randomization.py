@@ -17,7 +17,7 @@ class Randomization(commands.Cog):
         if is_matched:
             n, m = arg.split("d")
             result = [randint(1, int(m)) for _ in range(int(n))]
-            await context.send(f"Result: {result}")
+            await context.send(f"Result: {result}\nTotal: {sum(result)}")
         else:
             await context.send("Usage: b!roll ndm -- Example: b!roll 4d6")
 
