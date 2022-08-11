@@ -18,8 +18,8 @@ class Images(commands.Cog):
 
         # DA Authorization
         # https://www.deviantart.com/developers/authentication
-        DA_AUTH_URL = 'https://www.deviantart.com/oauth2/authorize'
-        DA_TOKEN_URL = 'https://www.deviantart.com/oauth2/token'
+        DA_AUTH_URL = "https://www.deviantart.com/oauth2/authorize"
+        DA_TOKEN_URL = "https://www.deviantart.com/oauth2/token"
 
         # Remove the initial token, refresh_token, and code if you're running
         # this bot on a system where you can open the webbrowser for auth.

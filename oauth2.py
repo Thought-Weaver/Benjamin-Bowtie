@@ -85,6 +85,7 @@ class OAuth2:
         self._last_request_time = t
         max_sleep = 16 * sleep
         params["access_token"] = self.token
+        
         while True:
             try:
                 response = func(url, params)
