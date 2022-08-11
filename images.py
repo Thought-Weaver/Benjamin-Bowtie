@@ -21,7 +21,14 @@ class Images(commands.Cog):
         DA_AUTH_URL = 'https://www.deviantart.com/oauth2/authorize'
         DA_TOKEN_URL = 'https://www.deviantart.com/oauth2/token'
 
-        self._DA_OAUTH = OAuth2(DA_AUTH_URL, DA_TOKEN_URL, os.getenv("DA_CLIENT_ID"), os.getenv("DA_CLIENT_SECRET"))
+        self._DA_OAUTH = OAuth2(
+            DA_AUTH_URL, 
+            DA_TOKEN_URL, 
+            os.getenv("DA_CLIENT_ID"), 
+            os.getenv("DA_CLIENT_SECRET"),
+            os.getenv("DA_OAUTH_TOKEN"),
+            os.getenv("DA_OAUTH_REFRESH_TOKEN"),
+            os.getenv("DA_OAUTH_CODE"))
         self._DA_OAUTH.auth("gallery", "browse")
 
     async def get_animal_image_and_fact(self, context, url, animal):

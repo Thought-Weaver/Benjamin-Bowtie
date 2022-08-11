@@ -9,7 +9,7 @@ import webbrowser
 
 # Adapted from: https://pyquestions.com/oauth-and-redirect-uri-in-offline-python-script
 class OAuth2:
-    def __init__(self, auth_url, token_url, client_id, client_secret):
+    def __init__(self, auth_url, token_url, client_id, client_secret, init_token=None, init_refresh_token=None, init_code=None):
         self._client_id = client_id
         self._client_secret = client_secret
         self._server, self._port = "localhost", 8080
@@ -18,9 +18,12 @@ class OAuth2:
         self._auth_url = auth_url
         self._token_url = token_url
 
-        self.token = None
-        self.refresh_token = None
-        self.code = ""
+        # The init token and code system is to avoid having to open a webbrowser while SSHing into
+        # the bot running on an external server. You still need a valid set of data to start, but
+        # this can be updated in the env before running the bot.
+        self.token = init_token
+        self.refresh_token = init_refresh_token
+        self.code = init_code
         self.state = binascii.hexlify(os.urandom(20)).decode("utf-8")
 
     class RequestHandler(BaseHTTPRequestHandler):
@@ -35,29 +38,31 @@ class OAuth2:
             self._outer_class_instance.code = query["code"]
 
     def auth(self, *args):
-        scope = " ".join(args)
-        params = {
-            "response_type": "code",
-            "client_id": self._client_id,
-            "redirect_uri": self._redirect_uri,
-            "scope": scope,
-            "state": self.state
-        }
-        request = requests.Request("GET", self._auth_url, params).prepare()
-        request.prepare_url(self._auth_url, params)
-        webbrowser.open(request.url)
-        request_handler = OAuth2.RequestHandler
-        request_handler.set_outer_class(request_handler, self)
-        server = HTTPServer((self._server, self._port), request_handler)
-        server.handle_request()
-        params = {
-            "client_id": self._client_id,
-            "client_secret": self._client_secret,
-            "grant_type": "authorization_code",
-            "code": self.code,
-            "redirect_uri": self._redirect_uri
-        }
-        self._get_token(params)
+        if self.token is None or self.code == "":
+            scope = " ".join(args)
+            params = {
+                "response_type": "code",
+                "client_id": self._client_id,
+                "redirect_uri": self._redirect_uri,
+                "scope": scope,
+                "state": self.state
+            }
+            request = requests.Request("GET", self._auth_url, params).prepare()
+            request.prepare_url(self._auth_url, params)
+            webbrowser.open(request.url)
+
+            request_handler = OAuth2.RequestHandler
+            request_handler.set_outer_class(request_handler, self)
+            server = HTTPServer((self._server, self._port), request_handler)
+            server.handle_request()
+            params = {
+                "client_id": self._client_id,
+                "client_secret": self._client_secret,
+                "grant_type": "authorization_code",
+                "code": self.code,
+                "redirect_uri": self._redirect_uri
+            }
+            self._get_token(params)
     
     def _get_token(self, params):
         data = requests.get(self._token_url, params).json()
@@ -91,7 +96,7 @@ class OAuth2:
                         raise ConnectionError("Request timed out - server is busy.")
                 elif data.get("error") == "user_api_threshold":
                     raise ConnectionError("Too many requests")
-                elif data.get("error") == 'invalid_token':
+                elif data.get("error") == "invalid_token":
                     self._refresh_token()
                     params["access_token"] = self.token
                 else:
