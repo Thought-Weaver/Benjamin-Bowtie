@@ -49,7 +49,7 @@ async def globally_block_dms(context):
 
 if __name__ == "__main__":
     # Register the cogs
-    bot.add_cog(Music(bot))
+    # bot.add_cog(Music(bot))
     bot.add_cog(Randomization(bot))
     bot.add_cog(Images(bot))
 
