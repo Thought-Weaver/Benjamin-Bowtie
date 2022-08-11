@@ -96,9 +96,7 @@ class Images(commands.Cog):
             return
 
         data = response.json()
-        print(data["results"])
         filtered = list(filter(lambda x: x["category_path"] == "visual_art" or "fractal" in x["category_path"], data["results"]))
-        print(filtered)
         result = choice(filtered)
 
         embed = embeds.Embed(
