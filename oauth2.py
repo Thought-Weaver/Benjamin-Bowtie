@@ -63,6 +63,9 @@ class OAuth2:
                 "redirect_uri": self._redirect_uri
             }
             self._get_token(params)
+            print(params)
+            print(self.token)
+            print(self.refresh_token)
     
     def _get_token(self, params):
         data = requests.get(self._token_url, params).json()

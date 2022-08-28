@@ -2,17 +2,19 @@ from discord.ext import commands
 from random import randint, choice
 import re
 
+from bot import BenjaminBowtieBot
+
 class Randomization(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: BenjaminBowtieBot):
         self._bot = bot
         self._roll_pattern = re.compile(r"[0-9]+d[0-9]+", re.IGNORECASE)
 
     @commands.command(name="coinflip", help="Returns heads or tails at random.")
-    async def coinflip_handler(self, context):
+    async def coinflip_handler(self, context: commands.Context):
         await context.send("It's heads!" if randint(0, 1) == 0 else "It's tails!")
 
     @commands.command(name="roll", help="Rolls ndm (such as 4d6) dice.", usage="ndm")
-    async def roll_handler(self, context, arg):
+    async def roll_handler(self, context: commands.Context, arg):
         is_matched = arg is not None and self._roll_pattern.match(arg)
         if is_matched:
             n, m = arg.split("d")
@@ -22,9 +24,13 @@ class Randomization(commands.Cog):
             await context.send("Usage: b!roll ndm -- Example: b!roll 4d6")
 
     @commands.command(name="choose", help="Chooses an item in a list.", usage="item1 item2 ...")
-    async def choose_handler(self, context, *args):
+    async def choose_handler(self, context: commands.Context, *args):
         if args is None or len(args) == 0:
             await context.send("Usage: b!choose item1 item2 ...")
         else:
             result = choice(args)
             await context.send(f"Result: {result}")
+
+
+async def setup(bot: BenjaminBowtieBot):
+    await bot.add_cog(Randomization(bot))

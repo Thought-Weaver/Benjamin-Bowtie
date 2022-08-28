@@ -1,12 +1,12 @@
-from discord.ext import commands
+from discord.ext import commands, tasks
+from discord import Intents
 from dotenv import load_dotenv
 
+import asyncio
 import logging
 import os
-
-from music import Music
-from randomization import Randomization
-from images import Images
+import pickle
+import shutil
 
 # -----------------------------------------------------------------------------
 # GLOBALS
@@ -15,7 +15,18 @@ from images import Images
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-bot = commands.Bot(command_prefix="b!")
+class BenjaminBowtieBot(commands.Bot):
+    def __init__(self):
+        super().__init__(command_prefix=commands.when_mentioned_or("b!"), intents=Intents().all())
+        
+        self.database: dict = pickle.load(open("./database", "rb")) if os.path.isfile("./database") else {}
+    
+    async def setup_hook(self):
+        await self.load_extension("cogs.images")
+        await self.load_extension("cogs.randomization")
+        await self.load_extension("cogs.adventures")
+
+bot = BenjaminBowtieBot()
 
 # -----------------------------------------------------------------------------
 # LOGGING
@@ -44,14 +55,17 @@ async def globally_block_dms(context):
     return context.guild is not None
 
 # -----------------------------------------------------------------------------
+# TASKS
+# -----------------------------------------------------------------------------
+
+@tasks.loop(hours=1)
+async def save_database():
+    shutil.copy("database", "databasebackup")
+    pickle.dump(bot.database, open("database", "wb"))
+
+# -----------------------------------------------------------------------------
 # MAIN
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    # Register the cogs
-    # bot.add_cog(Music(bot))
-    bot.add_cog(Randomization(bot))
-    bot.add_cog(Images(bot))
-
-    # Run the bot
     bot.run(TOKEN)

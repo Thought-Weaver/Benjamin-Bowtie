@@ -1,6 +1,7 @@
 from discord.ext import commands
 from discord import embeds
 from random import choice, randint
+from bot import BenjaminBowtieBot
 from oauth2 import OAuth2
 
 import datetime
@@ -8,7 +9,7 @@ import os
 import requests
 
 class Images(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: BenjaminBowtieBot):
         self._bot = bot
 
         # Constants
@@ -33,7 +34,7 @@ class Images(commands.Cog):
             os.getenv("DA_OAUTH_CODE"))
         self._DA_OAUTH.auth("gallery", "browse")
 
-    async def get_animal_image_and_fact(self, context, url, animal):
+    async def get_animal_image_and_fact(self, context: commands.Context, url: str, animal: str):
         response = requests.get(url)
         if not response.ok:
             await context.send(f"Error: The {animal} API responded with {response.status_code}!")
@@ -50,19 +51,19 @@ class Images(commands.Cog):
         await context.send(embed=embed)
 
     @commands.command(name="cat", help="Gets a random cat image and fun fact about cats.")
-    async def cat_handler(self, context):
+    async def cat_handler(self, context: commands.Context):
         await self.get_animal_image_and_fact(context, self._RANDOM_CAT_URL, "cat")
 
     @commands.command(name="dog", help="Gets a random dog image and fun fact about dogs.")
-    async def dog_handler(self, context):
+    async def dog_handler(self, context: commands.Context):
         await self.get_animal_image_and_fact(context, self._RANDOM_DOG_URL, "dog")
 
     @commands.command(name="birb", help="Gets a random birb image and fun fact about birbs.")
-    async def birb_handler(self, context):
+    async def birb_handler(self, context: commands.Context):
         await self.get_animal_image_and_fact(context, self._RANDOM_BIRB_URL, "birb")
 
     @commands.command(name="xkcd", help="Gets the latest XKCD or a specific comic if a number is given.")
-    async def xkcd_handler(self, context, arg=None):
+    async def xkcd_handler(self, context: commands.Context, arg=None):
         response = None
         if arg is None:
             response = requests.get("https://xkcd.com/info.0.json")
@@ -89,7 +90,7 @@ class Images(commands.Cog):
         await context.send(embed=embed)
 
     @commands.command(name="fractal", help="Gets a random fractal image from a select group of fractal artists.")
-    async def fractal_handler(self, context):
+    async def fractal_handler(self, context: commands.Context):
         artist = choice(["ThoughtWeaver", "tatasz", "ChaosFissure", "bezo97", "senzune", "c-91", "technochroma"])
         params = {
             "username": artist,
@@ -118,3 +119,6 @@ class Images(commands.Cog):
         )
         embed.set_image(url=result["content"]["src"])
         await context.send(embed=embed)
+
+async def setup(bot: BenjaminBowtieBot):
+    await bot.add_cog(Images(bot))
