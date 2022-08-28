@@ -63,7 +63,7 @@ class KnucklebonesButton(discord.ui.Button):
         if pos == 2:
             emoji = "3️⃣"
         
-        super().__init__(style=discord.ButtonStyle.secondary, label="Column", emoji=emoji)
+        super().__init__(style=discord.ButtonStyle.secondary, emoji=emoji)
         self._pos = pos
 
     async def callback(self, interaction: discord.Interaction):
@@ -164,7 +164,7 @@ class Knucklebones(discord.ui.View):
         return content
 
     def _get_current_turn_string(self):
-        return f"It's {self._turn.display_name}'s turn! They rolled a {str(self._current_roll)}."
+        return f"It's {self._turn.display_name}'s turn! They rolled a {str(self._current_roll)}. Choose a column to place it in:"
 
     def _check_game_complete(self):
         p1_all_nonzero = True
