@@ -13,17 +13,18 @@ class AcceptButton(discord.ui.Button):
         view: Knucklebones = self.view
 
         if interaction.user != view.get_player_2():
-            interaction.response.edit_message(
-                content="You can't accept this request!",
+            await interaction.response.edit_message(
+                content="Error: You can't accept this request!",
                 view=view
             )
             return
         
         content: str = view.setup_game()
-
-        interaction.response.edit_message(
-            content=content,
-            view=view
+        embed = discord.embeds.Embed(description=content)
+        await interaction.response.edit_message(
+            embed=embed,
+            view=view,
+            content=None
         )
 
 
@@ -38,16 +39,17 @@ class DeclineButton(discord.ui.Button):
         view: Knucklebones = self.view
 
         if interaction.user != view.get_player_2():
-            interaction.response.edit_message(
-                content="You can't decline this request!",
+            await interaction.response.edit_message(
+                content="Error: You can't decline this request!",
                 view=view
             )
             return
 
         view.clear_items()
-        interaction.response.edit_message(
+        await interaction.response.edit_message(
             content="The knucklebones game was declined.",
-            view=view
+            view=view,
+            embed=None
         )
 
 
@@ -61,7 +63,7 @@ class KnucklebonesButton(discord.ui.Button):
         if pos == 2:
             emoji = "3️⃣"
         
-        super().__init__(style=discord.ButtonStyle.secondary, emoji=emoji)
+        super().__init__(style=discord.ButtonStyle.secondary, label="Column", emoji=emoji)
         self._pos = pos
 
     async def callback(self, interaction: discord.Interaction):
@@ -74,9 +76,11 @@ class KnucklebonesButton(discord.ui.Button):
             return
 
         content = view.place_roll(self._pos)
+        embed = discord.embeds.Embed(description=content)
         if content is not None:
-            interaction.response.edit_message(
-                content=content,
+            await interaction.response.edit_message(
+                embed=embed,
+                content=None,
                 view=view
             )
 
@@ -106,6 +110,9 @@ class Knucklebones(discord.ui.View):
             [0, 0, 0]
         ]
 
+        self.add_item(AcceptButton())
+        self.add_item(DeclineButton())
+
     def _dice_value_to_char(self, value):
         if value == 1:
             return "⚀"
@@ -128,7 +135,7 @@ class Knucklebones(discord.ui.View):
         return sum([num * count for num, count in counts.items()])
 
     def _get_game_state_string(self):
-        content = self._database[self._guild_id]["members"][self._player_1.display_name] + "\n\n"
+        content = self._player_1.display_name + "\n\n"
         for i in range(3):
             for j in range(3):
                 value: int = self._player_1_board[i][j]
@@ -141,7 +148,7 @@ class Knucklebones(discord.ui.View):
             content += f"{str(col_val)} "
         content += f"= {p1_total}"
 
-        content += "\n\n" + self._database[self._guild_id]["members"][self._player_2.display_name] + "\n\n"
+        content += "\n\n" + self._player_2.display_name + "\n\n"
         for i in range(3):
             for j in range(3):
                 value: int = self._player_2_board[i][j]
@@ -149,13 +156,15 @@ class Knucklebones(discord.ui.View):
             content += "\n"
         p2_total = 0
         for i in range(3):
-            col_val = self._compute_points_in_col(self._player_1_board, i)
+            col_val = self._compute_points_in_col(self._player_2_board, i)
             p2_total += col_val
             content += f"{str(col_val)} "
         content += f"= {p2_total}"
         
-        content += f"\n\nIt's {self._turn.display_name}'s turn! They rolled a {str(self._current_roll)}."
         return content
+
+    def _get_current_turn_string(self):
+        return f"It's {self._turn.display_name}'s turn! They rolled a {str(self._current_roll)}."
 
     def _check_game_complete(self):
         p1_all_nonzero = True
@@ -185,7 +194,7 @@ class Knucklebones(discord.ui.View):
         for pos in range(3):
             self.add_item(KnucklebonesButton(pos))
         self._current_roll = randint(1, 6)
-        return self._get_game_state_string()
+        return self._get_game_state_string() + "\n\n" + self._get_current_turn_string()
 
     def place_roll(self, pos: int):
         can_place = False
@@ -226,10 +235,10 @@ class Knucklebones(discord.ui.View):
                         amount_won = min(coins, self._bet)
                         self._database[self._guild_id]["members"][self._player_1.id].get_inventory().remove_coins(amount_won)
                         self._database[self._guild_id]["members"][self._player_2.id].get_inventory().add_coins(amount_won)
-                    return f"{winner.display_name} has won the game and {amount_won} coins!"
+                    return self._get_game_state_string() + f"\n\n{winner.display_name} has won the game and {amount_won} coins!"
                 else:
-                    return f"{winner.display_name} has won the game!"
-            return "It's a tie! No one wins any coins."
+                    return self._get_game_state_string() + f"\n\n{winner.display_name} has won the game!"
+            return self._get_game_state_string() + "\n\nIt's a tie! No one wins any coins."
 
         self._current_roll = randint(1, 6)
         self._turn = self._player_1 if self._turn == self._player_2 else self._player_2
