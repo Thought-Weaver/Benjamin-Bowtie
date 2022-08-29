@@ -1,3 +1,5 @@
+from math import ceil
+import discord
 from discord import embeds, User
 from discord.ext import commands
 from enum import Enum
@@ -6,6 +8,7 @@ from typing import List
 
 from games.knucklebones import Knucklebones
 
+import random
 
 class Item():
     def __init__(self, name: str, value: int, count=1, is_unique=False):
@@ -21,11 +24,19 @@ class Item():
             return result
         return None
 
+    def add_amount(self, amount: int):
+        self._count += amount
+
     def get_name(self):
         return self._name
 
     def get_value(self):
         return self._value
+
+    def get_value_str(self):
+        if self._value == 1:
+            return "1 coin"
+        return f"{self._value} coins"
 
     def get_count(self):
         return self._count
@@ -52,20 +63,31 @@ class Inventory():
         self._coins: int = 0
 
     def _organize_inventory_slots(self):
-        new_slots: List[Item] = []
-        for i in range(len(self._inventory_slots)):
-            for j in range(i + 1, len(self._inventory_slots)):
-                item: Item = self._inventory_slots[i]
-                other_item: Item = self._inventory_slots[j]
+        if len(self._inventory_slots) < 2:
+            return
+        
+        item_set: List[Item] = []
+        for item in self._inventory_slots:
+            exists = False
+            for item_in_set in item_set:
+                if item_in_set == item:
+                    exists = True
+                    break
+            if not exists:
+                item_set.append(Item(item.get_name(), item.get_value(), 0, item.get_is_unique()))
 
+        for item in item_set:
+            for other_item in self._inventory_slots:
                 if item == other_item:
-                    new_slots.append(Item(item.get_name(), item.get_value(), item.get_count() + other_item.get_count()))
-                else:
-                    if item.get_count() != 0:
-                        new_slots.append(item)
-                    if other_item.get_count() != 0:
-                        new_slots.append(other_item)
-        self._inventory_slots = new_slots
+                    item.add_amount(other_item.get_count())
+
+        self._inventory_slots = sorted(item_set, key=lambda item: item.get_name())
+
+    def search_by_name(self, name: str):
+        for i, item in enumerate(self._inventory_slots):
+            if item.get_name() == name:
+                return i
+        return -1
 
     def add_item(self, item: Item):
         self._inventory_slots.append(item)
@@ -88,17 +110,87 @@ class Inventory():
         self._coins -= amount
         return self._coins
 
-    def search_by_name(self, name: str):
-        for i, item in enumerate(self._inventory_slots):
-            if item.get_name() == name:
-                return i
-        return -1
-
     def get_inventory_slots(self):
         return self._inventory_slots
 
     def get_coins(self):
         return self._coins
+
+
+class InventoryButton(discord.ui.Button):
+    def __init__(self, item_index: int, item: Item):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name()} ({item.get_count()})", row=item_index % 5)
+        self._item_index = item_index
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: InventoryView = self.view
+
+
+# Could abstract into a generic button with some callback in the parent view?
+class NextButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: InventoryView = self.view
+        if interaction.user == view.get_user():
+            view.next_page()
+
+
+class PrevButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: InventoryView = self.view
+        if interaction.user == view.get_user():
+            view.prev_page()
+
+
+class InventoryView(discord.ui.View):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User):
+        super().__init__()
+
+        self._bot = bot
+        self._database = database
+        self._guild_id = guild_id
+        self._user = user
+        self._page = 0
+
+        self._get_current_page_buttons()
+
+    def _get_current_page_buttons(self):
+        self.clear_items()
+        player: Player = self._database[self._guild_id]["members"][self._user.id]
+        all_slots = player.get_inventory().get_inventory_slots()
+
+        page_slots = all_slots[self._page * 20:min(len(all_slots), (self._page + 1) * 20)]
+        for i, item in enumerate(page_slots):
+            self.add_item(InventoryButton(i, item))
+        if self._page != 0:
+            self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
+        if len(page_slots) == 20:
+            self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
+        
+    def next_page(self):
+        self._page += 1
+        self._get_current_page_buttons()
+
+    def prev_page(self):
+        self._page = max(0, self._page - 1)
+        self._get_current_page_buttons()
+
+    def get_user(self):
+        return self._user
 
 
 # If I need to change something, always change the enum key
@@ -178,19 +270,60 @@ class Adventures(commands.Cog):
             self._database[guild_id]["members"][user_id] = Player()
 
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items")
+    @commands.cooldown(1, 30, commands.BucketType.user)
     async def fish_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        rand_val = random.random()
+        fishing_result:Item = None
+
+        # 55% chance of getting something worthless
+        if 0.0 <= rand_val < 0.55:
+            items = [Item("🥾 Boot", 2), Item("🍂 Clump of Leaves", 1), Item("🐚 Conch", 1)]
+            fishing_result = random.choice(items)
+        # 20% chance of getting a Tier 3 reward
+        if 0.55 < rand_val < 0.75:
+            items = [Item("🐟 Minnow", 3), Item("🐠 Roughy", 4), Item("🦐 Shrimp", 3)]
+            fishing_result = random.choice(items)
+        # 15% chance of getting a Tier 2 reward
+        if 0.75 < rand_val < 0.9:
+            items = [Item("🦪 Oyster", 4), Item("🐡 Pufferfish", 5)]
+            fishing_result = random.choice(items)
+        # 9% chance of getting a Tier 1 reward
+        if 0.9 < rand_val < 0.99:
+            items = [Item("🦑 Squid", 10), Item("🦀 Crab", 8), Item("🦞 Lobster", 8)]
+            fishing_result = random.choice(items)
+        # 1% chance of getting a Tier 0 reward
+        if 0.99 < rand_val <= 1.0:
+            items = [Item("🏺 Ancient Vase", 25), Item("💎 Diamond", 50)]
+            fishing_result = random.choice(items)
+        
+        # E(X) = 
+        # 0.55 * (2 + 1 + 1) / 3 + 
+        # 0.2 * (3 + 4 + 3) / 3 + 
+        # 0.15 * (4 + 5) / 2 + 
+        # 0.09 * (10 + 8 + 8) / 3 + 
+        # 0.01 * (25 + 50) / 2 = 
+        # 3.23 every 30 seconds -> 387.6 an hour
+        
+        author_player: Player = self._database[context.guild.id]["members"][context.author.id]
+        author_player.get_inventory().add_item(fishing_result)
+
+        embed = embeds.Embed(
+            title=f"You caught {fishing_result.get_name()} worth {fishing_result.get_value_str()}!",
+            description="It's been added to your !inventory"
+        )
+        await context.send(embed=embed)
 
     @commands.command(name="knucklebones", help="Face another player in a game of knucklebones")
     async def knucklebones_handler(self, context: commands.Context, user: User, amount: int):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         self._check_member_and_guild_existence(context.guild.id, user.id)
+
         # I don't think I need to keep track of the games in the database, since each message
         # will update itself as buttons are pressed becoming a self-contained game. So long as (1)
         # we check that the players pressing the buttons are valid which should happen naturally
         # based on turn checks; (2) when paying out we check that the player has the money to do
         # so, else the winner gets whatever's left that the other can pay.
-
         author_player: Player = self._database[context.guild.id]["members"][context.author.id] 
         challenged_player: Player = self._database[context.guild.id]["members"][user.id]
         if author_player.get_inventory().get_coins() < amount:
@@ -226,6 +359,15 @@ class Adventures(commands.Cog):
         # (2) On clicking a button, a modal will pop up asking how many to send and
         #     an optional message to send
         # https://github.com/Rapptz/discord.py/blob/master/examples/modals/basic.py
+
+    @commands.command(name="inventory", help="Check your inventory", aliases= ["inv"])
+    async def inventory_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        embed = embeds.Embed(
+            title=f"{context.author.display_name}'s Inventory",
+            description="Navigate through your items using the Prev and Next buttons."
+        )
+        await context.send(embed=embed, view=InventoryView(self._bot, self._database, context.guild.id, context.author))
 
 
 async def setup(bot: BenjaminBowtieBot):

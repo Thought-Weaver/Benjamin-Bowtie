@@ -54,6 +54,11 @@ INFO_LOGGER = setup_logger("info_logger", "info.log")
 async def globally_block_dms(context):
     return context.guild is not None
 
+@bot.event
+async def on_command_error(context, error):
+  if isinstance(error, commands.CommandOnCooldown):
+    await context.send(f"This command is on cooldown. You can use it in {round(error.retry_after, 2)} seconds.")
+
 # -----------------------------------------------------------------------------
 # TASKS
 # -----------------------------------------------------------------------------
