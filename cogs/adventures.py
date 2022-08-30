@@ -180,9 +180,8 @@ class NextButton(discord.ui.Button):
         
         view: InventoryView = self.view
         if interaction.user == view.get_user():
-            view.next_page()
-
-        await interaction.response.defer()
+            response = view.next_page()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 class PrevButton(discord.ui.Button):
@@ -195,9 +194,8 @@ class PrevButton(discord.ui.Button):
         
         view: InventoryView = self.view
         if interaction.user == view.get_user():
-            view.prev_page()
-
-        await interaction.response.defer()
+            response = view.prev_page()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 class InventoryView(discord.ui.View):
@@ -227,13 +225,23 @@ class InventoryView(discord.ui.View):
         if len(page_slots) == self._NUM_PER_PAGE:
             self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
         
+    def _get_current_page_info(self):
+        player: Player = self._database[self._guild_id]["members"][self._user.id]
+        coins = player.get_inventory().get_coins()
+        return embeds.Embed(
+            title=f"{self._user.display_name}'s Inventory",
+            description=f"You have {coins} coins.\n\nNavigate through your items using the Prev and Next buttons."
+        )
+        
     def next_page(self):
         self._page += 1
         self._get_current_page_buttons()
+        return self._get_current_page_info()
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
         self._get_current_page_buttons()
+        return self._get_current_page_info()
 
     def get_user(self):
         return self._user
@@ -520,9 +528,11 @@ class Adventures(commands.Cog):
     @commands.command(name="inventory", help="Check your inventory", aliases= ["inv"])
     async def inventory_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        player: Player = self._database[context.guild.id]["members"][context.author.id]
+        coins = player.get_inventory().get_coins()
         embed = embeds.Embed(
             title=f"{context.author.display_name}'s Inventory",
-            description="Navigate through your items using the Prev and Next buttons."
+            description=f"You have {coins} coins.\n\nNavigate through your items using the Prev and Next buttons."
         )
         await context.send(embed=embed, view=InventoryView(self._bot, self._database, context.guild.id, context.author))
 
