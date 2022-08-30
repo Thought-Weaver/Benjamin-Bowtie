@@ -652,6 +652,7 @@ class MailboxView(discord.ui.View):
 
     def open_mail(self, mail_index: int, mail: Mail):
         player: Player = self._database[self._guild_id]["members"][self._user.id]
+        inventory: Inventory = player.get_inventory()
         mailbox: List[Mail] = player.get_mailbox()
 
         if mail_index >= len(mailbox):
@@ -663,7 +664,9 @@ class MailboxView(discord.ui.View):
             self._get_current_page_buttons()
             return False
 
-        mailbox.pop(mail_index)
+        mailbox_mail = mailbox.pop(mail_index)
+        inventory.add_item(mailbox_mail.get_item())
+        inventory.add_coins(mailbox_mail.get_coins())
         self._get_current_page_buttons()
         return True
 
