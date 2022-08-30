@@ -32,6 +32,9 @@ class Item():
         return self._name
 
     def get_full_name(self):
+        return f"{self._icon} {self._name}"
+
+    def get_full_name_and_count(self):
         return f"{self._icon} {self._name} ({self._count})"
 
     def get_value(self):
@@ -437,7 +440,7 @@ class Adventures(commands.Cog):
         author_player.get_inventory().add_item(fishing_result)
 
         embed = embeds.Embed(
-            title=f"You caught {fishing_result.get_name()} worth {fishing_result.get_value_str()}!",
+            title=f"You caught {fishing_result.get_full_name()} worth {fishing_result.get_value_str()}!",
             description="It's been added to your !inventory"
         )
         await context.send(embed=embed)
