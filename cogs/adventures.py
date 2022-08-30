@@ -249,8 +249,8 @@ class MarketSellButton(discord.ui.Button):
 
 
 class MarketExitButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Exit")
+    def __init__(self, row):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Exit", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -276,7 +276,7 @@ class MarketView(discord.ui.View):
         
         self._display_initial_buttons()
 
-    def _get_current_page_buttons(self):
+    def _get_current_page_buttons(self, needs_exit_button: bool):
         self.clear_items()
         player: Player = self._database[self._guild_id]["members"][self._user.id]
         all_slots = player.get_inventory().get_inventory_slots()
@@ -288,23 +288,23 @@ class MarketView(discord.ui.View):
             self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
         if len(page_slots) == self._NUM_PER_PAGE:
             self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
+        if needs_exit_button:
+            self.add_item(MarketExitButton(min(5, ceil(len(page_slots) / 5))))
         
     def next_page(self):
         self._page += 1
-        self._get_current_page_buttons()
+        self._get_current_page_buttons(True)
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
-        self._get_current_page_buttons()
+        self._get_current_page_buttons(True)
 
     def _display_initial_buttons(self):
         self.clear_items()
         self.add_item(MarketSellButton())
 
     def enter_sell_market(self):
-        self.clear_items()
-        self._get_current_page_buttons()
-        self.add_item(MarketExitButton())
+        self._get_current_page_buttons(True)
         
         return embeds.Embed(
             title="Selling at the Market",
@@ -318,20 +318,22 @@ class MarketView(discord.ui.View):
         inventory = player.get_inventory()
         # Need to check that the item still exists since there are async operations
         # that can happen with different views.
+        embed = embeds.Embed(
+            title="Selling at the Market",
+            description="Choose an item from your inventory to sell!\n\n*Error: That item couldn't be sold.*"
+        )
         found_index = inventory.item_exists(item)
         if found_index == item_index:
             inventory.remove_item(item_index, 1)
             inventory.add_coins(item.get_value())
-            return embeds.Embed(
+            embed = embeds.Embed(
                 title="Selling at the Market",
                 description=f"Choose an item from your inventory to sell!\n\n*Sold 1 {item.get_full_name()} for {item.get_value()} coins!*"
             )
-
-        return embeds.Embed(
-            title="Selling at the Market",
-            description="Choose an item from your inventory to sell!\n\n*Error: That item couldn't be sold.*"
-        )
-
+        
+        self._get_current_page_buttons(True)
+        return embed
+    
     def exit_to_main_menu(self):
         self._display_initial_buttons()
         return embeds.Embed(
