@@ -90,6 +90,8 @@ class Inventory():
             for other_item in self._inventory_slots:
                 if item == other_item:
                     item.add_amount(other_item.get_count())
+            if item.get_count() == 0:
+                item_set.remove(item)
 
         self._inventory_slots = sorted(item_set, key=lambda item: item.get_name())
 
