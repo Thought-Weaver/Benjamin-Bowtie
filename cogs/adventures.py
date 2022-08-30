@@ -555,6 +555,10 @@ class MailModal(discord.ui.Modal):
             await interaction.response.send_message(f"Error: You can't send a negative number of coins.")
             return
 
+        if int(self._coins_input.value) > inventory.get_coins():
+            await interaction.response.send_message(f"Error: You don't have that many coins to send.")
+            return
+
         sent_item = inventory.remove_item(self._item_index, int(self._count_input.value))
         mail = Mail(self._user.display_name, sent_item, int(self._coins_input.value), self._message_input.value, str(time.time()).split(".")[0]) 
         giftee_player.get_mailbox().append(mail)
@@ -667,6 +671,7 @@ class MailboxView(discord.ui.View):
         mailbox_mail = mailbox.pop(mail_index)
         inventory.add_item(mailbox_mail.get_item())
         inventory.add_coins(mailbox_mail.get_coins())
+
         self._get_current_page_buttons()
         return True
 
