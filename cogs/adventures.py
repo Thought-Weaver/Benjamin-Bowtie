@@ -86,14 +86,15 @@ class Inventory():
             if not exists:
                 item_set.append(Item(item.get_icon(), item.get_name(), item.get_value(), 0, item.get_is_unique()))
 
+        new_slots: List[Item] = []
         for item in item_set:
             for other_item in self._inventory_slots:
                 if item == other_item:
                     item.add_amount(other_item.get_count())
-            if item.get_count() == 0:
-                item_set.remove(item)
+            if item.get_count() != 0:
+                new_slots.append(item)
 
-        self._inventory_slots = sorted(item_set, key=lambda item: item.get_name())
+        self._inventory_slots = sorted(new_slots, key=lambda item: item.get_name())
 
     def item_exists(self, item: Item):
         for i, inv_item in enumerate(self._inventory_slots):
