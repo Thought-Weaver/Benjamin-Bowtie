@@ -556,7 +556,7 @@ class MailModal(discord.ui.Modal):
             return
 
         sent_item = inventory.remove_item(self._item_index, int(self._count_input.value))
-        mail = Mail(self._user.display_name, sent_item, int(self._coins_input.value), self._message_input.value, time.time()) 
+        mail = Mail(self._user.display_name, sent_item, int(self._coins_input.value), self._message_input.value, str(time.time()).split(".")[0]) 
         giftee_player.get_mailbox().append(mail)
         
         if int(self._coins_input.value) > 0:
@@ -571,7 +571,7 @@ class MailModal(discord.ui.Modal):
 
 class MailboxButton(discord.ui.Button):
     def __init__(self, mail_index: int, mail: Mail, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"📧 From: {mail.get_sender_name()} (<t:{mail.get_send_date()}:R>)", row=row)
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"📧 From: {mail.get_sender_name()}", row=row)
         
         self._mail_index = mail_index
         self._mail = mail
@@ -664,6 +664,7 @@ class MailboxView(discord.ui.View):
             return False
 
         mailbox.pop(mail_index)
+        self._get_current_page_buttons()
         return True
 
     def get_user(self):
