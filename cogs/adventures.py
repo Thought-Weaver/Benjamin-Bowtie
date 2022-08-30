@@ -11,7 +11,8 @@ from games.knucklebones import Knucklebones
 import random
 
 class Item():
-    def __init__(self, name: str, value: int, count=1, is_unique=False):
+    def __init__(self, icon: str, name: str, value: int, count=1, is_unique=False):
+        self._icon = icon
         self._name = name
         self._value = value
         self._count = count
@@ -19,7 +20,7 @@ class Item():
 
     def remove_amount(self, amount: int):
         if amount <= self._count:
-            result = Item(self._name, self._value, amount, self._is_unique)
+            result = Item(self._icon, self._name, self._value, amount, self._is_unique)
             self._count -= amount
             return result
         return None
@@ -29,6 +30,9 @@ class Item():
 
     def get_name(self):
         return self._name
+
+    def get_full_name(self):
+        return f"{self._icon} {self._name} ({self._count})"
 
     def get_value(self):
         return self._value
@@ -44,6 +48,9 @@ class Item():
     def get_is_unique(self):
         return self._is_unique
 
+    def get_icon(self):
+        return self._icon
+
     def __eq__(self, obj):
         if not isinstance(obj, Item):
             return False
@@ -51,7 +58,7 @@ class Item():
         if self._is_unique or obj.get_is_unique():
             return False
         
-        if self._name == obj.get_name() and self._value == obj.get_value():
+        if self._icon == obj.get_icon() and self._name == obj.get_name() and self._value == obj.get_value():
             return True
 
         return False
@@ -74,7 +81,7 @@ class Inventory():
                     exists = True
                     break
             if not exists:
-                item_set.append(Item(item.get_name(), item.get_value(), 0, item.get_is_unique()))
+                item_set.append(Item(item.get_icon(), item.get_name(), item.get_value(), 0, item.get_is_unique()))
 
         for item in item_set:
             for other_item in self._inventory_slots:
@@ -82,6 +89,12 @@ class Inventory():
                     item.add_amount(other_item.get_count())
 
         self._inventory_slots = sorted(item_set, key=lambda item: item.get_name())
+
+    def item_exists(self, item: Item):
+        for i, inv_item in enumerate(self._inventory_slots):
+            if inv_item == item:
+                return i
+        return -1
 
     def search_by_name(self, name: str):
         for i, item in enumerate(self._inventory_slots):
@@ -119,14 +132,29 @@ class Inventory():
 
 class InventoryButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name()} ({item.get_count()})", row=item_index % 5)
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name()}", row=int(item_index / 5))
         self._item_index = item_index
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
         
-        view: InventoryView = self.view
+        await interaction.response.defer()
+
+
+class MarketSellButton(discord.ui.Button):
+    def __init__(self, item_index: int, item: Item):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name()}", row=int(item_index / 5))
+        self._item_index = item_index
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MarketView = self.view
+
+        if view.get_user() == interaction.user:
+            await view.sell_item(item_index, item)
 
 
 # Could abstract into a generic button with some callback in the parent view?
@@ -145,7 +173,7 @@ class NextButton(discord.ui.Button):
 
 class PrevButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
+        super().__init__(style=discord.ButtonStyle.blurple, label="Prev", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -166,6 +194,8 @@ class InventoryView(discord.ui.View):
         self._user = user
         self._page = 0
 
+        self._NUM_PER_PAGE = 20
+
         self._get_current_page_buttons()
 
     def _get_current_page_buttons(self):
@@ -173,12 +203,12 @@ class InventoryView(discord.ui.View):
         player: Player = self._database[self._guild_id]["members"][self._user.id]
         all_slots = player.get_inventory().get_inventory_slots()
 
-        page_slots = all_slots[self._page * 20:min(len(all_slots), (self._page + 1) * 20)]
+        page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
             self.add_item(InventoryButton(i, item))
         if self._page != 0:
             self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
-        if len(page_slots) == 20:
+        if len(page_slots) == self._NUM_PER_PAGE:
             self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
         
     def next_page(self):
@@ -188,6 +218,104 @@ class InventoryView(discord.ui.View):
     def prev_page(self):
         self._page = max(0, self._page - 1)
         self._get_current_page_buttons()
+
+    def get_user(self):
+        return self._user
+
+
+class MarketSellButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Sell")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MarketView = self.view
+        if interaction.user == view.get_user():
+            view.enter_sell_market()
+
+
+class MarketExitButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Exit")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MarketView = self.view
+        if interaction.user == view.get_user():
+            response = view.exit_to_main_menu()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class MarketView(discord.ui.View):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User):
+        super().__init__()
+
+        self._bot = bot
+        self._database = database
+        self._guild_id = guild_id
+        self._user = user
+        self._page = 0
+
+        self._NUM_PER_PAGE = 20
+        
+        self._display_initial_buttons()
+
+    def _get_current_page_buttons(self):
+        self.clear_items()
+        player: Player = self._database[self._guild_id]["members"][self._user.id]
+        all_slots = player.get_inventory().get_inventory_slots()
+
+        page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
+        for i, item in enumerate(page_slots):
+            self.add_item(InventoryButton(i, item))
+        if self._page != 0:
+            self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
+        if len(page_slots) == self._NUM_PER_PAGE:
+            self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
+        
+    def next_page(self):
+        self._page += 1
+        self._get_current_page_buttons()
+
+    def prev_page(self):
+        self._page = max(0, self._page - 1)
+        self._get_current_page_buttons()
+
+    def _display_initial_buttons(self):
+        self.clear_items()
+        self.add_item(MarketSellButton())
+
+    def enter_sell_market(self):
+        self.clear_items()
+        self._get_current_page_buttons()
+        self.add_item(MarketExitButton())
+
+    def sell_item(self, item_index: int, item: Item):
+        # TODO: Rather than selling one at a time, create a modal that'll let you choose
+        # how many to sell!
+        player: Player = self._database[self._guild_id]["members"][self._user.id]
+        inventory = player.get_inventory()
+        # Need to check that the item still exists since there are async operations
+        # that can happen with different views.
+        found_index = inventory.item_exists(item)
+        if found_index == item_index:
+            inventory.remove_item(item_index, 1)
+            inventory.add_coins(item.get_count() * item.get_value())
+        return embeds.Embed(
+            title="Selling at the Market",
+            description="Choose an item from your inventory to sell!"
+        )
+
+    def exit_to_main_menu(self):
+        self._display_initial_buttons()
+        return embeds.Embed(
+            title="Welcome to the Market!",
+            description="Select an action below to get started."
+        )
 
     def get_user(self):
         return self._user
@@ -278,23 +406,23 @@ class Adventures(commands.Cog):
 
         # 55% chance of getting something worthless
         if 0.0 <= rand_val < 0.55:
-            items = [Item("🥾 Boot", 2), Item("🍂 Clump of Leaves", 1), Item("🐚 Conch", 1)]
+            items = [Item("🥾", "Boot", 2), Item("🍂", "Clump of Leaves", 1), Item("🐚", "Conch", 1)]
             fishing_result = random.choice(items)
         # 20% chance of getting a Tier 3 reward
         if 0.55 < rand_val < 0.75:
-            items = [Item("🐟 Minnow", 3), Item("🐠 Roughy", 4), Item("🦐 Shrimp", 3)]
+            items = [Item("🐟", "Minnow", 3), Item("🐠", "Roughy", 4), Item("🦐", "Shrimp", 3)]
             fishing_result = random.choice(items)
         # 15% chance of getting a Tier 2 reward
         if 0.75 < rand_val < 0.9:
-            items = [Item("🦪 Oyster", 4), Item("🐡 Pufferfish", 5)]
+            items = [Item("🦪", "Oyster", 4), Item("🐡", "Pufferfish", 5)]
             fishing_result = random.choice(items)
         # 9% chance of getting a Tier 1 reward
         if 0.9 < rand_val < 0.99:
-            items = [Item("🦑 Squid", 10), Item("🦀 Crab", 8), Item("🦞 Lobster", 8)]
+            items = [Item("🦑", "Squid", 10), Item("🦀", "Crab", 8), Item("🦞", "Lobster", 8)]
             fishing_result = random.choice(items)
         # 1% chance of getting a Tier 0 reward
         if 0.99 < rand_val <= 1.0:
-            items = [Item("🏺 Ancient Vase", 25), Item("💎 Diamond", 50)]
+            items = [Item("🏺", "Ancient Vase", 25), Item("💎", "Diamond", 50)]
             fishing_result = random.choice(items)
         
         # E(X) = 
@@ -349,9 +477,9 @@ class Adventures(commands.Cog):
 
         await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, context.author, user, amount))
 
-    @commands.command(name="mail", help="Send another player a gift from your !inv")
-    async def mail_handler(self, context: commands.Context):
-        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+    # @commands.command(name="mail", help="Send another player a gift from your !inv")
+    # async def mail_handler(self, context: commands.Context):
+        # self._check_member_and_guild_existence(context.guild.id, context.author.id)
         # The process will be:
         # (1) The user gets to select an item (as a button) from their inventory
         #     There will be 5 items in a row (4 rows of that), along with a 
@@ -368,6 +496,15 @@ class Adventures(commands.Cog):
             description="Navigate through your items using the Prev and Next buttons."
         )
         await context.send(embed=embed, view=InventoryView(self._bot, self._database, context.guild.id, context.author))
+
+    @commands.command(name="market", help="Sell and buy items at the marketplace")
+    async def mail_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        embed = embeds.Embed(
+            title="Welcome to the Market!",
+            description="Select an action below to get started."
+        )
+        await context.send(embed=embed, view=MarketView(self._bot, self._database, context.guild.id, context.author))
 
 
 async def setup(bot: BenjaminBowtieBot):
