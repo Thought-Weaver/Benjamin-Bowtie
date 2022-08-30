@@ -145,7 +145,7 @@ class InventoryButton(discord.ui.Button):
         await interaction.response.defer()
 
 
-class MarketSellButton(discord.ui.Button):
+class InventorySellButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
         super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=int(item_index / 5))
         self._item = item
@@ -275,7 +275,7 @@ class MarketView(discord.ui.View):
 
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
-            self.add_item(InventoryButton(i, item))
+            self.add_item(InventorySellButton(i, item))
         if self._page != 0:
             self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
         if len(page_slots) == self._NUM_PER_PAGE:
