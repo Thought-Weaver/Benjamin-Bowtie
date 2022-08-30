@@ -484,6 +484,10 @@ class Adventures(commands.Cog):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         self._check_member_and_guild_existence(context.guild.id, user.id)
 
+        if amount < 0:
+            await context.send(f"You have to bet a non-negative number of coins!")
+            return
+
         # I don't think I need to keep track of the games in the database, since each message
         # will update itself as buttons are pressed becoming a self-contained game. So long as (1)
         # we check that the players pressing the buttons are valid which should happen naturally
