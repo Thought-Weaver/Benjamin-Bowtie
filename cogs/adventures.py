@@ -9,6 +9,7 @@ from typing import List
 from games.knucklebones import Knucklebones
 
 import random
+import time
 
 class Item():
     def __init__(self, icon: str, name: str, value: int, count=1, is_unique=False):
@@ -169,6 +170,31 @@ class InventorySellButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
+class InventoryMailButton(discord.ui.Button):
+    def __init__(self, item_index: int, item: Item):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=int(item_index / 5))
+        self._item = item
+        self._item_index = item_index
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MailView = self.view
+
+        if view.get_user() == interaction.user:
+            await interaction.response.send_modal(MailModal(
+                view.get_database(),
+                view.get_guild_id(),
+                view.get_user(),
+                view.get_giftee(),
+                self._item_index,
+                self._item,
+                view,
+                interaction.message.id)
+            )
+
+
 # Could abstract into a generic button with some callback in the parent view?
 class NextButton(discord.ui.Button):
     def __init__(self, row: int):
@@ -289,7 +315,7 @@ class MarketView(discord.ui.View):
         
         self._display_initial_buttons()
 
-    def _get_current_page_buttons(self, needs_exit_button: bool):
+    def _get_current_page_buttons(self):
         self.clear_items()
         player: Player = self._database[self._guild_id]["members"][self._user.id]
         all_slots = player.get_inventory().get_inventory_slots()
@@ -301,23 +327,22 @@ class MarketView(discord.ui.View):
             self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
         if len(page_slots) == self._NUM_PER_PAGE:
             self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
-        if needs_exit_button:
-            self.add_item(MarketExitButton(min(5, ceil(len(page_slots) / 5))))
+        self.add_item(MarketExitButton(min(5, ceil(len(page_slots) / 5))))
         
     def next_page(self):
         self._page += 1
-        self._get_current_page_buttons(True)
+        self._get_current_page_buttons()
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
-        self._get_current_page_buttons(True)
+        self._get_current_page_buttons()
 
     def _display_initial_buttons(self):
         self.clear_items()
         self.add_item(MarketSellButton())
 
     def enter_sell_market(self):
-        self._get_current_page_buttons(True)
+        self._get_current_page_buttons()
         
         return embeds.Embed(
             title="Selling at the Market",
@@ -344,7 +369,7 @@ class MarketView(discord.ui.View):
                 description=f"Choose an item from your inventory to sell!\n\n*Sold 1 {item.get_full_name()} for {item.get_value()} coins!*"
             )
         
-        self._get_current_page_buttons(True)
+        self._get_current_page_buttons()
         return embed
     
     def exit_to_main_menu(self):
@@ -386,11 +411,12 @@ class Expertise():
 
 
 class Mail():
-    def __init__(self, sender_name: str, item: Item, message: str, send_date: str):
+    def __init__(self, sender_name: str, item: Item, coins: int, message: str, send_date: str):
         self._sender_name = sender_name
         self._item = item
         self._message = message
         self._send_date = send_date
+        self._coins = coins
 
     def get_sender_name(self):
         return self._sender_name
@@ -403,6 +429,133 @@ class Mail():
 
     def get_send_date(self):
         return self._send_date
+
+    def get_coins(self):
+        return self._coins
+
+
+class MailView(discord.ui.View):
+    def __init__(self, bot: commands.Bot, database: dict, giftee: User, context: commands.Context):
+        super().__init__()
+
+        self._bot = bot
+        self._database = database
+        self._guild_id = context.guild.id
+        self._user = context.author
+        self._giftee = giftee
+        self._context = context
+        self._page = 0
+
+        self._NUM_PER_PAGE = 20
+        
+        self._get_current_page_buttons()
+
+    def _get_current_page_buttons(self):
+        self.clear_items()
+        player: Player = self._database[self._guild_id]["members"][self._user.id]
+        all_slots = player.get_inventory().get_inventory_slots()
+
+        page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
+        for i, item in enumerate(page_slots):
+            self.add_item(InventoryMailButton(i, item))
+        if self._page != 0:
+            self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
+        if len(page_slots) == self._NUM_PER_PAGE:
+            self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
+        
+    def next_page(self):
+        self._page += 1
+        self._get_current_page_buttons()
+
+    def prev_page(self):
+        self._page = max(0, self._page - 1)
+        self._get_current_page_buttons()
+
+    async def refresh(self, message_id):
+        self._get_current_page_buttons()
+        message: discord.Message = await self._context.fetch_message(message_id)
+        await message.edit(view=self)
+
+    def get_user(self):
+        return self._user
+
+    def get_giftee(self):
+        return self._giftee
+
+    def get_database(self):
+        return self._database
+
+    def get_guild_id(self):
+        return self._guild_id
+
+
+class MailModal(discord.ui.Modal):
+    def __init__(self, database: dict, guild_id: int, user: User, giftee: User, item_index: int, item: Item, view: MailView, message_id: int):
+        super().__init__(title=f"Mailing a gift to {giftee.display_name}!")
+
+        self._database = database
+        self._guild_id = guild_id
+        self._user = user
+        self._giftee = giftee
+        self._item_index = item_index
+        self._item = item
+        self._view = view
+        self._message_id = message_id
+
+        self._count_input = discord.ui.TextInput(
+            label="Quantity",
+            default="1",
+        )
+        self.add_item(self._count_input)
+
+        self._coins_input = discord.ui.TextInput(
+            label="Coins",
+            default="0"
+        )
+        self.add_item(self._coins_input)
+
+        self._message_input = discord.ui.TextInput(
+            label="Message",
+            required=False,
+            style=discord.TextStyle.paragraph,
+            placeholder="Anything you'd like to say?"
+        )
+        self.add_item(self._message_input)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        player: Player = self._database[self._guild_id]["members"][self._user.id]
+        giftee_player: Player = self._database[self._guild_id]["members"][self._giftee.id]
+        inventory = player.get_inventory()
+        
+        found_index = inventory.item_exists(self._item)
+        if found_index != self._item_index:
+            await interaction.response.send_message(f"Error: Something about your inventory changed. Try using !mail again.")
+            return
+
+        if not self._count_input.value.isnumeric() or int(self._count_input.value) <= 0:
+            await interaction.response.send_message(f"Error: You must send a non-negative number of that item.")
+            return
+
+        if int(self._count_input.value) > self._item.get_count():
+            await interaction.response.send_message(f"Error: You can't send {int(self._count_input.value)} of that item, you only have {self._item.get_count()}.")
+            return
+
+        if not self._coins_input.value.isnumeric() or int(self._coins_input.value) < 0:
+            await interaction.response.send_message(f"Error: You can't send a negative number of coins.")
+            return
+
+        sent_item = inventory.remove_item(self._item_index, int(self._count_input.value))
+        mail = Mail(self._user.display_name, sent_item, int(self._coins_input.value), self._message_input.value, time.time()) 
+        giftee_player.get_mailbox().append(mail)
+        
+        if int(self._coins_input.value) > 0:
+            await interaction.response.send_message(f"You mailed {int(self._count_input.value)} {sent_item.get_full_name()} and {int(self._coins_input.value)} coins to {self._giftee.display_name}!")
+        else:
+            await interaction.response.send_message(f"You mailed {int(self._count_input.value)} {sent_item.get_full_name()} to {self._giftee.display_name}!")
+        await self._view.refresh(self._message_id)
+
+    async def on_error(self, interaction: discord.Interaction, error: Exception):
+        await interaction.response.send_message("Error: Something has gone terribly wrong.")
 
 
 class Player():
@@ -480,7 +633,11 @@ class Adventures(commands.Cog):
         await context.send(embed=embed)
 
     @commands.command(name="knucklebones", help="Face another player in a game of knucklebones")
-    async def knucklebones_handler(self, context: commands.Context, user: User, amount: int):
+    async def knucklebones_handler(self, context: commands.Context, user: User=None, amount: int=0):
+        if user is None:
+            await context.send("You need to @ a member to use !knucklebones")
+            return
+            
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         self._check_member_and_guild_existence(context.guild.id, user.id)
 
@@ -518,9 +675,14 @@ class Adventures(commands.Cog):
 
         await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, context.author, user, amount))
 
-    # @commands.command(name="mail", help="Send another player a gift from your !inv")
-    # async def mail_handler(self, context: commands.Context):
-        # self._check_member_and_guild_existence(context.guild.id, context.author.id)
+    @commands.command(name="mail", help="Send another player a gift from your !inv")
+    async def mail_handler(self, context: commands.Context, giftee: User=None):
+        if giftee is None:
+            await context.send("You need to @ a member to use !mail")
+            return
+        
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        self._check_member_and_guild_existence(context.guild.id, giftee.id)
         # The process will be:
         # (1) The user gets to select an item (as a button) from their inventory
         #     There will be 5 items in a row (4 rows of that), along with a 
@@ -528,8 +690,15 @@ class Adventures(commands.Cog):
         # (2) On clicking a button, a modal will pop up asking how many to send and
         #     an optional message to send
         # https://github.com/Rapptz/discord.py/blob/master/examples/modals/basic.py
+        player: Player = self._database[context.guild.id]["members"][context.author.id]
+        coins = player.get_inventory().get_coins()
+        embed = embeds.Embed(
+            title=f"{context.author.display_name}'s Inventory",
+            description=f"You have {coins} coins.\n\nChoose an item to mail to {giftee.display_name}!"
+        )
+        await context.send(embed=embed, view=MailView(self._bot, self._database, giftee, context))
 
-    @commands.command(name="inventory", help="Check your inventory", aliases= ["inv"])
+    @commands.command(name="inventory", help="Check your inventory", aliases=["inv"])
     async def inventory_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         player: Player = self._database[context.guild.id]["members"][context.author.id]
@@ -541,7 +710,16 @@ class Adventures(commands.Cog):
         await context.send(embed=embed, view=InventoryView(self._bot, self._database, context.guild.id, context.author))
 
     @commands.command(name="market", help="Sell and buy items at the marketplace")
-    async def mail_handler(self, context: commands.Context):
+    async def market_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        embed = embeds.Embed(
+            title="Welcome to the Market!",
+            description="Select an action below to get started."
+        )
+        await context.send(embed=embed, view=MarketView(self._bot, self._database, context.guild.id, context.author))
+
+    @commands.command(name="market", help="Sell and buy items at the marketplace")
+    async def market_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         embed = embeds.Embed(
             title="Welcome to the Market!",

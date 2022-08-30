@@ -2,7 +2,6 @@ from discord.ext import commands, tasks
 from discord import Intents
 from dotenv import load_dotenv
 
-import asyncio
 import logging
 import os
 import pickle
