@@ -321,10 +321,15 @@ class MarketView(discord.ui.View):
         found_index = inventory.item_exists(item)
         if found_index == item_index:
             inventory.remove_item(item_index, 1)
-            inventory.add_coins(item.get_count() * item.get_value())
+            inventory.add_coins(item.get_value())
+            return embeds.Embed(
+                title="Selling at the Market",
+                description=f"Choose an item from your inventory to sell!\n\n*Sold 1 {item.get_full_name()} for {item.get_value()} coins!*"
+            )
+
         return embeds.Embed(
             title="Selling at the Market",
-            description="Choose an item from your inventory to sell!"
+            description="Choose an item from your inventory to sell!\n\n*Error: That item couldn't be sold.*"
         )
 
     def exit_to_main_menu(self):
