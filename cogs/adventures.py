@@ -135,7 +135,7 @@ class Inventory():
 
 class InventoryButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name()}", row=int(item_index / 5))
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=int(item_index / 5))
         self._item_index = item_index
 
     async def callback(self, interaction: discord.Interaction):
@@ -147,7 +147,8 @@ class InventoryButton(discord.ui.Button):
 
 class MarketSellButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name()}", row=int(item_index / 5))
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=int(item_index / 5))
+        self._item = item
         self._item_index = item_index
 
     async def callback(self, interaction: discord.Interaction):
@@ -157,7 +158,7 @@ class MarketSellButton(discord.ui.Button):
         view: MarketView = self.view
 
         if view.get_user() == interaction.user:
-            await view.sell_item(item_index, item)
+            await view.sell_item(self._item_index, self._item)
 
 
 # Could abstract into a generic button with some callback in the parent view?
