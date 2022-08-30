@@ -237,7 +237,8 @@ class MarketSellButton(discord.ui.Button):
         
         view: MarketView = self.view
         if interaction.user == view.get_user():
-            view.enter_sell_market()
+            response = view.enter_sell_market()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 class MarketExitButton(discord.ui.Button):
@@ -297,6 +298,11 @@ class MarketView(discord.ui.View):
         self.clear_items()
         self._get_current_page_buttons()
         self.add_item(MarketExitButton())
+        
+        return embeds.Embed(
+            title="Selling at the Market",
+            description="Choose an item from your inventory to sell!"
+        )
 
     def sell_item(self, item_index: int, item: Item):
         # TODO: Rather than selling one at a time, create a modal that'll let you choose
