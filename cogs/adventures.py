@@ -73,18 +73,22 @@ class Inventory():
         self._coins: int = 0
 
     def _organize_inventory_slots(self):
-        if len(self._inventory_slots) < 2:
+        if len(self._inventory_slots) == 0:
             return
         
         item_set: List[Item] = []
-        for item in self._inventory_slots:
-            exists = False
-            for item_in_set in item_set:
-                if item_in_set == item:
-                    exists = True
-                    break
-            if not exists:
-                item_set.append(Item(item.get_icon(), item.get_name(), item.get_value(), 0, item.get_is_unique()))
+        if len(self._inventory_slots) == 1:
+            item = self._inventory_slots[0]
+            item_set.append(Item(item.get_icon(), item.get_name(), item.get_value(), 0, item.get_is_unique()))
+        if len(self._inventory_slots) >= 2:
+            for item in self._inventory_slots:
+                exists = False
+                for item_in_set in item_set:
+                    if item_in_set == item:
+                        exists = True
+                        break
+                if not exists:
+                    item_set.append(Item(item.get_icon(), item.get_name(), item.get_value(), 0, item.get_is_unique()))
 
         new_slots: List[Item] = []
         for item in item_set:
