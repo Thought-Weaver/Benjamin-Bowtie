@@ -433,6 +433,17 @@ class Mail():
     def get_coins(self):
         return self._coins
 
+    def __eq__(self, obj):
+        if not isinstance(obj, Mail):
+            return False
+
+        if self._sender_name == obj.get_sender_name() and self._item == obj.get_item() \
+            and self._message == obj.get_message() and self._send_date == obj.get_send_date() \
+            and self._coins == obj.get_coins():
+            return True
+
+        return False
+
 
 class MailView(discord.ui.View):
     def __init__(self, bot: commands.Bot, database: dict, giftee: User, context: commands.Context):
@@ -556,6 +567,107 @@ class MailModal(discord.ui.Modal):
 
     async def on_error(self, interaction: discord.Interaction, error: Exception):
         await interaction.response.send_message("Error: Something has gone terribly wrong.")
+
+
+class MailboxButton(discord.ui.Button):
+    def __init__(self, mail_index: int, mail: Mail, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"📧 From: {mail.get_sender_name()} (<t:{mail.get_send_date()}:R>)", row=row)
+        
+        self._mail_index = mail_index
+        self._mail = mail
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MailboxView = self.view
+        if interaction.user == view.get_user():
+            if view.open_mail(self._mail_index, self._mail):
+                await interaction.response.edit_message(content=None, embed=view.get_current_page_info(), view=view)
+
+                mail_message = f"From: {self._mail.get_sender_name()} (<t:{self._mail.get_send_date()}:R>)"
+                mail_message += f"\n\nItem: {self._mail.get_item().get_full_name_and_count()} each worth {self._mail.get_item().get_value_str()}"
+                if self._mail.get_coins() > 0:
+                    mail_message += f"\n\nCoins: {self._mail.get_coins()}"
+                if self._mail.get_message() != "":
+                    mail_message += f"\n\nMessage:\n\n{self._mail.get_message()}"
+
+                await interaction.followup.send(content=mail_message, ephemeral=True)
+            else:
+                embed = view.get_current_page_info()
+                embed.description += "\n\n*Error: That mail is no longer available.*"
+                await interaction.response.edit_message(content=None, embed=embed, view=view)
+
+
+class MailboxView(discord.ui.View):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User):
+        super().__init__()
+
+        self._bot = bot
+        self._database = database
+        self._guild_id = guild_id
+        self._user = user
+        self._page = 0
+
+        # These buttons are going to descend vertically. Thinking about changing the
+        # inventory to be the same since it looks better on mobile too.
+        self._NUM_PER_PAGE = 4
+        
+        self._get_current_page_buttons()
+
+    def _get_current_page_buttons(self):
+        self.clear_items()
+        player: Player = self._database[self._guild_id]["members"][self._user.id]
+        mailbox: List[Mail] = player.get_mailbox()
+
+        page_slots = mailbox[self._page * self._NUM_PER_PAGE:min(len(mailbox), (self._page + 1) * self._NUM_PER_PAGE)]
+        for i, item in enumerate(page_slots):
+            self.add_item(MailboxButton(i, item, row=i))
+        if self._page != 0:
+            self.add_item(PrevButton(min(5, len(page_slots))))
+        if len(page_slots) == self._NUM_PER_PAGE:
+            self.add_item(NextButton(min(5, len(page_slots))))
+        
+    def get_current_page_info(self):
+        return embeds.Embed(
+            title=f"{self._user.display_name}'s Mailbox",
+            description="Navigate through your mail using the Prev and Next buttons."
+        )
+        
+    def next_page(self):
+        self._page += 1
+        self._get_current_page_buttons()
+        return self.get_current_page_info()
+
+    def prev_page(self):
+        self._page = max(0, self._page - 1)
+        self._get_current_page_buttons()
+        return self.get_current_page_info()
+
+    def _mail_exists(self, mailbox: List[Mail], mail: Mail):
+        for i, mailbox_mail in enumerate(mailbox):
+            if mailbox_mail == mail:
+                return i
+        return -1
+
+    def open_mail(self, mail_index: int, mail: Mail):
+        player: Player = self._database[self._guild_id]["members"][self._user.id]
+        mailbox: List[Mail] = player.get_mailbox()
+
+        if mail_index >= len(mailbox):
+            self._get_current_page_buttons()
+            return False
+        
+        found_index = self._mail_exists(mailbox, mail)
+        if found_index == -1 or found_index != mail_index:
+            self._get_current_page_buttons()
+            return False
+
+        mailbox.pop(mail_index)
+        return True
+
+    def get_user(self):
+        return self._user
 
 
 class Player():
@@ -718,14 +830,14 @@ class Adventures(commands.Cog):
         )
         await context.send(embed=embed, view=MarketView(self._bot, self._database, context.guild.id, context.author))
 
-    @commands.command(name="market", help="Sell and buy items at the marketplace")
-    async def market_handler(self, context: commands.Context):
+    @commands.command(name="mailbox", help="Open mail you've received from others")
+    async def mailbox_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         embed = embeds.Embed(
-            title="Welcome to the Market!",
-            description="Select an action below to get started."
+            title=f"{context.author.display_name}'s Mailbox",
+            description=f"Navigate through your mail using the Prev and Next buttons."
         )
-        await context.send(embed=embed, view=MarketView(self._bot, self._database, context.guild.id, context.author))
+        await context.send(embed=embed, view=MailboxView(self._bot, self._database, context.guild.id, context.author))
 
 
 async def setup(bot: BenjaminBowtieBot):
