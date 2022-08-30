@@ -160,7 +160,8 @@ class InventorySellButton(discord.ui.Button):
         view: MarketView = self.view
 
         if view.get_user() == interaction.user:
-            await view.sell_item(self._item_index, self._item)
+            response = view.sell_item(self._item_index, self._item)
+            await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 # Could abstract into a generic button with some callback in the parent view?
@@ -176,6 +177,8 @@ class NextButton(discord.ui.Button):
         if interaction.user == view.get_user():
             view.next_page()
 
+        await interaction.response.defer()
+
 
 class PrevButton(discord.ui.Button):
     def __init__(self, row: int):
@@ -188,6 +191,8 @@ class PrevButton(discord.ui.Button):
         view: InventoryView = self.view
         if interaction.user == view.get_user():
             view.prev_page()
+
+        await interaction.response.defer()
 
 
 class InventoryView(discord.ui.View):
