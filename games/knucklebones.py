@@ -242,7 +242,7 @@ class Knucklebones(discord.ui.View):
 
         self._current_roll = randint(1, 6)
         self._turn = self._player_1 if self._turn == self._player_2 else self._player_2
-        return self._get_game_state_string()
+        return self._get_game_state_string() + "\n\n" + self._get_current_turn_string()
 
     def get_player_2(self):
         return self._player_2
