@@ -1,14 +1,17 @@
-from math import ceil
-import discord
-from discord import embeds, User
-from discord.ext import commands
-from enum import Enum
 from bot import BenjaminBowtieBot
+from discord import embeds, User
+from discord.ext import commands, tasks
+from enum import Enum
+from math import ceil
 from typing import List
 
 from games.knucklebones import Knucklebones
 
+import dill
+import discord
+import os
 import random
+import shutil
 import time
 
 class Item():
@@ -698,7 +701,10 @@ class Player():
 class Adventures(commands.Cog):
     def __init__(self, bot: BenjaminBowtieBot):
         self._bot = bot
-        self._database: dict = bot.database
+        # Database is here due to a pickle issue with importing from this module at the bot level
+        self._database: dict = dill.load(open("./adventuresdb", "rb")) if os.path.isfile("./adventuresdb") else {}
+        
+        self.save_database.start()
 
     def _check_member_and_guild_existence(self, guild_id: int, user_id: int):
         if self._database.get(guild_id) is None:
@@ -707,6 +713,13 @@ class Adventures(commands.Cog):
         
         if self._database[guild_id]["members"].get(user_id) is None:
             self._database[guild_id]["members"][user_id] = Player()
+
+    @tasks.loop(seconds=5)
+    async def save_database(self):
+        if os.path.isfile("./adventuresdb"):
+            shutil.copy("adventuresdb", "adventuresdbbackup")
+        
+        dill.dump(self._database, open("adventuresdb", "wb"))
 
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items")
     @commands.cooldown(1, 30, commands.BucketType.user)
@@ -796,7 +809,7 @@ class Adventures(commands.Cog):
 
         await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, context.author, user, amount))
 
-    @commands.command(name="mail", help="Send another player a gift from your !inv")
+    @commands.command(name="mail", help="Send another player a gift")
     async def mail_handler(self, context: commands.Context, giftee: User=None):
         if giftee is None:
             await context.send("You need to @ a member to use !mail")

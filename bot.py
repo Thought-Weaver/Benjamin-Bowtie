@@ -1,11 +1,9 @@
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord import Intents
 from dotenv import load_dotenv
 
 import logging
 import os
-import pickle
-import shutil
 
 # -----------------------------------------------------------------------------
 # GLOBALS
@@ -17,9 +15,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 class BenjaminBowtieBot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=commands.when_mentioned_or("b!"), intents=Intents().all())
-        
-        self.database: dict = pickle.load(open("./database", "rb")) if os.path.isfile("./database") else {}
-    
+
     async def setup_hook(self):
         await self.load_extension("cogs.images")
         await self.load_extension("cogs.randomization")
@@ -57,15 +53,6 @@ async def globally_block_dms(context):
 async def on_command_error(context, error):
   if isinstance(error, commands.CommandOnCooldown):
     await context.send(f"This command is on cooldown. You can use it in {round(error.retry_after, 2)} seconds.")
-
-# -----------------------------------------------------------------------------
-# TASKS
-# -----------------------------------------------------------------------------
-
-@tasks.loop(hours=1)
-async def save_database():
-    shutil.copy("database", "databasebackup")
-    pickle.dump(bot.database, open("database", "wb"))
 
 # -----------------------------------------------------------------------------
 # MAIN
