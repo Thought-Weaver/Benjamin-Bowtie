@@ -714,7 +714,7 @@ class Adventures(commands.Cog):
         if self._database[guild_id]["members"].get(user_id) is None:
             self._database[guild_id]["members"][user_id] = Player()
 
-    @tasks.loop(seconds=5)
+    @tasks.loop(hours=1)
     async def save_database(self):
         if os.path.isfile("./adventuresdb"):
             shutil.copy("adventuresdb", "adventuresdbbackup")
