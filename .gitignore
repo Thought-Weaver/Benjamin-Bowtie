@@ -3,3 +3,5 @@
 *.pyc
 database
 databasebackup
+adventuresdb
+adventuresdbbackup
