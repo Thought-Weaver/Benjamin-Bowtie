@@ -115,18 +115,18 @@ class Knucklebones(discord.ui.View):
 
     def _dice_value_to_char(self, value):
         if value == 1:
-            return "⚀"
+            return "1️⃣" # "⚀"
         if value == 2:
-            return "⚁"
+            return "2️⃣" # "⚁"
         if value == 3:
-            return "⚂"
+            return "3️⃣" # "⚂"
         if value == 4:
-            return "⚃"
+            return "4️⃣" # "⚃"
         if value == 5:
-            return "⚄"
+            return "5️⃣" # "⚄"
         if value == 6:
-            return "⚅"
-        return "⬜"
+            return "6️⃣" # "⚅"
+        return "⬜" #"⬚"
 
     def _compute_points_in_col(self, board: list[list[int]], col_num: int):
         counts = {}
