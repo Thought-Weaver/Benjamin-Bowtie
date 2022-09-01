@@ -14,6 +14,10 @@ import random
 import shutil
 import time
 
+# -----------------------------------------------------------------------------
+# INVENTORY AND ITEMS
+# -----------------------------------------------------------------------------
+
 class Item():
     def __init__(self, icon: str, name: str, value: int, count=1, is_unique=False):
         self._icon = icon
@@ -158,7 +162,7 @@ class InventoryButton(discord.ui.Button):
 
 class InventorySellButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=int(item_index / 5))
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()} [{item.get_value_str()} per]", row=int(item_index / 5))
         self._item = item
         self._item_index = item_index
 
@@ -277,6 +281,9 @@ class InventoryView(discord.ui.View):
     def get_user(self):
         return self._user
 
+# -----------------------------------------------------------------------------
+# MARKET SYSTEM
+# -----------------------------------------------------------------------------
 
 class MarketSellButton(discord.ui.Button):
     def __init__(self):
@@ -294,7 +301,7 @@ class MarketSellButton(discord.ui.Button):
 
 class MarketExitButton(discord.ui.Button):
     def __init__(self, row):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Exit", row=row)
+        super().__init__(style=discord.ButtonStyle.red, label="Exit", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -316,7 +323,7 @@ class MarketView(discord.ui.View):
         self._user = user
         self._page = 0
 
-        self._NUM_PER_PAGE = 20
+        self._NUM_PER_PAGE = 4
         
         self._display_initial_buttons()
 
@@ -329,10 +336,10 @@ class MarketView(discord.ui.View):
         for i, item in enumerate(page_slots):
             self.add_item(InventorySellButton(i, item))
         if self._page != 0:
-            self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
+            self.add_item(PrevButton(min(5, len(page_slots))))
         if len(page_slots) == self._NUM_PER_PAGE:
-            self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
-        self.add_item(MarketExitButton(min(5, ceil(len(page_slots) / 5))))
+            self.add_item(NextButton(min(5, len(page_slots))))
+        self.add_item(MarketExitButton(min(5, len(page_slots))))
         
     def next_page(self):
         self._page += 1
@@ -371,7 +378,7 @@ class MarketView(discord.ui.View):
             inventory.add_coins(item.get_value())
             embed = embeds.Embed(
                 title="Selling at the Market",
-                description=f"Choose an item from your inventory to sell!\n\n*Sold 1 {item.get_full_name()} for {item.get_value()} coins!*"
+                description=f"Choose an item from your inventory to sell!\n\n*Sold 1 {item.get_full_name()} for {item.get_value_str()}!*"
             )
         
         self._get_current_page_buttons()
@@ -387,6 +394,9 @@ class MarketView(discord.ui.View):
     def get_user(self):
         return self._user
 
+# -----------------------------------------------------------------------------
+# EXPERTISE AND STATS
+# -----------------------------------------------------------------------------
 
 # If I need to change something, always change the enum key
 # never the value, since I use the values to store data.
@@ -449,6 +459,9 @@ class Mail():
 
         return False
 
+# -----------------------------------------------------------------------------
+# MAIL SYSTEM
+# -----------------------------------------------------------------------------
 
 class MailView(discord.ui.View):
     def __init__(self, bot: commands.Bot, database: dict, giftee: User, context: commands.Context):
@@ -683,6 +696,9 @@ class MailboxView(discord.ui.View):
     def get_user(self):
         return self._user
 
+# -----------------------------------------------------------------------------
+# PLAYER
+# -----------------------------------------------------------------------------
 
 class Player():
     def __init__(self):
@@ -699,6 +715,9 @@ class Player():
     def get_mailbox(self):
         return self._mailbox
 
+# -----------------------------------------------------------------------------
+# COMMAND HANDLERS
+# -----------------------------------------------------------------------------
 
 class Adventures(commands.Cog):
     def __init__(self, bot: BenjaminBowtieBot):
@@ -773,6 +792,14 @@ class Adventures(commands.Cog):
         if user is None:
             await context.send("You need to @ a member to use !knucklebones")
             return
+
+        if user == context.author:
+            await context.send("You can't challenge yourself to a game of knucklebones")
+            return
+            
+        if user.bot:
+            await context.send("You can't challenge a bot to knucklebones (but Benjamin Bowtie might learn how to play one day!)")
+            return
             
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         self._check_member_and_guild_existence(context.guild.id, user.id)
@@ -797,16 +824,11 @@ class Adventures(commands.Cog):
 
         embed = embeds.Embed(
             title="Welcome to Knucklebones!",
-            description=
-            """Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.
-
-            If the opponent has dice of the same value in that same column, those dice are removed from their board.
-
-            Two of the same die in a single column double their value. Three of the same die triple their value.
-
-            When one player fills their board with dice, the game is over. The player with the most points wins.
-            
-            The game will begin when the other player accepts the invitation to play."""
+            description="Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\n\
+                        If the opponent has dice of the same value in that same column, those dice are removed from their board.\n\n\
+                        Two of the same die in a single column double their value. Three of the same die triple their value.\n\n\
+                        When one player fills their board with dice, the game is over. The player with the most points wins.\n\n\
+                        The game will begin when the other player accepts the invitation to play."
         )
 
         await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, context.author, user, amount))
@@ -816,6 +838,10 @@ class Adventures(commands.Cog):
         if giftee is None:
             await context.send("You need to @ a member to use !mail")
             return
+
+        if giftee.bot:
+            await context.send("You can't send mail to a bot")
+            return
         
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         self._check_member_and_guild_existence(context.guild.id, giftee.id)
@@ -823,9 +849,8 @@ class Adventures(commands.Cog):
         # (1) The user gets to select an item (as a button) from their inventory
         #     There will be 5 items in a row (4 rows of that), along with a 
         #     prev and next button to navigate on the final row
-        # (2) On clicking a button, a modal will pop up asking how many to send and
+        # (2) Upon clicking a button, a modal will pop up asking how many to send and
         #     an optional message to send
-        # https://github.com/Rapptz/discord.py/blob/master/examples/modals/basic.py
         player: Player = self._database[context.guild.id]["members"][context.author.id]
         coins = player.get_inventory().get_coins()
         embed = embeds.Embed(
@@ -845,7 +870,7 @@ class Adventures(commands.Cog):
         )
         await context.send(embed=embed, view=InventoryView(self._bot, self._database, context.guild.id, context.author))
 
-    @commands.command(name="market", help="Sell and buy items at the marketplace")
+    @commands.command(name="market", help="Sell and buy items at the marketplace", aliases=["marketplace"])
     async def market_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         embed = embeds.Embed(
@@ -854,7 +879,7 @@ class Adventures(commands.Cog):
         )
         await context.send(embed=embed, view=MarketView(self._bot, self._database, context.guild.id, context.author))
 
-    @commands.command(name="mailbox", help="Open mail you've received from others")
+    @commands.command(name="mailbox", help="Open mail you've received from others", aliases=["inbox"])
     async def mailbox_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         embed = embeds.Embed(
@@ -862,6 +887,12 @@ class Adventures(commands.Cog):
             description=f"Navigate through your mail using the Prev and Next buttons."
         )
         await context.send(embed=embed, view=MailboxView(self._bot, self._database, context.guild.id, context.author))
+
+    @commands.is_owner()
+    @commands.command(name="saveadventures", help="Saves the adventures database")
+    async def save_adventures_handler(self, context: commands.Context):
+        await self.save_database()
+        await context.send("The adventures database has been saved!")
 
 
 async def setup(bot: BenjaminBowtieBot):

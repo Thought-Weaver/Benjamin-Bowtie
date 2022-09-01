@@ -11,6 +11,7 @@ import os
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+VERSION_NUMBER = "08312022" # Just for tracking releases
 
 class BenjaminBowtieBot(commands.Bot):
     def __init__(self):
@@ -46,11 +47,11 @@ INFO_LOGGER = setup_logger("info_logger", "info.log")
 # -----------------------------------------------------------------------------
 
 @bot.check
-async def globally_block_dms(context):
+async def globally_block_dms(context: commands.Context):
     return context.guild is not None
 
 @bot.event
-async def on_command_error(context, error):
+async def on_command_error(context: commands.Context, error):
   if isinstance(error, commands.CommandOnCooldown):
     await context.send(f"This command is on cooldown. You can use it in {round(error.retry_after, 2)} seconds.")
 
