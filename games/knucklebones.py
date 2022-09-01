@@ -126,7 +126,7 @@ class Knucklebones(discord.ui.View):
             return "5️⃣" # "⚄"
         if value == 6:
             return "6️⃣" # "⚅"
-        return "⬜" #"⬚"
+        return "⬜" # "⬚"
 
     def _compute_points_in_col(self, board: list[list[int]], col_num: int):
         counts = {}

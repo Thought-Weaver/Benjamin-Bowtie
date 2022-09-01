@@ -5,3 +5,5 @@ database
 databasebackup
 adventuresdb
 adventuresdbbackup
+patchnotes/
+__pycache__/
