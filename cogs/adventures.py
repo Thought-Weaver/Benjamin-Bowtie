@@ -3,7 +3,7 @@ from discord import embeds, User
 from discord.ext import commands, tasks
 from enum import Enum
 from math import ceil
-from typing import List
+from typing import List, Union
 
 from games.knucklebones import Knucklebones
 
@@ -235,7 +235,7 @@ class PrevButton(discord.ui.Button):
 
 class InventoryView(discord.ui.View):
     def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User):
-        super().__init__()
+        super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
@@ -315,7 +315,7 @@ class MarketExitButton(discord.ui.Button):
 
 class MarketView(discord.ui.View):
     def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User):
-        super().__init__()
+        super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
@@ -345,9 +345,19 @@ class MarketView(discord.ui.View):
         self._page += 1
         self._get_current_page_buttons()
 
+        return embeds.Embed(
+            title="Selling at the Market",
+            description="Choose an item from your inventory to sell!"
+        )
+
     def prev_page(self):
         self._page = max(0, self._page - 1)
         self._get_current_page_buttons()
+
+        return embeds.Embed(
+            title="Selling at the Market",
+            description="Choose an item from your inventory to sell!"
+        )
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -395,13 +405,87 @@ class MarketView(discord.ui.View):
         return self._user
 
 # -----------------------------------------------------------------------------
-# EXPERTISE AND STATS
+# STATS
 # -----------------------------------------------------------------------------
+
+# Based on the command names; the user will do b!stats [name] or omit the name
+# and get all of them at once.
+class StatNames(Enum):
+    Fish = "fish"
+    Mail = "mail"
+    Market = "market"
+    Knucklebones = "knucklebones"
+    Inventory = "inventory"
+
+    @classmethod
+    def values(self):
+        return list(map(lambda stat_key: stat_key.value, self))
+
+    @classmethod
+    def search(self, name: str):
+        try:
+            return self.values().index(name.lower())
+        except:
+            return -1
+
+
+class StatView(discord.ui.View):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User, specific_stat: StatNames=None):
+        super().__init__(timeout=900)
+
+        self._bot = bot
+        self._database = database
+        self._guild_id = guild_id
+        self._user = user
+        self._specific_stat = specific_stat
+        self._page = 0
+
+        self._STAT_ENUM_VALUES_LIST = StatNames.values()
+
+        if specific_stat is None:
+            self.add_item(PrevButton(0))
+            self.add_item(NextButton(0))
+
+    def get_current_page_info(self):
+        player: Player = self._database[self._guild_id]["members"][self._user.id]
+        stat_enum_value: str = ""
+        if self._specific_stat is not None:
+            stat_enum_value = self._specific_stat
+        else:
+            stat_enum_value = self._STAT_ENUM_VALUES_LIST[self._page]
+        stats_for_page: dict = player.get_stats()[stat_enum_value]
+
+        title = stat_enum_value.capitalize()
+        page_str = f"({self._page + 1}/{len(self._STAT_ENUM_VALUES_LIST)})"
+        description = ""
+        for name, value in enumerate(stats_for_page):
+            description += f"**{name}**: {str(value)}\n"
+        # Using "timestamp" as a way to communicate the current page to the user
+        return embeds.Embed(title=title, description=description, timestamp=page_str)
+
+    def next_page(self):
+        self._page = (self._page + 1) % len(StatNames)
+        return self.get_current_page_info()
+
+    def prev_page(self):
+        self._page = (self._page - 1) % len(StatNames)
+        return self.get_current_page_info()
+
+# -----------------------------------------------------------------------------
+# EXPERTISE
+# -----------------------------------------------------------------------------
+
+# Expertise is similar to a class system in RPG games, such as being able to
+# level Illusion magic in Skyrim or level cooking in WoW. While somewhat related
+# to stats, it's going to be a separate system, since it's abstracted away from
+# individual actions. I may rely on values in stats to contribute to leveling
+# or I may pick and choose certain actions to level a class.
 
 # If I need to change something, always change the enum key
 # never the value, since I use the values to store data.
 class ExpertiseCategoryNames(Enum):
-    Fishing = "Fishing"
+    Fisher = "Fishing"
+    Merchant = "Merchant"
 
 
 class Expertise():
@@ -424,6 +508,9 @@ class Expertise():
         # for tasks. Probably something linear?
         return self._level * 25
 
+# -----------------------------------------------------------------------------
+# MAIL SYSTEM
+# -----------------------------------------------------------------------------
 
 class Mail():
     def __init__(self, sender_name: str, item: Item, coins: int, message: str, send_date: str):
@@ -459,13 +546,10 @@ class Mail():
 
         return False
 
-# -----------------------------------------------------------------------------
-# MAIL SYSTEM
-# -----------------------------------------------------------------------------
 
 class MailView(discord.ui.View):
     def __init__(self, bot: commands.Bot, database: dict, giftee: User, context: commands.Context):
-        super().__init__()
+        super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
@@ -623,7 +707,7 @@ class MailboxButton(discord.ui.Button):
 
 class MailboxView(discord.ui.View):
     def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User):
-        super().__init__()
+        super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
@@ -682,7 +766,7 @@ class MailboxView(discord.ui.View):
             return False
         
         found_index = self._mail_exists(mailbox, mail)
-        if found_index == -1 or found_index != mail_index:
+        if found_index != mail_index:
             self._get_current_page_buttons()
             return False
 
@@ -705,6 +789,7 @@ class Player():
         self._inventory = Inventory()
         self._expertise: dict[str, Expertise] = {item.value: Expertise() for item in ExpertiseCategoryNames}
         self._mailbox: List[Mail] = []
+        self._stats: dict[str, dict[str, Union[str, int, bool, float]]] = {}
 
     def get_inventory(self):
         return self._inventory
@@ -714,6 +799,9 @@ class Player():
     
     def get_mailbox(self):
         return self._mailbox
+
+    def get_stats(self):
+        return self._stats
 
 # -----------------------------------------------------------------------------
 # COMMAND HANDLERS
