@@ -150,7 +150,7 @@ class Inventory():
 
 class InventoryButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=int(item_index / 5))
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=item_index)
         self._item_index = item_index
 
     async def callback(self, interaction: discord.Interaction):
@@ -162,7 +162,7 @@ class InventoryButton(discord.ui.Button):
 
 class InventorySellButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()} [{item.get_value_str()} per]", row=int(item_index / 5))
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()} [{item.get_value_str()} each]", row=item_index)
         self._item = item
         self._item_index = item_index
 
@@ -179,7 +179,7 @@ class InventorySellButton(discord.ui.Button):
 
 class InventoryMailButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=int(item_index / 5))
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=item_index)
         self._item = item
         self._item_index = item_index
 
@@ -243,7 +243,7 @@ class InventoryView(discord.ui.View):
         self._user = user
         self._page = 0
 
-        self._NUM_PER_PAGE = 20
+        self._NUM_PER_PAGE = 4
 
         self._get_current_page_buttons()
 
@@ -256,9 +256,9 @@ class InventoryView(discord.ui.View):
         for i, item in enumerate(page_slots):
             self.add_item(InventoryButton(i, item))
         if self._page != 0:
-            self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
+            self.add_item(PrevButton(5))
         if len(page_slots) == self._NUM_PER_PAGE:
-            self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
+            self.add_item(NextButton(5))
         
     def _get_current_page_info(self):
         player: Player = self._database[self._guild_id]["members"][self._user.id]
@@ -559,7 +559,7 @@ class MailView(discord.ui.View):
         self._context = context
         self._page = 0
 
-        self._NUM_PER_PAGE = 20
+        self._NUM_PER_PAGE = 4
         
         self._get_current_page_buttons()
 
@@ -572,9 +572,9 @@ class MailView(discord.ui.View):
         for i, item in enumerate(page_slots):
             self.add_item(InventoryMailButton(i, item))
         if self._page != 0:
-            self.add_item(PrevButton(min(5, ceil(len(page_slots) / 5))))
+            self.add_item(PrevButton(5))
         if len(page_slots) == self._NUM_PER_PAGE:
-            self.add_item(NextButton(min(5, ceil(len(page_slots) / 5))))
+            self.add_item(NextButton(5))
         
     def next_page(self):
         self._page += 1
