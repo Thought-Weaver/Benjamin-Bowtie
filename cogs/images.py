@@ -50,15 +50,15 @@ class Images(commands.Cog):
         embed.set_image(url=data.get("image"))
         await context.send(embed=embed)
 
-    @commands.command(name="cat", help="Gets a random cat image and fun fact about cats.")
+    @commands.command(name="catfact", help="Gets a random cat image and fun fact about cats.")
     async def cat_handler(self, context: commands.Context):
         await self.get_animal_image_and_fact(context, self._RANDOM_CAT_URL, "cat")
 
-    @commands.command(name="dog", help="Gets a random dog image and fun fact about dogs.")
+    @commands.command(name="dogfact", help="Gets a random dog image and fun fact about dogs.")
     async def dog_handler(self, context: commands.Context):
         await self.get_animal_image_and_fact(context, self._RANDOM_DOG_URL, "dog")
 
-    @commands.command(name="birb", help="Gets a random birb image and fun fact about birbs.")
+    @commands.command(name="birbfact", help="Gets a random birb image and fun fact about birbs.")
     async def birb_handler(self, context: commands.Context):
         await self.get_animal_image_and_fact(context, self._RANDOM_BIRB_URL, "birb")
 
