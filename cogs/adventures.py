@@ -259,7 +259,7 @@ class InventoryView(discord.ui.View):
             self.add_item(InventoryButton(i, item))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(page_slots) == self._NUM_PER_PAGE:
+        if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
         
     def _get_current_page_info(self):
@@ -339,7 +339,7 @@ class MarketView(discord.ui.View):
             self.add_item(InventorySellButton(i, item))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(page_slots) == self._NUM_PER_PAGE:
+        if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
         self.add_item(MarketExitButton(min(4, len(page_slots))))
         
@@ -577,7 +577,7 @@ class MailView(discord.ui.View):
             self.add_item(InventoryMailButton(i, self._page, self._NUM_PER_PAGE, item))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(page_slots) == self._NUM_PER_PAGE:
+        if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
         
     def next_page(self):
@@ -635,7 +635,8 @@ class MailModal(discord.ui.Modal):
             label="Message",
             required=False,
             style=discord.TextStyle.paragraph,
-            placeholder="Anything you'd like to say?"
+            placeholder="Anything you'd like to say?",
+            max_length=1500
         )
         self.add_item(self._message_input)
 
@@ -666,18 +667,21 @@ class MailModal(discord.ui.Modal):
             return
 
         sent_item = inventory.remove_item(self._item_index, int(self._count_input.value))
-        sent_coins = inventory.remove_coins(int(self._coins_input.value))
+        sent_coins = int(self._coins_input.value)
+        inventory.remove_coins(sent_coins)
+
         mail = Mail(self._user.display_name, sent_item, sent_coins, self._message_input.value, str(time.time()).split(".")[0]) 
         giftee_player.get_mailbox().append(mail)
         
         if sent_coins > 0:
-            coin_str = "coin" if int(self._coins_input.value) == 1 else "coins"
+            coin_str = "coin" if sent_coins == 1 else "coins"
             await interaction.response.send_message(f"You mailed {int(self._count_input.value)} {sent_item.get_full_name()} and {sent_coins} {coin_str} to {self._giftee.display_name}!")
         else:
             await interaction.response.send_message(f"You mailed {int(self._count_input.value)} {sent_item.get_full_name()} to {self._giftee.display_name}!")
         await self._view.refresh(self._message_id)
 
     async def on_error(self, interaction: discord.Interaction, error: Exception):
+        print(error)
         await interaction.response.send_message("Error: Something has gone terribly wrong.")
 
 
@@ -704,7 +708,7 @@ class MailboxButton(discord.ui.Button):
                 if self._mail.get_message() != "":
                     mail_message += f"\n\nMessage:\n\n{self._mail.get_message()}"
 
-                await interaction.followup.send(content=mail_message, ephemeral=True)
+                await interaction.user.send(mail_message)
             else:
                 embed = view.get_current_page_info()
                 embed.description += "\n\n*Error: That mail is no longer available.*"
@@ -737,7 +741,7 @@ class MailboxView(discord.ui.View):
             self.add_item(MailboxButton(i, item))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(page_slots) == self._NUM_PER_PAGE:
+        if len(mailbox) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
         
     def get_current_page_info(self):
@@ -771,7 +775,7 @@ class MailboxView(discord.ui.View):
             self._get_current_page_buttons()
             return False
         
-        adjusted_index = mail_index * (self._page + self._NUM_PER_PAGE)
+        adjusted_index = mail_index + (self._page * self._NUM_PER_PAGE)
         found_index = self._mail_exists(mailbox, mail)
         if found_index != adjusted_index:
             self._get_current_page_buttons()
@@ -974,7 +978,6 @@ class Adventures(commands.Cog):
             title=f"{context.author.display_name}'s Inventory",
             description=f"You have {coins} coins.\n\nNavigate through your items using the Prev and Next buttons."
         )
-        print("HERE")
         await context.send(embed=embed, view=InventoryView(self._bot, self._database, context.guild.id, context.author))
 
     @commands.command(name="market", help="Sell and buy items at the marketplace", aliases=["marketplace"])
