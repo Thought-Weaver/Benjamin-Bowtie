@@ -2,6 +2,8 @@ from random import choice, randint
 from discord.ext import commands
 import discord
 
+from cogs.adventures import Inventory
+
 class AcceptButton(discord.ui.Button):
     def __init__(self):
         super().__init__(style=discord.ButtonStyle.green, label="Accept")
@@ -135,7 +137,7 @@ class Knucklebones(discord.ui.View):
         return sum([num * count * count for num, count in counts.items()])
 
     def _get_game_state_string(self):
-        content = self._player_1.display_name + "\n\n"
+        content = f"**{self._player_1.display_name}**\n\n"
         for i in range(3):
             for j in range(3):
                 value: int = self._player_1_board[i][j]
@@ -148,7 +150,7 @@ class Knucklebones(discord.ui.View):
             content += f"{str(col_val)} "
         content += f"= {p1_total}"
 
-        content += "\n\n" + self._player_2.display_name + "\n\n"
+        content += f"**{self._player_2.display_name}**\n\n"
         for i in range(3):
             for j in range(3):
                 value: int = self._player_2_board[i][j]
@@ -225,16 +227,18 @@ class Knucklebones(discord.ui.View):
             if winner is not None:
                 if self._bet > 0:
                     amount_won = 0
+                    player_1_inv: Inventory = self._database[self._guild_id]["members"][self._player_1.id].get_inventory()
+                    player_2_inv: Inventory = self._database[self._guild_id]["members"][self._player_2.id].get_inventory()
                     if winner == self._player_1:
-                        coins = self._database[self._guild_id]["members"][self._player_2.id].get_inventory().get_coins()
+                        coins = player_2_inv.get_coins()
                         amount_won = min(coins, self._bet)
-                        self._database[self._guild_id]["members"][self._player_2.id].get_inventory().remove_coins(amount_won)
-                        self._database[self._guild_id]["members"][self._player_1.id].get_inventory().add_coins(amount_won)
+                        player_2_inv.remove_coins(amount_won)
+                        player_1_inv.add_coins(amount_won)
                     if winner == self._player_2:
-                        coins = self._database[self._guild_id]["members"][self._player_1.id].get_inventory().get_coins()
+                        coins = player_1_inv.get_coins()
                         amount_won = min(coins, self._bet)
-                        self._database[self._guild_id]["members"][self._player_1.id].get_inventory().remove_coins(amount_won)
-                        self._database[self._guild_id]["members"][self._player_2.id].get_inventory().add_coins(amount_won)
+                        player_1_inv.remove_coins(amount_won)
+                        player_2_inv.add_coins(amount_won)
                     return self._get_game_state_string() + f"\n\n{winner.display_name} has won the game and {amount_won} coins!"
                 else:
                     return self._get_game_state_string() + f"\n\n{winner.display_name} has won the game!"

@@ -679,7 +679,7 @@ class MailModal(discord.ui.Modal):
 
 class MailboxButton(discord.ui.Button):
     def __init__(self, mail_index: int, mail: Mail, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"📧 From: {mail.get_sender_name()}", row=row)
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"✉️ From: {mail.get_sender_name()}", row=row)
         
         self._mail_index = mail_index
         self._mail = mail
@@ -802,6 +802,13 @@ class Player():
     def get_mailbox(self):
         return self._mailbox
 
+    def get_stat_category(self, category_name: StatNames, stat_name: str, init_value: Union[str, int, bool, float]):
+        if self._stats.get(category_name) is None:
+            self._stats[category_name] = {}
+        if self._stats[category_name].get(stat_name) is None:
+            self._stats[category_name][stat_name] = init_value
+        return self._stats[category_name]
+
     def get_stats(self):
         return self._stats
 
@@ -838,26 +845,32 @@ class Adventures(commands.Cog):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         rand_val = random.random()
         fishing_result:Item = None
+        # tier_of_result:int = 4
 
-        # 55% chance of getting something worthless
+        # 55% chance of getting a Tier 4 reward
         if 0.0 <= rand_val < 0.55:
+            # tier_of_result = 4
             items = [Item("🥾", "Boot", 2), Item("🍂", "Clump of Leaves", 1), Item("🐚", "Conch", 1)]
             fishing_result = random.choice(items)
         # 20% chance of getting a Tier 3 reward
         if 0.55 < rand_val < 0.75:
+            # tier_of_result = 3
             items = [Item("🐟", "Minnow", 3), Item("🐠", "Roughy", 4), Item("🦐", "Shrimp", 3)]
             fishing_result = random.choice(items)
         # 15% chance of getting a Tier 2 reward
         if 0.75 < rand_val < 0.9:
+            # tier_of_result = 2
             items = [Item("🦪", "Oyster", 4), Item("🐡", "Pufferfish", 5)]
             fishing_result = random.choice(items)
         # 9% chance of getting a Tier 1 reward
         if 0.9 < rand_val < 0.99:
-            items = [Item("🦑", "Squid", 10), Item("🦀", "Crab", 8), Item("🦞", "Lobster", 8)]
+            # tier_of_result = 1
+            items = [Item("🦑", "Squid", 10), Item("🦀", "Crab", 8), Item("🦞", "Lobster", 8), Item("🦈", "Shark", 10)]
             fishing_result = random.choice(items)
         # 1% chance of getting a Tier 0 reward
         if 0.99 < rand_val <= 1.0:
-            items = [Item("🏺", "Ancient Vase", 25), Item("💎", "Diamond", 50)]
+            # tier_of_result = 0
+            items = [Item("🏺", "Ancient Vase", 40), Item("💎", "Diamond", 50), Item("📜", "Mysterious Scroll", 30)]
             fishing_result = random.choice(items)
         
         # E(X) = 
@@ -871,16 +884,18 @@ class Adventures(commands.Cog):
         author_player: Player = self._database[context.guild.id]["members"][context.author.id]
         author_player.get_inventory().add_item(fishing_result)
 
+        # author_player.get_stat_category(StatNames.Fish, f"Tier {str(tier_of_result)} Caught", 0)[f"Tier {str(tier_of_result)} Caught"] += 1
+
         embed = embeds.Embed(
             title=f"You caught {fishing_result.get_full_name()} worth {fishing_result.get_value_str()}!",
-            description="It's been added to your !inventory"
+            description="It's been added to your b!inventory"
         )
         await context.send(embed=embed)
 
     @commands.command(name="knucklebones", help="Face another player in a game of knucklebones")
     async def knucklebones_handler(self, context: commands.Context, user: User=None, amount: int=0):
         if user is None:
-            await context.send("You need to @ a member to use !knucklebones")
+            await context.send("You need to @ a member to use b!knucklebones")
             return
 
         if user == context.author:
