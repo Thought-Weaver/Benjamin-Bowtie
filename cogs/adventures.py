@@ -258,9 +258,9 @@ class InventoryView(discord.ui.View):
         for i, item in enumerate(page_slots):
             self.add_item(InventoryButton(i, item))
         if self._page != 0:
-            self.add_item(PrevButton(5))
+            self.add_item(PrevButton(min(4, len(page_slots))))
         if len(page_slots) == self._NUM_PER_PAGE:
-            self.add_item(NextButton(5))
+            self.add_item(NextButton(min(4, len(page_slots))))
         
     def _get_current_page_info(self):
         player: Player = self._database[self._guild_id]["members"][self._user.id]
@@ -338,10 +338,10 @@ class MarketView(discord.ui.View):
         for i, item in enumerate(page_slots):
             self.add_item(InventorySellButton(i, item))
         if self._page != 0:
-            self.add_item(PrevButton(min(5, len(page_slots))))
+            self.add_item(PrevButton(min(4, len(page_slots))))
         if len(page_slots) == self._NUM_PER_PAGE:
-            self.add_item(NextButton(min(5, len(page_slots))))
-        self.add_item(MarketExitButton(min(5, len(page_slots))))
+            self.add_item(NextButton(min(4, len(page_slots))))
+        self.add_item(MarketExitButton(min(4, len(page_slots))))
         
     def next_page(self):
         self._page += 1
@@ -388,7 +388,7 @@ class MarketView(discord.ui.View):
         adjusted_index = item_index + (self._page * self._NUM_PER_PAGE)
         found_index = inventory.item_exists(item)
         if found_index == adjusted_index:
-            inventory.remove_item(item_index, 1)
+            inventory.remove_item(adjusted_index, 1)
             inventory.add_coins(item.get_value())
             embed = embeds.Embed(
                 title="Selling at the Market",
@@ -576,9 +576,9 @@ class MailView(discord.ui.View):
         for i, item in enumerate(page_slots):
             self.add_item(InventoryMailButton(i, self._page, self._NUM_PER_PAGE, item))
         if self._page != 0:
-            self.add_item(PrevButton(5))
+            self.add_item(PrevButton(min(4, len(page_slots))))
         if len(page_slots) == self._NUM_PER_PAGE:
-            self.add_item(NextButton(5))
+            self.add_item(NextButton(min(4, len(page_slots))))
         
     def next_page(self):
         self._page += 1
@@ -736,9 +736,9 @@ class MailboxView(discord.ui.View):
         for i, item in enumerate(page_slots):
             self.add_item(MailboxButton(i, item))
         if self._page != 0:
-            self.add_item(PrevButton(min(5, len(page_slots))))
+            self.add_item(PrevButton(min(4, len(page_slots))))
         if len(page_slots) == self._NUM_PER_PAGE:
-            self.add_item(NextButton(min(5, len(page_slots))))
+            self.add_item(NextButton(min(4, len(page_slots))))
         
     def get_current_page_info(self):
         return embeds.Embed(
@@ -777,7 +777,7 @@ class MailboxView(discord.ui.View):
             self._get_current_page_buttons()
             return False
 
-        mailbox_mail = mailbox.pop(mail_index)
+        mailbox_mail = mailbox.pop(adjusted_index)
         inventory.add_item(mailbox_mail.get_item())
         inventory.add_coins(mailbox_mail.get_coins())
 
@@ -974,6 +974,7 @@ class Adventures(commands.Cog):
             title=f"{context.author.display_name}'s Inventory",
             description=f"You have {coins} coins.\n\nNavigate through your items using the Prev and Next buttons."
         )
+        print("HERE")
         await context.send(embed=embed, view=InventoryView(self._bot, self._database, context.guild.id, context.author))
 
     @commands.command(name="market", help="Sell and buy items at the marketplace", aliases=["marketplace"])
