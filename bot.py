@@ -11,7 +11,7 @@ import os
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-VERSION_NUMBER = "08312022" # Just for tracking releases
+VERSION_NUMBER = "09012022" # Just for tracking releases
 
 class BenjaminBowtieBot(commands.Bot):
     def __init__(self):
