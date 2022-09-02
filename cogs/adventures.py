@@ -149,6 +149,11 @@ class Inventory():
     def get_coins(self):
         return self._coins
 
+    def get_coins_str(self):
+        if self._coins == 1:
+            return "1 coin"
+        return f"{self._coins} coins"
+
 
 class InventoryButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
@@ -264,10 +269,10 @@ class InventoryView(discord.ui.View):
         
     def _get_current_page_info(self):
         player: Player = self._database[self._guild_id]["members"][self._user.id]
-        coins = player.get_inventory().get_coins()
+        coins_str = player.get_inventory().get_coins_str()
         return embeds.Embed(
             title=f"{self._user.display_name}'s Inventory",
-            description=f"You have {coins} coins.\n\nNavigate through your items using the Prev and Next buttons."
+            description=f"You have {coins_str}.\n\nNavigate through your items using the Prev and Next buttons."
         )
         
     def next_page(self):
@@ -394,6 +399,12 @@ class MarketView(discord.ui.View):
                 title="Selling at the Market",
                 description=f"Choose an item from your inventory to sell!\n\n*Sold 1 {item.get_full_name()} for {item.get_value_str()}!*"
             )
+
+            sold_stat = player.get_stat_value(StatNames.Categories.Market, StatNames.Market.ItemsSold, 0)
+            player.set_stat_value(StatNames.Categories.Market, StatNames.Market.ItemsSold, sold_stat + 1)
+
+            coins_stat = player.get_stat_value(StatNames.Categories.Market, StatNames.Market.CoinsMade, 0)
+            player.set_stat_value(StatNames.Categories.Market, StatNames.Market.CoinsMade, coins_stat + item.get_value())
         
         self._get_current_page_buttons()
         return embed
@@ -413,48 +424,89 @@ class MarketView(discord.ui.View):
 # -----------------------------------------------------------------------------
 
 # Based on the command names; the user will do b!stats [name] or omit the name
-# and get all of them at once.
+# and get all of them at once. Using an enum rather than a dictionary to make
+# sure that I use consistent names.
 class StatNames(Enum):
-    Fish = "fish"
-    Mail = "mail"
-    Market = "market"
-    Knucklebones = "knucklebones"
-    Inventory = "inventory"
+    class Categories(Enum):
+        Fish = "fish"
+        Mail = "mail"
+        Market = "market"
+        Knucklebones = "knucklebones"
 
-    @classmethod
-    def values(self):
-        return list(map(lambda stat_key: stat_key.value, self))
+        @classmethod
+        def values(self):
+            return list(map(lambda stat_key: stat_key.value, self))
 
-    @classmethod
-    def search(self, name: str):
-        try:
-            return self.values().index(name.lower())
-        except:
-            return -1
+        @classmethod
+        def search(self, name: str):
+            try:
+                return self.values().index(name.lower())
+            except:
+                return -1
+
+    class Fish(Enum):
+        Tier4Caught = "Tier 4 Caught"
+        Tier3Caught = "Tier 3 Caught"
+        Tier2Caught = "Tier 2 Caught"
+        Tier1Caught = "Tier 1 Caught"
+        Tier0Caught = "Tier 0 Caught"
+
+        @classmethod
+        def values(self):
+            return list(map(lambda stat_key: stat_key.value, self))
+
+    class Mail(Enum):
+        MailSent = "Mail Sent"
+        MailOpened = "Mail Opened"
+        ItemsSent = "Items Sent"
+        CoinsSent = "Coins Sent"
+        MessagesSent = "Messages Sent"
+
+        @classmethod
+        def values(self):
+            return list(map(lambda stat_key: stat_key.value, self))
+
+    class Market(Enum):
+        ItemsSold = "Items Sold"
+        CoinsMade = "Coins Made"
+
+        @classmethod
+        def values(self):
+            return list(map(lambda stat_key: stat_key.value, self))
+
+    class Knucklebones(Enum):
+        GamesWon = "Games Won"
+        GamesTied = "Games Tied"
+        GamesPlayed = "Games Played"
+        CoinsWon = "Coins Won"
+
+        @classmethod
+        def values(self):
+            return list(map(lambda stat_key: stat_key.value, self))
 
 
 class StatView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User, specific_stat: StatNames=None):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User, stat_category: StatNames.Categories=None):
         super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
         self._guild_id = guild_id
         self._user = user
-        self._specific_stat = specific_stat
+        self._stat_category = stat_category
         self._page = 0
 
-        self._STAT_ENUM_VALUES_LIST = StatNames.values()
+        self._STAT_ENUM_VALUES_LIST = StatNames.Categories.values()
 
-        if specific_stat is None:
+        if stat_category is None:
             self.add_item(PrevButton(0))
             self.add_item(NextButton(0))
 
     def get_current_page_info(self):
         player: Player = self._database[self._guild_id]["members"][self._user.id]
         stat_enum_value: str = ""
-        if self._specific_stat is not None:
-            stat_enum_value = self._specific_stat
+        if self._stat_category is not None:
+            stat_enum_value = self._stat_category
         else:
             stat_enum_value = self._STAT_ENUM_VALUES_LIST[self._page]
         stats_for_page: dict = player.get_stats()[stat_enum_value]
@@ -468,11 +520,11 @@ class StatView(discord.ui.View):
         return embeds.Embed(title=title, description=description, timestamp=page_str)
 
     def next_page(self):
-        self._page = (self._page + 1) % len(StatNames)
+        self._page = (self._page + 1) % len(StatNames.Categories)
         return self.get_current_page_info()
 
     def prev_page(self):
-        self._page = (self._page - 1) % len(StatNames)
+        self._page = (self._page - 1) % len(StatNames.Categories)
         return self.get_current_page_info()
 
 # -----------------------------------------------------------------------------
@@ -666,7 +718,8 @@ class MailModal(discord.ui.Modal):
             await interaction.response.send_message(f"Error: You don't have that many coins to send.")
             return
 
-        sent_item = inventory.remove_item(self._adjusted_item_index, int(self._count_input.value))
+        num_items_to_send = int(self._count_input.value)
+        sent_item = inventory.remove_item(self._adjusted_item_index, num_items_to_send)
         sent_coins = int(self._coins_input.value)
         inventory.remove_coins(sent_coins)
 
@@ -679,9 +732,23 @@ class MailModal(discord.ui.Modal):
         
         if sent_coins > 0:
             coin_str = "coin" if sent_coins == 1 else "coins"
-            await interaction.response.send_message(f"You mailed {int(self._count_input.value)} {sent_item.get_full_name()} and {sent_coins} {coin_str} to {self._giftee.display_name}!")
+            await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} and {sent_coins} {coin_str} to {self._giftee.display_name}!")
         else:
-            await interaction.response.send_message(f"You mailed {int(self._count_input.value)} {sent_item.get_full_name()} to {self._giftee.display_name}!")
+            await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} to {self._giftee.display_name}!")
+        
+        items_stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.ItemsSent, 0)
+        player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.ItemsSent, items_stat + num_items_to_send)
+
+        coins_stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.CoinsSent, 0)
+        player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.CoinsSent, coins_stat + sent_coins)
+
+        if self._message_input.value != "":
+            message_stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.MessagesSent, 0)
+            player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.MessagesSent, message_stat + 1)
+
+        mail_stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.MailSent, 0)
+        player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.MailSent, mail_stat + 1)
+        
         await self._view.refresh(self._message_id)
 
     async def on_error(self, interaction: discord.Interaction, error: Exception):
@@ -712,6 +779,10 @@ class MailboxButton(discord.ui.Button):
                     mail_message += f"\n\nCoins: {self._mail.get_coins()}"
                 if self._mail.get_message() != "":
                     mail_message += f"\n\nMessage:\n\n{self._mail.get_message()}"
+                
+                player: Player = view.get_database()[view.get_guild_id()]["members"][interaction.user.id]
+                stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.MailOpened, 0)
+                player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.MailOpened, stat + 1)
 
                 await interaction.user.send(mail_message)
             else:
@@ -796,6 +867,12 @@ class MailboxView(discord.ui.View):
     def get_user(self):
         return self._user
 
+    def get_guild_id(self):
+        return self._guild_id
+
+    def get_database(self):
+        return self._database
+
 # -----------------------------------------------------------------------------
 # PLAYER
 # -----------------------------------------------------------------------------
@@ -819,12 +896,12 @@ class Player():
     def get_stats(self):
         return self._stats
 
-    def set_stat_value(self, category_name: StatNames, stat_name: str, value: Union[str, int, bool, float]):
+    def set_stat_value(self, category_name: StatNames.Categories, stat_name: str, value: Union[str, int, bool, float]):
         if self._stats.get(category_name) is None:
             self._stats[category_name] = {}
         self._stats[category_name][stat_name] = value
 
-    def get_stat_value(self, category_name: StatNames, stat_name: str, init_value: Union[str, int, bool, float]):
+    def get_stat_value(self, category_name: StatNames.Categories, stat_name: str, init_value: Union[str, int, bool, float]):
         if self._stats.get(category_name) is None:
             self._stats[category_name] = {}
         if self._stats[category_name].get(stat_name) is None:
@@ -903,8 +980,8 @@ class Adventures(commands.Cog):
         author_player: Player = self._database[context.guild.id]["members"][context.author.id]
         author_player.get_inventory().add_item(fishing_result)
 
-        stat = author_player.get_stat_value(StatNames.Fish, f"Tier {str(tier_of_result)} Caught", 0)
-        author_player.set_stat_value(StatNames.Fish, f"Tier {str(tier_of_result)} Caught", stat + 1)
+        stat = author_player.get_stat_value(StatNames.Categories.Fish, f"Tier {str(tier_of_result)} Caught", 0)
+        author_player.set_stat_value(StatNames.Categories.Fish, f"Tier {str(tier_of_result)} Caught", stat + 1)
 
         embed = embeds.Embed(
             title=f"You caught {fishing_result.get_full_name()} worth {fishing_result.get_value_str()}!",
@@ -969,10 +1046,10 @@ class Adventures(commands.Cog):
         # (2) Upon clicking a button, a modal will pop up asking how many to send and
         #     an optional message to send
         player: Player = self._database[context.guild.id]["members"][context.author.id]
-        coins = player.get_inventory().get_coins()
+        coins_str = player.get_inventory().get_coins_str()
         embed = embeds.Embed(
             title=f"{context.author.display_name}'s Inventory",
-            description=f"You have {coins} coins.\n\nChoose an item to mail to {giftee.display_name}!"
+            description=f"You have {coins_str}.\n\nChoose an item to mail to {giftee.display_name}!"
         )
         await context.send(embed=embed, view=MailView(self._bot, self._database, giftee, context))
 
@@ -980,10 +1057,10 @@ class Adventures(commands.Cog):
     async def inventory_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         player: Player = self._database[context.guild.id]["members"][context.author.id]
-        coins = player.get_inventory().get_coins()
+        coins_str = player.get_inventory().get_coins_str()
         embed = embeds.Embed(
             title=f"{context.author.display_name}'s Inventory",
-            description=f"You have {coins} coins.\n\nNavigate through your items using the Prev and Next buttons."
+            description=f"You have {coins_str}.\n\nNavigate through your items using the Prev and Next buttons."
         )
         await context.send(embed=embed, view=InventoryView(self._bot, self._database, context.guild.id, context.author))
 

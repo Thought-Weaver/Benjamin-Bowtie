@@ -1,7 +1,9 @@
 from random import choice, randint
+from tracemalloc import Statistic
 from discord.ext import commands
 import discord
 
+from cogs.adventures import StatNames
 
 class AcceptButton(discord.ui.Button):
     def __init__(self):
@@ -197,6 +199,28 @@ class Knucklebones(discord.ui.View):
         self._current_roll = randint(1, 6)
         return self._get_game_state_string() + "\n\n" + self._get_current_turn_string()
 
+    def _update_stats(self, winner, player_1, player_2, amount_won=0, is_tied=False):
+        if is_tied:
+            games_tied_1_stat = player_1.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesTied, 0)
+            player_1.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesTied, games_tied_1_stat + 1)
+
+            games_tied_2_stat = player_2.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesTied, 0)
+            player_2.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesTied, games_tied_2_stat + 1)
+            return
+        
+        games_won_stat = winner.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesWon, 0)
+        winner.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesWon, games_won_stat + 1)
+
+        games_played_1_stat = player_1.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesPlayed, 0)
+        player_1.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesPlayed, games_played_1_stat + 1)
+
+        games_played_2_stat = player_2.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesPlayed, 0)
+        player_2.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesPlayed, games_played_2_stat + 1)
+
+        if amount_won > 0:
+            amount_won_stat = winner.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.CoinsWon, 0)
+            winner.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.CoinsWon, amount_won_stat + amount_won)
+
     def place_roll(self, pos: int):
         can_place = False
         for i in range(3):
@@ -224,10 +248,14 @@ class Knucklebones(discord.ui.View):
             self.clear_items()
             winner = self._get_winner()
             if winner is not None:
+                winner_player = self._database[self._guild_id]["members"][self.winner.id].get_inventory()
+                player_1 = self._database[self._guild_id]["members"][self._player_1.id]
+                player_2 = self._database[self._guild_id]["members"][self._player_2.id]
+                
                 if self._bet > 0:
                     amount_won = 0
-                    player_1_inv = self._database[self._guild_id]["members"][self._player_1.id].get_inventory()
-                    player_2_inv = self._database[self._guild_id]["members"][self._player_2.id].get_inventory()
+                    player_1_inv = player_1.get_inventory()
+                    player_2_inv = player_2.get_inventory()
                     if winner == self._player_1:
                         coins = player_2_inv.get_coins()
                         amount_won = min(coins, self._bet)
@@ -238,9 +266,14 @@ class Knucklebones(discord.ui.View):
                         amount_won = min(coins, self._bet)
                         player_1_inv.remove_coins(amount_won)
                         player_2_inv.add_coins(amount_won)
+                    
+                    self._update_stats(winner_player, player_1, player_2, amount_won)
                     return self._get_game_state_string() + f"\n\n{winner.display_name} has won the game and {amount_won} coins!"
                 else:
+                    self._update_stats(winner_player, player_1, player_2)
                     return self._get_game_state_string() + f"\n\n{winner.display_name} has won the game!"
+
+            self._update_stats(winner_player, player_1, player_2, is_tied=True)
             return self._get_game_state_string() + "\n\nIt's a tie! No one wins any coins."
 
         self._current_roll = randint(1, 6)
