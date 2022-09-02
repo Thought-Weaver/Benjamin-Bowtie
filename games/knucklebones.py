@@ -95,7 +95,7 @@ class Knucklebones(discord.ui.View):
         self._player_1 = player_1
         self._player_2 = player_2
         self._current_roll = 0
-        self._bet = 0
+        self._bet = bet
 
         self._turn = choice([self._player_1, self._player_2])
 

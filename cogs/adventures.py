@@ -662,11 +662,13 @@ class MailModal(discord.ui.Modal):
             return
 
         sent_item = inventory.remove_item(self._item_index, int(self._count_input.value))
-        mail = Mail(self._user.display_name, sent_item, int(self._coins_input.value), self._message_input.value, str(time.time()).split(".")[0]) 
+        sent_coins = inventory.remove_coins(int(self._coins_input.value))
+        mail = Mail(self._user.display_name, sent_item, sent_coins, self._message_input.value, str(time.time()).split(".")[0]) 
         giftee_player.get_mailbox().append(mail)
         
-        if int(self._coins_input.value) > 0:
-            await interaction.response.send_message(f"You mailed {int(self._count_input.value)} {sent_item.get_full_name()} and {int(self._coins_input.value)} coins to {self._giftee.display_name}!")
+        if sent_coins > 0:
+            coin_str = "coin" if int(self._coins_input.value) == 1 else "coins"
+            await interaction.response.send_message(f"You mailed {int(self._count_input.value)} {sent_item.get_full_name()} and {sent_coins} {coin_str} to {self._giftee.display_name}!")
         else:
             await interaction.response.send_message(f"You mailed {int(self._count_input.value)} {sent_item.get_full_name()} to {self._giftee.display_name}!")
         await self._view.refresh(self._message_id)
@@ -925,10 +927,6 @@ class Adventures(commands.Cog):
     async def mail_handler(self, context: commands.Context, giftee: User=None):
         if giftee is None:
             await context.send("You need to @ a member to use !mail")
-            return
-
-        if giftee.bot:
-            await context.send("You can't send mail to a bot")
             return
         
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
