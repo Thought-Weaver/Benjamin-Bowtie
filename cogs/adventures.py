@@ -125,6 +125,8 @@ class Inventory():
         self._organize_inventory_slots()
 
     def remove_item(self, slot_index: int, count=1):
+        if count <= 0:
+            return None
         if slot_index < len(self._inventory_slots):
             result = self._inventory_slots[slot_index].remove_amount(count)
             if result is not None:
@@ -648,7 +650,7 @@ class MailModal(discord.ui.Modal):
             await interaction.response.send_message(f"Error: Something about your inventory changed. Try using !mail again.")
             return
 
-        if not self._count_input.value.isnumeric() or int(self._count_input.value) <= 0:
+        if not self._count_input.value.isnumeric() or int(self._count_input.value) < 0:
             await interaction.response.send_message(f"Error: You must send a non-negative number of that item.")
             return
 
@@ -667,6 +669,10 @@ class MailModal(discord.ui.Modal):
         sent_item = inventory.remove_item(self._adjusted_item_index, int(self._count_input.value))
         sent_coins = int(self._coins_input.value)
         inventory.remove_coins(sent_coins)
+
+        if sent_coins == 0 and sent_item is None and self._message_input.value == "":
+            await interaction.response.send_message(f"Error: You can't send an empty message.")
+            return
 
         mail = Mail(self._user.display_name, sent_item, sent_coins, self._message_input.value, str(time.time()).split(".")[0]) 
         giftee_player.get_mailbox().append(mail)
@@ -700,7 +706,8 @@ class MailboxButton(discord.ui.Button):
                 await interaction.response.edit_message(content=None, embed=view.get_current_page_info(), view=view)
 
                 mail_message = f"From: {self._mail.get_sender_name()} (<t:{self._mail.get_send_date()}:R>)"
-                mail_message += f"\n\nItem: {self._mail.get_item().get_full_name_and_count()} each worth {self._mail.get_item().get_value_str()}"
+                if self._mail.get_item() is not None:
+                    mail_message += f"\n\nItem: {self._mail.get_item().get_full_name_and_count()} each worth {self._mail.get_item().get_value_str()}"
                 if self._mail.get_coins() > 0:
                     mail_message += f"\n\nCoins: {self._mail.get_coins()}"
                 if self._mail.get_message() != "":
@@ -908,11 +915,11 @@ class Adventures(commands.Cog):
     @commands.command(name="knucklebones", help="Face another player in a game of knucklebones")
     async def knucklebones_handler(self, context: commands.Context, user: User=None, amount: int=0):
         if user is None:
-            await context.send("You need to @ a member to use b!knucklebones")
+            await context.send("You need to @ a member to use b!knucklebones.")
             return
 
         if user == context.author:
-            await context.send("You can't challenge yourself to a game of knucklebones")
+            await context.send("You can't challenge yourself to a game of knucklebones.")
             return
             
         if user.bot:
