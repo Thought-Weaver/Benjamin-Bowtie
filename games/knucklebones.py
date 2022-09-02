@@ -2,7 +2,6 @@ from random import choice, randint
 from discord.ext import commands
 import discord
 
-from cogs.adventures import Inventory
 
 class AcceptButton(discord.ui.Button):
     def __init__(self):
@@ -227,8 +226,8 @@ class Knucklebones(discord.ui.View):
             if winner is not None:
                 if self._bet > 0:
                     amount_won = 0
-                    player_1_inv: Inventory = self._database[self._guild_id]["members"][self._player_1.id].get_inventory()
-                    player_2_inv: Inventory = self._database[self._guild_id]["members"][self._player_2.id].get_inventory()
+                    player_1_inv = self._database[self._guild_id]["members"][self._player_1.id].get_inventory()
+                    player_2_inv = self._database[self._guild_id]["members"][self._player_2.id].get_inventory()
                     if winner == self._player_1:
                         coins = player_2_inv.get_coins()
                         amount_won = min(coins, self._bet)
