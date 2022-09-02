@@ -178,12 +178,10 @@ class InventorySellButton(discord.ui.Button):
 
 
 class InventoryMailButton(discord.ui.Button):
-    def __init__(self, item_index: int, page: int, NUM_PER_PAGE: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=item_index)
+    def __init__(self, adjusted_item_index: int, item: Item, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=row)
         self._item = item
-        self._item_index = item_index
-        self._page = page
-        self._NUM_PER_PAGE = NUM_PER_PAGE
+        self._adjusted_item_index = adjusted_item_index
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -197,7 +195,7 @@ class InventoryMailButton(discord.ui.Button):
                 view.get_guild_id(),
                 view.get_user(),
                 view.get_giftee(),
-                self._item_index + (self._page * self._NUM_PER_PAGE),
+                self._adjusted_item_index,
                 self._item,
                 view,
                 interaction.message.id)
@@ -574,7 +572,7 @@ class MailView(discord.ui.View):
 
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
-            self.add_item(InventoryMailButton(i, self._page, self._NUM_PER_PAGE, item))
+            self.add_item(InventoryMailButton(i + (self._page * self._NUM_PER_PAGE), item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
@@ -607,14 +605,14 @@ class MailView(discord.ui.View):
 
 
 class MailModal(discord.ui.Modal):
-    def __init__(self, database: dict, guild_id: int, user: User, giftee: User, item_index: int, item: Item, view: MailView, message_id: int):
+    def __init__(self, database: dict, guild_id: int, user: User, giftee: User, adjusted_item_index: int, item: Item, view: MailView, message_id: int):
         super().__init__(title=f"Mailing a gift to {giftee.display_name}!")
 
         self._database = database
         self._guild_id = guild_id
         self._user = user
         self._giftee = giftee
-        self._item_index = item_index
+        self._adjusted_item_index = adjusted_item_index
         self._item = item
         self._view = view
         self._message_id = message_id
@@ -646,7 +644,7 @@ class MailModal(discord.ui.Modal):
         inventory = player.get_inventory()
         
         found_index = inventory.item_exists(self._item)
-        if found_index != self._item_index:
+        if found_index != self._adjusted_item_index:
             await interaction.response.send_message(f"Error: Something about your inventory changed. Try using !mail again.")
             return
 
@@ -666,7 +664,7 @@ class MailModal(discord.ui.Modal):
             await interaction.response.send_message(f"Error: You don't have that many coins to send.")
             return
 
-        sent_item = inventory.remove_item(self._item_index, int(self._count_input.value))
+        sent_item = inventory.remove_item(self._adjusted_item_index, int(self._count_input.value))
         sent_coins = int(self._coins_input.value)
         inventory.remove_coins(sent_coins)
 
@@ -811,15 +809,20 @@ class Player():
     def get_mailbox(self):
         return self._mailbox
 
-    def get_stat_category(self, category_name: StatNames, stat_name: str, init_value: Union[str, int, bool, float]):
+    def get_stats(self):
+        return self._stats
+
+    def set_stat_value(self, category_name: StatNames, stat_name: str, value: Union[str, int, bool, float]):
+        if self._stats.get(category_name) is None:
+            self._stats[category_name] = {}
+        self._stats[category_name][stat_name] = value
+
+    def get_stat_value(self, category_name: StatNames, stat_name: str, init_value: Union[str, int, bool, float]):
         if self._stats.get(category_name) is None:
             self._stats[category_name] = {}
         if self._stats[category_name].get(stat_name) is None:
             self._stats[category_name][stat_name] = init_value
-        return self._stats[category_name]
-
-    def get_stats(self):
-        return self._stats
+        return self._stats[category_name][stat_name]
 
 # -----------------------------------------------------------------------------
 # COMMAND HANDLERS
@@ -854,31 +857,31 @@ class Adventures(commands.Cog):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         rand_val = random.random()
         fishing_result:Item = None
-        # tier_of_result:int = 4
+        tier_of_result:int = 4
 
         # 55% chance of getting a Tier 4 reward
         if 0.0 <= rand_val < 0.55:
-            # tier_of_result = 4
+            tier_of_result = 4
             items = [Item("🥾", "Boot", 2), Item("🍂", "Clump of Leaves", 1), Item("🐚", "Conch", 1)]
             fishing_result = random.choice(items)
         # 20% chance of getting a Tier 3 reward
         if 0.55 < rand_val < 0.75:
-            # tier_of_result = 3
+            tier_of_result = 3
             items = [Item("🐟", "Minnow", 3), Item("🐠", "Roughy", 4), Item("🦐", "Shrimp", 3)]
             fishing_result = random.choice(items)
         # 15% chance of getting a Tier 2 reward
         if 0.75 < rand_val < 0.9:
-            # tier_of_result = 2
+            tier_of_result = 2
             items = [Item("🦪", "Oyster", 4), Item("🐡", "Pufferfish", 5)]
             fishing_result = random.choice(items)
         # 9% chance of getting a Tier 1 reward
         if 0.9 < rand_val < 0.99:
-            # tier_of_result = 1
+            tier_of_result = 1
             items = [Item("🦑", "Squid", 10), Item("🦀", "Crab", 8), Item("🦞", "Lobster", 8), Item("🦈", "Shark", 10)]
             fishing_result = random.choice(items)
         # 1% chance of getting a Tier 0 reward
         if 0.99 < rand_val <= 1.0:
-            # tier_of_result = 0
+            tier_of_result = 0
             items = [Item("🏺", "Ancient Vase", 40), Item("💎", "Diamond", 50), Item("📜", "Mysterious Scroll", 30)]
             fishing_result = random.choice(items)
         
@@ -893,7 +896,8 @@ class Adventures(commands.Cog):
         author_player: Player = self._database[context.guild.id]["members"][context.author.id]
         author_player.get_inventory().add_item(fishing_result)
 
-        # author_player.get_stat_category(StatNames.Fish, f"Tier {str(tier_of_result)} Caught", 0)[f"Tier {str(tier_of_result)} Caught"] += 1
+        stat = author_player.get_stat_value(StatNames.Fish, f"Tier {str(tier_of_result)} Caught", 0)
+        author_player.set_stat_value(StatNames.Fish, f"Tier {str(tier_of_result)} Caught", stat + 1)
 
         embed = embeds.Embed(
             title=f"You caught {fishing_result.get_full_name()} worth {fishing_result.get_value_str()}!",
@@ -938,11 +942,7 @@ class Adventures(commands.Cog):
 
         embed = embeds.Embed(
             title="Welcome to Knucklebones!",
-            description="Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\n\
-                        If the opponent has dice of the same value in that same column, those dice are removed from their board.\n\n\
-                        Two of the same die in a single column double their value. Three of the same die triple their value.\n\n\
-                        When one player fills their board with dice, the game is over. The player with the most points wins.\n\n\
-                        The game will begin when the other player accepts the invitation to play."
+            description="Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\nIf the opponent has dice of the same value in that same column, those dice are removed from their board.\n\nTwo of the same die in a single column double their value. Three of the same die triple their value.\n\nWhen one player fills their board with dice, the game is over. The player with the most points wins.\n\nThe game will begin when the other player accepts the invitation to play."
         )
 
         await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, context.author, user, amount))
