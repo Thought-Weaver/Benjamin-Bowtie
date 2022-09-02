@@ -178,11 +178,12 @@ class InventorySellButton(discord.ui.Button):
 
 
 class InventoryMailButton(discord.ui.Button):
-    def __init__(self, item_index: int, page: int, item: Item):
+    def __init__(self, item_index: int, page: int, NUM_PER_PAGE: int, item: Item):
         super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=item_index)
         self._item = item
         self._item_index = item_index
         self._page = page
+        self._NUM_PER_PAGE = NUM_PER_PAGE
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -196,8 +197,8 @@ class InventoryMailButton(discord.ui.Button):
                 view.get_guild_id(),
                 view.get_user(),
                 view.get_giftee(),
-                self._item_index,
-                self._item * self._page,
+                self._item_index + (self._page * self._NUM_PER_PAGE),
+                self._item,
                 view,
                 interaction.message.id)
             )
@@ -384,7 +385,7 @@ class MarketView(discord.ui.View):
             description="Choose an item from your inventory to sell!\n\n*Error: That item couldn't be sold.*"
         )
 
-        adjusted_index = item_index * (self._page + 1)
+        adjusted_index = item_index + (self._page * self._NUM_PER_PAGE)
         found_index = inventory.item_exists(item)
         if found_index == adjusted_index:
             inventory.remove_item(item_index, 1)
@@ -573,7 +574,7 @@ class MailView(discord.ui.View):
 
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
-            self.add_item(InventoryMailButton(i, self._page, item))
+            self.add_item(InventoryMailButton(i, self._page, self._NUM_PER_PAGE, item))
         if self._page != 0:
             self.add_item(PrevButton(5))
         if len(page_slots) == self._NUM_PER_PAGE:
@@ -770,7 +771,7 @@ class MailboxView(discord.ui.View):
             self._get_current_page_buttons()
             return False
         
-        adjusted_index = mail_index * (self._page + 1)
+        adjusted_index = mail_index * (self._page + self._NUM_PER_PAGE)
         found_index = self._mail_exists(mailbox, mail)
         if found_index != adjusted_index:
             self._get_current_page_buttons()
