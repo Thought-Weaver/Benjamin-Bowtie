@@ -1,938 +1,54 @@
-from bot import BenjaminBowtieBot
-from discord import embeds, User
-from discord.ext import commands, tasks
-from enum import Enum
-from math import ceil
-from typing import List, Union
-
-from games.knucklebones import Knucklebones
-
 import dill
-import discord
+import jsonpickle
 import os
 import random
 import shutil
-import time
 
-# -----------------------------------------------------------------------------
-# INVENTORY AND ITEMS
-# -----------------------------------------------------------------------------
+from discord import User
+from discord.embeds import Embed
+from discord.ext import commands, tasks
+
+from bot import BenjaminBowtieBot
+from features.inventory import Item, InventoryView
+from features.mail import MailView, MailboxView
+from features.market import MarketView
+from features.player import Player
+from features.stats import Stats
+from games.knucklebones import Knucklebones
 
-class Item():
-    def __init__(self, icon: str, name: str, value: int, count=1, is_unique=False):
-        self._icon = icon
-        self._name = name
-        self._value = value
-        self._count = count
-        self._is_unique = is_unique
-
-    def remove_amount(self, amount: int):
-        if amount <= self._count:
-            result = Item(self._icon, self._name, self._value, amount, self._is_unique)
-            self._count -= amount
-            return result
-        return None
-
-    def add_amount(self, amount: int):
-        self._count += amount
-
-    def get_name(self):
-        return self._name
-
-    def get_full_name(self):
-        return f"{self._icon} {self._name}"
-
-    def get_full_name_and_count(self):
-        return f"{self._icon} {self._name} ({self._count})"
-
-    def get_value(self):
-        return self._value
-
-    def get_value_str(self):
-        if self._value == 1:
-            return "1 coin"
-        return f"{self._value} coins"
-
-    def get_count(self):
-        return self._count
-
-    def get_is_unique(self):
-        return self._is_unique
-
-    def get_icon(self):
-        return self._icon
-
-    def __eq__(self, obj):
-        if not isinstance(obj, Item):
-            return False
-        
-        if self._is_unique or obj.get_is_unique():
-            return False
-        
-        if self._icon == obj.get_icon() and self._name == obj.get_name() and self._value == obj.get_value():
-            return True
-
-        return False
-
-
-class Inventory():
-    def __init__(self):
-        self._inventory_slots: List[Item] = []
-        self._coins: int = 0
-
-    def _organize_inventory_slots(self):
-        if len(self._inventory_slots) == 0:
-            return
-        
-        item_set: List[Item] = []
-        if len(self._inventory_slots) == 1:
-            item = self._inventory_slots[0]
-            item_set.append(Item(item.get_icon(), item.get_name(), item.get_value(), 0, item.get_is_unique()))
-        if len(self._inventory_slots) >= 2:
-            for item in self._inventory_slots:
-                exists = False
-                for item_in_set in item_set:
-                    if item_in_set == item:
-                        exists = True
-                        break
-                if not exists:
-                    item_set.append(Item(item.get_icon(), item.get_name(), item.get_value(), 0, item.get_is_unique()))
-
-        new_slots: List[Item] = []
-        for item in item_set:
-            for other_item in self._inventory_slots:
-                if item == other_item:
-                    item.add_amount(other_item.get_count())
-            if item.get_count() != 0:
-                new_slots.append(item)
-
-        self._inventory_slots = sorted(new_slots, key=lambda item: item.get_name())
-
-    def item_exists(self, item: Item):
-        for i, inv_item in enumerate(self._inventory_slots):
-            if inv_item == item:
-                return i
-        return -1
-
-    def search_by_name(self, name: str):
-        for i, item in enumerate(self._inventory_slots):
-            if item.get_name() == name:
-                return i
-        return -1
-
-    def add_item(self, item: Item):
-        self._inventory_slots.append(item)
-        self._organize_inventory_slots()
-
-    def remove_item(self, slot_index: int, count=1):
-        if count <= 0:
-            return None
-        if slot_index < len(self._inventory_slots):
-            result = self._inventory_slots[slot_index].remove_amount(count)
-            if result is not None:
-                self._organize_inventory_slots()
-                return result
-        return None
-
-    def add_coins(self, amount: int):
-        self._coins += amount
-    
-    def remove_coins(self, amount: int):
-        if amount > self._coins:
-            return None
-        self._coins -= amount
-        return self._coins
-
-    def get_inventory_slots(self):
-        return self._inventory_slots
-
-    def get_coins(self):
-        return self._coins
-
-    def get_coins_str(self):
-        if self._coins == 1:
-            return "1 coin"
-        return f"{self._coins} coins"
-
-
-class InventoryButton(discord.ui.Button):
-    def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=item_index)
-        self._item_index = item_index
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        await interaction.response.defer()
-
-
-class InventorySellButton(discord.ui.Button):
-    def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()} [{item.get_value_str()} each]", row=item_index)
-        self._item = item
-        self._item_index = item_index
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        view: MarketView = self.view
-
-        if view.get_user() == interaction.user:
-            response = view.sell_item(self._item_index, self._item)
-            await interaction.response.edit_message(content=None, embed=response, view=view)
-
-
-class InventoryMailButton(discord.ui.Button):
-    def __init__(self, adjusted_item_index: int, item: Item, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=row)
-        self._item = item
-        self._adjusted_item_index = adjusted_item_index
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        view: MailView = self.view
-
-        if view.get_user() == interaction.user:
-            await interaction.response.send_modal(MailModal(
-                view.get_database(),
-                view.get_guild_id(),
-                view.get_user(),
-                view.get_giftee(),
-                self._adjusted_item_index,
-                self._item,
-                view,
-                interaction.message.id)
-            )
-
-
-# Could abstract into a generic button with some callback in the parent view?
-class NextButton(discord.ui.Button):
-    def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        # TODO: Add type hint to this. Need to abstract view class with next/prev callbacks.
-        view = self.view
-        if interaction.user == view.get_user():
-            response = view.next_page()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
-
-
-class PrevButton(discord.ui.Button):
-    def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Prev", row=row)
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        # TODO: Add type hint to this. Need to abstract view class with next/prev callbacks.
-        view = self.view
-        if interaction.user == view.get_user():
-            response = view.prev_page()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
-
-
-class InventoryView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User):
-        super().__init__(timeout=900)
-
-        self._bot = bot
-        self._database = database
-        self._guild_id = guild_id
-        self._user = user
-        self._page = 0
-
-        self._NUM_PER_PAGE = 4
-
-        self._get_current_page_buttons()
-
-    def _get_current_page_buttons(self):
-        self.clear_items()
-        player: Player = self._database[self._guild_id]["members"][self._user.id]
-        all_slots = player.get_inventory().get_inventory_slots()
-
-        page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
-        for i, item in enumerate(page_slots):
-            self.add_item(InventoryButton(i, item))
-        if self._page != 0:
-            self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
-            self.add_item(NextButton(min(4, len(page_slots))))
-        
-    def _get_current_page_info(self):
-        player: Player = self._database[self._guild_id]["members"][self._user.id]
-        coins_str = player.get_inventory().get_coins_str()
-        return embeds.Embed(
-            title=f"{self._user.display_name}'s Inventory",
-            description=f"You have {coins_str}.\n\nNavigate through your items using the Prev and Next buttons."
-        )
-        
-    def next_page(self):
-        self._page += 1
-        self._get_current_page_buttons()
-        return self._get_current_page_info()
-
-    def prev_page(self):
-        self._page = max(0, self._page - 1)
-        self._get_current_page_buttons()
-        return self._get_current_page_info()
-
-    def get_user(self):
-        return self._user
-
-# -----------------------------------------------------------------------------
-# MARKET SYSTEM
-# -----------------------------------------------------------------------------
-
-class MarketSellButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Sell")
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        view: MarketView = self.view
-        if interaction.user == view.get_user():
-            response = view.enter_sell_market()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
-
-
-class MarketExitButton(discord.ui.Button):
-    def __init__(self, row):
-        super().__init__(style=discord.ButtonStyle.red, label="Exit", row=row)
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        view: MarketView = self.view
-        if interaction.user == view.get_user():
-            response = view.exit_to_main_menu()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
-
-
-class MarketView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User):
-        super().__init__(timeout=900)
-
-        self._bot = bot
-        self._database = database
-        self._guild_id = guild_id
-        self._user = user
-        self._page = 0
-
-        self._NUM_PER_PAGE = 4
-        
-        self._display_initial_buttons()
-
-    def _get_current_page_buttons(self):
-        self.clear_items()
-        player: Player = self._database[self._guild_id]["members"][self._user.id]
-        all_slots = player.get_inventory().get_inventory_slots()
-
-        page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
-        for i, item in enumerate(page_slots):
-            self.add_item(InventorySellButton(i, item))
-        if self._page != 0:
-            self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
-            self.add_item(NextButton(min(4, len(page_slots))))
-        self.add_item(MarketExitButton(min(4, len(page_slots))))
-        
-    def next_page(self):
-        self._page += 1
-        self._get_current_page_buttons()
-
-        return embeds.Embed(
-            title="Selling at the Market",
-            description="Choose an item from your inventory to sell!"
-        )
-
-    def prev_page(self):
-        self._page = max(0, self._page - 1)
-        self._get_current_page_buttons()
-
-        return embeds.Embed(
-            title="Selling at the Market",
-            description="Choose an item from your inventory to sell!"
-        )
-
-    def _display_initial_buttons(self):
-        self.clear_items()
-        self.add_item(MarketSellButton())
-
-    def enter_sell_market(self):
-        self._get_current_page_buttons()
-        
-        return embeds.Embed(
-            title="Selling at the Market",
-            description="Choose an item from your inventory to sell!"
-        )
-
-    def sell_item(self, item_index: int, item: Item):
-        # TODO: Rather than selling one at a time, create a modal that'll let you choose
-        # how many to sell!
-        player: Player = self._database[self._guild_id]["members"][self._user.id]
-        inventory = player.get_inventory()
-        # Need to check that the item still exists since there are async operations
-        # that can happen with different views.
-        embed = embeds.Embed(
-            title="Selling at the Market",
-            description="Choose an item from your inventory to sell!\n\n*Error: That item couldn't be sold.*"
-        )
-
-        adjusted_index = item_index + (self._page * self._NUM_PER_PAGE)
-        found_index = inventory.item_exists(item)
-        if found_index == adjusted_index:
-            inventory.remove_item(adjusted_index, 1)
-            inventory.add_coins(item.get_value())
-            embed = embeds.Embed(
-                title="Selling at the Market",
-                description=f"Choose an item from your inventory to sell!\n\n*Sold 1 {item.get_full_name()} for {item.get_value_str()}!*"
-            )
-
-            sold_stat = player.get_stat_value(StatNames.Categories.Market, StatNames.Market.ItemsSold, 0)
-            player.set_stat_value(StatNames.Categories.Market, StatNames.Market.ItemsSold, sold_stat + 1)
-
-            coins_stat = player.get_stat_value(StatNames.Categories.Market, StatNames.Market.CoinsMade, 0)
-            player.set_stat_value(StatNames.Categories.Market, StatNames.Market.CoinsMade, coins_stat + item.get_value())
-        
-        self._get_current_page_buttons()
-        return embed
-    
-    def exit_to_main_menu(self):
-        self._display_initial_buttons()
-        return embeds.Embed(
-            title="Welcome to the Market!",
-            description="Select an action below to get started."
-        )
-
-    def get_user(self):
-        return self._user
-
-# -----------------------------------------------------------------------------
-# STATS
-# -----------------------------------------------------------------------------
-
-# Based on the command names; the user will do b!stats [name] or omit the name
-# and get all of them at once. Using an enum rather than a dictionary to make
-# sure that I use consistent names.
-class StatNames(Enum):
-    class Categories(Enum):
-        Fish = "fish"
-        Mail = "mail"
-        Market = "market"
-        Knucklebones = "knucklebones"
-
-        @classmethod
-        def values(self):
-            return list(map(lambda stat_key: stat_key.value, self))
-
-        @classmethod
-        def search(self, name: str):
-            try:
-                return self.values().index(name.lower())
-            except:
-                return -1
-
-    class Fish(Enum):
-        Tier4Caught = "Tier 4 Caught"
-        Tier3Caught = "Tier 3 Caught"
-        Tier2Caught = "Tier 2 Caught"
-        Tier1Caught = "Tier 1 Caught"
-        Tier0Caught = "Tier 0 Caught"
-
-        @classmethod
-        def values(self):
-            return list(map(lambda stat_key: stat_key.value, self))
-
-    class Mail(Enum):
-        MailSent = "Mail Sent"
-        MailOpened = "Mail Opened"
-        ItemsSent = "Items Sent"
-        CoinsSent = "Coins Sent"
-        MessagesSent = "Messages Sent"
-
-        @classmethod
-        def values(self):
-            return list(map(lambda stat_key: stat_key.value, self))
-
-    class Market(Enum):
-        ItemsSold = "Items Sold"
-        CoinsMade = "Coins Made"
-
-        @classmethod
-        def values(self):
-            return list(map(lambda stat_key: stat_key.value, self))
-
-    class Knucklebones(Enum):
-        GamesWon = "Games Won"
-        GamesTied = "Games Tied"
-        GamesPlayed = "Games Played"
-        CoinsWon = "Coins Won"
-
-        @classmethod
-        def values(self):
-            return list(map(lambda stat_key: stat_key.value, self))
-
-
-class StatView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User, stat_category: StatNames.Categories=None):
-        super().__init__(timeout=900)
-
-        self._bot = bot
-        self._database = database
-        self._guild_id = guild_id
-        self._user = user
-        self._stat_category = stat_category
-        self._page = 0
-
-        self._STAT_ENUM_VALUES_LIST = StatNames.Categories.values()
-
-        if stat_category is None:
-            self.add_item(PrevButton(0))
-            self.add_item(NextButton(0))
-
-    def get_current_page_info(self):
-        player: Player = self._database[self._guild_id]["members"][self._user.id]
-        stat_enum_value: str = ""
-        if self._stat_category is not None:
-            stat_enum_value = self._stat_category
-        else:
-            stat_enum_value = self._STAT_ENUM_VALUES_LIST[self._page]
-        stats_for_page: dict = player.get_stats()[stat_enum_value]
-
-        title = stat_enum_value.capitalize()
-        page_str = f"({self._page + 1}/{len(self._STAT_ENUM_VALUES_LIST)})"
-        description = ""
-        for name, value in enumerate(stats_for_page):
-            description += f"**{name}**: {str(value)}\n"
-        # Using "timestamp" as a way to communicate the current page to the user
-        return embeds.Embed(title=title, description=description, timestamp=page_str)
-
-    def next_page(self):
-        self._page = (self._page + 1) % len(StatNames.Categories)
-        return self.get_current_page_info()
-
-    def prev_page(self):
-        self._page = (self._page - 1) % len(StatNames.Categories)
-        return self.get_current_page_info()
-
-# -----------------------------------------------------------------------------
-# EXPERTISE
-# -----------------------------------------------------------------------------
-
-# Expertise is similar to a class system in RPG games, such as being able to
-# level Illusion magic in Skyrim or level cooking in WoW. While somewhat related
-# to stats, it's going to be a separate system, since it's abstracted away from
-# individual actions. I may rely on values in stats to contribute to leveling
-# or I may pick and choose certain actions to level a class.
-
-# If I need to change something, always change the enum key
-# never the value, since I use the values to store data.
-class ExpertiseCategoryNames(Enum):
-    Fisher = "Fishing"
-    Merchant = "Merchant"
-
-
-class Expertise():
-    def __init__(self):
-        self._xp: int = 0
-        self._level: int = 0
-
-    # Could be positive or negative, regardless don't go below 0.
-    def add_xp(self, value: int):
-        self._xp = max(0, self._xp + value)
-
-    def get_xp(self):
-        return self._xp
-
-    def get_level(self):
-        return self._level
-
-    def get_xp_remaining_to_next_level(self):
-        # TODO: Figure out good function here based on XP awarded
-        # for tasks. Probably something linear?
-        return self._level * 25
-
-# -----------------------------------------------------------------------------
-# MAIL SYSTEM
-# -----------------------------------------------------------------------------
-
-class Mail():
-    def __init__(self, sender_name: str, item: Item, coins: int, message: str, send_date: str):
-        self._sender_name = sender_name
-        self._item = item
-        self._message = message
-        self._send_date = send_date
-        self._coins = coins
-
-    def get_sender_name(self):
-        return self._sender_name
-
-    def get_item(self):
-        return self._item
-
-    def get_message(self):
-        return self._message
-
-    def get_send_date(self):
-        return self._send_date
-
-    def get_coins(self):
-        return self._coins
-
-    def __eq__(self, obj):
-        if not isinstance(obj, Mail):
-            return False
-
-        if self._sender_name == obj.get_sender_name() and self._item == obj.get_item() \
-            and self._message == obj.get_message() and self._send_date == obj.get_send_date() \
-            and self._coins == obj.get_coins():
-            return True
-
-        return False
-
-
-class MailView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, giftee: User, context: commands.Context):
-        super().__init__(timeout=900)
-
-        self._bot = bot
-        self._database = database
-        self._guild_id = context.guild.id
-        self._user = context.author
-        self._giftee = giftee
-        self._context = context
-        self._page = 0
-
-        self._NUM_PER_PAGE = 4
-        
-        self._get_current_page_buttons()
-
-    def _get_current_page_buttons(self):
-        self.clear_items()
-        player: Player = self._database[self._guild_id]["members"][self._user.id]
-        all_slots = player.get_inventory().get_inventory_slots()
-
-        page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
-        for i, item in enumerate(page_slots):
-            self.add_item(InventoryMailButton(i + (self._page * self._NUM_PER_PAGE), item, i))
-        if self._page != 0:
-            self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
-            self.add_item(NextButton(min(4, len(page_slots))))
-        
-    def next_page(self):
-        self._page += 1
-        self._get_current_page_buttons()
-
-    def prev_page(self):
-        self._page = max(0, self._page - 1)
-        self._get_current_page_buttons()
-
-    async def refresh(self, message_id):
-        self._get_current_page_buttons()
-        message: discord.Message = await self._context.fetch_message(message_id)
-        await message.edit(view=self)
-
-    def get_user(self):
-        return self._user
-
-    def get_giftee(self):
-        return self._giftee
-
-    def get_database(self):
-        return self._database
-
-    def get_guild_id(self):
-        return self._guild_id
-
-
-class MailModal(discord.ui.Modal):
-    def __init__(self, database: dict, guild_id: int, user: User, giftee: User, adjusted_item_index: int, item: Item, view: MailView, message_id: int):
-        super().__init__(title=f"Mailing a gift to {giftee.display_name}!")
-
-        self._database = database
-        self._guild_id = guild_id
-        self._user = user
-        self._giftee = giftee
-        self._adjusted_item_index = adjusted_item_index
-        self._item = item
-        self._view = view
-        self._message_id = message_id
-
-        self._count_input = discord.ui.TextInput(
-            label="Quantity",
-            default="1",
-        )
-        self.add_item(self._count_input)
-
-        self._coins_input = discord.ui.TextInput(
-            label="Coins",
-            default="0"
-        )
-        self.add_item(self._coins_input)
-
-        self._message_input = discord.ui.TextInput(
-            label="Message",
-            required=False,
-            style=discord.TextStyle.paragraph,
-            placeholder="Anything you'd like to say?",
-            max_length=1500
-        )
-        self.add_item(self._message_input)
-
-    async def on_submit(self, interaction: discord.Interaction):
-        player: Player = self._database[self._guild_id]["members"][self._user.id]
-        giftee_player: Player = self._database[self._guild_id]["members"][self._giftee.id]
-        inventory = player.get_inventory()
-        
-        found_index = inventory.item_exists(self._item)
-        if found_index != self._adjusted_item_index:
-            await interaction.response.send_message(f"Error: Something about your inventory changed. Try using !mail again.")
-            return
-
-        if not self._count_input.value.isnumeric() or int(self._count_input.value) < 0:
-            await interaction.response.send_message(f"Error: You must send a non-negative number of that item.")
-            return
-
-        if int(self._count_input.value) > self._item.get_count():
-            await interaction.response.send_message(f"Error: You can't send {int(self._count_input.value)} of that item, you only have {self._item.get_count()}.")
-            return
-
-        if not self._coins_input.value.isnumeric() or int(self._coins_input.value) < 0:
-            await interaction.response.send_message(f"Error: You can't send a negative number of coins.")
-            return
-
-        if int(self._coins_input.value) > inventory.get_coins():
-            await interaction.response.send_message(f"Error: You don't have that many coins to send.")
-            return
-
-        num_items_to_send = int(self._count_input.value)
-        sent_item = inventory.remove_item(self._adjusted_item_index, num_items_to_send)
-        sent_coins = int(self._coins_input.value)
-        inventory.remove_coins(sent_coins)
-
-        if sent_coins == 0 and sent_item is None and self._message_input.value == "":
-            await interaction.response.send_message(f"Error: You can't send an empty message.")
-            return
-
-        mail = Mail(self._user.display_name, sent_item, sent_coins, self._message_input.value, str(time.time()).split(".")[0]) 
-        giftee_player.get_mailbox().append(mail)
-        
-        if sent_coins > 0:
-            coin_str = "coin" if sent_coins == 1 else "coins"
-            await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} and {sent_coins} {coin_str} to {self._giftee.display_name}!")
-        else:
-            await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} to {self._giftee.display_name}!")
-        
-        items_stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.ItemsSent, 0)
-        player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.ItemsSent, items_stat + num_items_to_send)
-
-        coins_stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.CoinsSent, 0)
-        player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.CoinsSent, coins_stat + sent_coins)
-
-        if self._message_input.value != "":
-            message_stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.MessagesSent, 0)
-            player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.MessagesSent, message_stat + 1)
-
-        mail_stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.MailSent, 0)
-        player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.MailSent, mail_stat + 1)
-        
-        await self._view.refresh(self._message_id)
-
-    async def on_error(self, interaction: discord.Interaction, error: Exception):
-        print(error)
-        await interaction.response.send_message("Error: Something has gone terribly wrong.")
-
-
-class MailboxButton(discord.ui.Button):
-    def __init__(self, mail_index: int, mail: Mail):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"✉️ From: {mail.get_sender_name()}", row=mail_index)
-        
-        self._mail_index = mail_index
-        self._mail = mail
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        view: MailboxView = self.view
-        if interaction.user == view.get_user():
-            if view.open_mail(self._mail_index, self._mail):
-                await interaction.response.edit_message(content=None, embed=view.get_current_page_info(), view=view)
-
-                mail_message = f"From: {self._mail.get_sender_name()} (<t:{self._mail.get_send_date()}:R>)"
-                if self._mail.get_item() is not None:
-                    mail_message += f"\n\nItem: {self._mail.get_item().get_full_name_and_count()} each worth {self._mail.get_item().get_value_str()}"
-                if self._mail.get_coins() > 0:
-                    mail_message += f"\n\nCoins: {self._mail.get_coins()}"
-                if self._mail.get_message() != "":
-                    mail_message += f"\n\nMessage:\n\n{self._mail.get_message()}"
-                
-                player: Player = view.get_database()[view.get_guild_id()]["members"][interaction.user.id]
-                stat = player.get_stat_value(StatNames.Categories.Mail, StatNames.Mail.MailOpened, 0)
-                player.set_stat_value(StatNames.Categories.Mail, StatNames.Mail.MailOpened, stat + 1)
-
-                await interaction.user.send(mail_message)
-            else:
-                embed = view.get_current_page_info()
-                embed.description += "\n\n*Error: That mail is no longer available.*"
-                await interaction.response.edit_message(content=None, embed=embed, view=view)
-
-
-class MailboxView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: User):
-        super().__init__(timeout=900)
-
-        self._bot = bot
-        self._database = database
-        self._guild_id = guild_id
-        self._user = user
-        self._page = 0
-
-        # These buttons are going to descend vertically. Thinking about changing the
-        # inventory to be the same since it looks better on mobile too.
-        self._NUM_PER_PAGE = 4
-        
-        self._get_current_page_buttons()
-
-    def _get_current_page_buttons(self):
-        self.clear_items()
-        player: Player = self._database[self._guild_id]["members"][self._user.id]
-        mailbox: List[Mail] = player.get_mailbox()
-
-        page_slots = mailbox[self._page * self._NUM_PER_PAGE:min(len(mailbox), (self._page + 1) * self._NUM_PER_PAGE)]
-        for i, item in enumerate(page_slots):
-            self.add_item(MailboxButton(i, item))
-        if self._page != 0:
-            self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(mailbox) - self._NUM_PER_PAGE * (self._page + 1) > 0:
-            self.add_item(NextButton(min(4, len(page_slots))))
-        
-    def get_current_page_info(self):
-        return embeds.Embed(
-            title=f"{self._user.display_name}'s Mailbox",
-            description="Navigate through your mail using the Prev and Next buttons."
-        )
-        
-    def next_page(self):
-        self._page += 1
-        self._get_current_page_buttons()
-        return self.get_current_page_info()
-
-    def prev_page(self):
-        self._page = max(0, self._page - 1)
-        self._get_current_page_buttons()
-        return self.get_current_page_info()
-
-    def _mail_exists(self, mailbox: List[Mail], mail: Mail):
-        for i, mailbox_mail in enumerate(mailbox):
-            if mailbox_mail == mail:
-                return i
-        return -1
-
-    def open_mail(self, mail_index: int, mail: Mail):
-        player: Player = self._database[self._guild_id]["members"][self._user.id]
-        inventory: Inventory = player.get_inventory()
-        mailbox: List[Mail] = player.get_mailbox()
-
-        if mail_index >= len(mailbox):
-            self._get_current_page_buttons()
-            return False
-        
-        adjusted_index = mail_index + (self._page * self._NUM_PER_PAGE)
-        found_index = self._mail_exists(mailbox, mail)
-        if found_index != adjusted_index:
-            self._get_current_page_buttons()
-            return False
-
-        mailbox_mail = mailbox.pop(adjusted_index)
-        inventory.add_item(mailbox_mail.get_item())
-        inventory.add_coins(mailbox_mail.get_coins())
-
-        self._get_current_page_buttons()
-        return True
-
-    def get_user(self):
-        return self._user
-
-    def get_guild_id(self):
-        return self._guild_id
-
-    def get_database(self):
-        return self._database
-
-# -----------------------------------------------------------------------------
-# PLAYER
-# -----------------------------------------------------------------------------
-
-class Player():
-    def __init__(self):
-        self._inventory = Inventory()
-        self._expertise: dict[str, Expertise] = {item.value: Expertise() for item in ExpertiseCategoryNames}
-        self._mailbox: List[Mail] = []
-        self._stats: dict[str, dict[str, Union[str, int, bool, float]]] = {}
-
-    def get_inventory(self):
-        return self._inventory
-
-    def get_expertise(self):
-        return self._expertise
-    
-    def get_mailbox(self):
-        return self._mailbox
-
-    def get_stats(self):
-        return self._stats
-
-    def set_stat_value(self, category_name: StatNames.Categories, stat_name: str, value: Union[str, int, bool, float]):
-        if self._stats.get(category_name) is None:
-            self._stats[category_name] = {}
-        self._stats[category_name][stat_name] = value
-
-    def get_stat_value(self, category_name: StatNames.Categories, stat_name: str, init_value: Union[str, int, bool, float]):
-        if self._stats.get(category_name) is None:
-            self._stats[category_name] = {}
-        if self._stats[category_name].get(stat_name) is None:
-            self._stats[category_name][stat_name] = init_value
-        return self._stats[category_name][stat_name]
-
-# -----------------------------------------------------------------------------
-# COMMAND HANDLERS
-# -----------------------------------------------------------------------------
 
 class Adventures(commands.Cog):
     def __init__(self, bot: BenjaminBowtieBot):
         self._bot = bot
-        # Database is here due to a pickle issue with importing from this module at the bot level
-        self._database: dict = dill.load(open("./adventuresdb", "rb")) if os.path.isfile("./adventuresdb") else {}
+        
+        file_data = open("./adventuresdb.json", "r").read()
+        self._database: dict = jsonpickle.decode(file_data) if os.path.isfile("./adventuresdb.json") else {}
         
         self.save_database.start()
 
     def _check_member_and_guild_existence(self, guild_id: int, user_id: int):
-        if self._database.get(guild_id) is None:
-            self._database[guild_id] = {}
-            self._database[guild_id]["members"] = {}
-        
-        if self._database[guild_id]["members"].get(user_id) is None:
-            self._database[guild_id]["members"][user_id] = Player()
+        guild_id_str: str = str(guild_id)
+        user_id_str: str = str(user_id)
 
-    @tasks.loop(hours=1)
-    async def save_database(self):
-        if os.path.isfile("./adventuresdb"):
-            shutil.copy("adventuresdb", "adventuresdbbackup")
+        if self._database.get(guild_id_str) is None:
+            self._database[guild_id_str] = {}
+            self._database[guild_id_str]["members"] = {}
         
+        if self._database[guild_id_str]["members"].get(user_id_str) is None:
+            self._database[guild_id_str]["members"][user_id_str] = Player()
+
+    def _get_player(self, guild_id: int, user_id: int) -> Player:
+        return self._database[str(guild_id)]["members"][str(user_id)]
+
+    @tasks.loop(seconds=15)
+    async def save_database(self):
+        if os.path.isfile("./adventuresdb.json"):
+            shutil.copy("adventuresdb.json", "adventuresdbbackup.json")
+        
+        frozen = jsonpickle.encode(self._database)
+        with open("adventuresdb.json", "w") as file:
+            file.write(frozen)
+    
         dill.dump(self._database, open("adventuresdb", "wb"))
 
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items")
@@ -941,33 +57,35 @@ class Adventures(commands.Cog):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         rand_val = random.random()
         fishing_result:Item = None
-        tier_of_result:int = 4
+
+        author_player: Player = self._database[str(context.guild.id)]["members"][str(context.author.id)]
+        player_stats: Stats = author_player.get_stats()
 
         # 55% chance of getting a Tier 4 reward
         if 0.0 <= rand_val < 0.55:
-            tier_of_result = 4
             items = [Item("🥾", "Boot", 2), Item("🍂", "Clump of Leaves", 1), Item("🐚", "Conch", 1)]
             fishing_result = random.choice(items)
+            player_stats.fish.tier_4_caught += 1
         # 20% chance of getting a Tier 3 reward
         if 0.55 < rand_val < 0.75:
-            tier_of_result = 3
             items = [Item("🐟", "Minnow", 3), Item("🐠", "Roughy", 4), Item("🦐", "Shrimp", 3)]
             fishing_result = random.choice(items)
+            player_stats.fish.tier_3_caught += 1
         # 15% chance of getting a Tier 2 reward
         if 0.75 < rand_val < 0.9:
-            tier_of_result = 2
             items = [Item("🦪", "Oyster", 4), Item("🐡", "Pufferfish", 5)]
             fishing_result = random.choice(items)
+            player_stats.fish.tier_2_caught += 1
         # 9% chance of getting a Tier 1 reward
         if 0.9 < rand_val < 0.99:
-            tier_of_result = 1
             items = [Item("🦑", "Squid", 10), Item("🦀", "Crab", 8), Item("🦞", "Lobster", 8), Item("🦈", "Shark", 10)]
             fishing_result = random.choice(items)
+            player_stats.fish.tier_1_caught += 1
         # 1% chance of getting a Tier 0 reward
         if 0.99 < rand_val <= 1.0:
-            tier_of_result = 0
             items = [Item("🏺", "Ancient Vase", 40), Item("💎", "Diamond", 50), Item("📜", "Mysterious Scroll", 30)]
             fishing_result = random.choice(items)
+            player_stats.fish.tier_0_caught += 1
         
         # E(X) = 
         # 0.55 * (2 + 1 + 1) / 3 + 
@@ -977,13 +95,9 @@ class Adventures(commands.Cog):
         # 0.01 * (25 + 50) / 2 = 
         # 3.23 every 30 seconds -> 387.6 an hour
         
-        author_player: Player = self._database[context.guild.id]["members"][context.author.id]
         author_player.get_inventory().add_item(fishing_result)
 
-        stat = author_player.get_stat_value(StatNames.Categories.Fish, f"Tier {str(tier_of_result)} Caught", 0)
-        author_player.set_stat_value(StatNames.Categories.Fish, f"Tier {str(tier_of_result)} Caught", stat + 1)
-
-        embed = embeds.Embed(
+        embed = Embed(
             title=f"You caught {fishing_result.get_full_name()} worth {fishing_result.get_value_str()}!",
             description="It's been added to your b!inventory"
         )
@@ -1015,8 +129,8 @@ class Adventures(commands.Cog):
         # we check that the players pressing the buttons are valid which should happen naturally
         # based on turn checks; (2) when paying out we check that the player has the money to do
         # so, else the winner gets whatever's left that the other can pay.
-        author_player: Player = self._database[context.guild.id]["members"][context.author.id] 
-        challenged_player: Player = self._database[context.guild.id]["members"][user.id]
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        challenged_player: Player = self._get_player(context.guild.id, user.id)
         if author_player.get_inventory().get_coins() < amount:
             await context.send(f"You don't have enough coins ({author_player.get_inventory().get_coins()}) to bet that much!")
             return
@@ -1024,7 +138,7 @@ class Adventures(commands.Cog):
             await context.send(f"That person doesn't have enough coins ({challenged_player.get_inventory().get_coins()}) to bet that much!")
             return
 
-        embed = embeds.Embed(
+        embed = Embed(
             title="Welcome to Knucklebones!",
             description="Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\nIf the opponent has dice of the same value in that same column, those dice are removed from their board.\n\nTwo of the same die in a single column double their value. Three of the same die triple their value.\n\nWhen one player fills their board with dice, the game is over. The player with the most points wins.\n\nThe game will begin when the other player accepts the invitation to play."
         )
@@ -1045,9 +159,9 @@ class Adventures(commands.Cog):
         #     prev and next button to navigate on the final row
         # (2) Upon clicking a button, a modal will pop up asking how many to send and
         #     an optional message to send
-        player: Player = self._database[context.guild.id]["members"][context.author.id]
+        player: Player = self._get_player(context.guild.id, context.author.id)
         coins_str = player.get_inventory().get_coins_str()
-        embed = embeds.Embed(
+        embed = Embed(
             title=f"{context.author.display_name}'s Inventory",
             description=f"You have {coins_str}.\n\nChoose an item to mail to {giftee.display_name}!"
         )
@@ -1056,9 +170,9 @@ class Adventures(commands.Cog):
     @commands.command(name="inventory", help="Check your inventory", aliases=["inv"])
     async def inventory_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
-        player: Player = self._database[context.guild.id]["members"][context.author.id]
+        player: Player = self._get_player(context.guild.id, context.author.id)
         coins_str = player.get_inventory().get_coins_str()
-        embed = embeds.Embed(
+        embed = Embed(
             title=f"{context.author.display_name}'s Inventory",
             description=f"You have {coins_str}.\n\nNavigate through your items using the Prev and Next buttons."
         )
@@ -1067,7 +181,7 @@ class Adventures(commands.Cog):
     @commands.command(name="market", help="Sell and buy items at the marketplace", aliases=["marketplace"])
     async def market_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
-        embed = embeds.Embed(
+        embed = Embed(
             title="Welcome to the Market!",
             description="Select an action below to get started."
         )
@@ -1076,7 +190,7 @@ class Adventures(commands.Cog):
     @commands.command(name="mailbox", help="Open mail you've received from others", aliases=["inbox"])
     async def mailbox_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
-        embed = embeds.Embed(
+        embed = Embed(
             title=f"{context.author.display_name}'s Mailbox",
             description=f"Navigate through your mail using the Prev and Next buttons."
         )

@@ -1,9 +1,14 @@
-from random import choice, randint
-from tracemalloc import Statistic
-from discord.ext import commands
+from __future__ import annotations
+
 import discord
 
-from cogs.adventures import StatNames
+from random import choice, randint
+from discord.embeds import Embed
+from discord.ext import commands
+
+from typing import List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from features.player import Player
 
 class AcceptButton(discord.ui.Button):
     def __init__(self):
@@ -23,7 +28,7 @@ class AcceptButton(discord.ui.Button):
             return
         
         content: str = view.setup_game()
-        embed = discord.embeds.Embed(description=content)
+        embed = Embed(description=content)
         await interaction.response.edit_message(
             embed=embed,
             view=view,
@@ -79,7 +84,7 @@ class KnucklebonesButton(discord.ui.Button):
             return
 
         content = view.place_roll(self._pos)
-        embed = discord.embeds.Embed(description=content)
+        embed = Embed(description=content)
         if content is not None:
             await interaction.response.edit_message(
                 embed=embed,
@@ -116,6 +121,9 @@ class Knucklebones(discord.ui.View):
         self.add_item(AcceptButton())
         self.add_item(DeclineButton())
 
+    def _get_player(self, user_id: int) -> Player:
+        return self._database[str(self._guild_id)]["members"][str(user_id)]
+
     def _dice_value_to_char(self, value):
         if value == 1:
             return "1️⃣" # "⚀"
@@ -131,7 +139,7 @@ class Knucklebones(discord.ui.View):
             return "6️⃣" # "⚅"
         return "⬜" # "⬚"
 
-    def _compute_points_in_col(self, board: list[list[int]], col_num: int):
+    def _compute_points_in_col(self, board: List[List[int]], col_num: int):
         counts = {}
         for i in range(3):
             counts[board[i][col_num]] = counts.get(board[i][col_num], 0) + 1
@@ -151,7 +159,7 @@ class Knucklebones(discord.ui.View):
             content += f"{str(col_val)} "
         content += f"= {p1_total}"
 
-        content += f"**{self._player_2.display_name}**\n\n"
+        content += f"\n\n**{self._player_2.display_name}**\n\n"
         for i in range(3):
             for j in range(3):
                 value: int = self._player_2_board[i][j]
@@ -199,27 +207,23 @@ class Knucklebones(discord.ui.View):
         self._current_roll = randint(1, 6)
         return self._get_game_state_string() + "\n\n" + self._get_current_turn_string()
 
-    def _update_stats(self, winner, player_1, player_2, amount_won=0, is_tied=False):
-        if is_tied:
-            games_tied_1_stat = player_1.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesTied, 0)
-            player_1.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesTied, games_tied_1_stat + 1)
+    def _update_stats(self, winner: Player, player_1: Player, player_2: Player, amount_won=0, is_tied=False):
+        player_1_stats = player_1.get_stats()
+        player_2_stats = player_2.get_stats()
+        winner_stats = winner.get_stats()
 
-            games_tied_2_stat = player_2.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesTied, 0)
-            player_2.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesTied, games_tied_2_stat + 1)
+        player_1_stats.knucklebones.games_played += 1
+        player_2_stats.knucklebones.games_played += 1
+
+        if is_tied:
+            player_1_stats.knucklebones.games_tied += 1
+            player_2_stats.knucklebones.games_tied += 1
             return
         
-        games_won_stat = winner.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesWon, 0)
-        winner.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesWon, games_won_stat + 1)
-
-        games_played_1_stat = player_1.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesPlayed, 0)
-        player_1.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesPlayed, games_played_1_stat + 1)
-
-        games_played_2_stat = player_2.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesPlayed, 0)
-        player_2.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.GamesPlayed, games_played_2_stat + 1)
+        winner_stats.knucklebones.games_won += 1
 
         if amount_won > 0:
-            amount_won_stat = winner.get_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.CoinsWon, 0)
-            winner.set_stat_value(StatNames.Categories.Knucklebones, StatNames.Knucklebones.CoinsWon, amount_won_stat + amount_won)
+            winner_stats.knucklebones.coins_won += amount_won
 
     def place_roll(self, pos: int):
         can_place = False
@@ -248,9 +252,9 @@ class Knucklebones(discord.ui.View):
             self.clear_items()
             winner = self._get_winner()
             if winner is not None:
-                winner_player = self._database[self._guild_id]["members"][self.winner.id].get_inventory()
-                player_1 = self._database[self._guild_id]["members"][self._player_1.id]
-                player_2 = self._database[self._guild_id]["members"][self._player_2.id]
+                winner_player: Player = self._get_player(winner.id)
+                player_1: Player = self._get_player(self._player_1.id)
+                player_2: Player = self._get_player(self._player_2.id)
                 
                 if self._bet > 0:
                     amount_won = 0

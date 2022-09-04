@@ -1,9 +1,17 @@
+# File Types
 .env
 *.log
 *.pyc
+
+# Folders
+patchnotes/
+__pycache__/
+.vscode/
+
+# Databases
 database
 databasebackup
 adventuresdb
 adventuresdbbackup
-patchnotes/
-__pycache__/
+adventuresdb.json
+adventuresdbbackup.json
