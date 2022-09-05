@@ -49,6 +49,16 @@ class Mail():
 
         return False
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._sender_name = state.get("_sender_name", "")
+        self._item = state.get("_item", None)
+        self._message = state.get("_message", "")
+        self._send_date = state.get("_send_date", "")
+        self._coins = state.get("_coins", 0)
+
 
 class InventoryMailButton(discord.ui.Button):
     def __init__(self, adjusted_item_index: int, item: Item, row: int):
@@ -210,9 +220,15 @@ class MailModal(discord.ui.Modal):
         
         if sent_coins > 0:
             coin_str = "coin" if sent_coins == 1 else "coins"
-            await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} and {sent_coins} {coin_str} to {self._giftee.display_name}!")
+            if sent_item is not None:
+                await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} and {sent_coins} {coin_str} to {self._giftee.display_name}!")
+            else:
+                await interaction.response.send_message(f"You {sent_coins} {coin_str} to {self._giftee.display_name}!")
         else:
-            await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} to {self._giftee.display_name}!")
+            if sent_item is not None:
+                await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} to {self._giftee.display_name}!")
+            else:
+                await interaction.response.send_message(f"You mailed a letter to {self._giftee.display_name}!")
         
         player_stats: Stats = player.get_stats()
         player_stats.mail.items_sent += num_items_to_send

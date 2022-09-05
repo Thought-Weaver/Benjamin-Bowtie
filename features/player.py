@@ -22,3 +22,11 @@ class Player():
 
     def get_stats(self):
         return self._stats
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._inventory = state.get("_inventory", Inventory())
+        self._mailbox = state.get("_mailbox", [])
+        self._stats = state.get("_stats", Stats())

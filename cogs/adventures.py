@@ -1,4 +1,3 @@
-import dill
 import jsonpickle
 import os
 import random
@@ -13,7 +12,7 @@ from features.inventory import Item, InventoryView
 from features.mail import MailView, MailboxView
 from features.market import MarketView
 from features.player import Player
-from features.stats import Stats
+from features.stats import StatView, Stats
 from games.knucklebones import Knucklebones
 
 
@@ -49,7 +48,11 @@ class Adventures(commands.Cog):
         with open("adventuresdb.json", "w") as file:
             file.write(frozen)
     
-        dill.dump(self._database, open("adventuresdb", "wb"))
+    @commands.is_owner()
+    @commands.command(name="saveadventures", help="Saves the adventures database")
+    async def save_adventures_handler(self, context: commands.Context):
+        await self.save_database()
+        await context.send("The adventures database has been saved!")
 
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items")
     @commands.cooldown(1, 30, commands.BucketType.user)
@@ -196,11 +199,12 @@ class Adventures(commands.Cog):
         )
         await context.send(embed=embed, view=MailboxView(self._bot, self._database, context.guild.id, context.author))
 
-    @commands.is_owner()
-    @commands.command(name="saveadventures", help="Saves the adventures database")
-    async def save_adventures_handler(self, context: commands.Context):
-        await self.save_database()
-        await context.send("The adventures database has been saved!")
+    @commands.command(name="stats", help="See your stats")
+    async def stats_handler(self, context: commands.Context, stat_category_name:str=None):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        stat_view = StatView(self._bot, self._database, context.guild.id, context.author, stat_category_name)
+        embed = stat_view.get_current_page_info()
+        await context.send(embed=embed, view=stat_view)
 
 
 async def setup(bot: BenjaminBowtieBot):

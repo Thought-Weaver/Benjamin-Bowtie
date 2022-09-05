@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class Item():
     def __init__(self, icon: str, name: str, value: int, count=1, is_unique=False):
-        self._icon = icon 
+        self._icon = icon
         self._name = name
         self._value = value
         self._count = count
@@ -68,6 +68,16 @@ class Item():
 
         return False
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._icon = state.get("_icon", "")
+        self._name = state.get("_name", "")
+        self._value = state.get("_value", 0)
+        self._count = state.get("_count", 0)
+        self._is_unique = state.get("_is_unique", False)
+
 
 class Inventory():
     def __init__(self):
@@ -115,6 +125,9 @@ class Inventory():
         return -1
 
     def add_item(self, item: Item):
+        if item is None:
+            self._organize_inventory_slots()
+            return
         self._inventory_slots.append(item)
         self._organize_inventory_slots()
 

@@ -38,6 +38,16 @@ class Stats():
             Tier 1 Caught: *{self.tier_1_caught}*
             Tier 0 Caught: *{self.tier_0_caught}*"""
 
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.tier_4_caught = state.get("tier_4_caught", 0)
+            self.tier_3_caught = state.get("tier_3_caught", 0)
+            self.tier_2_caught = state.get("tier_2_caught", 0)
+            self.tier_1_caught = state.get("tier_1_caught", 0)
+            self.tier_0_caught = state.get("tier_0_caught", 0)
+
     class MailStats():
         def __init__(self):
             self.mail_sent: int = 0
@@ -64,6 +74,19 @@ class Stats():
             Coins Received: *{self.coins_received}*
             Messages Received: *{self.messages_received}*"""
 
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.mail_sent = state.get("mail_sent", 0)
+            self.mail_opened = state.get("mail_opened", 0)
+            self.items_sent = state.get("items_sent", 0)
+            self.coins_sent = state.get("coins_sent", 0)
+            self.messages_sent = state.get("messages_sent", 0)
+            self.items_received = state.get("items_received", 0)
+            self.coins_received = state.get("coins_received", 0)
+            self.messages_received = state.get("messages_received", 0)
+
     class MarketStats():
         def __init__(self):
             self.items_sold: int = 0
@@ -75,6 +98,13 @@ class Stats():
         def get_stats_str(self):
             return f"""Items Sold: *{self.items_sold}*
             Coins Made: *{self.coins_made}*"""
+
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.items_sold = state.get("items_sold", 0)
+            self.coins_made = state.get("coins_made", 0)
 
     class KnucklebonesStats():
         def __init__(self):
@@ -91,6 +121,15 @@ class Stats():
             Games Won: *{self.games_won}*
             Games Tied: *{self.games_tied}*
             Coins Won: *{self.coins_won}*"""
+
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.games_won = state.get("games_won", 0)
+            self.games_tied = state.get("games_tied", 0)
+            self.games_played = state.get("games_played", 0)
+            self.coins_won = state.get("coins_won", 0)
 
     def __init__(self):
         self.fish = self.FishStats()
@@ -112,6 +151,15 @@ class Stats():
         # Can simply change the order of this list if I want the pages
         # to be organized differently.
         return [self.fish, self.mail, self.market, self.knucklebones]
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.fish = state.get("fish", self.FishStats())
+        self.mail = state.get("mail", self.MailStats())
+        self.market = state.get("market", self.MarketStats())
+        self.knucklebones = state.get("knucklebones", self.KnucklebonesStats())
 
 
 class StatView(discord.ui.View):
@@ -139,11 +187,10 @@ class StatView(discord.ui.View):
         else:
             stat_class = player_stats.list()[self._page]
 
-        title = stat_class.get_name()
+        title = f"{self._user.display_name}'s Stats"
         page_str = f"({self._page + 1}/{len(self._stats_list)})"
-        description = stat_class.get_stats_str()
-        # Using "timestamp" as a way to communicate the current page to the user
-        return Embed(title=title, description=description, timestamp=page_str)
+        description = f"**{stat_class.get_name()}**\n\n{stat_class.get_stats_str()}\n\n*{page_str}*"
+        return Embed(title=title, description=description)
 
     def next_page(self):
         self._page = (self._page + 1) % len(self._stats_list)
@@ -152,3 +199,6 @@ class StatView(discord.ui.View):
     def prev_page(self):
         self._page = (self._page - 1) % len(self._stats_list)
         return self.get_current_page_info()
+
+    def get_user(self):
+        return self._user
