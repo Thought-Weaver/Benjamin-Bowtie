@@ -39,7 +39,7 @@ class Adventures(commands.Cog):
     def _get_player(self, guild_id: int, user_id: int) -> Player:
         return self._database[str(guild_id)]["members"][str(user_id)]
 
-    @tasks.loop(seconds=15)
+    @tasks.loop(hour=1)
     async def save_database(self):
         if os.path.isfile("./adventuresdb.json"):
             shutil.copy("adventuresdb.json", "adventuresdbbackup.json")
