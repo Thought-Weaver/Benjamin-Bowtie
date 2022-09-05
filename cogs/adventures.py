@@ -143,7 +143,11 @@ class Adventures(commands.Cog):
 
         embed = Embed(
             title="Welcome to Knucklebones!",
-            description="Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\nIf the opponent has dice of the same value in that same column, those dice are removed from their board.\n\nTwo of the same die in a single column double their value. Three of the same die triple their value.\n\nWhen one player fills their board with dice, the game is over. The player with the most points wins.\n\nThe game will begin when the other player accepts the invitation to play."
+            description="Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\n" \
+            "If the opponent has dice of the same value in that same column, those dice are removed from their board.\n\n" \
+            "Two of the same die in a single column double their value. Three of the same die triple their value.\n\n" \
+            "When one player fills their board with dice, the game is over. The player with the most points wins.\n\n" \
+            "The game will begin when the other player accepts the invitation to play."
         )
 
         await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, context.author, user, amount))

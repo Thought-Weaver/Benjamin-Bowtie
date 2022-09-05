@@ -32,11 +32,11 @@ class Stats():
             return "Fish Stats"
 
         def get_stats_str(self):
-            return f"""Tier 4 Caught: *{self.tier_4_caught}*
-            Tier 3 Caught: *{self.tier_3_caught}*
-            Tier 2 Caught: *{self.tier_2_caught}*
-            Tier 1 Caught: *{self.tier_1_caught}*
-            Tier 0 Caught: *{self.tier_0_caught}*"""
+            return f"Tier 4 Caught: *{self.tier_4_caught}*\n" \
+            f"Tier 3 Caught: *{self.tier_3_caught}*\n" \
+            f"Tier 2 Caught: *{self.tier_2_caught}*\n" \
+            f"Tier 1 Caught: *{self.tier_1_caught}*\n" \
+            f"Tier 0 Caught: *{self.tier_0_caught}*"
 
         def __getstate__(self):
             return self.__dict__
@@ -63,16 +63,14 @@ class Stats():
             return "Mail Stats"
 
         def get_stats_str(self):
-            return f"""Mail Sent: *{self.mail_sent}*
-            Mail Opened: *{self.mail_opened}*
-            
-            Items Sent: *{self.items_sent}*
-            Coins Sent: *{self.coins_sent}*
-            Messages Sent: *{self.messages_sent}*
-            
-            Items Received: *{self.items_received}*
-            Coins Received: *{self.coins_received}*
-            Messages Received: *{self.messages_received}*"""
+            return f"Mail Sent: *{self.mail_sent}*\n" \
+            f"Mail Opened: *{self.mail_opened}*\n\n" \
+            f"Items Sent: *{self.items_sent}*\n" \
+            f"Coins Sent: *{self.coins_sent}*\n" \
+            f"Messages Sent: *{self.messages_sent}*\n\n" \
+            f"Items Received: *{self.items_received}*\n" \
+            f"Coins Received: *{self.coins_received}*\n" \
+            f"Messages Received: *{self.messages_received}*"
 
         def __getstate__(self):
             return self.__dict__
@@ -96,8 +94,8 @@ class Stats():
             return "Market Stats"
 
         def get_stats_str(self):
-            return f"""Items Sold: *{self.items_sold}*
-            Coins Made: *{self.coins_made}*"""
+            return f"Items Sold: *{self.items_sold}*\n" \
+            f"Coins Made: *{self.coins_made}*"
 
         def __getstate__(self):
             return self.__dict__
@@ -117,10 +115,10 @@ class Stats():
             return "Knucklebones Stats"
 
         def get_stats_str(self):
-            return f"""Games Played: *{self.games_played}*
-            Games Won: *{self.games_won}*
-            Games Tied: *{self.games_tied}*
-            Coins Won: *{self.coins_won}*"""
+            return f"Games Played: *{self.games_played}*\n" \
+            f"Games Won: *{self.games_won}*\n" \
+            f"Games Tied: *{self.games_tied}*\n" \
+            f"Coins Won: *{self.coins_won}*"
 
         def __getstate__(self):
             return self.__dict__
