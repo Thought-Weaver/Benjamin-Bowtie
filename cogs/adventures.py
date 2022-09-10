@@ -14,6 +14,10 @@ from features.market import MarketView
 from features.player import Player
 from features.stats import StatCategory, StatView, Stats
 from features.shared.item import Item, LOADED_ITEMS, ItemKey
+from features.stories.forest import ForestStory
+from features.stories.ocean import OceanStory
+from features.stories.story import Story
+from features.stories.underworld import UnderworldStory
 from games.knucklebones import Knucklebones
 
 from typing import TYPE_CHECKING
@@ -37,12 +41,21 @@ class Adventures(commands.Cog):
         if self._database.get(guild_id_str) is None:
             self._database[guild_id_str] = {}
             self._database[guild_id_str]["members"] = {}
+
+        if self._database.get("stories") is None:
+            self._database[guild_id_str]["stories"] = {}
+            self._database[guild_id_str]["stories"][Story.Forest] = ForestStory()
+            self._database[guild_id_str]["stories"][Story.Ocean] = OceanStory()
+            self._database[guild_id_str]["stories"][Story.Underworld] = UnderworldStory()
         
         if self._database[guild_id_str]["members"].get(user_id_str) is None:
             self._database[guild_id_str]["members"][user_id_str] = Player()
 
     def _get_player(self, guild_id: int, user_id: int) -> Player:
         return self._database[str(guild_id)]["members"][str(user_id)]
+
+    def _get_story(self, guild_id: int, story_key: Story):
+        return self._database[str(guild_id)]["stories"][story_key]
 
     @tasks.loop(hours=1)
     async def save_database(self):
@@ -66,7 +79,7 @@ class Adventures(commands.Cog):
         rand_val = random.random()
         fishing_result: Item = None
 
-        author_player: Player = self._database[str(context.guild.id)]["members"][str(context.author.id)]
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
         player_stats: Stats = author_player.get_stats()
 
         # 55% chance of getting a Common non-fish reward
@@ -247,7 +260,7 @@ class Adventures(commands.Cog):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         rand_val = random.random()
 
-        author_player: Player = self._database[str(context.guild.id)]["members"][str(context.author.id)]
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
         author_inv: Inventory = author_player.get_inventory()
         if author_inv.get_coins() == 0:
             await context.send(f"You don't have any coins.")
@@ -279,8 +292,15 @@ class Adventures(commands.Cog):
             result: Item = random.choice(items)
             author_player.get_inventory().add_item(result)
             player_stats.wishingwell.items_received += 1
+            embed = Embed(
+                title="You toss the coin in...",
+                description="It plummets into the darkness below. Then, you close your eyes and are surrounded by a gust of wind. You suddenly find yourself standing in front of your mailbox."
+            )
+            await context.send(embed=embed)
         # 0.01% chance of stirring something in the world
         if 0.9999 < rand_val <= 1:
+            story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
+            story.something_stirs += 1
             player_stats.wishingwell.something_stirs += 1
             embed = Embed(
                 title="You toss the coin in...",
