@@ -16,6 +16,10 @@ from features.stats import StatCategory, StatView, Stats
 from features.shared.item import Item, LOADED_ITEMS, ItemKey
 from games.knucklebones import Knucklebones
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from features.inventory import Inventory
+
 
 class Adventures(commands.Cog):
     def __init__(self, bot: BenjaminBowtieBot):
@@ -73,7 +77,7 @@ class Adventures(commands.Cog):
                 LOADED_ITEMS.get_new_item(ItemKey.Conch)
             ]
             fishing_result = random.choice(items)
-            player_stats.fish.tier_4_caught += 1
+            player_stats.fish.common_items_caught += 1
         # 20% chance of getting a Common fish reward
         if 0.55 < rand_val < 0.75:
             items = [
@@ -82,7 +86,7 @@ class Adventures(commands.Cog):
                 LOADED_ITEMS.get_new_item(ItemKey.Shrimp)
             ]
             fishing_result = random.choice(items)
-            player_stats.fish.tier_3_caught += 1
+            player_stats.fish.common_fish_caught += 1
         # 15% chance of getting an Uncommon fish reward
         if 0.75 < rand_val < 0.9:
             items = [
@@ -90,7 +94,7 @@ class Adventures(commands.Cog):
                 LOADED_ITEMS.get_new_item(ItemKey.Pufferfish)
             ]
             fishing_result = random.choice(items)
-            player_stats.fish.tier_2_caught += 1
+            player_stats.fish.uncommon_fish_caught += 1
         # 9.5% chance of getting a Rare fish reward
         if 0.9 < rand_val < 0.995:
             items = [
@@ -100,7 +104,7 @@ class Adventures(commands.Cog):
                 LOADED_ITEMS.get_new_item(ItemKey.Shark)
             ]
             fishing_result = random.choice(items)
-            player_stats.fish.tier_1_caught += 1
+            player_stats.fish.rare_fish_caught += 1
         # 0.49% chance of getting a Rare non-fish reward
         if 0.995 < rand_val < 0.9999:
             items = [
@@ -109,12 +113,12 @@ class Adventures(commands.Cog):
                 LOADED_ITEMS.get_new_item(ItemKey.MysteriousScroll)
             ]
             fishing_result = random.choice(items)
-            player_stats.fish.tier_0_caught += 1
+            player_stats.fish.rare_items_caught += 1
         # 0.01% chance of getting the Epic story reward
         if 0.9999 < rand_val <= 1.0:
             items = [LOADED_ITEMS.get_new_item(ItemKey.FishMaybe)]
             fishing_result = random.choice(items)
-            player_stats.fish.tier_0_caught += 1
+            player_stats.fish.epic_fish_caught += 1
         
         # E(X) =
         # 0.55 * (2 + 1 + 1) / 3 +
@@ -244,6 +248,11 @@ class Adventures(commands.Cog):
         rand_val = random.random()
 
         author_player: Player = self._database[str(context.guild.id)]["members"][str(context.author.id)]
+        author_inv: Inventory = author_player.get_inventory()
+        if author_inv.get_coins() == 0:
+            await context.send(f"You don't have any coins.")
+            return
+        author_inv.remove_coins(1)
         player_stats: Stats = author_player.get_stats()
 
         # E(X) = 0.995 * -1 + 0.0021 * 500 = 0.055 every 5 seconds -> 39.6 per hour

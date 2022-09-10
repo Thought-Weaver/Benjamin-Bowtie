@@ -1,5 +1,4 @@
 from __future__ import annotations
-from email.mime import base
 from io import TextIOWrapper
 
 import json
@@ -9,6 +8,7 @@ from aenum import Enum, skip
 from copy import deepcopy
 from strenum import StrEnum
 
+from types import MappingProxyType
 from typing import List
 
 # -----------------------------------------------------------------------------
@@ -37,16 +37,18 @@ class ClassTag(Enum):
         Necklace = "Necklace"
         Ring = "Ring"
 
-        class Weapon(StrEnum):
-            Weapon = "Weapon"
-            Dagger = "Dagger"
-            Sword = "Sword"
-            Greatsword = "Greatsword"
-            Knuckles = "Knuckles"
-            Spear = "Spear"
-            Bow = "Bow"
-            Staff = "Staff"
-            Shield = "Shield"
+    # Weapon types that can be generated
+    @skip
+    class Weapon(StrEnum):
+        Weapon = "Weapon"
+        Dagger = "Dagger"
+        Sword = "Sword"
+        Greatsword = "Greatsword"
+        Knuckles = "Knuckles"
+        Spear = "Spear"
+        Bow = "Bow"
+        Staff = "Staff"
+        Shield = "Shield"
 
     # Items that can be stacked and used for certain effects
     @skip
@@ -125,24 +127,17 @@ class Item():
         self._count = count
 
     @staticmethod
-    def load_from_key(key: ItemKey):
-        try:
-            file: TextIOWrapper = open(f"./{key}.json", "r")
-            item_data: dict = json.load(file)
-            item = Item(
-                item_data.get("key", ""),
-                item_data.get("icon", ""),
-                item_data.get("name", ""),
-                item_data.get("value", 0),
-                item_data.get("rarity", Rarity.Unknown),
-                item_data.get("class_tags", []),
-                item_data.get("state_tags", []),
-                item_data.get("count", 1)
-            )
-            return item
-        except Exception as e:
-            print(f"Error loading item: {e}", file=sys.stderr)
-            return None
+    def load_from_state(item_data: dict):
+        return Item(
+            item_data.get("key", ""),
+            item_data.get("icon", ""),
+            item_data.get("name", ""),
+            item_data.get("value", 0),
+            item_data.get("rarity", Rarity.Unknown),
+            item_data.get("class_tags", []),
+            item_data.get("state_tags", []),
+            item_data.get("count", 1)
+        )
 
     def remove_amount(self, amount: int):
         if amount <= self._count:
@@ -217,32 +212,20 @@ class Item():
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        state_key = state.get("_key", "")
-        if state_key != "":
-            base_item: Item = LOADED_ITEMS.get_new_item(state_key)
-            self._key = base_item.get_key()
-            self._icon = base_item.get_icon()
-            self._name = base_item.get_name()
-            self._value = base_item.get_value()
-            self._rarity = base_item.get_rarity()
-            self._class_tags = base_item.get_class_tags()
-        else:
-            self._key = state.get("_key", "")
-            self._icon = state.get("_icon", "")
-            self._name = state.get("_name", "")
-            self._value = state.get("_value", 0)
-            self._rarity = state.get("_rarity", Rarity.Unknown)
-            self._class_tags = state.get("_class_tags", [])
+        base_data = LOADED_ITEMS.get_item_state(state["_key"])
 
+        # Always replace these values; the base data overrides them.
+        self._key = base_data.get("key", "")
+        self._icon = base_data.get("icon", "")
+        self._name = base_data.get("name", "")
+        self._value = base_data.get("value", 0)
+        self._rarity = base_data.get("rarity", Rarity.Unknown)
+        self._class_tags = base_data.get("class_tags", [])
+        
+        # These are stateful values and we use what's loaded from the database.
         self._state_tags = state.get("_state_tags", [])
-        self._count = state.get("_count", 0)
+        self._count = state.get("_count", 1)
 
-
-# Using a class that loads the item instead of a global dict with
-# state dicts makes more sense since I imagine I'll soon be subtyping
-# Item to make additional classes (Armor, Weapon, etc.). With a dict like
-# this, I'd have to specify multiple times in the code what class to init.
-# My only concern is deepcopy failing.
 
 # I'm doing it this way because having a dict[ItemKey, Item] would
 # mean that using the items in the dict would all point to the same
@@ -254,32 +237,16 @@ class Item():
 # with multiple potentially happening every second, that could yield
 # a lot of errors due to the file being locked.
 class LoadedItems():
-    _items: dict[ItemKey, Item] = {
-        ItemKey.BasicBoots: Item.load_from_key(ItemKey.BasicBoots),
-        ItemKey.ClumpOfLeaves: Item.load_from_key(ItemKey.ClumpOfLeaves),
-        ItemKey.Conch: Item.load_from_key(ItemKey.Conch),
+    _states: MappingProxyType[ItemKey, dict] = MappingProxyType({
+        item_key.value: json.load(open(f"./features/{item_key.value}.json", "r")) for item_key in ItemKey
+    })
 
-        ItemKey.Minnow: Item.load_from_key(ItemKey.Minnow),
-        ItemKey.Roughy: Item.load_from_key(ItemKey.Roughy),
-        ItemKey.Shrimp: Item.load_from_key(ItemKey.Shrimp),
-
-        ItemKey.Oyster: Item.load_from_key(ItemKey.Oyster),
-        ItemKey.Pufferfish: Item.load_from_key(ItemKey.Pufferfish),
-
-        ItemKey.Squid: Item.load_from_key(ItemKey.Squid),
-        ItemKey.Crab: Item.load_from_key(ItemKey.Crab),
-        ItemKey.Lobster: Item.load_from_key(ItemKey.Lobster),
-        ItemKey.Shark: Item.load_from_key(ItemKey.Shark),
-
-        ItemKey.Diamond: Item.load_from_key(ItemKey.Diamond),
-        ItemKey.AncientVase: Item.load_from_key(ItemKey.AncientVase),
-        ItemKey.MysteriousScroll: Item.load_from_key(ItemKey.MysteriousScroll),
-
-        ItemKey.FishMaybe: Item.load_from_key(ItemKey.FishMaybe),
-    }
+    def get_item_state(self, key: ItemKey):
+        return self._states[key]
 
     def get_new_item(self, key: ItemKey):
-        return deepcopy(self._items[key])
+        # TODO: Figure out how to handle classes that inherit from Item in the future
+        return Item.load_from_state(self._states[key])
 
 # -----------------------------------------------------------------------------
 # GLOBALS

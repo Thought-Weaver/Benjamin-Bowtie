@@ -1,6 +1,6 @@
 {
     "key": "items/creature/fish/pufferfish",
-    "icon": "🐡",
+    "icon": "\ud83d\udc21",
     "name": "Pufferfish",
     "value": 5,
     "rarity": "Uncommon",

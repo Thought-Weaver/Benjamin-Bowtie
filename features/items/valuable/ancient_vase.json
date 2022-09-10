@@ -1,7 +1,7 @@
 {
     "key": "items/valuable/ancient_vase",
-    "icon": "🏺",
-    "name": "Roughy",
+    "icon": "\ud83c\udffa",
+    "name": "Ancient Vase",
     "value": 40,
     "rarity": "Rare",
     "class_tags": ["Valuable"],

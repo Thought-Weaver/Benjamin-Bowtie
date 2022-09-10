@@ -1,4 +1,4 @@
-from enum import Enum
+from strenum import StrEnum
 
 # Expertise is similar to a class system in RPG games, such as being able to
 # level Illusion magic in Skyrim or level cooking in WoW. While somewhat related
@@ -8,7 +8,7 @@ from enum import Enum
 
 # If I need to change something, always change the enum key
 # never the value, since I use the values to store data.
-class ExpertiseCategoryNames(Enum):
+class ExpertiseCategoryNames(StrEnum):
     Fisher = "Fishing"
     Merchant = "Merchant"
 

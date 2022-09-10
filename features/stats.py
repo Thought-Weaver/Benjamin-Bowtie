@@ -40,7 +40,7 @@ class Stats():
             f"Common Fish Caught: *{self.common_fish_caught}*\n" \
             f"Uncommon Fish Caught: *{self.uncommon_fish_caught}*\n" \
             f"Rare Fish Caught: *{self.rare_fish_caught}*\n" \
-            f"Epic Fish Caught: {self.epic_fish_caught}*"
+            f"Epic Fish Caught: *{self.epic_fish_caught}*"
 
         def __getstate__(self):
             return self.__dict__
@@ -159,10 +159,14 @@ class Stats():
             return "Wishing Well Stats"
 
         def get_stats_str(self):
-            return f"Coins Tossed: *{self.coins_tossed}*\n" \
-            f"||Coins Received||: *{self.coins_received}*\n" if self.coins_received != 0 else "" \
-            f"||Items Received||: *{self.items_received}*\n" if self.items_received != 0 else "" \
-            f"||Something Stirs||: *{self.something_stirs}*" if self.something_stirs != 0 else ""
+            stats_str = f"Coins Tossed: *{self.coins_tossed}*"
+            if self.coins_received != 0:
+                stats_str += f"\n||Coins Received||: *{self.coins_received}*"
+            if self.items_received != 0:
+                stats_str += f"\n||Items Received||: *{self.items_received}*"
+            if self.something_stirs != 0:
+                stats_str += f"\n||Something Stirs||: *{self.something_stirs}*"
+            return stats_str
 
         def __getstate__(self):
             return self.__dict__
@@ -218,7 +222,7 @@ class StatView(discord.ui.View):
         self._user = user
         self._stat_category = stat_category
         self._page = 0
-        self._stats_list = Stats().list() # Should be in sync with player Stats.list() always
+        self._stats_list = Stats().list() # Should be in sync with the player's Stats.list() always
 
         if stat_category is None:
             self.add_item(PrevButton(0))
@@ -234,8 +238,8 @@ class StatView(discord.ui.View):
             stat_class = player_stats.list()[self._page]
 
         title = f"{self._user.display_name}'s Stats"
-        page_str = f"({self._page + 1}/{len(self._stats_list)})"
-        description = f"**{stat_class.get_name()}**\n\n{stat_class.get_stats_str()}\n\n*{page_str}*"
+        page_str = f"*({self._page + 1}/{len(self._stats_list)})*" if self._stat_category is None else ""
+        description = f"**{stat_class.get_name()}**\n\n{stat_class.get_stats_str()}\n\n{page_str}"
         return Embed(title=title, description=description)
 
     def next_page(self):

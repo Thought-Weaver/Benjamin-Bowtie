@@ -277,15 +277,20 @@ class MailboxButton(discord.ui.Button):
                 mail_message = f"From: {self._mail.get_sender_name()} (<t:{self._mail.get_send_date()}:R>)"
                 if self._mail.get_item() is not None:
                     mail_message += f"\n\nItem: {self._mail.get_item().get_full_name_and_count()} each worth {self._mail.get_item().get_value_str()}"
-                    player_stats.mail.items_received += 1
+                    # TODO: Replace this with an ID check
+                    if interaction.user.display_name != self._mail.get_sender_name():
+                        player_stats.mail.items_received += 1
                 if coins_received > 0:
                     mail_message += f"\n\nCoins: {coins_received}"
-                    player_stats.mail.coins_received += coins_received
+                    if interaction.user.display_name != self._mail.get_sender_name():
+                        player_stats.mail.coins_received += coins_received
                 if self._mail.get_message() != "":
                     mail_message += f"\n\nMessage:\n\n{self._mail.get_message()}"
-                    player_stats.mail.messages_received += 1
+                    if interaction.user.display_name != self._mail.get_sender_name():
+                        player_stats.mail.messages_received += 1
 
-                player_stats.mail.mail_opened += 1
+                if interaction.user.display_name != self._mail.get_sender_name():
+                    player_stats.mail.mail_opened += 1
 
                 await interaction.user.send(mail_message)
             else:
