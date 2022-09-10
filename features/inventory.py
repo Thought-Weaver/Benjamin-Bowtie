@@ -129,7 +129,7 @@ class InventoryButton(discord.ui.Button):
         player: Player = view.get_player()
         coins_str = player.get_inventory().get_coins_str()
 
-        await interaction.edit_original_response(embed=Embed(
+        await interaction.response.edit_message(content=None, view=view, embed=Embed(
             title=f"{view.get_user().display_name}'s Inventory",
             description=f"You have {coins_str}.\n\n" \
                         f"──────────\n{self._item}\n──────────\n\n" \
