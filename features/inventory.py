@@ -222,12 +222,11 @@ class Item():
         self._count = state.get("_count", 0)
         self._rarity = state.get("_rarity", Rarity.Unknown)
 
-# TODO: I'm doing it this way because having a dict[ItemKey, Item] would
+
+# I'm doing it this way because having a dict[ItemKey, Item] would
 # mean that using the items in the dict would all point to the same
 # reference of the object. That seems extremely risky, even if I copy
-# the object every time I use the dict. Now, I could make it a class
-# and use a method that automatically copies the item, which might
-# work better?
+# the object every time I use the dict.
 # 
 # The reason I don't want to use Item.load_from_key every
 # time I need a new object is because I/O operations are expensive and
@@ -259,37 +258,6 @@ ITEM_STATES: MappingProxyType[ItemKey, dict] = MappingProxyType({
 
     ItemKey.FishMaybe: json.load(open(f"./{ItemKey.FishMaybe}.json", "r")),
 })
-
-# class LoadedItems():
-#     _items: dict[ItemKey, Item] = {
-#         ItemKey.BasicBoots: Item.load_from_key(ItemKey.BasicBoots),
-#         ItemKey.ClumpOfLeaves: Item.load_from_key(ItemKey.ClumpOfLeaves),
-#         ItemKey.Conch: Item.load_from_key(ItemKey.Conch),
-
-#         ItemKey.Minnow: Item.load_from_key(ItemKey.Minnow),
-#         ItemKey.Roughy: Item.load_from_key(ItemKey.Roughy),
-#         ItemKey.Shrimp: Item.load_from_key(ItemKey.Shrimp),
-
-#         ItemKey.Oyster: Item.load_from_key(ItemKey.Oyster),
-#         ItemKey.Pufferfish: Item.load_from_key(ItemKey.Pufferfish),
-
-#         ItemKey.Squid: Item.load_from_key(ItemKey.Squid),
-#         ItemKey.Crab: Item.load_from_key(ItemKey.Crab),
-#         ItemKey.Lobster: Item.load_from_key(ItemKey.Lobster),
-#         ItemKey.Shark: Item.load_from_key(ItemKey.Shark),
-
-#         ItemKey.Diamond: Item.load_from_key(ItemKey.Diamond),
-#         ItemKey.AncientVase: Item.load_from_key(ItemKey.AncientVase),
-#         ItemKey.MysteriousScroll: Item.load_from_key(ItemKey.MysteriousScroll),
-
-#         ItemKey.FishMaybe: Item.load_from_key(ItemKey.FishMaybe),
-#     }
-
-#     def get_new_item(self, key: ItemKey):
-#         return deepcopy(self._items[key])
-
-
-# LOADED_ITEMS = LoadedItems()
 
 
 class Inventory():
