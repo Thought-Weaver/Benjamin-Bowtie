@@ -8,11 +8,12 @@ from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
-from features.inventory import ITEM_STATES, Item, InventoryView, ItemKey
+from features.inventory import InventoryView
 from features.mail import MailView, MailboxView
 from features.market import MarketView
 from features.player import Player
 from features.stats import StatCategory, StatView, Stats
+from features.shared.item import Item, LOADED_ITEMS, ItemKey
 from games.knucklebones import Knucklebones
 
 
@@ -67,51 +68,51 @@ class Adventures(commands.Cog):
         # 55% chance of getting a Common non-fish reward
         if 0.0 <= rand_val < 0.55:
             items = [
-                Item.load_from_state(ITEM_STATES[ItemKey.BasicBoots]), 
-                Item.load_from_state(ITEM_STATES[ItemKey.ClumpOfLeaves]), 
-                Item.load_from_state(ITEM_STATES[ItemKey.Conch])
+                LOADED_ITEMS.get_new_item(ItemKey.BasicBoots), 
+                LOADED_ITEMS.get_new_item(ItemKey.ClumpOfLeaves), 
+                LOADED_ITEMS.get_new_item(ItemKey.Conch)
             ]
             fishing_result = random.choice(items)
             player_stats.fish.tier_4_caught += 1
         # 20% chance of getting a Common fish reward
         if 0.55 < rand_val < 0.75:
             items = [
-                Item.load_from_state(ITEM_STATES[ItemKey.Minnow]),
-                Item.load_from_state(ITEM_STATES[ItemKey.Roughy]),
-                Item.load_from_state(ITEM_STATES[ItemKey.Shrimp])
+                LOADED_ITEMS.get_new_item(ItemKey.Minnow),
+                LOADED_ITEMS.get_new_item(ItemKey.Roughy),
+                LOADED_ITEMS.get_new_item(ItemKey.Shrimp)
             ]
             fishing_result = random.choice(items)
             player_stats.fish.tier_3_caught += 1
         # 15% chance of getting an Uncommon fish reward
         if 0.75 < rand_val < 0.9:
             items = [
-                Item.load_from_state(ITEM_STATES[ItemKey.Oyster]),
-                Item.load_from_state(ITEM_STATES[ItemKey.Pufferfish])
+                LOADED_ITEMS.get_new_item(ItemKey.Oyster),
+                LOADED_ITEMS.get_new_item(ItemKey.Pufferfish)
             ]
             fishing_result = random.choice(items)
             player_stats.fish.tier_2_caught += 1
         # 9.5% chance of getting a Rare fish reward
         if 0.9 < rand_val < 0.995:
             items = [
-                Item.load_from_state(ITEM_STATES[ItemKey.Squid]),
-                Item.load_from_state(ITEM_STATES[ItemKey.Crab]),
-                Item.load_from_state(ITEM_STATES[ItemKey.Lobster]),
-                Item.load_from_state(ITEM_STATES[ItemKey.Shark])
+                LOADED_ITEMS.get_new_item(ItemKey.Squid),
+                LOADED_ITEMS.get_new_item(ItemKey.Crab),
+                LOADED_ITEMS.get_new_item(ItemKey.Lobster),
+                LOADED_ITEMS.get_new_item(ItemKey.Shark)
             ]
             fishing_result = random.choice(items)
             player_stats.fish.tier_1_caught += 1
         # 0.49% chance of getting a Rare non-fish reward
         if 0.995 < rand_val < 0.9999:
             items = [
-                Item.load_from_state(ITEM_STATES[ItemKey.Diamond]),
-                Item.load_from_state(ITEM_STATES[ItemKey.AncientVase]),
-                Item.load_from_state(ITEM_STATES[ItemKey.MysteriousScroll])
+                LOADED_ITEMS.get_new_item(ItemKey.Diamond),
+                LOADED_ITEMS.get_new_item(ItemKey.AncientVase),
+                LOADED_ITEMS.get_new_item(ItemKey.MysteriousScroll)
             ]
             fishing_result = random.choice(items)
             player_stats.fish.tier_0_caught += 1
         # 0.01% chance of getting the Epic story reward
         if 0.9999 < rand_val <= 1.0:
-            items = [Item.load_from_state(ITEM_STATES[ItemKey.FishMaybe])]
+            items = [LOADED_ITEMS.get_new_item(ItemKey.FishMaybe)]
             fishing_result = random.choice(items)
             player_stats.fish.tier_0_caught += 1
         
@@ -235,6 +236,50 @@ class Adventures(commands.Cog):
         stat_view = StatView(self._bot, self._database, context.guild.id, context.author, stat_category_name)
         embed = stat_view.get_current_page_info()
         await context.send(embed=embed, view=stat_view)
+
+    @commands.command(name="wishingwell", help="Toss a coin into the wishing well", aliases=["ww"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def wishing_well_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        rand_val = random.random()
+
+        author_player: Player = self._database[str(context.guild.id)]["members"][str(context.author.id)]
+        player_stats: Stats = author_player.get_stats()
+
+        # E(X) = 0.995 * -1 + 0.0021 * 500 = 0.055 every 5 seconds -> 39.6 per hour
+
+        # 99.5% chance of getting nothing
+        if 0.0 <= rand_val < 0.995:
+            embed = Embed(
+                title="You toss the coin in...",
+                description="It plummets into the darkness below and hits the bottom with a resounding clink."
+            )
+            await context.send(embed=embed)
+        # 0.21% chance of getting 500 coins
+        if 0.995 < rand_val < 0.9971:
+            author_player.get_inventory().add_coins(500)
+            player_stats.wishingwell.coins_received += 500
+            embed = Embed(
+                title="You toss the coin in...",
+                description="It plummets into the darkness below and you feel a sense of duplication. One becoming many."
+            )
+            await context.send(embed=embed)
+        # 0.28% chance of getting an Epic item
+        if 0.9971 < rand_val < 0.9999:
+            items = []
+            result: Item = random.choice(items)
+            author_player.get_inventory().add_item(result)
+            player_stats.wishingwell.items_received += 1
+        # 0.01% chance of stirring something in the world
+        if 0.9999 < rand_val <= 1:
+            player_stats.wishingwell.something_stirs += 1
+            embed = Embed(
+                title="You toss the coin in...",
+                description="It plummets into the darkness below." \
+                    "Down, down it goes -- past the bottom of the well, through rock and flowing fire into deeper darkness still, down into a place the living believe only superstition.\n\n" \
+                    "Somewhere deep in the sunless underworld... something stirs."
+            )
+            await context.send(embed=embed)
 
 
 async def setup(bot: BenjaminBowtieBot):

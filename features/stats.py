@@ -2,16 +2,17 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
-from enum import Enum
+from strenum import LowercaseStrEnum
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
 
-class StatCategory(Enum):
+class StatCategory(LowercaseStrEnum):
     Fish = "fish"
     Mail = "mail"
     Market = "market"
     Knucklebones = "knucklebones"
+    WishingWell = "wishingwell"
 
 # Based on the command names; the user will do b!stats [name] or omit the name
 # and get all of them at once. I'm using a class to help with deserializing the
@@ -59,9 +60,15 @@ class Stats():
             self.items_sent: int = 0
             self.coins_sent: int = 0
             self.messages_sent: int = 0
+
             self.items_received: int = 0
             self.coins_received: int = 0
             self.messages_received: int = 0
+
+            self.mail_sent_to_self: int = 0
+            self.items_sent_to_self: int = 0
+            self.coins_sent_to_self: int = 0
+            self.messages_sent_to_self: int = 0
 
         def get_name(self):
             return "Mail Stats"
@@ -74,7 +81,11 @@ class Stats():
             f"Messages Sent: *{self.messages_sent}*\n\n" \
             f"Items Received: *{self.items_received}*\n" \
             f"Coins Received: *{self.coins_received}*\n" \
-            f"Messages Received: *{self.messages_received}*"
+            f"Messages Received: *{self.messages_received}*\n\n" \
+            f"Mail Sent to Self: *{self.mail_sent_to_self}*\n" \
+            f"Items Sent to Self: *{self.items_sent_to_self}*\n" \
+            f"Coins Sent to Self: *{self.coins_sent_to_self}*\n" \
+            f"Messages Sent to Self: *{self.messages_sent_to_self}*"
 
         def __getstate__(self):
             return self.__dict__
@@ -88,6 +99,10 @@ class Stats():
             self.items_received = state.get("items_received", 0)
             self.coins_received = state.get("coins_received", 0)
             self.messages_received = state.get("messages_received", 0)
+            self.mail_sent_to_self = state.get("mail_sent_to_self", 0)
+            self.items_sent_to_self = state.get("items_sent_to_self", 0)
+            self.coins_sent_to_self = state.get("coins_sent_to_self", 0)
+            self.messages_sent_to_self = state.get("messages_sent_to_self", 0)
 
     class MarketStats():
         def __init__(self):
@@ -133,11 +148,37 @@ class Stats():
             self.games_played = state.get("games_played", 0)
             self.coins_won = state.get("coins_won", 0)
 
+    class WishingWellStats():
+        def __init__(self):
+            self.coins_tossed: int = 0
+            self.coins_received: int = 0
+            self.items_received: int = 0
+            self.something_stirs: int = 0
+
+        def get_name(self):
+            return "Wishing Well Stats"
+
+        def get_stats_str(self):
+            return f"Coins Tossed: *{self.coins_tossed}*\n" \
+            f"||Coins Received||: *{self.coins_received}*\n" if self.coins_received != 0 else "" \
+            f"||Items Received||: *{self.items_received}*\n" if self.items_received != 0 else "" \
+            f"||Something Stirs||: *{self.something_stirs}*" if self.something_stirs != 0 else ""
+
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.coins_tossed = state.get("coins_tossed", 0)
+            self.coins_received = state.get("coins_received", 0)
+            self.items_received = state.get("items_received", 0)
+            self.something_stirs = state.get("something_stirs", 0)
+
     def __init__(self):
         self.fish = self.FishStats()
         self.mail = self.MailStats()
         self.market = self.MarketStats()
         self.knucklebones = self.KnucklebonesStats()
+        self.wishingwell = self.WishingWellStats()
 
     def category_to_class(self, category: StatCategory):
         if category == category.Fish:
@@ -148,11 +189,13 @@ class Stats():
             return self.market
         if category == category.Knucklebones:
             return self.knucklebones
+        if category == category.WishingWell:
+            return self.wishingwell
 
     def list(self):
         # Can simply change the order of this list if I want the pages
         # to be organized differently.
-        return [self.fish, self.mail, self.market, self.knucklebones]
+        return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell]
 
     def __getstate__(self):
         return self.__dict__
@@ -162,6 +205,7 @@ class Stats():
         self.mail = state.get("mail", self.MailStats())
         self.market = state.get("market", self.MarketStats())
         self.knucklebones = state.get("knucklebones", self.KnucklebonesStats())
+        self.wishingwell = state.get("wishingwell", self.WishingWellStats())
 
 
 class StatView(discord.ui.View):

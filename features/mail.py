@@ -231,13 +231,22 @@ class MailModal(discord.ui.Modal):
                 await interaction.response.send_message(f"You mailed a letter to {self._giftee.display_name}!")
         
         player_stats: Stats = player.get_stats()
-        player_stats.mail.items_sent += num_items_to_send
-        player_stats.mail.coins_sent += sent_coins
+        if giftee_player == player:
+            player_stats.mail.items_sent_to_self += num_items_to_send
+            player_stats.mail.coins_sent_to_self += sent_coins
 
-        if self._message_input.value != "":
-            player_stats.mail.messages_sent += 1
+            if self._message_input.value != "":
+                player_stats.mail.messages_sent_to_self += 1
 
-        player_stats.mail.mail_sent += 1
+            player_stats.mail.mail_sent_to_self += 1
+        else:
+            player_stats.mail.items_sent += num_items_to_send
+            player_stats.mail.coins_sent += sent_coins
+
+            if self._message_input.value != "":
+                player_stats.mail.messages_sent += 1
+
+            player_stats.mail.mail_sent += 1
         
         await self._view.refresh(self._message_id)
 

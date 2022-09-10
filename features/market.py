@@ -9,9 +9,9 @@ from features.shared.prevbutton import PrevButton
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
-    from features.inventory import Item
     from features.player import Player
     from features.stats import Stats
+    from features.shared.item import Item
 
 
 class InventorySellButton(discord.ui.Button):
