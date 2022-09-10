@@ -68,7 +68,7 @@ class Adventures(commands.Cog):
             file.write(frozen)
     
     @commands.is_owner()
-    @commands.command(name="saveadventures", help="Saves the adventures database")
+    @commands.command(name="saveadventures", help="Saves the adventures database", hidden=True)
     async def save_adventures_handler(self, context: commands.Context):
         await self.save_database()
         await context.send("The adventures database has been saved!")
