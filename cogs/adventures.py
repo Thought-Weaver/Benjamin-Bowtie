@@ -2,6 +2,7 @@ import jsonpickle
 import os
 import random
 import shutil
+import time
 
 from discord import User
 from discord.embeds import Embed
@@ -9,7 +10,7 @@ from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
 from features.inventory import InventoryView
-from features.mail import MailView, MailboxView
+from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
 from features.player import Player
 from features.stats import StatCategory, StatView, Stats
@@ -92,7 +93,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.common_items_caught += 1
         # 20% chance of getting a Common fish reward
-        if 0.55 < rand_val < 0.75:
+        if 0.55 <= rand_val < 0.75:
             items = [
                 LOADED_ITEMS.get_new_item(ItemKey.Minnow),
                 LOADED_ITEMS.get_new_item(ItemKey.Roughy),
@@ -101,7 +102,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.common_fish_caught += 1
         # 15% chance of getting an Uncommon fish reward
-        if 0.75 < rand_val < 0.9:
+        if 0.75 <= rand_val < 0.9:
             items = [
                 LOADED_ITEMS.get_new_item(ItemKey.Oyster),
                 LOADED_ITEMS.get_new_item(ItemKey.Pufferfish)
@@ -109,7 +110,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.uncommon_fish_caught += 1
         # 9.5% chance of getting a Rare fish reward
-        if 0.9 < rand_val < 0.995:
+        if 0.9 <= rand_val < 0.995:
             items = [
                 LOADED_ITEMS.get_new_item(ItemKey.Squid),
                 LOADED_ITEMS.get_new_item(ItemKey.Crab),
@@ -119,7 +120,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.rare_fish_caught += 1
         # 0.49% chance of getting a Rare non-fish reward
-        if 0.995 < rand_val < 0.9999:
+        if 0.995 <= rand_val < 0.9999:
             items = [
                 LOADED_ITEMS.get_new_item(ItemKey.Diamond),
                 LOADED_ITEMS.get_new_item(ItemKey.AncientVase),
@@ -128,7 +129,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.rare_items_caught += 1
         # 0.01% chance of getting the Epic story reward
-        if 0.9999 < rand_val <= 1.0:
+        if 0.9999 <= rand_val <= 1.0:
             items = [LOADED_ITEMS.get_new_item(ItemKey.FishMaybe)]
             fishing_result = random.choice(items)
             player_stats.fish.epic_fish_caught += 1
@@ -278,7 +279,7 @@ class Adventures(commands.Cog):
             )
             await context.send(embed=embed)
         # 0.21% chance of getting 500 coins
-        if 0.995 < rand_val < 0.9971:
+        if 0.995 <= rand_val < 0.9971:
             author_player.get_inventory().add_coins(500)
             player_stats.wishingwell.coins_received += 500
             embed = Embed(
@@ -287,10 +288,15 @@ class Adventures(commands.Cog):
             )
             await context.send(embed=embed)
         # 0.28% chance of getting an Epic item
-        if 0.9971 < rand_val < 0.9999:
-            items = []
+        if 0.9971 <= rand_val < 0.9999:
+            items = [
+                LOADED_ITEMS.get_new_item(ItemKey.Diamond),
+                LOADED_ITEMS.get_new_item(ItemKey.AncientVase),
+                LOADED_ITEMS.get_new_item(ItemKey.MysteriousScroll)
+            ]
             result: Item = random.choice(items)
-            author_player.get_inventory().add_item(result)
+            mail: Mail = Mail("Wishing Well", result, 0, "Not a gift. A trade.", str(time.time()).split(".")[0], -1)
+            author_player.get_mailbox().append(mail)
             player_stats.wishingwell.items_received += 1
             embed = Embed(
                 title="You toss the coin in...",
@@ -298,7 +304,7 @@ class Adventures(commands.Cog):
             )
             await context.send(embed=embed)
         # 0.01% chance of stirring something in the world
-        if 0.9999 < rand_val <= 1:
+        if 0.9999 <= rand_val <= 1:
             story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
 
             embed = Embed(
