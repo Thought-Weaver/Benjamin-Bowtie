@@ -1,0 +1,10 @@
+{
+    "key": "items/creature/fish/minnow",
+    "icon": "🐟",
+    "name": "Minnow",
+    "value": 3,
+    "rarity": "Common",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

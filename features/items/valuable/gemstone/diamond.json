@@ -1,0 +1,10 @@
+{
+    "key": "items/valuable/gemstone/diamond",
+    "icon": "💎",
+    "name": "Diamond",
+    "value": 50,
+    "rarity": "Rare",
+    "class_tags": ["Valuable", "Gemstone"],
+    "state_tags": [],
+    "count": 1
+}

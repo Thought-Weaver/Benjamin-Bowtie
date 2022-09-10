@@ -94,18 +94,24 @@ class MarketView(discord.ui.View):
         self._page += 1
         self._get_current_page_buttons()
 
+        player: Player = self._get_player()
+        inventory = player.get_inventory()
+
         return Embed(
             title="Selling at the Market",
-            description="Choose an item from your inventory to sell!"
+            description=f"Choose an item from your inventory to sell. You have {inventory.get_coins_str()}."
         )
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
         self._get_current_page_buttons()
 
+        player: Player = self._get_player()
+        inventory = player.get_inventory()
+
         return Embed(
             title="Selling at the Market",
-            description="Choose an item from your inventory to sell!"
+            description=f"Choose an item from your inventory to sell. You have {inventory.get_coins_str()}."
         )
 
     def _display_initial_buttons(self):
@@ -115,9 +121,12 @@ class MarketView(discord.ui.View):
     def enter_sell_market(self):
         self._get_current_page_buttons()
         
+        player: Player = self._get_player()
+        inventory = player.get_inventory()
+
         return Embed(
             title="Selling at the Market",
-            description="Choose an item from your inventory to sell!"
+            description=f"Choose an item from your inventory to sell. You have {inventory.get_coins_str()}."
         )
 
     def sell_item(self, item_index: int, item: Item):
@@ -130,7 +139,7 @@ class MarketView(discord.ui.View):
         # that can happen with different views.
         embed = Embed(
             title="Selling at the Market",
-            description="Choose an item from your inventory to sell!\n\n*Error: That item couldn't be sold.*"
+            description=f"Choose an item from your inventory to sell. You have {inventory.get_coins_str()}.\n\n*Error: That item couldn't be sold.*"
         )
         adjusted_index = item_index + (self._page * self._NUM_PER_PAGE)
         found_index = inventory.item_exists(item)
@@ -139,7 +148,7 @@ class MarketView(discord.ui.View):
             inventory.add_coins(item.get_value())
             embed = Embed(
                 title="Selling at the Market",
-                description=f"Choose an item from your inventory to sell!\n\n*Sold 1 {item.get_full_name()} for {item.get_value_str()}!*"
+                description=f"Choose an item from your inventory to sell. You have {inventory.get_coins_str()}.\n\n*Sold 1 {item.get_full_name()} for {item.get_value_str()}!*"
             )
 
             player_stats: Stats = player.get_stats()

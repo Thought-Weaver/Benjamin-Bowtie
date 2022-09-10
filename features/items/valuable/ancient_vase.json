@@ -1,0 +1,10 @@
+{
+    "key": "items/valuable/ancient_vase",
+    "icon": "🏺",
+    "name": "Roughy",
+    "value": 40,
+    "rarity": "Rare",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

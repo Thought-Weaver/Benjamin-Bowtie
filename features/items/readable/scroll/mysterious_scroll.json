@@ -1,0 +1,10 @@
+{
+    "key": "items/readable/scroll/mysterious_scroll",
+    "icon": "📜",
+    "name": "Mysterious Scroll",
+    "value": 30,
+    "rarity": "Rare",
+    "class_tags": ["Readable", "Scroll", "Needs_Identification"],
+    "state_tags": [],
+    "count": 1
+}

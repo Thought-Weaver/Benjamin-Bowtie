@@ -1,0 +1,10 @@
+{
+    "key": "items/creature/fish/squid",
+    "icon": "🦑",
+    "name": "Squid",
+    "value": 10,
+    "rarity": "Rare",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

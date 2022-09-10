@@ -1,0 +1,10 @@
+{
+    "key": "items/creature/fish/fish_maybe",
+    "icon": "🐟",
+    "name": "Fish?",
+    "value": 1,
+    "rarity": "Epic",
+    "class_tags": ["Creature", "Needs_Identification"],
+    "state_tags": [],
+    "count": 1
+}

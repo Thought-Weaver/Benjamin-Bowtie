@@ -8,11 +8,11 @@ from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
-from features.inventory import Item, InventoryView
+from features.inventory import ITEM_STATES, Item, InventoryView, ItemKey
 from features.mail import MailView, MailboxView
 from features.market import MarketView
 from features.player import Player
-from features.stats import StatView, Stats
+from features.stats import StatCategory, StatView, Stats
 from games.knucklebones import Knucklebones
 
 
@@ -59,44 +59,70 @@ class Adventures(commands.Cog):
     async def fish_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         rand_val = random.random()
-        fishing_result:Item = None
+        fishing_result: Item = None
 
         author_player: Player = self._database[str(context.guild.id)]["members"][str(context.author.id)]
         player_stats: Stats = author_player.get_stats()
 
-        # 55% chance of getting a Tier 4 reward
+        # 55% chance of getting a Common non-fish reward
         if 0.0 <= rand_val < 0.55:
-            items = [Item("🥾", "Boot", 2), Item("🍂", "Clump of Leaves", 1), Item("🐚", "Conch", 1)]
+            items = [
+                Item.load_from_state(ITEM_STATES[ItemKey.BasicBoots]), 
+                Item.load_from_state(ITEM_STATES[ItemKey.ClumpOfLeaves]), 
+                Item.load_from_state(ITEM_STATES[ItemKey.Conch])
+            ]
             fishing_result = random.choice(items)
             player_stats.fish.tier_4_caught += 1
-        # 20% chance of getting a Tier 3 reward
+        # 20% chance of getting a Common fish reward
         if 0.55 < rand_val < 0.75:
-            items = [Item("🐟", "Minnow", 3), Item("🐠", "Roughy", 4), Item("🦐", "Shrimp", 3)]
+            items = [
+                Item.load_from_state(ITEM_STATES[ItemKey.Minnow]),
+                Item.load_from_state(ITEM_STATES[ItemKey.Roughy]),
+                Item.load_from_state(ITEM_STATES[ItemKey.Shrimp])
+            ]
             fishing_result = random.choice(items)
             player_stats.fish.tier_3_caught += 1
-        # 15% chance of getting a Tier 2 reward
+        # 15% chance of getting an Uncommon fish reward
         if 0.75 < rand_val < 0.9:
-            items = [Item("🦪", "Oyster", 4), Item("🐡", "Pufferfish", 5)]
+            items = [
+                Item.load_from_state(ITEM_STATES[ItemKey.Oyster]),
+                Item.load_from_state(ITEM_STATES[ItemKey.Pufferfish])
+            ]
             fishing_result = random.choice(items)
             player_stats.fish.tier_2_caught += 1
-        # 9% chance of getting a Tier 1 reward
-        if 0.9 < rand_val < 0.99:
-            items = [Item("🦑", "Squid", 10), Item("🦀", "Crab", 8), Item("🦞", "Lobster", 8), Item("🦈", "Shark", 10)]
+        # 9.5% chance of getting a Rare fish reward
+        if 0.9 < rand_val < 0.995:
+            items = [
+                Item.load_from_state(ITEM_STATES[ItemKey.Squid]), 
+                Item.load_from_state(ITEM_STATES[ItemKey.Crab]), 
+                Item.load_from_state(ITEM_STATES[ItemKey.Lobster]), 
+                Item.load_from_state(ITEM_STATES[ItemKey.Shark])
+            ]
             fishing_result = random.choice(items)
             player_stats.fish.tier_1_caught += 1
-        # 1% chance of getting a Tier 0 reward
-        if 0.99 < rand_val <= 1.0:
-            items = [Item("🏺", "Ancient Vase", 40), Item("💎", "Diamond", 50), Item("📜", "Mysterious Scroll", 30)]
+        # 0.49% chance of getting a Rare non-fish reward
+        if 0.995 < rand_val < 0.9999:
+            items = [
+                Item.load_from_state(ITEM_STATES[ItemKey.Diamond]),
+                Item.load_from_state(ITEM_STATES[ItemKey.AncientVase]),
+                Item.load_from_state(ITEM_STATES[ItemKey.MysteriousScroll])
+            ]
+            fishing_result = random.choice(items)
+            player_stats.fish.tier_0_caught += 1
+        # 0.01% chance of getting the Epic story reward
+        if 0.9999 < rand_val <= 1.0:
+            items = [Item.load_from_state(ITEM_STATES[ItemKey.FishMaybe])]
             fishing_result = random.choice(items)
             player_stats.fish.tier_0_caught += 1
         
-        # E(X) = 
-        # 0.55 * (2 + 1 + 1) / 3 + 
-        # 0.2 * (3 + 4 + 3) / 3 + 
-        # 0.15 * (4 + 5) / 2 + 
-        # 0.09 * (10 + 8 + 8) / 3 + 
-        # 0.01 * (25 + 50) / 2 = 
-        # 3.23 every 30 seconds -> 387.6 an hour
+        # E(X) =
+        # 0.55 * (2 + 1 + 1) / 3 +
+        # 0.2 * (3 + 4 + 3) / 3 +
+        # 0.15 * (4 + 5) / 2 +
+        # 0.095 * (10 + 8 + 8 + 10) / 3 +
+        # 0.0049 * (40 + 50 + 30) / 3 +
+        # 0.0001 * 1 =
+        # 3.41 every 30 seconds -> 409.2 an hour
         
         author_player.get_inventory().add_item(fishing_result)
 
@@ -204,7 +230,7 @@ class Adventures(commands.Cog):
         await context.send(embed=embed, view=MailboxView(self._bot, self._database, context.guild.id, context.author))
 
     @commands.command(name="stats", help="See your stats")
-    async def stats_handler(self, context: commands.Context, stat_category_name:str=None):
+    async def stats_handler(self, context: commands.Context, stat_category_name:StatCategory=None):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         stat_view = StatView(self._bot, self._database, context.guild.id, context.author, stat_category_name)
         embed = stat_view.get_current_page_info()

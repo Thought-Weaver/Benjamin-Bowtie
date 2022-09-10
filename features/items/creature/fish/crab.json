@@ -1,0 +1,10 @@
+{
+    "key": "items/creature/fish/crab",
+    "icon": "🦀",
+    "name": "Crab",
+    "value": 8,
+    "rarity": "Rare",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

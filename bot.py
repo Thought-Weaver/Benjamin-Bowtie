@@ -29,7 +29,8 @@ bot = BenjaminBowtieBot()
 # -----------------------------------------------------------------------------
 
 def setup_logger(name, log_file, level=logging.INFO):
-    formatter = logging.Formatter('%(asctime)s: %(name)s: %(levelname)s: %(message)s')
+    dt_fmt = "%Y-%m-%d %H:%M:%S"
+    formatter = logging.Formatter("[{asctime}] [{levelname:<8}] {name}: {message}", dt_fmt, style='{')
     handler = logging.FileHandler(log_file)
     handler.setFormatter(formatter)
 
@@ -39,8 +40,8 @@ def setup_logger(name, log_file, level=logging.INFO):
 
     return logger
 
-ERROR_LOGGER = setup_logger("error_logger", "errors.log", logging.ERROR)
-INFO_LOGGER = setup_logger("info_logger", "info.log")
+ERROR_LOGGER = setup_logger("discord", "errors.log", logging.ERROR)
+INFO_LOGGER = setup_logger("discord", "info.log")
 
 # -----------------------------------------------------------------------------
 # COMMAND HANDLERS
@@ -60,4 +61,4 @@ async def on_command_error(context: commands.Context, error):
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    bot.run(TOKEN)
+    bot.run(TOKEN, log_handler=None)

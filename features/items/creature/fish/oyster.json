@@ -1,0 +1,10 @@
+{
+    "key": "items/creature/fish/oyster",
+    "icon": "🦪",
+    "name": "Oyster",
+    "value": 4,
+    "rarity": "Uncommon",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

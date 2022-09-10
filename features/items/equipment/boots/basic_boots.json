@@ -1,0 +1,10 @@
+{
+    "key": "items/equipment/boots/basic_boots",
+    "icon": "🥾",
+    "name": "Basic Boots",
+    "value": 2,
+    "rarity": "Common",
+    "class_tags": ["Equipment", "Boots"],
+    "state_tags": [],
+    "count": 1
+}

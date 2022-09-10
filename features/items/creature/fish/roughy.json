@@ -1,0 +1,10 @@
+{
+    "key": "items/creature/fish/roughy",
+    "icon": "🐠",
+    "name": "Roughy",
+    "value": 4,
+    "rarity": "Common",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}
