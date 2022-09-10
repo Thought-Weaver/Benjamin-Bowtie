@@ -16,12 +16,13 @@ if TYPE_CHECKING:
 
 
 class Mail():
-    def __init__(self, sender_name: str, item: Item, coins: int, message: str, send_date: str):
+    def __init__(self, sender_name: str, item: Item, coins: int, message: str, send_date: str, sender_id: int):
         self._sender_name = sender_name
         self._item = item
         self._message = message
         self._send_date = send_date
         self._coins = coins
+        self._sender_id = sender_id
 
     def get_sender_name(self):
         return self._sender_name
@@ -38,13 +39,16 @@ class Mail():
     def get_coins(self):
         return self._coins
 
+    def get_sender_id(self):
+        return self._sender_id
+
     def __eq__(self, obj):
         if not isinstance(obj, Mail):
             return False
 
         if self._sender_name == obj.get_sender_name() and self._item == obj.get_item() \
             and self._message == obj.get_message() and self._send_date == obj.get_send_date() \
-            and self._coins == obj.get_coins():
+            and self._coins == obj.get_coins() and self._sender_id == obj.get_sender_id():
             return True
 
         return False
@@ -58,6 +62,7 @@ class Mail():
         self._message = state.get("_message", "")
         self._send_date = state.get("_send_date", "")
         self._coins = state.get("_coins", 0)
+        self._sender_id = state.get("_sender_id", -1)
 
 
 class InventoryMailButton(discord.ui.Button):
@@ -215,7 +220,7 @@ class MailModal(discord.ui.Modal):
             await interaction.response.send_message(f"Error: You can't send an empty message.")
             return
 
-        mail = Mail(self._user.display_name, sent_item, sent_coins, self._message_input.value, str(time.time()).split(".")[0]) 
+        mail = Mail(self._user.display_name, sent_item, sent_coins, self._message_input.value, str(time.time()).split(".")[0], self._user.id)
         giftee_player.get_mailbox().append(mail)
         
         if sent_coins > 0:
@@ -278,18 +283,18 @@ class MailboxButton(discord.ui.Button):
                 if self._mail.get_item() is not None:
                     mail_message += f"\n\nItem: {self._mail.get_item().get_full_name_and_count()} each worth {self._mail.get_item().get_value_str()}"
                     # TODO: Replace this with an ID check
-                    if interaction.user.display_name != self._mail.get_sender_name():
+                    if interaction.user.id != self._mail.get_sender_id():
                         player_stats.mail.items_received += 1
                 if coins_received > 0:
                     mail_message += f"\n\nCoins: {coins_received}"
-                    if interaction.user.display_name != self._mail.get_sender_name():
+                    if interaction.user.id != self._mail.get_sender_id():
                         player_stats.mail.coins_received += coins_received
                 if self._mail.get_message() != "":
                     mail_message += f"\n\nMessage:\n\n{self._mail.get_message()}"
-                    if interaction.user.display_name != self._mail.get_sender_name():
+                    if interaction.user.id != self._mail.get_sender_id():
                         player_stats.mail.messages_received += 1
 
-                if interaction.user.display_name != self._mail.get_sender_name():
+                if interaction.user.id != self._mail.get_sender_id():
                     player_stats.mail.mail_opened += 1
 
                 await interaction.user.send(mail_message)
