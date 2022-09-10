@@ -22,31 +22,35 @@ class Stats():
     # other than Stats.
     class FishStats():
         def __init__(self):
-            self.tier_4_caught: int = 0
-            self.tier_3_caught: int = 0
-            self.tier_2_caught: int = 0
-            self.tier_1_caught: int = 0
-            self.tier_0_caught: int = 0
+            self.common_items_caught: int = 0
+            self.rare_items_caught: int = 0
+
+            self.common_fish_caught: int = 0
+            self.uncommon_fish_caught: int = 0
+            self.rare_fish_caught: int = 0
+            self.epic_fish_caught: int = 0
 
         def get_name(self):
             return "Fish Stats"
 
         def get_stats_str(self):
-            return f"Tier 4 Caught: *{self.tier_4_caught}*\n" \
-            f"Tier 3 Caught: *{self.tier_3_caught}*\n" \
-            f"Tier 2 Caught: *{self.tier_2_caught}*\n" \
-            f"Tier 1 Caught: *{self.tier_1_caught}*\n" \
-            f"Tier 0 Caught: *{self.tier_0_caught}*"
+            return f"Common Items Caught: *{self.common_items_caught}*\n" \
+            f"Rare Items Caught: *{self.rare_items_caught}*\n\n" \
+            f"Common Fish Caught: *{self.common_fish_caught}*\n" \
+            f"Uncommon Fish Caught: *{self.uncommon_fish_caught}*\n" \
+            f"Rare Fish Caught: *{self.rare_fish_caught}*\n" \
+            f"Epic Fish Caught: {self.epic_fish_caught}*"
 
         def __getstate__(self):
             return self.__dict__
 
         def __setstate__(self, state: dict):
-            self.tier_4_caught = state.get("tier_4_caught", 0)
-            self.tier_3_caught = state.get("tier_3_caught", 0)
-            self.tier_2_caught = state.get("tier_2_caught", 0)
-            self.tier_1_caught = state.get("tier_1_caught", 0)
-            self.tier_0_caught = state.get("tier_0_caught", 0)
+            self.common_items_caught = state.get("common_items_caught", 0)
+            self.rare_items_caught = state.get("rare_items_caught", 0)
+            self.common_fish_caught = state.get("common_fish_caught", 0)
+            self.uncommon_fish_caught = state.get("uncommon_fish_caught", 0)
+            self.rare_fish_caught = state.get("rare_fish_caught", 0)
+            self.epic_fish_caught = state.get("epic_fish_caught", 0)
 
     class MailStats():
         def __init__(self):

@@ -93,9 +93,9 @@ class Adventures(commands.Cog):
         # 9.5% chance of getting a Rare fish reward
         if 0.9 < rand_val < 0.995:
             items = [
-                Item.load_from_state(ITEM_STATES[ItemKey.Squid]), 
-                Item.load_from_state(ITEM_STATES[ItemKey.Crab]), 
-                Item.load_from_state(ITEM_STATES[ItemKey.Lobster]), 
+                Item.load_from_state(ITEM_STATES[ItemKey.Squid]),
+                Item.load_from_state(ITEM_STATES[ItemKey.Crab]),
+                Item.load_from_state(ITEM_STATES[ItemKey.Lobster]),
                 Item.load_from_state(ITEM_STATES[ItemKey.Shark])
             ]
             fishing_result = random.choice(items)
