@@ -201,7 +201,9 @@ class Item():
 
     def __str__(self):
         return f"**{self.get_full_name()}**\n*{self.get_rarity()} Item*\n\n" \
-            f"Count: *{self.get_count()}*\n" \
+            f"{self._description}\n\n" \
+            f"{self._flavor_text}\n\n" \
+            f"Quantity: *{self.get_count()}*\n" \
             f"Value: *{self.get_value()}* each"
 
     def __eq__(self, obj):

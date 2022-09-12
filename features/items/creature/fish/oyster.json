@@ -4,6 +4,8 @@
     "name": "Oyster",
     "value": 4,
     "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
     "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
     "state_tags": [],
     "count": 1

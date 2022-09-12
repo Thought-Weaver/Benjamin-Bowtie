@@ -4,6 +4,8 @@
     "name": "Clump of Leaves",
     "value": 1,
     "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
     "class_tags": ["Junk"],
     "state_tags": [],
     "count": 1

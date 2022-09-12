@@ -4,6 +4,8 @@
     "name": "Shrimp",
     "value": 3,
     "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
     "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
     "state_tags": [],
     "count": 1

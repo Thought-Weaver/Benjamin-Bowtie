@@ -4,6 +4,8 @@
     "name": "Ancient Vase",
     "value": 40,
     "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
     "class_tags": ["Valuable"],
     "state_tags": [],
     "count": 1

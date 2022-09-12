@@ -4,6 +4,8 @@
     "name": "Mysterious Scroll",
     "value": 30,
     "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
     "class_tags": ["Readable", "Scroll", "Needs_Identification"],
     "state_tags": [],
     "count": 1

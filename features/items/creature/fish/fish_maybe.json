@@ -4,6 +4,8 @@
     "name": "Fish?",
     "value": 1,
     "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
     "class_tags": ["Creature", "Needs_Identification"],
     "state_tags": [],
     "count": 1
