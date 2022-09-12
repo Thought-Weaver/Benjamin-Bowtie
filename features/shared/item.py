@@ -236,7 +236,7 @@ class Item():
         self._value = base_data.get("value", 0)
         self._rarity = base_data.get("rarity", Rarity.Unknown)
         self._description = base_data.get("description", "")
-        self._flavor_text = base_data.get("flavor_text", 0)
+        self._flavor_text = base_data.get("flavor_text", "")
         self._class_tags = base_data.get("class_tags", [])
         
         # These are stateful values and we use what's loaded from the database.
