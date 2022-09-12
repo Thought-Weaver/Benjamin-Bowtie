@@ -13,11 +13,6 @@ class Images(commands.Cog):
     def __init__(self, bot: BenjaminBowtieBot):
         self._bot = bot
 
-        # Constants
-        self._RANDOM_CAT_URL = "https://some-random-api.ml/animal/cat"
-        self._RANDOM_DOG_URL = "https://some-random-api.ml/animal/dog"
-        self._RANDOM_BIRB_URL = "https://some-random-api.ml/animal/birb"
-
         # DA Authorization
         # https://www.deviantart.com/developers/authentication
         DA_AUTH_URL = "https://www.deviantart.com/oauth2/authorize"
@@ -34,34 +29,6 @@ class Images(commands.Cog):
             os.getenv("DA_OAUTH_REFRESH_TOKEN"),
             os.getenv("DA_OAUTH_CODE"))
         self._DA_OAUTH.auth("gallery", "browse")
-
-    async def get_animal_image_and_fact(self, context: commands.Context, url: str, animal: str):
-        response = requests.get(url)
-        if not response.ok:
-            await context.send(f"Error: The {animal} API responded with {response.status_code}!")
-            return
-
-        data = response.json()
-        if data.get("error") is not None:
-            error_message = data["error"]
-            await context.send(f"Error: The {animal} API failed with this message: {error_message}")
-            return
-        
-        embed = embeds.Embed(title=f"Here's a {animal} fun fact:", description=data.get("fact", ""))
-        embed.set_image(url=data.get("image"))
-        await context.send(embed=embed)
-
-    @commands.command(name="catfact", help="Gets a random cat image and fun fact about cats.", aliases=["cat"])
-    async def cat_handler(self, context: commands.Context):
-        await self.get_animal_image_and_fact(context, self._RANDOM_CAT_URL, "cat")
-
-    @commands.command(name="dogfact", help="Gets a random dog image and fun fact about dogs.", aliases=["dog"])
-    async def dog_handler(self, context: commands.Context):
-        await self.get_animal_image_and_fact(context, self._RANDOM_DOG_URL, "dog")
-
-    @commands.command(name="birbfact", help="Gets a random birb image and fun fact about birbs.", aliases=["birb"])
-    async def birb_handler(self, context: commands.Context):
-        await self.get_animal_image_and_fact(context, self._RANDOM_BIRB_URL, "birb")
 
     @commands.command(name="xkcd", help="Gets the latest XKCD or a specific comic if a number is given.")
     async def xkcd_handler(self, context: commands.Context, arg=None):
@@ -120,6 +87,7 @@ class Images(commands.Cog):
         )
         embed.set_image(url=result["content"]["src"])
         await context.send(embed=embed)
+
 
 async def setup(bot: BenjaminBowtieBot):
     await bot.add_cog(Images(bot))

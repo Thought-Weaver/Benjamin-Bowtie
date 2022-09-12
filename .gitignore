@@ -15,3 +15,6 @@ adventuresdb
 adventuresdbbackup
 adventuresdb.json
 adventuresdbbackup.json
+
+# Experimentation
+experiments.py

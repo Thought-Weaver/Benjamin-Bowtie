@@ -13,7 +13,7 @@ from features.inventory import InventoryView
 from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
 from features.player import Player
-from features.stats import StatCategory, StatView, Stats
+from features.stats import StatCategory, StatView
 from features.shared.item import Item, LOADED_ITEMS, ItemKey
 from features.stories.forest import ForestStory
 from features.stories.ocean import OceanStory
@@ -24,6 +24,7 @@ from games.knucklebones import Knucklebones
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from features.inventory import Inventory
+    from features.stats import Stats
 
 
 class Adventures(commands.Cog):
@@ -267,6 +268,7 @@ class Adventures(commands.Cog):
             await context.send(f"You don't have any coins.")
             return
         author_inv.remove_coins(1)
+        
         player_stats: Stats = author_player.get_stats()
 
         # E(X) = 0.995 * -1 + 0.0021 * 500 = 0.055 every 5 seconds -> 39.6 per hour
@@ -306,37 +308,10 @@ class Adventures(commands.Cog):
         # 0.01% chance of stirring something in the world
         if 0.9999 <= rand_val <= 1:
             story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
-
-            embed = Embed(
-                title="You toss the coin in...",
-                description="It plummets into the darkness below and hits the bottom with a resounding clink."
-            )
-            if story.something_stirs == 0:
-                embed = Embed(
-                    title="You toss the coin in...",
-                    description="It plummets into the darkness below." \
-                        "Down, down it goes -- past the bottom of the well, through rock and flowing fire into deeper darkness still, down into a place the living believe only superstition.\n\n" \
-                        "Somewhere deep in the sunless underworld... something stirs."
-                )
-            elif player_stats.wishingwell.something_stirs == 0:
-                embed = Embed(
-                    title="You toss the coin in...",
-                    description="It plummets into the darkness below." \
-                        "The coin of someone else, yes, but it too slips beyond the material into the shadows. There is no sound to you above; it is simply gone in a haunting silence.\n\n" \
-                        "Somewhere deep in the sunless underworld... something stirs."
-                )
-            else:
-                embed = Embed(
-                    title="You toss the coin in...",
-                    description="It plummets into the darkness below." \
-                        "You've come again. And your coin, like the other before it, descends descends descends. The darkness grabs it close, pulling the coin quickly towards its inevitable destination.\n\n" \
-                        "Somewhere deep in the sunless underworld... something stirs."
-                )
-            
-            story.something_stirs += 1
+            story_response: Embed = story.get_wishing_well_response()
             player_stats.wishingwell.something_stirs += 1
 
-            await context.send(embed=embed)
+            await context.send(embed=story_response)
 
         player_stats.wishingwell.coins_tossed += 1
 

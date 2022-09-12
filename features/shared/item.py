@@ -94,6 +94,7 @@ class StateTag(Enum):
 
 
 class ItemKey(StrEnum):
+    # Fishing Results
     AncientVase = "items/valuable/ancient_vase"
     BasicBoots = "items/equipment/boots/basic_boots"
     ClumpOfLeaves = "items/misc/junk/clump_of_leaves"
@@ -116,12 +117,14 @@ class ItemKey(StrEnum):
 # -----------------------------------------------------------------------------
 
 class Item():
-    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, class_tags: List[ClassTag], state_tags: List[StateTag]=[], count=1):
+    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], state_tags: List[StateTag]=[], count=1):
         self._key = key
         self._icon = icon
         self._name = name
         self._value = value
         self._rarity = rarity
+        self._description = description
+        self._flavor_text = flavor_text
         self._class_tags = class_tags
         self._state_tags = state_tags
         self._count = count
@@ -134,6 +137,8 @@ class Item():
             item_data.get("name", ""),
             item_data.get("value", 0),
             item_data.get("rarity", Rarity.Unknown),
+            item_data.get("description", ""),
+            item_data.get("flavor_text", ""),
             item_data.get("class_tags", []),
             item_data.get("state_tags", []),
             item_data.get("count", 1)
@@ -147,6 +152,8 @@ class Item():
                 self._name,
                 self._value,
                 self._rarity,
+                self._description,
+                self._flavor_text,
                 self._class_tags,
                 self._state_tags,
                 amount)
@@ -220,6 +227,8 @@ class Item():
         self._name = base_data.get("name", "")
         self._value = base_data.get("value", 0)
         self._rarity = base_data.get("rarity", Rarity.Unknown)
+        self._description = base_data.get("description", "")
+        self._flavor_text = base_data.get("flavor_text", 0)
         self._class_tags = base_data.get("class_tags", [])
         
         # These are stateful values and we use what's loaded from the database.
