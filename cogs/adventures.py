@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import jsonpickle
 import os
 import random
@@ -9,6 +11,8 @@ from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
+from features.equipment import EquipmentView
+from features.expertise import ExpertiseView
 from features.inventory import InventoryView
 from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
@@ -133,6 +137,11 @@ class Adventures(commands.Cog):
         if 0.9999 <= rand_val <= 1.0:
             items = [LOADED_ITEMS.get_new_item(ItemKey.FishMaybe)]
             fishing_result = random.choice(items)
+
+            story: OceanStory = self._get_story(context.guild.id, Story.Ocean)
+            if story.first_to_find_maybe_fish_id == -1:
+                story.first_to_find_maybe_fish_id = context.author.id
+
             player_stats.fish.epic_fish_caught += 1
         
         # E(X) =
@@ -308,12 +317,26 @@ class Adventures(commands.Cog):
         # 0.01% chance of stirring something in the world
         if 0.9999 <= rand_val <= 1:
             story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
-            story_response: Embed = story.get_wishing_well_response()
+            story_response: Embed = story.get_wishing_well_response(context.author.id, player_stats)
             player_stats.wishingwell.something_stirs += 1
 
             await context.send(embed=story_response)
 
         player_stats.wishingwell.coins_tossed += 1
+
+    @commands.command(name="expertise", help="See your expertise and attributes", aliases=["me", "xp"])
+    async def expertise_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        xp_view = ExpertiseView(self._bot, self._database, context.guild.id, context.author)
+        embed = xp_view.get_current_page_info()
+        await context.send(embed=embed, view=xp_view)
+
+    # @commands.command(name="equipment", help="See your equipment and equip items", aliases=["equip"])
+    # async def equipment_handler(self, context: commands.Context):
+    #     self._check_member_and_guild_existence(context.guild.id, context.author.id)
+    #     xp_view = EquipmentView(self._bot, self._database, context.guild.id, context.author)
+    #     embed = xp_view.get_current_page_info()
+    #     await context.send(embed=embed, view=xp_view)
 
 
 async def setup(bot: BenjaminBowtieBot):

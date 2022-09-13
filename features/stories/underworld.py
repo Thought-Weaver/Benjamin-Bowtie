@@ -1,19 +1,24 @@
+from __future__ import annotations
+
 from discord import Embed
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from features.stats import Stats
 
+
 class UnderworldStory():
     def __init__(self):
-        self._something_stirs = 0
+        self._something_stirs: int = 0
+        self.first_to_stir_id: int = -1
 
-    def get_wishing_well_response(self, player_stats: Stats):
+    def get_wishing_well_response(self, user_id: int, player_stats: Stats):
         embed = Embed(
             title="You toss the coin in...",
             description="It plummets into the darkness below and hits the bottom with a resounding clink."
         )
         if self._something_stirs == 0:
+            self.first_to_stir_id = user_id
             embed = Embed(
                 title="You toss the coin in...",
                 description="It plummets into the darkness below." \
@@ -43,3 +48,4 @@ class UnderworldStory():
 
     def __setstate__(self, state: dict):
         self._something_stirs = state.get("_something_stirs", 0)
+        self.first_to_stir_id = state.get("first_to_stir_id", -1)

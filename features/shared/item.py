@@ -30,9 +30,11 @@ class ClassTag(Enum):
         Equipment = "Equipment"
         Helmet = "Helmet"
         ChestArmor = "Chest_Armor"
+        Gloves = "Gloves"
         Boots = "Boots"
-        Necklace = "Necklace"
+        Amulet = "Amulet"
         Ring = "Ring"
+        Leggings = "Leggings"
 
     # Weapon types that can be generated
     @skip
@@ -113,8 +115,42 @@ class ItemKey(StrEnum):
 # CLASSES
 # -----------------------------------------------------------------------------
 
+class Buffs():
+    def __init__(self, con_buff=0, str_buff=0, dex_buff=0, int_buff=0, lck_buff=0, mem_buff=0):
+        self._con_buff = con_buff
+        self._str_buff = str_buff
+        self._dex_buff = dex_buff
+        self._int_buff = int_buff
+        self._lck_buff = lck_buff
+        self._mem_buff = mem_buff
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._con_buff = state.get("_con_buff", 0)
+        self._str_buff = state.get("_str_buff", 0)
+        self._dex_buff = state.get("_dex_buff", 0)
+        self._int_buff = state.get("_int_buff", 0)
+        self._lck_buff = state.get("_lck_buff", 0)
+        self._mem_buff = state.get("_mem_buff", 0)
+
+
+class ArmorStats():
+    def __init__(self, armor_amount=0, buffs: Buffs=None):
+        self._armor_amount = armor_amount
+        self._buffs = buffs
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._armor_amount = state.get("_armor_amount", 0)
+        self._buffs = state.get("_buffs")
+
+
 class Item():
-    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], state_tags: List[StateTag]=[], count=1):
+    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[str], state_tags: List[str]=[], count=1, armor_stats: ArmorStats=None):
         self._key = key
         self._icon = icon
         self._name = name
@@ -125,6 +161,8 @@ class Item():
         self._class_tags = class_tags
         self._state_tags = state_tags
         self._count = count
+
+        self._armor_stats = armor_stats
 
     @staticmethod
     def load_from_state(item_data: dict):
@@ -138,7 +176,8 @@ class Item():
             item_data.get("flavor_text", ""),
             item_data.get("class_tags", []),
             item_data.get("state_tags", []),
-            item_data.get("count", 1)
+            item_data.get("count", 1),
+            item_data.get("armor_stats")
         )
 
     def remove_amount(self, amount: int):
@@ -153,7 +192,8 @@ class Item():
                 self._flavor_text,
                 self._class_tags,
                 self._state_tags,
-                amount)
+                amount,
+                self._armor_stats)
             self._count -= amount
             return result
         return None
@@ -168,7 +208,9 @@ class Item():
         return f"{self._icon} {self._name}"
 
     def get_full_name_and_count(self):
-        return f"{self._icon} {self._name} ({self._count})"
+        if self._count > 1:
+            return f"{self._icon} {self._name} ({self._count})"
+        return f"{self._icon} {self._name}"
 
     def get_value(self):
         return self._value
@@ -195,6 +237,9 @@ class Item():
 
     def get_key(self):
         return self._key
+
+    def get_armor_stats(self):
+        return self._armor_stats
 
     def __str__(self):
         display_string = f"**{self.get_full_name()}**\n*{self.get_rarity()} Item*\n\n"
@@ -235,11 +280,11 @@ class Item():
         self._description = base_data.get("description", "")
         self._flavor_text = base_data.get("flavor_text", "")
         self._class_tags = base_data.get("class_tags", [])
+        self._armor_stats = base_data.get("armor_stats")
         
         # These are stateful values and we use what's loaded from the database.
         self._state_tags = state.get("_state_tags", [])
         self._count = state.get("_count", 1)
-
 
 # I'm doing it this way because having a dict[ItemKey, Item] would
 # mean that using the items in the dict would all point to the same

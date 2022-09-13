@@ -126,15 +126,16 @@ class InventoryButton(discord.ui.Button):
             return
         
         view: InventoryView = self.view
-        player: Player = view.get_player()
-        coins_str = player.get_inventory().get_coins_str()
+        if interaction.user == view.get_user():
+            player: Player = view.get_player()
+            coins_str = player.get_inventory().get_coins_str()
 
-        await interaction.response.edit_message(content=None, view=view, embed=Embed(
-            title=f"{view.get_user().display_name}'s Inventory",
-            description=f"You have {coins_str}.\n\n" \
-                        f"──────────\n{self._item}\n──────────\n\n" \
-                        "Navigate through your items using the Prev and Next buttons."
-        ))
+            await interaction.response.edit_message(content=None, view=view, embed=Embed(
+                title=f"{view.get_user().display_name}'s Inventory",
+                description=f"You have {coins_str}.\n\n" \
+                            f"──────────\n{self._item}\n──────────\n\n" \
+                            "Navigate through your items using the Prev and Next buttons."
+            ))
 
 
 class InventoryView(discord.ui.View):

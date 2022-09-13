@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 from abc import abstractmethod
+import sys
 from discord.embeds import Embed
 from math import ceil
 from strenum import StrEnum
@@ -13,6 +16,12 @@ if TYPE_CHECKING:
 # -----------------------------------------------------------------------------
 # CONSTANTS
 # -----------------------------------------------------------------------------
+
+# Don't want this in the Expertise class to avoid serializing them. Might be
+# safer to write a custom __getstate__ instead of leaving these as globals.
+
+BASE_HP = 20
+BASE_MANA = 20
 
 CON_HEALTH_SCALE = 0.08
 CON_HEALTH_REGEN_SCALE = 0.01
@@ -32,6 +41,14 @@ class ExpertiseClass(StrEnum):
     Fisher = "Fisher"
     Guardian = "Guardian"
     Merchant = "Merchant"
+
+class Attribute(StrEnum):
+    Constitution = "Constitution"
+    Strength = "Strength"
+    Dexterity = "Dexterity"
+    Intelligence = "Intelligence"
+    Luck = "Luck"
+    Memory = "Memory"
 
 # -----------------------------------------------------------------------------
 # CLASSES
@@ -69,8 +86,8 @@ class BaseExpertise():
         return self._level
 
     @abstractmethod
-    def get_xp_to_level(self, level: int) -> float:
-        return
+    def get_xp_to_level(self, level: int) -> int:
+        return sys.maxsize
 
 
 class FisherExpertise(BaseExpertise):
@@ -91,10 +108,10 @@ class Expertise():
 
         # Base stats
         self.level = 0
-        self.max_hp = 20
-        self.hp = 20
-        self.max_mana = 20
-        self.mana = 20
+        self.max_hp = BASE_HP
+        self.hp = BASE_HP
+        self.max_mana = BASE_MANA
+        self.mana = BASE_MANA
 
         # Attributes
         self.constitution = 0
@@ -114,6 +131,17 @@ class Expertise():
         elif expertise_class == ExpertiseClass.Merchant:
             levels_gained = self._merchant.add_xp(xp)
         self.points_to_spend += levels_gained
+
+    def update_stats(self):
+        updated_max_hp = BASE_HP
+        for _ in range(self.constitution):
+            updated_max_hp += updated_max_hp * CON_HEALTH_SCALE
+        self.max_hp = updated_max_hp
+        
+        updated_max_mana = BASE_MANA
+        for _ in range(self.constitution):
+            updated_max_mana += updated_max_mana * INT_MANA_SCALE
+        self.max_mana = updated_max_mana
 
     def heal(self, heal_amount: int):
         self.hp = min(self.max_hp, self.hp + heal_amount)
@@ -172,11 +200,11 @@ class Expertise():
         self._fisher = state.get("_fisher", FisherExpertise())
         self._merchant = state.get("_merchant", MerchantExpertise())
 
-        self.level = state.get("level", 1)
-        self.max_hp = state.get("max_hp", 20)
-        self.hp = state.get("hp", 20)
-        self.max_mana = state.get("max_mana", 20)
-        self.mana = state.get("mana", 20)
+        self.level = state.get("level", 0)
+        self.max_hp = state.get("max_hp", BASE_HP)
+        self.hp = state.get("hp", BASE_HP)
+        self.max_mana = state.get("max_mana", BASE_MANA)
+        self.mana = state.get("mana", BASE_MANA)
 
         self.constitution = state.get("constitution", 0)
         self.strength = state.get("strength", 0)
@@ -188,6 +216,22 @@ class Expertise():
         self.points_to_spend = state.get("points_to_spend", 0)
 
 
+class AttributeButton(discord.ui.Button):
+    def __init__(self, attribute: Attribute, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=attribute, row=row)
+        
+        self._attribute = attribute
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: ExpertiseView = self.view
+        if view.get_user() == interaction.user:
+            response = view.add_point_to_attribute(self._attribute)
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class ExpertiseView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User):
         super().__init__(timeout=900)
@@ -197,8 +241,49 @@ class ExpertiseView(discord.ui.View):
         self._guild_id = guild_id
         self._user = user
 
+        self._get_current_buttons()
+
     def get_player(self) -> Player:
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
+
+    def get_current_page_info(self):
+        expertise: Expertise = self.get_player().get_expertise()
+        return Embed(title=f"{self._user.display_name}'s Expertise", description=expertise.get_info_string())
+
+    def _get_current_buttons(self):
+        self.clear_items()
+
+        player: Player = self.get_player()
+        if player.get_expertise().points_to_spend > 0:
+            self.add_item(AttributeButton(Attribute.Constitution, 0))
+            self.add_item(AttributeButton(Attribute.Strength, 0))
+            self.add_item(AttributeButton(Attribute.Dexterity, 1))
+            self.add_item(AttributeButton(Attribute.Intelligence, 1))
+            self.add_item(AttributeButton(Attribute.Luck, 2))
+            self.add_item(AttributeButton(Attribute.Memory, 2))
+
+    def add_point_to_attribute(self, attribute: Attribute):
+        expertise: Expertise = self.get_player().get_expertise()
+
+        if attribute == Attribute.Constitution:
+            expertise.constitution += 1
+            expertise.update_stats()
+        if attribute == Attribute.Strength:
+            expertise.strength += 1
+        if attribute == Attribute.Dexterity:
+            expertise.dexterity += 1
+        if attribute == Attribute.Intelligence:
+            expertise.intelligence += 1
+            expertise.update_stats()
+        if attribute == Attribute.Luck:
+            expertise.luck += 1
+        if attribute == Attribute.Memory:
+            expertise.memory += 1
+        
+        expertise.points_to_spend -= 1
+        self._get_current_buttons()
+
+        return Embed(title=f"{self._user.display_name}'s Expertise", description=expertise.get_info_string())
 
     def get_user(self):
         return self._user
