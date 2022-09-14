@@ -3,7 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
-from features.shared.item import ClassTag, Item
+from features.shared.item import Buffs, ClassTag, Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -25,6 +25,20 @@ class Equipment():
         self._boots: Item = None
         self._main_hand: Item = None
         self._off_hand: Item = None
+
+    def get_all_equipped_items(self):
+        equipment = [
+            self._helmet,
+            self._amulet,
+            self._chest_armor,
+            self._gloves,
+            self._ring,
+            self._leggings,
+            self._boots,
+            self._main_hand,
+            self._off_hand
+        ]
+        return list(filter(lambda item: item is not None, equipment))
 
     def get_item_in_slot(self, slot: ClassTag.Equipment):
         if slot == ClassTag.Equipment.Helmet:
@@ -105,6 +119,19 @@ class Equipment():
             self._main_hand = item
         if slot == ClassTag.Equipment.OffHand:
             self._off_hand = item
+
+    def get_total_attribute_buffs(self):
+        buffs = Buffs()
+        for item in self.get_all_equipped_items():
+            item_buffs = item.get_buffs()
+            if item_buffs is not None:
+                buffs.con_buff += item_buffs.con_buff
+                buffs.str_buff += item_buffs.str_buff
+                buffs.dex_buff += item_buffs.dex_buff
+                buffs.int_buff += item_buffs.int_buff
+                buffs.lck_buff += item_buffs.lck_buff
+                buffs.mem_buff += item_buffs.mem_buff
+        return buffs
 
     def __getstate__(self):
         return self.__dict__

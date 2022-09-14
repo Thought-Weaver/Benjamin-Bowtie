@@ -129,40 +129,53 @@ class ItemKey(StrEnum):
 
 class Buffs():
     def __init__(self, con_buff=0, str_buff=0, dex_buff=0, int_buff=0, lck_buff=0, mem_buff=0):
-        self._con_buff = con_buff
-        self._str_buff = str_buff
-        self._dex_buff = dex_buff
-        self._int_buff = int_buff
-        self._lck_buff = lck_buff
-        self._mem_buff = mem_buff
+        self.con_buff = con_buff
+        self.str_buff = str_buff
+        self.dex_buff = dex_buff
+        self.int_buff = int_buff
+        self.lck_buff = lck_buff
+        self.mem_buff = mem_buff
+
+    def __str__(self):
+        display_string = ""
+        if self.con_buff != 0:
+            display_string += f"+ {self.con_buff} Constitution\n"
+        if self.str_buff != 0:
+            display_string += f"+ {self.str_buff} Strength\n"
+        if self.dex_buff != 0:
+            display_string += f"+ {self.dex_buff} Dexterity\n"
+        if self.int_buff != 0:
+            display_string += f"+ {self.int_buff} Intelligence\n"
+        if self.lck_buff != 0:
+            display_string += f"+ {self.lck_buff} Luck\n"
+        if self.mem_buff != 0:
+            display_string += f"+ {self.mem_buff} Memory"
+        return display_string
 
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        self._con_buff = state.get("con_buff", 0)
-        self._str_buff = state.get("str_buff", 0)
-        self._dex_buff = state.get("dex_buff", 0)
-        self._int_buff = state.get("int_buff", 0)
-        self._lck_buff = state.get("lck_buff", 0)
-        self._mem_buff = state.get("mem_buff", 0)
+        self.con_buff = state.get("con_buff", 0)
+        self.str_buff = state.get("str_buff", 0)
+        self.dex_buff = state.get("dex_buff", 0)
+        self.int_buff = state.get("int_buff", 0)
+        self.lck_buff = state.get("lck_buff", 0)
+        self.mem_buff = state.get("mem_buff", 0)
 
 
 class ArmorStats():
     def __init__(self, armor_amount=0):
         self._armor_amount = armor_amount
 
+    def get_armor_amount(self):
+        return self._armor_amount
+
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
         self._armor_amount = state.get("armor_amount", 0)
-        self._level_requirement = state.get("level_requirement", 0)
-
-        buffs_data = state.get("buffs")
-        if buffs_data is not None:
-            self._buffs = Buffs()
-            self._buffs.__setstate__(buffs_data)
 
 
 class WeaponStats():
@@ -170,17 +183,15 @@ class WeaponStats():
         self._min_damage = min_damage
         self._max_damage = max_damage
     
+    def get_range_str(self):
+        return f"{self._min_damage}-{self._max_damage} damage"
+
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
         self._min_damage = state.get("min_damage", 0)
         self._max_damage = state.get("max_damage", 0)
-
-        buffs_data = state.get("buffs")
-        if buffs_data is not None:
-            self._buffs = Buffs()
-            self._buffs.__setstate__(buffs_data)
 
 
 class Item():
@@ -294,15 +305,29 @@ class Item():
         return self._weapon_stats
 
     def __str__(self):
-        display_string = f"**{self.get_full_name()}**\n*{self.get_rarity()} Item*\n\n"
+        display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*\n\n"
         
+        if self._armor_stats is not None:
+            display_string += f"{self._armor_stats.get_armor_amount()} armor\n"
+
+        if self._weapon_stats is not None:
+            display_string += f"{self._weapon_stats.get_range_str()}\n"
+
+        if self._buffs is not None:
+            display_string += f"{self._buffs}\n"
+
+        if self._armor_stats is not None or self._weapon_stats is not None or self._buffs is not None:
+            display_string += "\n"
+
         if self._description != "":
             display_string += f"{self._description}\n\n"
         if self._flavor_text != "":
             display_string += f"{self._flavor_text}\n\n"
+
+        if self._count > 1:
+            display_string += f"Quantity: *{self._count}*\n"
         
-        display_string += f"Quantity: *{self.get_count()}*\n" \
-            f"Value: *{self.get_value()}* each"
+        display_string += f"Value: *{self._value}* each"
         
         return display_string
 

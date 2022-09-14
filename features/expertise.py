@@ -9,9 +9,13 @@ from strenum import StrEnum
 import discord
 
 from typing import TYPE_CHECKING
+
+from features.equipment import Equipment
+
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.player import Player
+    from features.shared.item import Buffs
 
 # -----------------------------------------------------------------------------
 # CONSTANTS
@@ -169,9 +173,17 @@ class Expertise():
         return f"HP: {hp_squares_string} ({self.hp}/{self.max_hp})\n" \
                f"Mana: {mana_squares_string} ({self.mana}/{self.max_mana})"
 
-    def get_info_string(self):
+    def get_info_string(self, buffs: Buffs):
         fisher_level: int = self._fisher.get_level()
         merchant_level: int = self._merchant.get_level()
+
+        def format_buff_modifier(value: int):
+            if value == 0:
+                return ""
+            if value < 0:
+                return f"({value})"
+            if value > 0:
+                return f"(+{value})"
 
         info_string = f"**Base Stats**\n\n" \
             f"{self.get_health_and_mana_string()}\n\n" \
@@ -181,12 +193,12 @@ class Expertise():
             f"Guardian: ???\n" \
             f"Merchant: Lvl. {merchant_level} ({self._fisher.get_xp_to_level(merchant_level + 1)} xp to next)\n\n" \
             f"**Attributes**\n\n" \
-            f"Constitution: {self.constitution}\n" \
-            f"Strength: {self.strength}\n" \
-            f"Dexterity: {self.dexterity}\n" \
-            f"Intelligence: {self.intelligence}\n" \
-            f"Luck: {self.luck}\n" \
-            f"Memory: {self.memory}"
+            f"Constitution: {self.constitution} {format_buff_modifier(buffs.con_buff)}\n" \
+            f"Strength: {self.strength} {format_buff_modifier(buffs.str_buff)}\n" \
+            f"Dexterity: {self.dexterity} {format_buff_modifier(buffs.dex_buff)}\n" \
+            f"Intelligence: {self.intelligence} {format_buff_modifier(buffs.int_buff)}\n" \
+            f"Luck: {self.luck} {format_buff_modifier(buffs.lck_buff)}\n" \
+            f"Memory: {self.memory} {format_buff_modifier(buffs.mem_buff)}"
 
         if self.points_to_spend > 0:
             info_string += f"\n\n*You have {self.points_to_spend} attribute points to spend!*"
@@ -263,7 +275,9 @@ class ExpertiseView(discord.ui.View):
             self.add_item(AttributeButton(Attribute.Memory, 2))
 
     def add_point_to_attribute(self, attribute: Attribute):
-        expertise: Expertise = self.get_player().get_expertise()
+        player: Player = self.get_player()
+        expertise: Expertise = player.get_expertise()
+        equipment: Equipment = player.get_equipment()
 
         if attribute == Attribute.Constitution:
             expertise.constitution += 1
@@ -283,7 +297,7 @@ class ExpertiseView(discord.ui.View):
         expertise.points_to_spend -= 1
         self._get_current_buttons()
 
-        return Embed(title=f"{self._user.display_name}'s Expertise", description=expertise.get_info_string())
+        return Embed(title=f"{self._user.display_name}'s Expertise", description=expertise.get_info_string(equipment.get_total_attribute_buffs()))
 
     def get_user(self):
         return self._user
