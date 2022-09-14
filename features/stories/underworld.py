@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from discord import Embed
 
-from typing import TYPE_CHECKING
+from features.shared.item import ItemKey
+
+from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.stats import Stats
 
@@ -10,6 +12,15 @@ if TYPE_CHECKING:
 class UnderworldStory():
     def __init__(self):
         self._something_stirs: int = 0
+        self.remaining_sunless_keys: List[str] = [
+            ItemKey.SunlessStride,
+            ItemKey.SunlessChains,
+            ItemKey.SunlessGrip,
+            ItemKey.SunlessChains,
+            ItemKey.SunlessMind,
+            ItemKey.SunlessHeart,
+            ItemKey.SunlessWill
+        ]
         self.first_to_stir_id: int = -1
 
     def get_wishing_well_response(self, user_id: int, player_stats: Stats):
@@ -49,3 +60,14 @@ class UnderworldStory():
     def __setstate__(self, state: dict):
         self._something_stirs = state.get("_something_stirs", 0)
         self.first_to_stir_id = state.get("first_to_stir_id", -1)
+        self.remaining_sunless_keys = state.get("remaining_sunless_keys",
+            [
+                ItemKey.SunlessStride,
+                ItemKey.SunlessChains,
+                ItemKey.SunlessGrip,
+                ItemKey.SunlessChains,
+                ItemKey.SunlessMind,
+                ItemKey.SunlessHeart,
+                ItemKey.SunlessWill
+            ]
+        )

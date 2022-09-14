@@ -1,0 +1,21 @@
+{
+    "key": "items/equipment/amulet/sunless_chains",
+    "icon": "\ud83e\udd7e",
+    "name": "Sunless Chains",
+    "value": 1500,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Amulet"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 20,
+    "buffs": {
+        "con_buff": 1,
+        "str_buff": 1,
+        "dex_buff": 1,
+        "int_buff": 1,
+        "lck_buff": 1,
+        "mem_buff": 1
+    }
+}

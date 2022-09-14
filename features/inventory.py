@@ -104,6 +104,14 @@ class Inventory():
 
     def get_inventory_slots(self):
         return self._inventory_slots
+    
+    def filter_inventory_slots(self, tags: List[str]):
+        item_indices: List[int] = []
+        for i, item in enumerate(self._inventory_slots):
+            item_class_tags: List[str] = item.get_class_tags()
+            if all(tag in item_class_tags for tag in tags):
+                item_indices.append(i)
+        return item_indices
 
     def get_coins(self):
         return self._coins

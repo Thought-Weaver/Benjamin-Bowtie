@@ -8,5 +8,8 @@
     "flavor_text": "",
     "class_tags": ["Equipment", "Boots"],
     "state_tags": [],
-    "count": 1
+    "count": 1,
+    "armor_stats": {
+        "armor_amount": 1
+    }
 }

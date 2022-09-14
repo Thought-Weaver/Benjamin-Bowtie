@@ -30,6 +30,9 @@ class Player():
     def get_expertise(self):
         return self._expertise
 
+    def get_equipment(self):
+        return self._equipment
+
     def __getstate__(self):
         return self.__dict__
 

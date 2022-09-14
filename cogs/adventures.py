@@ -279,6 +279,7 @@ class Adventures(commands.Cog):
         author_inv.remove_coins(1)
         
         player_stats: Stats = author_player.get_stats()
+        story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
 
         # E(X) = 0.995 * -1 + 0.0021 * 500 = 0.055 every 5 seconds -> 39.6 per hour
 
@@ -298,25 +299,25 @@ class Adventures(commands.Cog):
                 description="It plummets into the darkness below and you feel a sense of duplication. One becoming many."
             )
             await context.send(embed=embed)
-        # 0.28% chance of getting an Epic item
+        # 0.28% chance of getting a Legendary item
         if 0.9971 <= rand_val < 0.9999:
-            items = [
-                LOADED_ITEMS.get_new_item(ItemKey.Diamond),
-                LOADED_ITEMS.get_new_item(ItemKey.AncientVase),
-                LOADED_ITEMS.get_new_item(ItemKey.MysteriousScroll)
-            ]
-            result: Item = random.choice(items)
-            mail: Mail = Mail("Wishing Well", result, 0, "Not a gift. A trade.", str(time.time()).split(".")[0], -1)
+            items = [LOADED_ITEMS.get_new_item(key) for key in story.remaining_sunless_keys]
+            rand_index: int = random.randint(0, max(0, len(items) - 1))
+            result: Item = items[rand_index] if items != [] else LOADED_ITEMS.get_new_item(ItemKey.Diamond)
+
+            mail: Mail = Mail("Wishing Well", result, 0, "A piece of the whole.", str(time.time()).split(".")[0], -1)
             author_player.get_mailbox().append(mail)
+
             player_stats.wishingwell.items_received += 1
+            story.remaining_sunless_keys.pop(rand_index)
+
             embed = Embed(
                 title="You toss the coin in...",
-                description="It plummets into the darkness below. Then, you close your eyes and are surrounded by a gust of wind. You suddenly find yourself standing in front of your mailbox."
+                description="It plummets into the darkness below. Then, you close your eyes and are surrounded by a gust of wind. Something has arrived where things sent are brought."
             )
             await context.send(embed=embed)
         # 0.01% chance of stirring something in the world
         if 0.9999 <= rand_val <= 1:
-            story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
             story_response: Embed = story.get_wishing_well_response(context.author.id, player_stats)
             player_stats.wishingwell.something_stirs += 1
 
@@ -331,12 +332,12 @@ class Adventures(commands.Cog):
         embed = xp_view.get_current_page_info()
         await context.send(embed=embed, view=xp_view)
 
-    # @commands.command(name="equipment", help="See your equipment and equip items", aliases=["equip"])
-    # async def equipment_handler(self, context: commands.Context):
-    #     self._check_member_and_guild_existence(context.guild.id, context.author.id)
-    #     xp_view = EquipmentView(self._bot, self._database, context.guild.id, context.author)
-    #     embed = xp_view.get_current_page_info()
-    #     await context.send(embed=embed, view=xp_view)
+    @commands.command(name="equipment", help="See your equipment and equip items", aliases=["equip"])
+    async def equipment_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        equipment_view = EquipmentView(self._bot, self._database, context.guild.id, context.author)
+        embed = equipment_view.get_initial_page_info()
+        await context.send(embed=embed, view=equipment_view)
 
 
 async def setup(bot: BenjaminBowtieBot):

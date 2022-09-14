@@ -19,6 +19,7 @@ class Rarity(StrEnum):
     Rare = "Rare"
     Epic = "Epic"
     Legendary = "Legendary"
+    Artifact = "Artifact"
 
 
 # Using aenum and @skip to create an Enum of StrEnums
@@ -35,6 +36,8 @@ class ClassTag(Enum):
         Amulet = "Amulet"
         Ring = "Ring"
         Leggings = "Leggings"
+        MainHand = "Main_Hand"
+        OffHand = "Off_Hand"
 
     # Weapon types that can be generated
     @skip
@@ -111,6 +114,15 @@ class ItemKey(StrEnum):
     Shrimp = "items/creature/fish/shrimp"
     Squid = "items/creature/fish/squid"
 
+    # Wishing Well Results
+    SunlessSteps = "items/equipment/boots/sunless_steps"
+    SunlessHeart = "items/equipment/chest_armor/sunless_heart"
+    SunlessGrip = "items/equipment/gloves/sunless_grip"
+    SunlessMind = "items/equipment/helmet/sunless_mind"
+    SunlessStride = "items/equipment/leggings/sunless_stride"
+    SunlessWill = "items/equipment/ring/sunless_will"
+    SunlessChains = "items/equipment/amulet/sunless_chains"
+
 # -----------------------------------------------------------------------------
 # CLASSES
 # -----------------------------------------------------------------------------
@@ -128,29 +140,51 @@ class Buffs():
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        self._con_buff = state.get("_con_buff", 0)
-        self._str_buff = state.get("_str_buff", 0)
-        self._dex_buff = state.get("_dex_buff", 0)
-        self._int_buff = state.get("_int_buff", 0)
-        self._lck_buff = state.get("_lck_buff", 0)
-        self._mem_buff = state.get("_mem_buff", 0)
+        self._con_buff = state.get("con_buff", 0)
+        self._str_buff = state.get("str_buff", 0)
+        self._dex_buff = state.get("dex_buff", 0)
+        self._int_buff = state.get("int_buff", 0)
+        self._lck_buff = state.get("lck_buff", 0)
+        self._mem_buff = state.get("mem_buff", 0)
 
 
 class ArmorStats():
-    def __init__(self, armor_amount=0, buffs: Buffs=None):
+    def __init__(self, armor_amount=0):
         self._armor_amount = armor_amount
-        self._buffs = buffs
 
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        self._armor_amount = state.get("_armor_amount", 0)
-        self._buffs = state.get("_buffs")
+        self._armor_amount = state.get("armor_amount", 0)
+        self._level_requirement = state.get("level_requirement", 0)
+
+        buffs_data = state.get("buffs")
+        if buffs_data is not None:
+            self._buffs = Buffs()
+            self._buffs.__setstate__(buffs_data)
+
+
+class WeaponStats():
+    def __init__(self, min_damage=0, max_damage=0):
+        self._min_damage = min_damage
+        self._max_damage = max_damage
+    
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._min_damage = state.get("min_damage", 0)
+        self._max_damage = state.get("max_damage", 0)
+
+        buffs_data = state.get("buffs")
+        if buffs_data is not None:
+            self._buffs = Buffs()
+            self._buffs.__setstate__(buffs_data)
 
 
 class Item():
-    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[str], state_tags: List[str]=[], count=1, armor_stats: ArmorStats=None):
+    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[str], state_tags: List[str]=[], count=1, level_requirement=0, buffs: Buffs=None, armor_stats: ArmorStats=None, weapon_stats: WeaponStats=None):
         self._key = key
         self._icon = icon
         self._name = name
@@ -161,8 +195,11 @@ class Item():
         self._class_tags = class_tags
         self._state_tags = state_tags
         self._count = count
+        self._level_requirement = level_requirement
+        self._buffs = buffs
 
         self._armor_stats = armor_stats
+        self._weapon_stats = weapon_stats
 
     @staticmethod
     def load_from_state(item_data: dict):
@@ -177,7 +214,10 @@ class Item():
             item_data.get("class_tags", []),
             item_data.get("state_tags", []),
             item_data.get("count", 1),
-            item_data.get("armor_stats")
+            item_data.get("level_requirement", 0),
+            item_data.get("buffs"),
+            item_data.get("armor_stats"),
+            item_data.get("weapon_stats")
         )
 
     def remove_amount(self, amount: int):
@@ -193,7 +233,10 @@ class Item():
                 self._class_tags,
                 self._state_tags,
                 amount,
-                self._armor_stats)
+                self._level_requirement,
+                self._buffs,
+                self._armor_stats,
+                self._weapon_stats)
             self._count -= amount
             return result
         return None
@@ -238,8 +281,17 @@ class Item():
     def get_key(self):
         return self._key
 
+    def get_level_requirement(self):
+        return self._level_requirement
+
+    def get_buffs(self):
+        return self._buffs
+
     def get_armor_stats(self):
         return self._armor_stats
+
+    def get_weapon_stats(self):
+        return self._weapon_stats
 
     def __str__(self):
         display_string = f"**{self.get_full_name()}**\n*{self.get_rarity()} Item*\n\n"
@@ -279,8 +331,23 @@ class Item():
         self._rarity = base_data.get("rarity", Rarity.Unknown)
         self._description = base_data.get("description", "")
         self._flavor_text = base_data.get("flavor_text", "")
+        self._level_requirement = base_data.get("level_requirement", 0)
         self._class_tags = base_data.get("class_tags", [])
-        self._armor_stats = base_data.get("armor_stats")
+
+        armor_data = base_data.get("armor_stats")
+        if armor_data is not None:
+            self._armor_stats = ArmorStats()
+            self._armor_stats.__setstate__(armor_data)
+        
+        weapon_data = base_data.get("weapon_stats")
+        if weapon_data is not None:
+            self._weapon_stats = WeaponStats()
+            self._weapon_stats.__setstate__(weapon_data)
+
+        buffs_data = state.get("buffs")
+        if buffs_data is not None:
+            self._buffs = Buffs()
+            self._buffs.__setstate__(buffs_data)
         
         # These are stateful values and we use what's loaded from the database.
         self._state_tags = state.get("_state_tags", [])
@@ -304,7 +371,6 @@ class LoadedItems():
         return self._states[key]
 
     def get_new_item(self, key: ItemKey):
-        # TODO: Figure out how to handle classes that inherit from Item in the future
         return Item.load_from_state(self._states[key])
 
 # -----------------------------------------------------------------------------
