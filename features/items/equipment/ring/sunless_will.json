@@ -1,16 +1,16 @@
 {
     "key": "items/equipment/ring/sunless_will",
-    "icon": "\uD83E\uDD4B",
+    "icon": "\u2B55",
     "name": "Sunless Will",
     "value": 250,
     "rarity": "Artifact",
     "description": "",
-    "flavor_text": "",
+    "flavor_text": "Do not fail.",
     "class_tags": ["Equipment", "Ring"],
     "state_tags": [],
     "count": 1,
     "level_requirement": 20,
     "buffs": {
-        "int_buff": 2
+        "lck_buff": 2
     }
 }

@@ -1,11 +1,11 @@
 {
     "key": "items/equipment/chest_armor/sunless_heart",
-    "icon": "\uD83E\uDD4B",
+    "icon": "\uD83E\uDDE5",
     "name": "Sunless Heart",
     "value": 1250,
     "rarity": "Artifact",
     "description": "",
-    "flavor_text": "",
+    "flavor_text": "Do not break.",
     "class_tags": ["Equipment", "Chest_Armor"],
     "state_tags": [],
     "count": 1,

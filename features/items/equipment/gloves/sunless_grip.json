@@ -1,11 +1,11 @@
 {
     "key": "items/equipment/gloves/sunless_grip",
-    "icon": "\uD83E\uDD4B",
+    "icon": "\uD83E\uDDE4",
     "name": "Sunless Grip",
     "value": 500,
     "rarity": "Artifact",
     "description": "",
-    "flavor_text": "",
+    "flavor_text": "Do not falter.",
     "class_tags": ["Equipment", "Gloves"],
     "state_tags": [],
     "count": 1,

@@ -191,7 +191,7 @@ class EquipSlotExitButton(discord.ui.Button):
         
         view: EquipmentView = self.view
         if interaction.user == view.get_user():
-            response = view.exit_to_main_menu()
+            response = view.exit_to_slot_view()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -344,7 +344,11 @@ class EquipmentView(discord.ui.View):
             description="Choose a slot to see currently equipped item and equip another or unequip it."
         )
 
+    def exit_to_slot_view(self):
+        return self.display_item_in_slot(self._cur_equip_slot)
+
     def exit_to_main_menu(self):
+        self._cur_equip_slot = None
         self._display_slot_select_buttons()
         return self.get_initial_info()
 

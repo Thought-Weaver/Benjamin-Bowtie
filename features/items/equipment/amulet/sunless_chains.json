@@ -1,11 +1,11 @@
 {
     "key": "items/equipment/amulet/sunless_chains",
-    "icon": "\ud83e\udd7e",
+    "icon": "\uD83D\uDCFF",
     "name": "Sunless Chains",
     "value": 1500,
     "rarity": "Artifact",
     "description": "",
-    "flavor_text": "",
+    "flavor_text": "In the deep, bound and broken. In the deep, treasure sleeping. Break the entrance open.",
     "class_tags": ["Equipment", "Amulet"],
     "state_tags": [],
     "count": 1,

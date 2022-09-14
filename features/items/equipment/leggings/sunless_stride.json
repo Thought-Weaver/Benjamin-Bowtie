@@ -1,11 +1,11 @@
 {
     "key": "items/equipment/leggings/sunless_stride",
-    "icon": "\uD83E\uDD4B",
+    "icon": "\uD83E\uDE73",
     "name": "Sunless Stride",
     "value": 500,
     "rarity": "Artifact",
     "description": "",
-    "flavor_text": "",
+    "flavor_text": "Do not haver.",
     "class_tags": ["Equipment", "Leggings"],
     "state_tags": [],
     "count": 1,

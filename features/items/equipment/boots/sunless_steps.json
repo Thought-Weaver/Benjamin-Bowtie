@@ -1,11 +1,11 @@
 {
     "key": "items/equipment/boots/sunless_steps",
-    "icon": "\ud83e\udd7e",
+    "icon": "\uD83E\uDD7E",
     "name": "Sunless Steps",
     "value": 500,
     "rarity": "Artifact",
     "description": "",
-    "flavor_text": "",
+    "flavor_text": "Do not slow.",
     "class_tags": ["Equipment", "Boots"],
     "state_tags": [],
     "count": 1,
