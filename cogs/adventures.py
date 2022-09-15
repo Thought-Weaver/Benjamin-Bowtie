@@ -387,7 +387,7 @@ class Adventures(commands.Cog):
 
         player_stats.wishingwell.coins_tossed += 1
 
-    @commands.command(name="expertise", help="See your expertise and attributes", aliases=["me", "xp"])
+    @commands.command(name="expertise", help="See your level progress and attributes", aliases=["me", "xp"])
     async def expertise_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         xp_view = ExpertiseView(self._bot, self._database, context.guild.id, context.author)

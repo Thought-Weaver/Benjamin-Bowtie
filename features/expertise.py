@@ -152,14 +152,14 @@ class Expertise():
         updated_max_hp = BASE_HP
         for _ in range(self.constitution):
             updated_max_hp += updated_max_hp * CON_HEALTH_SCALE
-        self.max_hp = updated_max_hp
+        self.max_hp = int(updated_max_hp)
         self.hp = int(percent_health * self.max_hp)
 
         percent_mana = self.mana / self.max_mana
         updated_max_mana = BASE_MANA
         for _ in range(self.constitution):
             updated_max_mana += updated_max_mana * INT_MANA_SCALE
-        self.max_mana = updated_max_mana
+        self.max_mana = int(updated_max_mana)
         self.mana = int(percent_mana * self.max_mana)
 
     def heal(self, heal_amount: int):
@@ -191,7 +191,7 @@ class Expertise():
     def level_up_check(self):
         fisher_level_diff = self._fisher.level_up_check()
         merchant_level_diff = self._merchant.level_up_check()
-        
+
         self.points_to_spend += fisher_level_diff + merchant_level_diff
 
     def get_info_string(self, buffs: Buffs):
