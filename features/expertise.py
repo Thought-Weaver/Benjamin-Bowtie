@@ -68,9 +68,11 @@ class BaseExpertise():
         self._remaining_xp: int = 1
 
     def level_up_check(self):
+        org_level = self._level
         while self._remaining_xp <= 0:
             self._level += 1
             self._remaining_xp = self.get_xp_to_level(self._level + 1) - self._xp
+        return self._level - org_level
 
     # Could be positive or negative, regardless don't go below 0.
     def add_xp(self, value: int):
@@ -187,8 +189,10 @@ class Expertise():
                f"Mana: {mana_squares_string} ({self.mana}/{self.max_mana})"
 
     def level_up_check(self):
-        self._fisher.level_up_check()
-        self._merchant.level_up_check()
+        fisher_level_diff = self._fisher.level_up_check()
+        merchant_level_diff = self._merchant.level_up_check()
+        
+        self.points_to_spend += fisher_level_diff + merchant_level_diff
 
     def get_info_string(self, buffs: Buffs):
         self.level_up_check()
@@ -282,7 +286,7 @@ class ExpertiseView(discord.ui.View):
         expertise: Expertise = self.get_player().get_expertise()
         equipment: Equipment = self.get_player().get_equipment()
         expertise.level_up_check()
-        
+
         return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs()))
 
     def _get_current_buttons(self):
