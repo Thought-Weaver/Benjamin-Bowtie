@@ -186,7 +186,7 @@ class Adventures(commands.Cog):
             if story.first_to_find_maybe_fish_id == -1:
                 story.first_to_find_maybe_fish_id = context.author.id
 
-            xp_to_add = 21
+            xp_to_add = 13
             player_stats.fish.epic_fish_caught += 1
         
         author_player.get_inventory().add_item(fishing_result)

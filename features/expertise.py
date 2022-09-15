@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-import sys
 from discord.embeds import Embed
 from math import ceil
 from strenum import StrEnum
@@ -66,7 +65,12 @@ class BaseExpertise():
     def __init__(self):
         self._xp: int = 0
         self._level: int = 0
-        self._remaining_xp: int = 0
+        self._remaining_xp: int = 1
+
+    def level_up_check(self):
+        while self._remaining_xp <= 0:
+            self._level += 1
+            self._remaining_xp = self.get_xp_to_level(self._level + 1) - self._xp
 
     # Could be positive or negative, regardless don't go below 0.
     def add_xp(self, value: int):
@@ -75,9 +79,7 @@ class BaseExpertise():
         self._xp = max(0, self._xp + value)
         self._remaining_xp = self.get_xp_to_level(self._level + 1) - self._xp
 
-        while self._remaining_xp <= 0:
-            self._level += 1
-            self._remaining_xp = self.get_xp_to_level(self._level + 1) - self._xp
+        self.level_up_check()
 
         return self._level - org_level
 
@@ -89,7 +91,15 @@ class BaseExpertise():
 
     @abstractmethod
     def get_xp_to_level(self, level: int) -> int:
-        return sys.maxsize
+        return 1
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._xp = state.get("_xp", 0)
+        self._level = state.get("_level", 0)
+        self._remaining_xp = self.get_xp_to_level(self._level + 1) - self._xp
 
 
 class FisherExpertise(BaseExpertise):
@@ -176,7 +186,13 @@ class Expertise():
         return f"HP: {hp_squares_string} ({self.hp}/{self.max_hp})\n" \
                f"Mana: {mana_squares_string} ({self.mana}/{self.max_mana})"
 
+    def level_up_check(self):
+        self._fisher.level_up_check()
+        self._merchant.level_up_check()
+
     def get_info_string(self, buffs: Buffs):
+        self.level_up_check()
+
         fisher_level: int = self._fisher.get_level()
         merchant_level: int = self._merchant.get_level()
 
@@ -265,13 +281,18 @@ class ExpertiseView(discord.ui.View):
     def get_current_page_info(self):
         expertise: Expertise = self.get_player().get_expertise()
         equipment: Equipment = self.get_player().get_equipment()
+        expertise.level_up_check()
+        
         return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs()))
 
     def _get_current_buttons(self):
         self.clear_items()
 
         player: Player = self.get_player()
-        if player.get_expertise().points_to_spend > 0:
+        expertise: Expertise = player.get_expertise()
+        expertise.level_up_check()
+
+        if expertise.points_to_spend > 0:
             self.add_item(AttributeButton(Attribute.Constitution, 0))
             self.add_item(AttributeButton(Attribute.Strength, 0))
             self.add_item(AttributeButton(Attribute.Dexterity, 1))
@@ -300,6 +321,7 @@ class ExpertiseView(discord.ui.View):
             expertise.memory += 1
         
         expertise.points_to_spend -= 1
+        expertise.level_up_check()
         self._get_current_buttons()
 
         return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs()))
