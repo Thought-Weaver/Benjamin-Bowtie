@@ -161,7 +161,7 @@ class Buffs():
         if self.mem_buff != 0:
             if self.mem_buff > 0:
                 display_string += "+"
-            display_string += f"{self.mem_buff} Memory"
+            display_string += f"{self.mem_buff} Memory\n"
         return display_string
 
     def __getstate__(self):
@@ -350,7 +350,7 @@ class Item():
             display_string += f"{self._weapon_stats.get_range_str()}\n"
 
         if self._buffs is not None:
-            display_string += f"{self._buffs}\n"
+            display_string += f"{self._buffs}"
 
         if self._armor_stats is not None or self._weapon_stats is not None or self._buffs is not None:
             display_string += "\n"
@@ -445,4 +445,3 @@ class LoadedItems():
 # -----------------------------------------------------------------------------
 
 LOADED_ITEMS = LoadedItems()
-print(str(LOADED_ITEMS.get_new_item(ItemKey.Crab)))
