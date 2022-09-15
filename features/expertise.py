@@ -193,6 +193,7 @@ class Expertise():
         merchant_level_diff = self._merchant.level_up_check()
 
         self.points_to_spend += fisher_level_diff + merchant_level_diff
+        self.level = self._fisher.get_level() + self._merchant.get_level()
 
     def get_info_string(self, buffs: Buffs):
         self.level_up_check()
