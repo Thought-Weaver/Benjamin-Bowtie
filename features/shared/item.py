@@ -226,6 +226,24 @@ class Item():
 
     @staticmethod
     def load_from_state(item_data: dict):
+        armor_data = item_data.get("armor_stats")
+        armor_stats = None
+        if armor_data is not None:
+            armor_stats = ArmorStats()
+            armor_stats.__setstate__(armor_data)
+        
+        weapon_data = item_data.get("weapon_stats")
+        weapon_stats = None
+        if weapon_data is not None:
+            weapon_stats = WeaponStats()
+            weapon_stats.__setstate__(weapon_data)
+
+        buffs_data = item_data.get("buffs")
+        buffs = None
+        if buffs_data is not None:
+            buffs = Buffs()
+            buffs.__setstate__(buffs_data)
+        
         return Item(
             item_data.get("key", ""),
             item_data.get("icon", ""),
@@ -238,9 +256,9 @@ class Item():
             item_data.get("state_tags", []),
             item_data.get("count", 1),
             item_data.get("level_requirement", 0),
-            item_data.get("buffs"),
-            item_data.get("armor_stats"),
-            item_data.get("weapon_stats")
+            buffs,
+            armor_stats,
+            weapon_stats
         )
 
     def remove_amount(self, amount: int):
@@ -427,3 +445,4 @@ class LoadedItems():
 # -----------------------------------------------------------------------------
 
 LOADED_ITEMS = LoadedItems()
+print(str(LOADED_ITEMS.get_new_item(ItemKey.Crab)))
