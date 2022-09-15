@@ -88,8 +88,42 @@ class Adventures(commands.Cog):
         author_player: Player = self._get_player(context.guild.id, context.author.id)
         player_stats: Stats = author_player.get_stats()
 
+        # E(X) =
+        # 0.55 * (2 + 1 + 1) / 3 +
+        # 0.2 * (3 + 4 + 3) / 3 +
+        # 0.15 * (4 + 5) / 2 +
+        # 0.095 * (10 + 8 + 8 + 10) / 3 +
+        # 0.0049 * (40 + 50 + 30) / 3 +
+        # 0.0001 * 1 =
+        # 3.41 every 30 seconds -> 409.2 an hour
+
+        # Luck Effect
+        #   1  -> E(X) = 3.45 every 30 seconds -> 414 an hour
+        #   10 -> E(X) = 3.85 every 30 seconds -> 462 an hour
+        #   20 -> E(X) = 4.29 every 30 seconds -> 514.8 an hour
+
+        LUCK_MOD = 0.005 # Luck adjusts total bias by 0.5% per point
+        author_luck: int = author_player.get_expertise().luck
+        equipment_luck: int = author_player.get_equipment().get_total_buffs().lck_buff
+        total_luck: int = author_luck + equipment_luck
+        rand_val = random.choices(
+            [0, 1, 2, 3, 4, 5], k=1,
+            weights=[
+                # Luck Effect:
+                #   1  -> 54.5%, 20.125%, 15.125%, 9.625%, 0.5525%, 0.0735%
+                #   10 -> 50%, 21.25%, 16.25%, 10.75%, 1.115%, 0.635%
+                #   20 -> 45%, 22.5%, 17.5%, 12%, 1.74%, 1.26%
+                0.55 - LUCK_MOD * total_luck,
+                0.2 + 2 * (LUCK_MOD * total_luck) / 8,
+                0.15 + 2 * (LUCK_MOD * total_luck) / 8,
+                0.095 + 2 * (LUCK_MOD * total_luck) / 8,
+                0.0049 + 1 * (LUCK_MOD * total_luck) / 8,
+                0.0001 + 1 * (LUCK_MOD * total_luck) / 8
+            ]
+        )[0]
+
         # 55% chance of getting a Common non-fish reward
-        if 0.0 <= rand_val < 0.55:
+        if rand_val == 0:
             items = [
                 LOADED_ITEMS.get_new_item(ItemKey.BasicBoots), 
                 LOADED_ITEMS.get_new_item(ItemKey.ClumpOfLeaves), 
@@ -98,7 +132,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.common_items_caught += 1
         # 20% chance of getting a Common fish reward
-        if 0.55 <= rand_val < 0.75:
+        if rand_val == 1:
             items = [
                 LOADED_ITEMS.get_new_item(ItemKey.Minnow),
                 LOADED_ITEMS.get_new_item(ItemKey.Roughy),
@@ -107,7 +141,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.common_fish_caught += 1
         # 15% chance of getting an Uncommon fish reward
-        if 0.75 <= rand_val < 0.9:
+        if rand_val == 2:
             items = [
                 LOADED_ITEMS.get_new_item(ItemKey.Oyster),
                 LOADED_ITEMS.get_new_item(ItemKey.Pufferfish)
@@ -115,7 +149,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.uncommon_fish_caught += 1
         # 9.5% chance of getting a Rare fish reward
-        if 0.9 <= rand_val < 0.995:
+        if rand_val == 3:
             items = [
                 LOADED_ITEMS.get_new_item(ItemKey.Squid),
                 LOADED_ITEMS.get_new_item(ItemKey.Crab),
@@ -125,7 +159,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.rare_fish_caught += 1
         # 0.49% chance of getting a Rare non-fish reward
-        if 0.995 <= rand_val < 0.9999:
+        if rand_val == 4:
             items = [
                 LOADED_ITEMS.get_new_item(ItemKey.Diamond),
                 LOADED_ITEMS.get_new_item(ItemKey.AncientVase),
@@ -134,7 +168,7 @@ class Adventures(commands.Cog):
             fishing_result = random.choice(items)
             player_stats.fish.rare_items_caught += 1
         # 0.01% chance of getting the Epic story reward
-        if 0.9999 <= rand_val <= 1.0:
+        if rand_val == 5:
             items = [LOADED_ITEMS.get_new_item(ItemKey.FishMaybe)]
             fishing_result = random.choice(items)
 
@@ -143,15 +177,6 @@ class Adventures(commands.Cog):
                 story.first_to_find_maybe_fish_id = context.author.id
 
             player_stats.fish.epic_fish_caught += 1
-        
-        # E(X) =
-        # 0.55 * (2 + 1 + 1) / 3 +
-        # 0.2 * (3 + 4 + 3) / 3 +
-        # 0.15 * (4 + 5) / 2 +
-        # 0.095 * (10 + 8 + 8 + 10) / 3 +
-        # 0.0049 * (40 + 50 + 30) / 3 +
-        # 0.0001 * 1 =
-        # 3.41 every 30 seconds -> 409.2 an hour
         
         author_player.get_inventory().add_item(fishing_result)
 
@@ -269,7 +294,6 @@ class Adventures(commands.Cog):
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def wishing_well_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
-        rand_val = random.random()
 
         author_player: Player = self._get_player(context.guild.id, context.author.id)
         author_inv: Inventory = author_player.get_inventory()
@@ -281,26 +305,48 @@ class Adventures(commands.Cog):
         player_stats: Stats = author_player.get_stats()
         story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
 
-        # E(X) = 0.995 * -1 + 0.0021 * 500 = 0.055 every 5 seconds -> 39.6 per hour
+        # E(X) = 0.995 * -1 + 0.0021 * 200 = -0.575 every 5 seconds -> -414 per hour
+        # Luck Effect:
+        #   1  -> E(X) = 0.994 * -1 + 0.0021 * 200 -> -413.28 per hour
+        #   10 -> E(X) = 0.985 * -1 + 0.00585 * 200 -> 126.72 per hour
+        #   20 -> E(X) = 0.975 * -1 + 0.0096 * 200 -> 680.4 per hour
 
-        # 99.5% chance of getting nothing
-        if 0.0 <= rand_val < 0.995:
+        LUCK_MOD = 0.001 # Luck adjusts total bias by 0.1% per point
+        author_luck: int = author_player.get_expertise().luck
+        equipment_luck: int = author_player.get_equipment().get_total_buffs().lck_buff
+        total_luck: int = author_luck + equipment_luck
+        rand_val = random.choices(
+            [0, 1, 2, 3], k=1,
+            weights=[
+                # Luck Effect:
+                #   1  -> 99.4%, 0.33%, 0.2475%, 0.0225%
+                #   10 -> 98.5%, 0.78%, 0.585%, 0.135%
+                #   20 -> 97.5%, 1.28%, 0.96%, 0.26%
+                0.9950 - LUCK_MOD * total_luck,
+                0.0028 + 4 * (LUCK_MOD * total_luck) / 8,
+                0.0021 + 3 * (LUCK_MOD * total_luck) / 8,
+                0.0001 + 1 * (LUCK_MOD * total_luck) / 8,
+            ]
+        )[0]
+
+        # 99.5% base chance of getting nothing
+        if rand_val == 0:
             embed = Embed(
                 title="You toss the coin in...",
                 description="It plummets into the darkness below and hits the bottom with a resounding clink."
             )
             await context.send(embed=embed)
-        # 0.21% chance of getting 500 coins
-        if 0.995 <= rand_val < 0.9971:
-            author_player.get_inventory().add_coins(500)
-            player_stats.wishingwell.coins_received += 500
+        # 0.21% base chance of getting 500 coins
+        if rand_val == 1:
+            author_player.get_inventory().add_coins(250)
+            player_stats.wishingwell.coins_received += 250
             embed = Embed(
                 title="You toss the coin in...",
                 description="It plummets into the darkness below and you feel a sense of duplication. One becoming many."
             )
             await context.send(embed=embed)
-        # 0.28% chance of getting a Legendary item
-        if 0.9971 <= rand_val < 0.9999:
+        # 0.28% base chance of getting a Legendary item
+        if rand_val == 2:
             items = [LOADED_ITEMS.get_new_item(key) for key in story.remaining_sunless_keys]
             rand_index: int = random.randint(0, max(0, len(items) - 1))
             result: Item = items[rand_index] if items != [] else LOADED_ITEMS.get_new_item(ItemKey.Diamond)
@@ -316,8 +362,8 @@ class Adventures(commands.Cog):
                 description="It plummets into the darkness below. Then, you close your eyes and are surrounded by a gust of wind. Something has arrived where things sent are brought."
             )
             await context.send(embed=embed)
-        # 0.01% chance of stirring something in the world
-        if 0.9999 <= rand_val <= 1:
+        # 0.01% base chance of stirring something in the world
+        if rand_val == 3:
             story_response: Embed = story.get_wishing_well_response(context.author.id, player_stats)
             player_stats.wishingwell.something_stirs += 1
 
@@ -336,7 +382,7 @@ class Adventures(commands.Cog):
     async def equipment_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         equipment_view = EquipmentView(self._bot, self._database, context.guild.id, context.author)
-        embed = equipment_view.get_initial_page_info()
+        embed = equipment_view.get_initial_info()
         await context.send(embed=embed, view=equipment_view)
 
 

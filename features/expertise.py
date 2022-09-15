@@ -297,7 +297,7 @@ class ExpertiseView(discord.ui.View):
         expertise.points_to_spend -= 1
         self._get_current_buttons()
 
-        return Embed(title=f"{self._user.display_name}'s Expertise", description=expertise.get_info_string(equipment.get_total_attribute_buffs()))
+        return Embed(title=f"{self._user.display_name}'s Expertise", description=expertise.get_info_string(equipment.get_total_buffs()))
 
     def get_user(self):
         return self._user

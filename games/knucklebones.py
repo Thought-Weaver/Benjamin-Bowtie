@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import discord
 
-from random import choice, randint
+from random import choice, choices
 from discord.embeds import Embed
 from discord.ext import commands
 
@@ -200,11 +200,29 @@ class Knucklebones(discord.ui.View):
             return self._player_2
         return None
 
+    def _roll(self):
+        cur_turn_player: Player = self._get_player(self._turn.id)
+        player_luck: int = cur_turn_player.get_expertise().luck
+        equipment_luck: int = cur_turn_player.get_equipment().get_total_buffs().lck_buff
+        total_luck: int = player_luck + equipment_luck
+        self._current_roll = choices(
+            [1, 2, 3, 4, 5, 6], k=1, 
+            weights=[
+                1/6 - 0.001 * total_luck,
+                1/6 - 0.001 * total_luck,
+                1/6 - 0.001 * total_luck,
+                1/6 + 0.001 * total_luck,
+                1/6 + 0.001 * total_luck,
+                1/6 + 0.001 * total_luck
+            ]
+        )[0]
+
     def setup_game(self):
         self.clear_items()
         for pos in range(3):
             self.add_item(KnucklebonesButton(pos))
-        self._current_roll = randint(1, 6)
+        
+        self._roll()
         return self._get_game_state_string() + "\n\n" + self._get_current_turn_string()
 
     def _update_stats(self, winner: Player, player_1: Player, player_2: Player, amount_won=0, is_tied=False):
@@ -280,7 +298,7 @@ class Knucklebones(discord.ui.View):
             self._update_stats(winner_player, player_1, player_2, is_tied=True)
             return self._get_game_state_string() + "\n\nIt's a tie! No one wins any coins."
 
-        self._current_roll = randint(1, 6)
+        self._roll()
         self._turn = self._player_1 if self._turn == self._player_2 else self._player_2
         return self._get_game_state_string() + "\n\n" + self._get_current_turn_string()
 

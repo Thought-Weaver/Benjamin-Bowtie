@@ -120,7 +120,7 @@ class Equipment():
         if slot == ClassTag.Equipment.OffHand:
             self._off_hand = item
 
-    def get_total_attribute_buffs(self):
+    def get_total_buffs(self):
         buffs = Buffs()
         for item in self.get_all_equipped_items():
             item_buffs = item.get_buffs()
@@ -279,10 +279,9 @@ class EquipmentView(discord.ui.View):
         # Need to check that the item still exists since there are async operations
         # that can happen with different views.
         embed = Embed(
-            title=f"{self.get_str_for_slot(self._cur_equip_slot)}",
-            description = "None equipped. Use Equip below to select an item for this slot."
+            title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
+            description=f"Error: Could not equip that item.\n\nChoose an item from your inventory to equip."
         )
-
         # The "exact_item_index" here is the index of the item with respect to the entire
         # inventory. This is used instead of an adjusted index here because the items are
         # filtered when displayed to the user, so adjusting based on page size wouldn't work.
@@ -292,8 +291,8 @@ class EquipmentView(discord.ui.View):
             equipment.equip_item_to_slot(self._cur_equip_slot, item)
 
             embed = Embed(
-                title=f"{self.get_str_for_slot(self._cur_equip_slot)}",
-                description=f"──────────\n{item}\n──────────\n\n"
+                title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
+                description=f"──────────\n{item}\n──────────\n\nEquipped! You can choose a different item from your inventory to equip or exit."
             )
         
         self._get_current_page_buttons()
@@ -380,10 +379,19 @@ class EquipmentView(discord.ui.View):
         return self.get_initial_info()
 
     def _get_current_equip_page_info(self):
-        return Embed(
-            title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
-            description=f"Choose an item from your inventory to equip."
-        )
+        player: Player = self.get_player()
+        equipped_item: (Item | None) = player.get_equipment().get_item_in_slot(self._cur_equip_slot)
+
+        if equipped_item is not None:
+            return Embed(
+                title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
+                description=f"──────────\n{equipped_item}\n──────────\n\nChoose an item from your inventory to equip."
+            )
+        else:
+            return Embed(
+                title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
+                description=f"Choose an item from your inventory to equip."
+            )
         
     def next_page(self):
         self._page += 1
