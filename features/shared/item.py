@@ -139,17 +139,29 @@ class Buffs():
     def __str__(self):
         display_string = ""
         if self.con_buff != 0:
-            display_string += f"+ {self.con_buff} Constitution\n"
+            if self.con_buff > 0:
+                display_string += "+"
+            display_string += f"{self.con_buff} Constitution\n"
         if self.str_buff != 0:
-            display_string += f"+ {self.str_buff} Strength\n"
+            if self.str_buff > 0:
+                display_string += "+"
+            display_string += f"{self.str_buff} Strength\n"
         if self.dex_buff != 0:
-            display_string += f"+ {self.dex_buff} Dexterity\n"
+            if self.dex_buff > 0:
+                display_string += "+"
+            display_string += f"{self.dex_buff} Dexterity\n"
         if self.int_buff != 0:
-            display_string += f"+ {self.int_buff} Intelligence\n"
+            if self.int_buff > 0:
+                display_string += "+"
+            display_string += f"{self.int_buff} Intelligence\n"
         if self.lck_buff != 0:
-            display_string += f"+ {self.lck_buff} Luck\n"
+            if self.lck_buff > 0:
+                display_string += "+"
+            display_string += f"{self.lck_buff} Luck\n"
         if self.mem_buff != 0:
-            display_string += f"+ {self.mem_buff} Memory"
+            if self.mem_buff > 0:
+                display_string += "+"
+            display_string += f"{self.mem_buff} Memory"
         return display_string
 
     def __getstate__(self):
@@ -379,7 +391,7 @@ class Item():
         else:
             self._weapon_stats = None
 
-        buffs_data = state.get("buffs")
+        buffs_data = base_data.get("buffs")
         if buffs_data is not None:
             self._buffs = Buffs()
             self._buffs.__setstate__(buffs_data)
