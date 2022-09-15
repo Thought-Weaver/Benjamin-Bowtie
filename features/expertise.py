@@ -147,19 +147,19 @@ class Expertise():
         self.points_to_spend += levels_gained
         self.level = self._fisher.get_level() + self._merchant.get_level()
 
-    def update_stats(self):
+    def update_stats(self, equipment_buffs: Buffs):
         percent_health = self.hp / self.max_hp
-        updated_max_hp = BASE_HP
-        for _ in range(self.constitution):
-            updated_max_hp += updated_max_hp * CON_HEALTH_SCALE
-        self.max_hp = int(updated_max_hp)
+        updated_max_hp: int = BASE_HP
+        for _ in range(self.constitution + equipment_buffs.con_buff):
+            updated_max_hp += int(updated_max_hp * CON_HEALTH_SCALE)
+        self.max_hp = updated_max_hp
         self.hp = int(percent_health * self.max_hp)
 
         percent_mana = self.mana / self.max_mana
-        updated_max_mana = BASE_MANA
-        for _ in range(self.intelligence):
-            updated_max_mana += updated_max_mana * INT_MANA_SCALE
-        self.max_mana = int(updated_max_mana)
+        updated_max_mana: int = BASE_MANA
+        for _ in range(self.intelligence + equipment_buffs.int_buff):
+            updated_max_mana += int(updated_max_mana * INT_MANA_SCALE)
+        self.max_mana = updated_max_mana
         self.mana = int(percent_mana * self.max_mana)
 
     def heal(self, heal_amount: int):
@@ -312,14 +312,14 @@ class ExpertiseView(discord.ui.View):
 
         if attribute == Attribute.Constitution:
             expertise.constitution += 1
-            expertise.update_stats()
+            expertise.update_stats(equipment.get_total_buffs())
         if attribute == Attribute.Strength:
             expertise.strength += 1
         if attribute == Attribute.Dexterity:
             expertise.dexterity += 1
         if attribute == Attribute.Intelligence:
             expertise.intelligence += 1
-            expertise.update_stats()
+            expertise.update_stats(equipment.get_total_buffs())
         if attribute == Attribute.Luck:
             expertise.luck += 1
         if attribute == Attribute.Memory:

@@ -123,6 +123,9 @@ class ItemKey(StrEnum):
     SunlessWill = "items/equipment/ring/sunless_will"
     SunlessChains = "items/equipment/amulet/sunless_chains"
 
+    # Misc
+    CursedStone = "items/equipment/offhand/cursed_stone"
+
 # -----------------------------------------------------------------------------
 # CLASSES
 # -----------------------------------------------------------------------------
@@ -358,7 +361,7 @@ class Item():
         if self._description != "":
             display_string += f"{self._description}\n\n"
         if self._flavor_text != "":
-            display_string += f"{self._flavor_text}\n\n"
+            display_string += f"*{self._flavor_text}*\n\n"
 
         if self._count > 1:
             display_string += f"Quantity: *{self._count}*\n"

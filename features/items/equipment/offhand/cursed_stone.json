@@ -1,0 +1,15 @@
+{
+    "key": "items/equipment/offhand/cursed_stone",
+    "icon": "\u26F0\uFE0F",
+    "name": "Cursed Stone",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "Fuck me in particular.",
+    "class_tags": ["Equipment", "Off_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "buffs": {
+        "lck_buff": -1
+    }
+}

@@ -251,7 +251,7 @@ class Adventures(commands.Cog):
     @commands.command(name="mail", help="Send another player a gift")
     async def mail_handler(self, context: commands.Context, giftee: User=None):
         if giftee is None:
-            await context.send("You need to @ a member to use !mail")
+            await context.send("You need to @ a member to use b!mail")
             return
         
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
@@ -341,7 +341,7 @@ class Adventures(commands.Cog):
                 0.9950 - LUCK_MOD * total_luck,
                 0.0028 + 4 * (LUCK_MOD * total_luck) / 8,
                 0.0021 + 3 * (LUCK_MOD * total_luck) / 8,
-                0.0001 + 1 * (LUCK_MOD * total_luck) / 8,
+                0.0001 + 1 * (LUCK_MOD * total_luck) / 8
             ]
         )[0]
 

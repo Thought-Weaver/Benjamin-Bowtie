@@ -192,7 +192,7 @@ class MailModal(discord.ui.Modal):
         
         found_index = inventory.item_exists(self._item)
         if found_index != self._adjusted_item_index:
-            await interaction.response.send_message(f"Error: Something about your inventory changed. Try using !mail again.")
+            await interaction.response.send_message(f"Error: Something about your inventory changed. Try using b!mail again.")
             return
 
         if not self._count_input.value.isnumeric() or int(self._count_input.value) < 0:
