@@ -283,6 +283,12 @@ class Item():
     def get_rarity(self):
         return self._rarity
 
+    def get_description(self):
+        return self._description
+    
+    def get_flavor_text(self):
+        return self._flavor_text
+
     def get_class_tags(self):
         return self._class_tags
 
@@ -363,17 +369,23 @@ class Item():
         if armor_data is not None:
             self._armor_stats = ArmorStats()
             self._armor_stats.__setstate__(armor_data)
+        else:
+            self._armor_stats = None
         
         weapon_data = base_data.get("weapon_stats")
         if weapon_data is not None:
             self._weapon_stats = WeaponStats()
             self._weapon_stats.__setstate__(weapon_data)
+        else:
+            self._weapon_stats = None
 
         buffs_data = state.get("buffs")
         if buffs_data is not None:
             self._buffs = Buffs()
             self._buffs.__setstate__(buffs_data)
-        
+        else:
+            self._buffs = None
+
         # These are stateful values and we use what's loaded from the database.
         self._state_tags = state.get("_state_tags", [])
         self._count = state.get("_count", 1)

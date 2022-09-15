@@ -9,11 +9,9 @@ from strenum import StrEnum
 import discord
 
 from typing import TYPE_CHECKING
-
-from features.equipment import Equipment
-
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
+    from features.equipment import Equipment
     from features.player import Player
     from features.shared.item import Buffs
 
@@ -75,11 +73,11 @@ class BaseExpertise():
         org_level = self._level
 
         self._xp = max(0, self._xp + value)
-        self._remaining_xp = self.get_xp_to_level(self._level + 1)
+        self._remaining_xp = self.get_xp_to_level(self._level + 1) - self._xp
 
         while self._remaining_xp <= 0:
             self._level += 1
-            self._remaining_xp = self.get_xp_to_level(self._level + 1)
+            self._remaining_xp = self.get_xp_to_level(self._level + 1) - self._xp
 
         return self._level - org_level
 
@@ -95,13 +93,13 @@ class BaseExpertise():
 
 
 class FisherExpertise(BaseExpertise):
-    def get_xp_to_level(self, level: int):
-        return 100 + 25 * level * (level - 1) + 75 * (2 ** ((level - 1) / 7.0) - 1) / (1 - 2 ** (-1 / 7.0))
+    def get_xp_to_level(self, level: int) -> int:
+        return ceil(100 + 25 * level * (level - 1) + 75 * (2 ** ((level - 1) / 7.0) - 1) / (1 - 2 ** (-1 / 7.0)))
 
 
 class MerchantExpertise(BaseExpertise):
-    def get_xp_to_level(self, level: int):
-        return 15 + 15 * level * (level - 1) + 25 * (2 ** ((level - 1) / 8.0) - 1) / (1 - 2 ** (-1 / 8.0))
+    def get_xp_to_level(self, level: int) -> int:
+        return ceil(15 + 15 * level * (level - 1) + 25 * (2 ** ((level - 1) / 8.0) - 1) / (1 - 2 ** (-1 / 8.0)))
 
 
 class Expertise():
@@ -135,6 +133,7 @@ class Expertise():
         elif expertise_class == ExpertiseClass.Merchant:
             levels_gained = self._merchant.add_xp(xp)
         self.points_to_spend += levels_gained
+        self.level = self._fisher.get_level() + self._merchant.get_level()
 
     def update_stats(self):
         updated_max_hp = BASE_HP
@@ -189,9 +188,9 @@ class Expertise():
             f"{self.get_health_and_mana_string()}\n\n" \
             f"**Classes**\n\n" \
             f"Alchemist: ???\n" \
-            f"Fisher: Lvl. {fisher_level} ({self._fisher.get_xp_to_level(fisher_level + 1)} xp to next)\n" \
+            f"Fisher: Lvl. {fisher_level} *({self._fisher.get_xp_to_level(fisher_level + 1) - self._fisher.get_xp()} xp to next)*\n" \
             f"Guardian: ???\n" \
-            f"Merchant: Lvl. {merchant_level} ({self._fisher.get_xp_to_level(merchant_level + 1)} xp to next)\n\n" \
+            f"Merchant: Lvl. {merchant_level} *({self._merchant.get_xp_to_level(merchant_level + 1) - self._merchant.get_xp()} xp to next)*\n\n" \
             f"**Attributes**\n\n" \
             f"Constitution: {self.constitution} {format_buff_modifier(buffs.con_buff)}\n" \
             f"Strength: {self.strength} {format_buff_modifier(buffs.str_buff)}\n" \
@@ -201,7 +200,8 @@ class Expertise():
             f"Memory: {self.memory} {format_buff_modifier(buffs.mem_buff)}"
 
         if self.points_to_spend > 0:
-            info_string += f"\n\n*You have {self.points_to_spend} attribute points to spend!*"
+            point_str = "point" if self.points_to_spend == 1 else "points"
+            info_string += f"\n\n*You have {self.points_to_spend} attribute {point_str} to spend!*"
 
         return info_string
 
@@ -260,7 +260,8 @@ class ExpertiseView(discord.ui.View):
 
     def get_current_page_info(self):
         expertise: Expertise = self.get_player().get_expertise()
-        return Embed(title=f"{self._user.display_name}'s Expertise", description=expertise.get_info_string())
+        equipment: Equipment = self.get_player().get_equipment()
+        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs()))
 
     def _get_current_buttons(self):
         self.clear_items()
@@ -297,7 +298,7 @@ class ExpertiseView(discord.ui.View):
         expertise.points_to_spend -= 1
         self._get_current_buttons()
 
-        return Embed(title=f"{self._user.display_name}'s Expertise", description=expertise.get_info_string(equipment.get_total_buffs()))
+        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs()))
 
     def get_user(self):
         return self._user

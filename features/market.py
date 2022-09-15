@@ -1,8 +1,10 @@
 from __future__ import annotations
+from math import floor
 
 import discord
 
 from discord.embeds import Embed
+from features.expertise import Expertise, ExpertiseClass
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -145,15 +147,25 @@ class MarketView(discord.ui.View):
         found_index = inventory.item_exists(item)
         if found_index == adjusted_index:
             inventory.remove_item(adjusted_index, 1)
-            inventory.add_coins(item.get_value())
-            embed = Embed(
-                title="Selling at the Market",
-                description=f"Choose an item from your inventory to sell. You have {inventory.get_coins_str()}.\n\n*Sold 1 {item.get_full_name()} for {item.get_value_str()}!*"
-            )
+            item_value: int = item.get_value()
+            inventory.add_coins(item_value)
 
             player_stats: Stats = player.get_stats()
             player_stats.market.items_sold += 1
-            player_stats.market.coins_made += item.get_value()
+            player_stats.market.coins_made += item_value
+
+            player_xp: Expertise = player.get_expertise()
+            xp_to_add: int = floor(item_value / 4)
+            player_xp.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant)
+        
+            description = f"Choose an item from your inventory to sell. You have {inventory.get_coins_str()}.\n\n*Sold 1 {item.get_full_name()} for {item.get_value_str()}!*"
+            if xp_to_add > 0:
+                description += f" *(+{xp_to_add} Merchant xp)*"
+
+            embed = Embed(
+                title="Selling at the Market",
+                description=description
+            )
         
         self._get_current_page_buttons()
         return embed

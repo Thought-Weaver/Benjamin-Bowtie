@@ -31,9 +31,15 @@ class Inventory():
                 item.get_name(),
                 item.get_value(),
                 item.get_rarity(),
+                item.get_description(),
+                item.get_flavor_text(),
                 item.get_class_tags(),
                 item.get_state_tags(),
-                0)
+                0,
+                item.get_level_requirement(),
+                item.get_buffs(),
+                item.get_armor_stats(),
+                item.get_weapon_stats())
             )
         if len(self._inventory_slots) >= 2:
             for item in self._inventory_slots:
@@ -49,9 +55,15 @@ class Inventory():
                         item.get_name(),
                         item.get_value(),
                         item.get_rarity(),
+                        item.get_description(),
+                        item.get_flavor_text(),
                         item.get_class_tags(),
                         item.get_state_tags(),
-                        0)
+                        0,
+                        item.get_level_requirement(),
+                        item.get_buffs(),
+                        item.get_armor_stats(),
+                        item.get_weapon_stats())
                     )
 
         new_slots: List[Item] = []

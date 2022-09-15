@@ -12,7 +12,7 @@ from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
 from features.equipment import EquipmentView
-from features.expertise import ExpertiseView
+from features.expertise import ExpertiseClass, ExpertiseView
 from features.inventory import InventoryView
 from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
@@ -27,6 +27,7 @@ from games.knucklebones import Knucklebones
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
+    from features.expertise import Expertise
     from features.inventory import Inventory
     from features.stats import Stats
 
@@ -83,10 +84,14 @@ class Adventures(commands.Cog):
     async def fish_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         rand_val = random.random()
+        
         fishing_result: Item = None
+        xp_to_add: int = 0
+        xp_class: ExpertiseClass = ExpertiseClass.Fisher
 
         author_player: Player = self._get_player(context.guild.id, context.author.id)
         player_stats: Stats = author_player.get_stats()
+        player_xp: Expertise = author_player.get_expertise()
 
         # E(X) =
         # 0.55 * (2 + 1 + 1) / 3 +
@@ -103,9 +108,9 @@ class Adventures(commands.Cog):
         #   20 -> E(X) = 4.29 every 30 seconds -> 514.8 an hour
 
         LUCK_MOD = 0.005 # Luck adjusts total bias by 0.5% per point
-        author_luck: int = author_player.get_expertise().luck
+        player_luck: int = author_player.get_expertise().luck
         equipment_luck: int = author_player.get_equipment().get_total_buffs().lck_buff
-        total_luck: int = author_luck + equipment_luck
+        total_luck: int = player_luck + equipment_luck
         rand_val = random.choices(
             [0, 1, 2, 3, 4, 5], k=1,
             weights=[
@@ -139,6 +144,7 @@ class Adventures(commands.Cog):
                 LOADED_ITEMS.get_new_item(ItemKey.Shrimp)
             ]
             fishing_result = random.choice(items)
+            xp_to_add = 3
             player_stats.fish.common_fish_caught += 1
         # 15% chance of getting an Uncommon fish reward
         if rand_val == 2:
@@ -147,6 +153,7 @@ class Adventures(commands.Cog):
                 LOADED_ITEMS.get_new_item(ItemKey.Pufferfish)
             ]
             fishing_result = random.choice(items)
+            xp_to_add = 5
             player_stats.fish.uncommon_fish_caught += 1
         # 9.5% chance of getting a Rare fish reward
         if rand_val == 3:
@@ -157,6 +164,7 @@ class Adventures(commands.Cog):
                 LOADED_ITEMS.get_new_item(ItemKey.Shark)
             ]
             fishing_result = random.choice(items)
+            xp_to_add = 8
             player_stats.fish.rare_fish_caught += 1
         # 0.49% chance of getting a Rare non-fish reward
         if rand_val == 4:
@@ -166,6 +174,8 @@ class Adventures(commands.Cog):
                 LOADED_ITEMS.get_new_item(ItemKey.MysteriousScroll)
             ]
             fishing_result = random.choice(items)
+            xp_class = ExpertiseClass.Merchant
+            xp_to_add = 8
             player_stats.fish.rare_items_caught += 1
         # 0.01% chance of getting the Epic story reward
         if rand_val == 5:
@@ -176,13 +186,19 @@ class Adventures(commands.Cog):
             if story.first_to_find_maybe_fish_id == -1:
                 story.first_to_find_maybe_fish_id = context.author.id
 
+            xp_to_add = 21
             player_stats.fish.epic_fish_caught += 1
         
         author_player.get_inventory().add_item(fishing_result)
+        player_xp.add_xp_to_class(xp_to_add, xp_class)
+
+        description = "It's been added to your b!inventory."
+        if xp_to_add > 0:
+            description += f"\n\n*(+{xp_to_add} {xp_class} xp)*"
 
         embed = Embed(
             title=f"You caught {fishing_result.get_full_name()} worth {fishing_result.get_value_str()}!",
-            description="It's been added to your b!inventory"
+            description=description
         )
         await context.send(embed=embed)
 
