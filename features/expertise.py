@@ -157,7 +157,7 @@ class Expertise():
 
         percent_mana = self.mana / self.max_mana
         updated_max_mana = BASE_MANA
-        for _ in range(self.constitution):
+        for _ in range(self.intelligence):
             updated_max_mana += updated_max_mana * INT_MANA_SCALE
         self.max_mana = int(updated_max_mana)
         self.mana = int(percent_mana * self.max_mana)
