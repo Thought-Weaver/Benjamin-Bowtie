@@ -101,24 +101,35 @@ class Equipment():
         return None
 
     def equip_item_to_slot(self, slot: ClassTag.Equipment, item: (Item | None)):
+        prev_item = None
         if slot == ClassTag.Equipment.Helmet:
+            prev_item = self._helmet
             self._helmet = item
         if slot == ClassTag.Equipment.Amulet:
+            prev_item = self._amulet
             self._amulet = item
         if slot == ClassTag.Equipment.ChestArmor:
+            prev_item = self._chest_armor
             self._chest_armor = item
         if slot == ClassTag.Equipment.Gloves:
+            prev_item = self._gloves
             self._gloves = item
         if slot == ClassTag.Equipment.Ring:
+            prev_item = self._ring
             self._ring = item
         if slot == ClassTag.Equipment.Leggings:
+            prev_item = self._leggings
             self._leggings = item
         if slot == ClassTag.Equipment.Boots:
+            prev_item = self._boots
             self._boots = item
         if slot == ClassTag.Equipment.MainHand:
+            prev_item = self._main_hand
             self._main_hand = item
         if slot == ClassTag.Equipment.OffHand:
+            prev_item = self._off_hand
             self._off_hand = item
+        return prev_item
 
     def get_total_buffs(self):
         buffs = Buffs()
@@ -266,9 +277,17 @@ class EquipmentView(discord.ui.View):
     def enter_equip_for_slot(self):
         self._get_current_page_buttons()
 
+        player: Player = self.get_player()
+        equipped_item: (Item | None) = player.get_equipment().get_item_in_slot(self._cur_equip_slot)
+
+        description = ""
+        if equipped_item is not None:
+            description += f"──────────\n{equipped_item}\n──────────\n\n"
+        description += "Choose an item from your inventory to equip."
+
         return Embed(
             title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
-            description=f"Choose an item from your inventory to equip."
+            description=description
         )
 
     def equip_item(self, exact_item_index: int):
@@ -280,15 +299,18 @@ class EquipmentView(discord.ui.View):
         # that can happen with different views.
         embed = Embed(
             title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
-            description=f"Error: Could not equip that item.\n\nChoose an item from your inventory to equip."
+            description=f"*Error: Could not equip that item.*\n\nChoose an item from your inventory to equip."
         )
         # The "exact_item_index" here is the index of the item with respect to the entire
         # inventory. This is used instead of an adjusted index here because the items are
         # filtered when displayed to the user, so adjusting based on page size wouldn't work.
-        found_index = inventory.item_exists(exact_item_index)
+        found_index = inventory.item_exists(inventory.get_inventory_slots()[exact_item_index])
         if found_index == exact_item_index:
             item = inventory.remove_item(exact_item_index, 1)
-            equipment.equip_item_to_slot(self._cur_equip_slot, item)
+            prev_item = equipment.equip_item_to_slot(self._cur_equip_slot, item)
+
+            if prev_item is not None:
+                inventory.add_item(prev_item)
 
             embed = Embed(
                 title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
@@ -357,7 +379,8 @@ class EquipmentView(discord.ui.View):
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
-            self.add_item(EquipSlotButton(filtered_indices[i + (self._page * self._NUM_PER_PAGE)], item, i))
+            exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
+            self.add_item(EquipSlotButton(exact_item_index, item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
