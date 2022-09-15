@@ -3,6 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
+from features.expertise import Expertise
 from features.shared.item import Buffs, ClassTag, Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -292,8 +293,9 @@ class EquipmentView(discord.ui.View):
 
     def equip_item(self, exact_item_index: int):
         player: Player = self.get_player()
-        inventory = player.get_inventory()
-        equipment = player.get_equipment()
+        inventory: Inventory = player.get_inventory()
+        equipment: Equipment = player.get_equipment()
+        expertise: Expertise = player.get_expertise()
 
         # Need to check that the item still exists since there are async operations
         # that can happen with different views.
@@ -316,6 +318,8 @@ class EquipmentView(discord.ui.View):
                 title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
                 description=f"──────────\n{item}\n──────────\n\nEquipped! You can choose a different item from your inventory to equip or exit."
             )
+
+            expertise.update_stats(equipment)
         
         self._get_current_page_buttons()
         return embed
@@ -324,12 +328,15 @@ class EquipmentView(discord.ui.View):
         player: Player = self.get_player()
         equipment: Equipment = player.get_equipment()
         inventory: Inventory = player.get_inventory()
+        expertise: Expertise = player.get_expertise()
 
         equipped_item: (Item | None) = equipment.unequip_item_from_slot(self._cur_equip_slot)
         inventory.add_item(equipped_item)
 
         self.clear_items()
         self.add_item(EnterEquipButton())
+
+        expertise.update_stats(equipment)
 
         return Embed(
             title=f"{self.get_str_for_slot(self._cur_equip_slot)}",
