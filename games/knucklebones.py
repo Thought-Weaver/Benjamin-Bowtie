@@ -95,7 +95,7 @@ class KnucklebonesButton(discord.ui.Button):
 
 class Knucklebones(discord.ui.View):
     def __init__(self, bot: commands.Bot, database: dict, guild_id: int, player_1: discord.User, player_2: discord.User, bet: int):
-        super().__init__()
+        super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database

@@ -354,8 +354,8 @@ class Adventures(commands.Cog):
             await context.send(embed=embed)
         # 0.21% base chance of getting 500 coins
         if rand_val == 1:
-            author_player.get_inventory().add_coins(250)
-            player_stats.wishingwell.coins_received += 250
+            author_player.get_inventory().add_coins(200)
+            player_stats.wishingwell.coins_received += 200
             embed = Embed(
                 title="You toss the coin in...",
                 description="It plummets into the darkness below and you feel a sense of duplication. One becoming many."
@@ -365,7 +365,14 @@ class Adventures(commands.Cog):
         if rand_val == 2:
             items = [LOADED_ITEMS.get_new_item(key) for key in story.remaining_sunless_keys]
             rand_index: int = random.randint(0, max(0, len(items) - 1))
+            story.remaining_sunless_keys = story.remaining_sunless_keys[:rand_index] + story.remaining_sunless_keys[min(rand_index + 1, len(story.remaining_sunless_keys) - 1):]
             result: Item = items[rand_index] if items != [] else LOADED_ITEMS.get_new_item(ItemKey.Diamond)
+
+            expertise: Expertise = author_player.get_expertise()
+            if result.get_key() == ItemKey.Diamond:
+                expertise.add_xp_to_class(8, ExpertiseClass.Merchant)
+            else:
+                expertise.add_xp_to_class(34, ExpertiseClass.Merchant)
 
             mail: Mail = Mail("Wishing Well", result, 0, "A piece of the whole.", str(time.time()).split(".")[0], -1)
             author_player.get_mailbox().append(mail)
