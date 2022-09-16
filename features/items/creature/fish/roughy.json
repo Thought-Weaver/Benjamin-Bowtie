@@ -1,6 +1,6 @@
 {
     "key": "items/creature/fish/roughy",
-    "icon": "\ud83d\udc20",
+    "icon": ":tropical_fish:",
     "name": "Roughy",
     "value": 4,
     "rarity": "Common",

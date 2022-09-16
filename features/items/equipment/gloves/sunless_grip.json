@@ -1,6 +1,6 @@
 {
     "key": "items/equipment/gloves/sunless_grip",
-    "icon": "\uD83E\uDDE4",
+    "icon": ":gloves:",
     "name": "Sunless Grip",
     "value": 500,
     "rarity": "Artifact",

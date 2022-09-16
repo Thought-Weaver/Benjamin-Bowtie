@@ -1,6 +1,6 @@
 {
     "key": "items/valuable/ancient_vase",
-    "icon": "\ud83c\udffa",
+    "icon": ":urn:",
     "name": "Ancient Vase",
     "value": 40,
     "rarity": "Rare",

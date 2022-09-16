@@ -67,7 +67,7 @@ class Mail():
 
 class InventoryMailButton(discord.ui.Button):
     def __init__(self, adjusted_item_index: int, item: Item, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=row)
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
         self._item = item
         self._adjusted_item_index = adjusted_item_index
 
@@ -282,7 +282,6 @@ class MailboxButton(discord.ui.Button):
                 mail_message = f"From: {self._mail.get_sender_name()} (<t:{self._mail.get_send_date()}:R>)"
                 if self._mail.get_item() is not None:
                     mail_message += f"\n\nItem: {self._mail.get_item().get_full_name_and_count()} each worth {self._mail.get_item().get_value_str()}"
-                    # TODO: Replace this with an ID check
                     if interaction.user.id != self._mail.get_sender_id():
                         player_stats.mail.items_received += 1
                 if coins_received > 0:

@@ -294,6 +294,11 @@ class Item():
     def get_full_name(self):
         return f"{self._icon} {self._name}"
 
+    def get_name_and_count(self):
+        if self._count > 1:
+            return f"{self._name} ({self._count})"
+        return f"{self._name}"
+
     def get_full_name_and_count(self):
         if self._count > 1:
             return f"{self._icon} {self._name} ({self._count})"

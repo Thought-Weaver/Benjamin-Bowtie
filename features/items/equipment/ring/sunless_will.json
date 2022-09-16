@@ -1,6 +1,6 @@
 {
     "key": "items/equipment/ring/sunless_will",
-    "icon": "\u2B55",
+    "icon": ":ring:",
     "name": "Sunless Will",
     "value": 250,
     "rarity": "Artifact",

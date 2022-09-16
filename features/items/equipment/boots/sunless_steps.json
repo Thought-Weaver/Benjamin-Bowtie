@@ -1,6 +1,6 @@
 {
     "key": "items/equipment/boots/sunless_steps",
-    "icon": "\uD83E\uDD7E",
+    "icon": ":hiking_boot:",
     "name": "Sunless Steps",
     "value": 500,
     "rarity": "Artifact",

@@ -136,7 +136,7 @@ class Inventory():
 
 class InventoryButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_full_name_and_count()}", row=item_index)
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=item_index, emoji=item.get_icon())
         
         self._item_index = item_index
         self._item = item

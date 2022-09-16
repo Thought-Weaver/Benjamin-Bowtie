@@ -1,6 +1,6 @@
 {
     "key": "items/misc/junk/conch",
-    "icon": "\ud83d\udc1a",
+    "icon": ":shell:",
     "name": "Conch",
     "value": 1,
     "rarity": "Common",

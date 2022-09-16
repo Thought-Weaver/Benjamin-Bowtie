@@ -1,6 +1,6 @@
 {
     "key": "items/creature/fish/crab",
-    "icon": "\ud83e\udd80",
+    "icon": ":crab:",
     "name": "Crab",
     "value": 8,
     "rarity": "Rare",

@@ -1,6 +1,6 @@
 {
     "key": "items/equipment/helmet/sunless_mind",
-    "icon": "\uD83C\uDFA9",
+    "icon": ":tophat:",
     "name": "Sunless Mind",
     "value": 750,
     "rarity": "Artifact",

@@ -1,6 +1,6 @@
 {
     "key": "items/creature/fish/minnow",
-    "icon": "\ud83d\udc1f",
+    "icon": ":fish:",
     "name": "Minnow",
     "value": 3,
     "rarity": "Common",

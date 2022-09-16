@@ -1,6 +1,6 @@
 {
     "key": "items/readable/scroll/mysterious_scroll",
-    "icon": "\ud83d\udcdc",
+    "icon": ":scroll:",
     "name": "Mysterious Scroll",
     "value": 30,
     "rarity": "Rare",
