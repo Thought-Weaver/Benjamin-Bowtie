@@ -1,8 +1,9 @@
 from __future__ import annotations
+import random
 
 from discord import Embed
 
-from features.shared.item import ItemKey
+from features.shared.item import LOADED_ITEMS, ItemKey
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -53,6 +54,15 @@ class UnderworldStory():
 
         self._something_stirs += 1
         return embed
+
+    def get_wishing_well_item(self):
+        if len(self.remaining_sunless_keys) > 0:
+            rand_index: int = random.randint(0, max(0, len(self.remaining_sunless_keys) - 1))
+            item_key: str = self.remaining_sunless_keys.pop(rand_index)
+
+            return LOADED_ITEMS.get_new_item(item_key)
+        else:
+            return LOADED_ITEMS.get_new_item(ItemKey.Diamond)
 
     def __getstate__(self):
         return self.__dict__

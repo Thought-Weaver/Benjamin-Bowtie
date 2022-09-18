@@ -288,64 +288,64 @@ class Item():
     def add_amount(self, amount: int):
         self._count += amount
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self._name
 
-    def get_full_name(self):
+    def get_full_name(self) -> str:
         return f"{self._icon} {self._name}"
 
-    def get_name_and_count(self):
+    def get_name_and_count(self) -> str:
         if self._count > 1:
             return f"{self._name} ({self._count})"
         return f"{self._name}"
 
-    def get_full_name_and_count(self):
+    def get_full_name_and_count(self) -> str:
         if self._count > 1:
             return f"{self._icon} {self._name} ({self._count})"
         return f"{self._icon} {self._name}"
 
-    def get_value(self):
+    def get_value(self) -> int:
         return self._value
 
-    def get_value_str(self):
+    def get_value_str(self) -> str:
         if self._value == 1:
             return "1 coin"
         return f"{self._value} coins"
 
-    def get_count(self):
+    def get_count(self) -> int:
         return self._count
 
-    def get_icon(self):
+    def get_icon(self) -> str:
         return self._icon
 
-    def get_rarity(self):
+    def get_rarity(self) -> Rarity:
         return self._rarity
 
-    def get_description(self):
+    def get_description(self) -> str:
         return self._description
     
-    def get_flavor_text(self):
+    def get_flavor_text(self) -> str:
         return self._flavor_text
 
-    def get_class_tags(self):
+    def get_class_tags(self) -> List[str]:
         return self._class_tags
 
-    def get_state_tags(self):
+    def get_state_tags(self) -> List[str]:
         return self._state_tags
 
-    def get_key(self):
+    def get_key(self) -> str:
         return self._key
 
-    def get_level_requirement(self):
+    def get_level_requirement(self) -> int:
         return self._level_requirement
 
-    def get_buffs(self):
+    def get_buffs(self) -> (Buffs | None):
         return self._buffs
 
-    def get_armor_stats(self):
+    def get_armor_stats(self) -> (ArmorStats | None):
         return self._armor_stats
 
-    def get_weapon_stats(self):
+    def get_weapon_stats(self) -> (WeaponStats | None):
         return self._weapon_stats
 
     def __str__(self):
@@ -375,7 +375,7 @@ class Item():
         
         return display_string
 
-    def __eq__(self, obj):
+    def __eq__(self, obj) -> bool:
         if not isinstance(obj, Item):
             return False
         

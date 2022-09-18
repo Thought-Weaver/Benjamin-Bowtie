@@ -1,6 +1,6 @@
 {
     "key": "items/equipment/offhand/cursed_stone",
-    "icon": ":rock:",
+    "icon": "\uD83E\uDEA8",
     "name": "Cursed Stone",
     "value": 1,
     "rarity": "Artifact",

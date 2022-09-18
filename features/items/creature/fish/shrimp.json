@@ -1,6 +1,6 @@
 {
     "key": "items/creature/fish/shrimp",
-    "icon": ":shrimp:",
+    "icon": "\uD83E\uDD90",
     "name": "Shrimp",
     "value": 3,
     "rarity": "Common",

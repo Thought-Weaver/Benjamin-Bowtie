@@ -6,7 +6,7 @@ from random import choice, choices
 from discord.embeds import Embed
 from discord.ext import commands
 
-from typing import List, TYPE_CHECKING
+from typing import Dict, List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.player import Player
 
@@ -140,7 +140,7 @@ class Knucklebones(discord.ui.View):
         return "⬜" # "⬚"
 
     def _compute_points_in_col(self, board: List[List[int]], col_num: int):
-        counts = {}
+        counts: Dict[int, int] = {}
         for i in range(3):
             counts[board[i][col_num]] = counts.get(board[i][col_num], 0) + 1
         return sum([num * count * count for num, count in counts.items()])

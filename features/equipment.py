@@ -301,7 +301,7 @@ class EquipmentView(discord.ui.View):
         # that can happen with different views.
         embed = Embed(
             title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
-            description=f"*Error: Could not equip that item.*\n\nChoose an item from your inventory to equip."
+            description="*Error: Could not equip that item.*\n\nChoose an item from your inventory to equip."
         )
         # The "exact_item_index" here is the index of the item with respect to the entire
         # inventory. This is used instead of an adjusted index here because the items are
@@ -319,7 +319,7 @@ class EquipmentView(discord.ui.View):
                 description=f"──────────\n{item}\n──────────\n\nEquipped! You can choose a different item from your inventory to equip or exit."
             )
 
-            expertise.update_stats(equipment)
+            expertise.update_stats(equipment.get_total_buffs())
         
         self._get_current_page_buttons()
         return embed
@@ -336,7 +336,7 @@ class EquipmentView(discord.ui.View):
         self.clear_items()
         self.add_item(EnterEquipButton())
 
-        expertise.update_stats(equipment)
+        expertise.update_stats(equipment.get_total_buffs())
 
         return Embed(
             title=f"{self.get_str_for_slot(self._cur_equip_slot)}",

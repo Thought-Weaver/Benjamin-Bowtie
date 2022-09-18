@@ -1,6 +1,6 @@
 {
     "key": "items/creature/fish/pufferfish",
-    "icon": ":blowfish:",
+    "icon": "\uD83D\uDC21",
     "name": "Pufferfish",
     "value": 5,
     "rarity": "Uncommon",

@@ -1,6 +1,6 @@
 {
     "key": "items/equipment/chest_armor/sunless_heart",
-    "icon": ":shirt:",
+    "icon": "\uD83D\uDC55",
     "name": "Sunless Heart",
     "value": 1250,
     "rarity": "Artifact",

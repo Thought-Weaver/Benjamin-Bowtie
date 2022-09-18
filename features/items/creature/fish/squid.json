@@ -1,6 +1,6 @@
 {
     "key": "items/creature/fish/squid",
-    "icon": ":squid:",
+    "icon": "\uD83E\uDD91",
     "name": "Squid",
     "value": 10,
     "rarity": "Rare",

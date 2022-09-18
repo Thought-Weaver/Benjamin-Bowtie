@@ -1,6 +1,6 @@
 {
     "key": "items/valuable/gemstone/diamond",
-    "icon": ":gem:",
+    "icon": "\uD83D\uDC8E",
     "name": "Diamond",
     "value": 50,
     "rarity": "Rare",

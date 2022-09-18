@@ -1,6 +1,6 @@
 {
     "key": "items/equipment/boots/basic_boots",
-    "icon": ":hiking_boot:",
+    "icon": "\uD83E\uDD7E",
     "name": "Basic Boots",
     "value": 2,
     "rarity": "Common",

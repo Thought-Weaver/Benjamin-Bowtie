@@ -1,6 +1,6 @@
 {
     "key": "items/equipment/amulet/sunless_chains",
-    "icon": ":prayer_beads:",
+    "icon": "\uD83D\uDCFF",
     "name": "Sunless Chains",
     "value": 1500,
     "rarity": "Artifact",

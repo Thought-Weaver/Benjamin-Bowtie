@@ -1,6 +1,6 @@
 {
     "key": "items/creature/fish/shark",
-    "icon": ":shark:",
+    "icon": "\uD83E\uDD88",
     "name": "Shark",
     "value": 10,
     "rarity": "Rare",

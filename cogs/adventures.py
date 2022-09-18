@@ -49,7 +49,7 @@ class Adventures(commands.Cog):
             self._database[guild_id_str] = {}
             self._database[guild_id_str]["members"] = {}
 
-        if self._database.get("stories") is None:
+        if self._database[guild_id_str].get("stories") is None:
             self._database[guild_id_str]["stories"] = {}
             self._database[guild_id_str]["stories"][Story.Forest] = ForestStory()
             self._database[guild_id_str]["stories"][Story.Ocean] = OceanStory()
@@ -352,7 +352,7 @@ class Adventures(commands.Cog):
                 description="It plummets into the darkness below and hits the bottom with a resounding clink."
             )
             await context.send(embed=embed)
-        # 0.21% base chance of getting 500 coins
+        # 0.21% base chance of getting 200 coins
         if rand_val == 1:
             author_player.get_inventory().add_coins(200)
             player_stats.wishingwell.coins_received += 200
@@ -363,10 +363,7 @@ class Adventures(commands.Cog):
             await context.send(embed=embed)
         # 0.28% base chance of getting a Legendary item
         if rand_val == 2:
-            items = [LOADED_ITEMS.get_new_item(key) for key in story.remaining_sunless_keys]
-            rand_index: int = random.randint(0, max(0, len(items) - 1))
-            story.remaining_sunless_keys = story.remaining_sunless_keys[:rand_index] + story.remaining_sunless_keys[min(rand_index + 1, len(story.remaining_sunless_keys) - 1):]
-            result: Item = items[rand_index] if items != [] else LOADED_ITEMS.get_new_item(ItemKey.Diamond)
+            result: Item = story.get_wishing_well_item()
 
             expertise: Expertise = author_player.get_expertise()
             if result.get_key() == ItemKey.Diamond:
@@ -378,7 +375,6 @@ class Adventures(commands.Cog):
             author_player.get_mailbox().append(mail)
 
             player_stats.wishingwell.items_received += 1
-            story.remaining_sunless_keys.pop(rand_index)
 
             embed = Embed(
                 title="You toss the coin in...",
