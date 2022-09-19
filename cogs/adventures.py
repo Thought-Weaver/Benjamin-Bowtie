@@ -239,11 +239,13 @@ class Adventures(commands.Cog):
 
         embed = Embed(
             title="Welcome to Knucklebones!",
-            description="Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\n" \
-            "If the opponent has dice of the same value in that same column, those dice are removed from their board.\n\n" \
-            "Two of the same die in a single column double their value. Three of the same die triple their value.\n\n" \
-            "When one player fills their board with dice, the game is over. The player with the most points wins.\n\n" \
-            "The game will begin when the other player accepts the invitation to play."
+            description=(
+                "Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\n"
+                "If the opponent has dice of the same value in that same column, those dice are removed from their board.\n\n"
+                "Two of the same die in a single column double their value. Three of the same die triple their value.\n\n"
+                "When one player fills their board with dice, the game is over. The player with the most points wins.\n\n"
+                "The game will begin when the other player accepts the invitation to play."
+            )
         )
 
         await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, context.author, user, amount))
@@ -321,11 +323,11 @@ class Adventures(commands.Cog):
         player_stats: Stats = author_player.get_stats()
         story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
 
-        # E(X) = 0.995 * -1 + 0.0021 * 200 = -0.575 every 5 seconds -> -414 per hour
+        # E(X) = 0.995 * -1 + 0.0021 * 150 = -0.68 every 5 seconds -> -489.6 per hour
         # Luck Effect:
-        #   1  -> E(X) = 0.994 * -1 + 0.0021 * 200 -> -413.28 per hour
-        #   10 -> E(X) = 0.985 * -1 + 0.00585 * 200 -> 126.72 per hour
-        #   20 -> E(X) = 0.975 * -1 + 0.0096 * 200 -> 680.4 per hour
+        #   1  -> E(X) = 0.994 * -1 + 0.0021 * 150 -> -488.88 per hour
+        #   10 -> E(X) = 0.985 * -1 + 0.00585 * 150 -> -77.4 per hour
+        #   20 -> E(X) = 0.975 * -1 + 0.0096 * 150 -> 334.8 per hour
 
         LUCK_MOD = 0.001 # Luck adjusts total bias by 0.1% per point
         author_luck: int = author_player.get_expertise().luck
@@ -352,10 +354,10 @@ class Adventures(commands.Cog):
                 description="It plummets into the darkness below and hits the bottom with a resounding clink."
             )
             await context.send(embed=embed)
-        # 0.21% base chance of getting 200 coins
+        # 0.21% base chance of getting 150 coins
         if rand_val == 1:
-            author_player.get_inventory().add_coins(200)
-            player_stats.wishingwell.coins_received += 200
+            author_player.get_inventory().add_coins(150)
+            player_stats.wishingwell.coins_received += 150
             embed = Embed(
                 title="You toss the coin in...",
                 description="It plummets into the darkness below and you feel a sense of duplication. One becoming many."
@@ -391,9 +393,14 @@ class Adventures(commands.Cog):
         player_stats.wishingwell.coins_tossed += 1
 
     @commands.command(name="expertise", help="See your level progress and attributes", aliases=["me", "xp"])
-    async def expertise_handler(self, context: commands.Context):
+    async def expertise_handler(self, context: commands.Context, user: User=None):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
-        xp_view = ExpertiseView(self._bot, self._database, context.guild.id, context.author)
+        xp_view = None
+        if user is None:
+            xp_view = ExpertiseView(self._bot, self._database, context.guild.id, context.author)
+        else:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+            xp_view = ExpertiseView(self._bot, self._database, context.guild.id, user)
         embed = xp_view.get_current_page_info()
         await context.send(embed=embed, view=xp_view)
 

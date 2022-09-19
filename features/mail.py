@@ -46,9 +46,9 @@ class Mail():
         if not isinstance(obj, Mail):
             return False
 
-        if self._sender_name == obj.get_sender_name() and self._item == obj.get_item() \
-            and self._message == obj.get_message() and self._send_date == obj.get_send_date() \
-            and self._coins == obj.get_coins() and self._sender_id == obj.get_sender_id():
+        if (self._sender_name == obj.get_sender_name() and self._item == obj.get_item()
+            and self._message == obj.get_message() and self._send_date == obj.get_send_date()
+            and self._coins == obj.get_coins() and self._sender_id == obj.get_sender_id()):
             return True
 
         return False

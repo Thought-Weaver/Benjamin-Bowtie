@@ -38,6 +38,7 @@ LUCK_CRIT_SCALE = 0.005
 # -----------------------------------------------------------------------------
 
 class ExpertiseClass(StrEnum):
+    Unknown = "Unknown"
     Alchemist = "Alchemist"
     Fisher = "Fisher"
     Guardian = "Guardian"
@@ -185,8 +186,10 @@ class Expertise():
             hp_squares_string += "🟥" if i <= hp_num_squares else "⬛"
             mana_squares_string += "🟦" if i <= mana_num_squares else "⬛"
 
-        return f"HP: {hp_squares_string} ({self.hp}/{self.max_hp})\n" \
-               f"Mana: {mana_squares_string} ({self.mana}/{self.max_mana})"
+        return (
+            f"HP: {hp_squares_string} ({self.hp}/{self.max_hp})\n"
+            f"Mana: {mana_squares_string} ({self.mana}/{self.max_mana})"
+        )
 
     def level_up_check(self):
         fisher_level_diff = self._fisher.level_up_check()
@@ -209,20 +212,22 @@ class Expertise():
             if value > 0:
                 return f"(+{value})"
 
-        info_string = f"**Base Stats**\n\n" \
-            f"{self.get_health_and_mana_string()}\n\n" \
-            f"**Classes**\n\n" \
-            f"Alchemist: ???\n" \
-            f"Fisher: Lvl. {fisher_level} *({self._fisher.get_xp_to_level(fisher_level + 1) - self._fisher.get_xp()} xp to next)*\n" \
-            f"Guardian: ???\n" \
-            f"Merchant: Lvl. {merchant_level} *({self._merchant.get_xp_to_level(merchant_level + 1) - self._merchant.get_xp()} xp to next)*\n\n" \
-            f"**Attributes**\n\n" \
-            f"Constitution: {self.constitution} {format_buff_modifier(buffs.con_buff)}\n" \
-            f"Strength: {self.strength} {format_buff_modifier(buffs.str_buff)}\n" \
-            f"Dexterity: {self.dexterity} {format_buff_modifier(buffs.dex_buff)}\n" \
-            f"Intelligence: {self.intelligence} {format_buff_modifier(buffs.int_buff)}\n" \
-            f"Luck: {self.luck} {format_buff_modifier(buffs.lck_buff)}\n" \
+        info_string = (
+            f"**Base Stats**\n\n"
+            f"{self.get_health_and_mana_string()}\n\n"
+            f"**Classes**\n\n"
+            f"Alchemist: ???\n"
+            f"Fisher: Lvl. {fisher_level} *({self._fisher.get_xp_to_level(fisher_level + 1) - self._fisher.get_xp()} xp to next)*\n"
+            f"Guardian: ???\n"
+            f"Merchant: Lvl. {merchant_level} *({self._merchant.get_xp_to_level(merchant_level + 1) - self._merchant.get_xp()} xp to next)*\n\n"
+            f"**Attributes**\n\n"
+            f"Constitution: {self.constitution} {format_buff_modifier(buffs.con_buff)}\n"
+            f"Strength: {self.strength} {format_buff_modifier(buffs.str_buff)}\n"
+            f"Dexterity: {self.dexterity} {format_buff_modifier(buffs.dex_buff)}\n"
+            f"Intelligence: {self.intelligence} {format_buff_modifier(buffs.int_buff)}\n"
+            f"Luck: {self.luck} {format_buff_modifier(buffs.lck_buff)}\n"
             f"Memory: {self.memory} {format_buff_modifier(buffs.mem_buff)}"
+        )
 
         if self.points_to_spend > 0:
             point_str = "point" if self.points_to_spend == 1 else "points"
@@ -295,7 +300,10 @@ class ExpertiseView(discord.ui.View):
 
         player: Player = self.get_player()
         expertise: Expertise = player.get_expertise()
+        equipment: Equipment = player.get_equipment()
+
         expertise.level_up_check()
+        expertise.update_stats(equipment.get_total_buffs())
 
         if expertise.points_to_spend > 0:
             self.add_item(AttributeButton(Attribute.Constitution, 0))

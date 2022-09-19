@@ -133,6 +133,13 @@ class Inventory():
             return "1 coin"
         return f"{self._coins} coins"
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._inventory_slots = state.get("_inventory_slots", [])
+        self._coins = state.get("_coins", 0)
+
 
 class InventoryButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item):
@@ -152,9 +159,11 @@ class InventoryButton(discord.ui.Button):
 
             await interaction.response.edit_message(content=None, view=view, embed=Embed(
                 title=f"{view.get_user().display_name}'s Inventory",
-                description=f"You have {coins_str}.\n\n" \
-                            f"──────────\n{self._item}\n──────────\n\n" \
-                            "Navigate through your items using the Prev and Next buttons."
+                description=(
+                    f"You have {coins_str}.\n\n"
+                    f"──────────\n{self._item}\n──────────\n\n"
+                    "Navigate through your items using the Prev and Next buttons."
+                )
             ))
 
 

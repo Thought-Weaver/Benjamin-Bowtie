@@ -352,7 +352,7 @@ class Item():
         display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*\n\n"
         
         if self._armor_stats is not None:
-            display_string += f"{self._armor_stats.get_armor_amount()} armor\n"
+            display_string += f"{self._armor_stats.get_armor_amount()} Armor\n"
 
         if self._weapon_stats is not None:
             display_string += f"{self._weapon_stats.get_range_str()}\n"
@@ -379,12 +379,12 @@ class Item():
         if not isinstance(obj, Item):
             return False
         
-        if ClassTag.Misc.IsUnique in self.get_state_tags() or \
-            ClassTag.Misc.IsUnique in obj.get_state_tags():
+        if (ClassTag.Misc.IsUnique in self.get_state_tags() or
+            ClassTag.Misc.IsUnique in obj.get_state_tags()):
             return False
 
-        return self._key == obj.get_key() and \
-               self._state_tags == obj.get_state_tags()
+        return (self._key == obj.get_key() and
+               self._state_tags == obj.get_state_tags())
 
     def __getstate__(self):
         return self.__dict__
