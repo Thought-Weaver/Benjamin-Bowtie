@@ -115,11 +115,17 @@ class MerchantExpertise(BaseExpertise):
         return ceil(15 + 15 * level * (level - 1) + 25 * (2 ** ((level - 1) / 8.0) - 1) / (1 - 2 ** (-1 / 8.0)))
 
 
+class GuardianExpertise(BaseExpertise):
+    def get_xp_to_level(self, level: int) -> int:
+        return ceil(15 + 15 * level * (level - 1) + 25 * (2 ** ((level - 1) / 8.0) - 1) / (1 - 2 ** (-1 / 8.0)))
+
+
 class Expertise():
     def __init__(self):
         # Expertise classes
         self._fisher = FisherExpertise()
         self._merchant = MerchantExpertise()
+        self._guardian = GuardianExpertise()
 
         # Base stats
         self.level = 0
@@ -145,8 +151,10 @@ class Expertise():
             levels_gained = self._fisher.add_xp(xp)
         elif expertise_class == ExpertiseClass.Merchant:
             levels_gained = self._merchant.add_xp(xp)
+        elif expertise_class == ExpertiseClass.Guardian:
+            levels_gained = self._guardian.add_xp(xp)
         self.points_to_spend += levels_gained
-        self.level = self._fisher.get_level() + self._merchant.get_level()
+        self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level()
 
     def update_stats(self, equipment_buffs: Buffs):
         percent_health = self.hp / self.max_hp
@@ -175,34 +183,44 @@ class Expertise():
     def remove_mana(self, remove_amount: int):
         self.mana = max(0, self.mana - remove_amount)
 
-    def get_health_and_mana_string(self):
-        hp_num_squares = ceil(self.hp / self.max_hp * 10)
-        mana_num_squares = ceil(self.mana / self.max_mana * 10)
-        
+    def get_health_string(self):
+        hp_num_squares = ceil(self.hp / self.max_hp * 10)        
         hp_squares_string = ""
-        mana_squares_string = ""
 
         for i in range(1, 11):
             hp_squares_string += "🟥" if i <= hp_num_squares else "⬛"
+
+        return f"{hp_squares_string} ({self.hp}/{self.max_hp})"
+
+    def get_mana_string(self):
+        mana_num_squares = ceil(self.mana / self.max_mana * 10)
+        mana_squares_string = ""
+
+        for i in range(1, 11):
             mana_squares_string += "🟦" if i <= mana_num_squares else "⬛"
 
+        return f"{mana_squares_string} ({self.mana}/{self.max_mana})"
+
+    def get_health_and_mana_string(self):
         return (
-            f"HP: {hp_squares_string} ({self.hp}/{self.max_hp})\n"
-            f"Mana: {mana_squares_string} ({self.mana}/{self.max_mana})"
+            f"HP: {self.get_health_string()}\n"
+            f"Mana: {self.get_mana_string()}"
         )
 
     def level_up_check(self):
         fisher_level_diff = self._fisher.level_up_check()
         merchant_level_diff = self._merchant.level_up_check()
+        guardian_level_diff = self._guardian.level_up_check()
 
-        self.points_to_spend += fisher_level_diff + merchant_level_diff
-        self.level = self._fisher.get_level() + self._merchant.get_level()
+        self.points_to_spend += fisher_level_diff + merchant_level_diff + guardian_level_diff
+        self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level()
 
     def get_info_string(self, buffs: Buffs):
         self.level_up_check()
 
         fisher_level: int = self._fisher.get_level()
         merchant_level: int = self._merchant.get_level()
+        guardian_level: int = self._guardian.get_level()
 
         def format_buff_modifier(value: int):
             if value == 0:
@@ -218,7 +236,7 @@ class Expertise():
             f"**Classes**\n\n"
             f"Alchemist: ???\n"
             f"Fisher: Lvl. {fisher_level} *({self._fisher.get_xp_to_level(fisher_level + 1) - self._fisher.get_xp()} xp to next)*\n"
-            f"Guardian: ???\n"
+            f"Guardian: Lvl. {guardian_level} *({self._guardian.get_xp_to_level(guardian_level + 1) - self._guardian.get_xp()} xp to next)*\n"
             f"Merchant: Lvl. {merchant_level} *({self._merchant.get_xp_to_level(merchant_level + 1) - self._merchant.get_xp()} xp to next)*\n\n"
             f"**Attributes**\n\n"
             f"Constitution: {self.constitution} {format_buff_modifier(buffs.con_buff)}\n"
@@ -241,6 +259,7 @@ class Expertise():
     def __setstate__(self, state: dict):
         self._fisher = state.get("_fisher", FisherExpertise())
         self._merchant = state.get("_merchant", MerchantExpertise())
+        self._guardian = state.get("_guardian", GuardianExpertise())
 
         self.level = state.get("level", 0)
         self.max_hp = state.get("max_hp", BASE_HP)

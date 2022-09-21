@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from random import randint
+from re import S
 from strenum import StrEnum
 
 from typing import List, TYPE_CHECKING
@@ -9,6 +10,7 @@ from typing import List, TYPE_CHECKING
 from features.expertise import INT_DMG_SCALE, ExpertiseClass
 
 if TYPE_CHECKING:
+    from features.npcs.npc import NPC
     from features.player import Player
 
 # -----------------------------------------------------------------------------
@@ -44,8 +46,19 @@ class Ability():
         self._num_targets = num_targets
         self._level_requirement = level_requirement
 
+        self._cur_cooldown = 0 # Turns remaining until it can be used again
+
     def get_icon_and_name(self):
         return f"{self._icon} {self._name}"
+
+    def get_name(self):
+        return self._name
+
+    def get_icon(self):
+        return self._icon
+
+    def get_mana_cost(self):
+        return self._mana_cost
 
     def get_num_targets(self):
         return self._num_targets
@@ -53,8 +66,11 @@ class Ability():
     def get_level_requirement(self):
         return self._level_requirement
 
+    def get_cur_cooldown(self):
+        return self._cur_cooldown
+
     @abstractmethod
-    def use_ability(self, caster: Player, targets: List[Player]) -> str:
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         pass
 
     def __str__(self):
@@ -112,10 +128,7 @@ class SeaSprayI(Ability):
             level_requirement=2
         )
 
-    def use_ability(self, caster: Player, targets: List[Player]) -> str:
-        if len(targets) != self._num_targets:
-            return f"Casting {self.get_icon_and_name()} failed! Incorrect number of targets chosen."
-        
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_equipment = caster.get_equipment()
         caster_int = caster_expertise.intelligence
@@ -129,7 +142,7 @@ class SeaSprayI(Ability):
 
         target_expertise.damage(damage)
 
-        return f"You cast {self.get_icon_and_name()}! It dealt {damage} damage."
+        return "{0}" + f" cast {self.get_icon_and_name()} against " + "{1}" + f" for {damage} damage."
 
 
 class SeaSprayII(Ability):
@@ -146,10 +159,7 @@ class SeaSprayII(Ability):
             level_requirement=4
         )
 
-    def use_ability(self, caster: Player, targets: List[Player]) -> str:
-        if len(targets) != self._num_targets:
-            return f"Casting {self.get_icon_and_name()} failed! Incorrect number of targets chosen."
-        
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_equipment = caster.get_equipment()
         caster_int = caster_expertise.intelligence
@@ -163,7 +173,7 @@ class SeaSprayII(Ability):
 
         target_expertise.damage(damage)
 
-        return f"You cast {self.get_icon_and_name()}! It dealt {damage} damage."
+        return "{0}" + f" cast {self.get_icon_and_name()} against " + "{1}" + f" for {damage} damage."
 
 
 class SeaSprayIII(Ability):
@@ -180,10 +190,7 @@ class SeaSprayIII(Ability):
             level_requirement=4
         )
 
-    def use_ability(self, caster: Player, targets: List[Player]) -> str:
-        if len(targets) != self._num_targets:
-            return f"Casting {self.get_icon_and_name()} failed! Incorrect number of targets chosen."
-        
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_equipment = caster.get_equipment()
         caster_int = caster_expertise.intelligence
@@ -197,7 +204,7 @@ class SeaSprayIII(Ability):
 
         target_expertise.damage(damage)
 
-        return f"You cast {self.get_icon_and_name()}! It dealt {damage} damage."
+        return "{0}" + f" cast {self.get_icon_and_name()} against " + "{1}" + f" for {damage} damage."
 
 
 class SeaSprayIV(Ability):
@@ -214,10 +221,7 @@ class SeaSprayIV(Ability):
             level_requirement=4
         )
 
-    def use_ability(self, caster: Player, targets: List[Player]) -> str:
-        if len(targets) != self._num_targets:
-            return f"Casting {self.get_icon_and_name()} failed! Incorrect number of targets chosen."
-        
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_equipment = caster.get_equipment()
         caster_int = caster_expertise.intelligence
@@ -231,7 +235,7 @@ class SeaSprayIV(Ability):
 
         target_expertise.damage(damage)
 
-        return f"You cast {self.get_icon_and_name()}! It dealt {damage} damage."
+        return "{0}" + f" cast {self.get_icon_and_name()} against " + "{1}" + f" for {damage} damage."
 
 
 class SeaSprayV(Ability):
@@ -248,10 +252,7 @@ class SeaSprayV(Ability):
             level_requirement=4
         )
 
-    def use_ability(self, caster: Player, targets: List[Player]) -> str:
-        if len(targets) != self._num_targets:
-            return f"Casting {self.get_icon_and_name()} failed! Incorrect number of targets chosen."
-        
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_equipment = caster.get_equipment()
         caster_int = caster_expertise.intelligence
@@ -265,7 +266,7 @@ class SeaSprayV(Ability):
 
         target_expertise.damage(damage)
 
-        return f"You cast {self.get_icon_and_name()}! It dealt {damage} damage."
+        return "{0}" + f" cast {self.get_icon_and_name()} against " + "{1}" + f" for {damage} damage."
 
 # -----------------------------------------------------------------------------
 # CURSE OF THE SEA
@@ -285,10 +286,7 @@ class CurseOfTheSeaI(Ability):
             level_requirement=5
         )
 
-    def use_ability(self, caster: Player, targets: List[Player]) -> str:
-        if len(targets) != self._num_targets:
-            return f"Casting {self.get_icon_and_name()} failed! Incorrect number of targets chosen."
-        
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         target = targets[0]
         target_expertise = target.get_expertise()
 

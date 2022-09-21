@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.stats import Stats
 from features.inventory import Inventory
-from typing import List, TYPE_CHECKING
 
+from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.mail import Mail
 
@@ -17,6 +18,7 @@ class Player():
         self._stats: Stats = Stats()
         self._expertise: Expertise = Expertise()
         self._equipment: Equipment = Equipment()
+        self._dueling: Dueling = Dueling()
 
     def get_inventory(self):
         return self._inventory
@@ -33,6 +35,9 @@ class Player():
     def get_equipment(self):
         return self._equipment
 
+    def get_dueling(self):
+        return self._dueling
+
     def __getstate__(self):
         return self.__dict__
 
@@ -42,3 +47,4 @@ class Player():
         self._stats = state.get("_stats", Stats())
         self._expertise = state.get("_expertise", Expertise())
         self._equipment = state.get("_equipment", Equipment())
+        self._dueling = state.get("_dueling", Dueling())

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 from aenum import Enum, skip
+from random import randint
 from strenum import StrEnum
 
 from types import MappingProxyType
@@ -58,7 +59,7 @@ class ClassTag(Enum):
         Consumable = "Consumable"
         Potion = "Potion"
         Food = "Food"
-        SpellScroll = "Spell_Scroll"
+        AbilityScroll = "Ability_Scroll"
 
     # Items that can be used as part of crafting consumables
     @skip
@@ -200,6 +201,9 @@ class WeaponStats():
     
     def get_range_str(self):
         return f"{self._min_damage}-{self._max_damage} damage"
+
+    def get_random_damage(self):
+        return randint(self._min_damage, self._max_damage)
 
     def __getstate__(self):
         return self.__dict__

@@ -11,6 +11,7 @@ from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
+from features.dueling import PlayerVsPlayerDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
 from features.inventory import InventoryView
@@ -25,8 +26,9 @@ from features.stories.story import Story
 from features.stories.underworld import UnderworldStory
 from games.knucklebones import Knucklebones
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
+    from features.dueling import Dueling
     from features.expertise import Expertise
     from features.inventory import Inventory
     from features.stats import Stats
@@ -90,6 +92,11 @@ class Adventures(commands.Cog):
         xp_class: ExpertiseClass = ExpertiseClass.Fisher
 
         author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't fish.")
+            return
+        
         player_stats: Stats = author_player.get_stats()
         player_xp: Expertise = author_player.get_expertise()
 
@@ -229,7 +236,17 @@ class Adventures(commands.Cog):
         # based on turn checks; (2) when paying out we check that the player has the money to do
         # so, else the winner gets whatever's left that the other can pay.
         author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't play knucklebones.")
+            return
+
         challenged_player: Player = self._get_player(context.guild.id, user.id)
+        challenged_player_dueling: Dueling = challenged_player.get_dueling()
+        if challenged_player_dueling.is_in_combat:
+            await context.send(f"That person is in a duel and can't play knucklebones.")
+            return
+
         if author_player.get_inventory().get_coins() < amount:
             await context.send(f"You don't have enough coins ({author_player.get_inventory().get_coins()}) to bet that much!")
             return
@@ -265,6 +282,11 @@ class Adventures(commands.Cog):
         # (2) Upon clicking a button, a modal will pop up asking how many to send and
         #     an optional message to send
         player: Player = self._get_player(context.guild.id, context.author.id)
+        dueling: Dueling = player.get_dueling()
+        if dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't send mail.")
+            return
+
         coins_str = player.get_inventory().get_coins_str()
         embed = Embed(
             title=f"{context.author.display_name}'s Inventory",
@@ -286,6 +308,13 @@ class Adventures(commands.Cog):
     @commands.command(name="market", help="Sell and buy items at the marketplace", aliases=["marketplace"])
     async def market_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
+
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit the market.")
+            return
+
         embed = Embed(
             title="Welcome to the Market!",
             description="Select an action below to get started."
@@ -295,6 +324,13 @@ class Adventures(commands.Cog):
     @commands.command(name="mailbox", help="Open mail you've received from others", aliases=["inbox"])
     async def mailbox_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit your mailbox.")
+            return
+        
         embed = Embed(
             title=f"{context.author.display_name}'s Mailbox",
             description=f"Navigate through your mail using the Prev and Next buttons."
@@ -314,6 +350,11 @@ class Adventures(commands.Cog):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit the wishing well.")
+            return
+
         author_inv: Inventory = author_player.get_inventory()
         if author_inv.get_coins() == 0:
             await context.send(f"You don't have any coins.")
@@ -407,9 +448,49 @@ class Adventures(commands.Cog):
     @commands.command(name="equipment", help="See your equipment and equip items", aliases=["equip"])
     async def equipment_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
+
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't change your equipment.")
+            return
+
         equipment_view = EquipmentView(self._bot, self._database, context.guild.id, context.author)
         embed = equipment_view.get_initial_info()
         await context.send(embed=embed, view=equipment_view)
+
+    @commands.command(name="duel", help="Challenge another player to a duel")
+    async def duel_handler(self, context: commands.Context, users: List[User]=None):
+        if users is None:
+            await context.send("You need to @ a member to use b!duel.")
+            return
+
+        if context.author in users:
+            await context.send("You can't challenge yourself to a duel.")
+            return
+            
+        if any(user.bot for user in users):
+            await context.send("You can't challenge a bot to a duel.")
+            return
+            
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        for user in users:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't start another.")
+            return
+
+        challenged_players: List[Player] = [self._get_player(context.guild.id, user.id) for user in users]
+        if any(player.get_dueling().is_in_combat for player in challenged_players):
+            await context.send(f"At least one of those players is already in a duel.")
+            return
+
+        pvp_duel = PlayerVsPlayerDuelView(self._bot, self._database, context.guild.id, context.author, users)
+
+        await context.send(embed=pvp_duel.get_info_embed(), view=pvp_duel)
 
 
 async def setup(bot: BenjaminBowtieBot):

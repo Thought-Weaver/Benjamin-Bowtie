@@ -1,15 +1,22 @@
 from __future__ import annotations
 
+from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 
 
 class NPC():
-    def __init__(self):
+    def __init__(self, name: str):
+        self._name = name
+
         self._inventory: Inventory = Inventory()
         self._expertise: Expertise = Expertise()
         self._equipment: Equipment = Equipment()
+        self._dueling: Dueling = Dueling()
+
+    def get_name(self):
+        return self._name
 
     def get_inventory(self):
         return self._inventory
@@ -20,6 +27,9 @@ class NPC():
     def get_equipment(self):
         return self._equipment
 
+    def get_dueling(self):
+        return self._dueling
+
     def __getstate__(self):
         return self.__dict__
 
@@ -27,3 +37,4 @@ class NPC():
         self._inventory = state.get("_inventory", Inventory())
         self._expertise = state.get("_expertise", Expertise())
         self._equipment = state.get("_equipment", Equipment())
+        self._dueling = state.get("_dueling", Dueling())
