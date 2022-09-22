@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
     from features.player import Player
+    from features.shared.item import ArmorStats
 
 
 class Equipment():
@@ -26,6 +27,8 @@ class Equipment():
         self._boots: Item = None
         self._main_hand: Item = None
         self._off_hand: Item = None
+
+        self._ARMOR_OVERLEVELED_DEBUFF = 0.15
 
     def get_all_equipped_items(self):
         equipment = [
@@ -145,6 +148,31 @@ class Equipment():
                 buffs.mem_buff += item_buffs.mem_buff
         return buffs
 
+    def _get_total_armor(self):
+        armor: int = 0
+        for item in self.get_all_equipped_items():
+            armor_stats: ArmorStats = item.get_armor_stats()
+            if armor_stats is not None:
+                armor += armor_stats.get_armor_amount()
+        return armor
+
+    def get_total_reduced_armor(self, level: int):
+        armor: int = 0
+        for item in self.get_all_equipped_items():
+            armor_stats: ArmorStats = item.get_armor_stats()
+            if armor_stats is not None:
+                reduce_to: float = 1.0 - (self._ARMOR_OVERLEVELED_DEBUFF * max(0, item.get_level_requirement() - level))
+                armor += int(armor_stats.get_armor_amount() * reduce_to)
+        return armor
+
+    def get_total_armor_str(self, level: int):
+        armor: int = self._get_total_armor()
+        reduced_armor: int = self.get_total_reduced_armor(level)
+        
+        if armor != reduced_armor:
+            return f"{armor} (-{armor - reduced_armor}) Armor"
+        return f"{armor} Armor"
+
     def __getstate__(self):
         return self.__dict__
 
@@ -160,7 +188,7 @@ class Equipment():
         self._off_hand = state.get("_off_hand")
 
 
-class EquipSlotButton(discord.ui.Button):
+class ItemEquipButton(discord.ui.Button):
     def __init__(self, exact_item_index: int, item: Item, row: int):
         super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
         
@@ -192,23 +220,9 @@ class SelectSlotButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
-class EnterEquipButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Equip", row=0)
-        
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        view: EquipmentView = self.view
-        if interaction.user == view.get_user():
-            response = view.enter_equip_for_slot()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
-
-
 class UnequipButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Unequip", row=0)
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Unequip", row=row)
         
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -217,20 +231,6 @@ class UnequipButton(discord.ui.Button):
         view: EquipmentView = self.view
         if interaction.user == view.get_user():
             response = view.unequip_item()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
-
-
-class EquipSlotExitButton(discord.ui.Button):
-    def __init__(self, row):
-        super().__init__(style=discord.ButtonStyle.red, label="Exit", row=row)
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        view: EquipmentView = self.view
-        if interaction.user == view.get_user():
-            response = view.exit_to_slot_view()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -333,35 +333,18 @@ class EquipmentView(discord.ui.View):
         equipped_item: (Item | None) = equipment.unequip_item_from_slot(self._cur_equip_slot)
         inventory.add_item(equipped_item)
 
-        self.clear_items()
-        self.add_item(EnterEquipButton())
-
         expertise.update_stats(equipment.get_total_buffs())
 
+        self._get_current_page_buttons()
+
         return Embed(
-            title=f"{self.get_str_for_slot(self._cur_equip_slot)}",
-            description = "None equipped. Use Equip below to select an item for this slot."
+            title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
+            description = "None equipped. Choose an item from your inventory to equip."
         )
 
     def display_item_in_slot(self, slot: ClassTag.Equipment):
-        self.clear_items()
-        self.add_item(EnterEquipButton())
-
         self._cur_equip_slot = slot
-        player: Player = self.get_player()
-        equipped_item: (Item | None) = player.get_equipment().get_item_in_slot(slot)
-
-        description = "None equipped. Use Equip below to select an item for this slot."
-        if equipped_item is not None:
-            description = f"──────────\n{equipped_item}\n──────────\n\n"
-            self.add_item(UnequipButton())
-
-        self.add_item(SelectSlotExitButton(0))
-
-        return Embed(
-            title=f"{self.get_str_for_slot(slot)}",
-            description=description
-        )
+        return self.enter_equip_for_slot()
 
     def _display_slot_select_buttons(self):
         self.clear_items()
@@ -387,21 +370,22 @@ class EquipmentView(discord.ui.View):
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
             exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
-            self.add_item(EquipSlotButton(exact_item_index, item, i))
+            self.add_item(ItemEquipButton(exact_item_index, item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
-        self.add_item(EquipSlotExitButton(min(4, len(page_slots))))
+        
+        equipped_item: (Item | None) = player.get_equipment().get_item_in_slot(self._cur_equip_slot)
+        if equipped_item is not None:
+            self.add_item(UnequipButton(min(4, len(page_slots))))
+        self.add_item(SelectSlotExitButton(min(4, len(page_slots))))
 
     def get_initial_info(self):
         return Embed(
             title=f"{self._user.display_name}'s Equipment",
             description="Choose a slot to see currently equipped item and equip another or unequip it."
         )
-
-    def exit_to_slot_view(self):
-        return self.display_item_in_slot(self._cur_equip_slot)
 
     def exit_to_main_menu(self):
         self._cur_equip_slot = None
@@ -420,7 +404,7 @@ class EquipmentView(discord.ui.View):
         else:
             return Embed(
                 title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
-                description=f"Choose an item from your inventory to equip."
+                description=f"None equipped. Choose an item from your inventory to equip."
             )
         
     def next_page(self):
