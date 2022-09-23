@@ -1,12 +1,13 @@
 from __future__ import annotations
-from random import choice
+from math import ceil
+from random import choice, random
 
 import discord
 
 from dataclasses import dataclass
 from discord.embeds import Embed
 from discord.ext import commands
-from features.expertise import STR_DMG_SCALE, Expertise, ExpertiseClass
+from features.expertise import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE, Attributes, Expertise, ExpertiseClass
 from features.player import Player
 from features.npcs.npc import NPC
 from features.shared.item import ClassTag, WeaponStats
@@ -16,10 +17,11 @@ from typing import List, TYPE_CHECKING
 from features.shared.nextbutton import NextButton
 
 from features.shared.prevbutton import PrevButton
+from features.shared.statuseffect import DmgReduction, DmgVulnerability, StatusEffectKey
 if TYPE_CHECKING:
-    from features.shared.ability import Ability, StatusEffect
-    from features.inventory import Inventory
+    from features.shared.ability import Ability
     from features.shared.item import Item
+    from features.shared.statuseffect import StatusEffect
 
 # -----------------------------------------------------------------------------
 # DUELING CLASS
@@ -42,6 +44,53 @@ class Dueling():
 
     # TODO: Implement an abstract method for automatically taking a turn
     # which NPCs will implement.
+
+    @staticmethod
+    def format_armor_dmg_reduct_str(damage: int, actual_damage_dealt: int):
+        # Could deal more damage due to weaknesses or less due to armor and resistances
+        # This is here since it's only really used during Dueling
+        damage_reduction_str = "+" if actual_damage_dealt > damage else "-"
+        damage_reduction_str = f" ({damage_reduction_str}{-(damage - actual_damage_dealt)})" if damage != actual_damage_dealt else ""
+
+    def get_total_percent_dmg_reduct(self):
+        total_percent_reduction = 0
+        for status_effect in self.status_effects:
+            if status_effect.key == StatusEffectKey.DmgReduction:
+                total_percent_reduction = min(0.75, total_percent_reduction + status_effect.value)
+            if status_effect.key == StatusEffectKey.DmgVulnerability:
+                total_percent_reduction = max(-0.25, total_percent_reduction + status_effect.value)
+        return total_percent_reduction
+
+    def reset_ability_cds(self):
+        for ability in self.abilities:
+            ability.reset_cd()
+
+    def decrement_all_ability_cds(self):
+        for ability in self.abilities:
+            ability.decrement_cd()
+
+    def decrement_statuses_time_remaining(self):
+        remaining_effects = []
+        for status_effect in self.status_effects:
+            status_effect.decrement_turns_remaining()
+            if status_effect.turns_remaining > 0:
+                remaining_effects.append(status_effect)
+        self.status_effects = remaining_effects
+
+    def get_combined_attribute_mods(self) -> Attributes:
+        result = Attributes(0, 0, 0, 0, 0, 0)
+        for status_effect in self.status_effects:
+            if status_effect.key == StatusEffectKey.ConBuff or status_effect.key == StatusEffectKey.ConDebuff:
+                result.constitution += status_effect.value
+            if status_effect.key == StatusEffectKey.StrBuff or status_effect.key == StatusEffectKey.StrDebuff:
+                result.strength += status_effect.value
+            if status_effect.key == StatusEffectKey.DexBuff or status_effect.key == StatusEffectKey.DexDebuff:
+                result.dexterity += status_effect.value
+            if status_effect.key == StatusEffectKey.IntBuff or status_effect.key == StatusEffectKey.IntDebuff:
+                result.intelligence += status_effect.value
+            if status_effect.key == StatusEffectKey.LckBuff or status_effect.key == StatusEffectKey.LckDebuff:
+                result.luck += status_effect.value
+        return result
 
     def __getstate__(self):
         return self.__dict__
@@ -201,7 +250,7 @@ class ConfirmItemButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
-class ContinueToNextAction(discord.ui.Button):
+class ContinueToNextActionButton(discord.ui.Button):
     def __init__(self):
         super().__init__(style=discord.ButtonStyle.blurple, label=f"Continue")
         
@@ -212,6 +261,20 @@ class ContinueToNextAction(discord.ui.Button):
         view: DuelView = self.view
         if interaction.user == view.get_user_for_current_turn():
             response = view.continue_turn()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class BackUsingIntentButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.red, label=f"Back", row=row)
+        
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: DuelView = self.view
+        if interaction.user == view.get_user_for_current_turn():
+            response = view.go_back_using_intent()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -289,14 +352,18 @@ class DuelView(discord.ui.View):
         
         return self.DuelResult(False, None)
 
-    def _reset_turn_variables(self):
+    def _reset_turn_variables(self, reset_actions=False):
         self._intent = None
         self._selected_targets = []
         self._targets_remaining = 1
         self._selected_ability = None
+        self._selected_ability_index = -1
         self._selected_item = None
+        self._selected_item_index = -1
         self._selecting_targets = False
-        self._actions_remaining = self._turn_order[self._turn_index].get_dueling().init_actions_remaining
+
+        if reset_actions:
+            self._actions_remaining = self._turn_order[self._turn_index].get_dueling().init_actions_remaining
 
     def set_next_turn(self):
         if self.check_for_win().game_won:
@@ -306,7 +373,7 @@ class DuelView(discord.ui.View):
         while self._turn_order[self._turn_index].get_expertise().hp == 0:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
 
-        self._reset_turn_variables()
+        self._reset_turn_variables(True)
 
     def get_duel_info_str(self):
         info_str = "──────────\n"
@@ -335,10 +402,37 @@ class DuelView(discord.ui.View):
         losers = self._allies if duel_result.winners == self._enemies else self._enemies
         if all(isinstance(entity, Player) for entity in self._turn_order):
             # This should only happen in a PvP duel
-            winner_xp = sum(2 * loser.get_expertise().level for loser in losers)
+            winner_str = ""
+            winner_xp = ceil(2 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
-                winner.get_expertise().add_xp_to_class(winner_xp, ExpertiseClass.Guardian)
-            pass
+                winner_expertise = winner.get_expertise()
+                winner_dueling = winner.get_dueling()
+                
+                winner_expertise.add_xp_to_class(winner_xp, ExpertiseClass.Guardian)
+                winner_expertise.hp = winner_expertise.max_hp
+                winner_expertise.mana = winner_expertise.max_mana
+                
+                winner_dueling.reset_ability_cds()
+                winner_dueling.status_effects = []
+
+                winner_str += f"{self.get_name(winner)} *(+{winner_xp} Guardian xp)*\n"
+
+            loser_str = ""
+            loser_xp = ceil(sum(winner.get_expertise().level for winner in duel_result.winners) / (2 * len(losers)))
+            for loser in losers:
+                loser_expertise = loser.get_expertise()
+                loser_dueling = loser.get_dueling()
+                
+                loser_expertise.add_xp_to_class(loser_xp, ExpertiseClass.Guardian)
+                loser_expertise.hp = loser_expertise.max_hp
+                loser_expertise.mana = loser_expertise.max_mana
+
+                loser_dueling.reset_ability_cds()
+                loser_dueling.status_effects = []
+
+                loser_str += f"{self.get_name(loser)} *(+{loser_xp} Guardian xp)*\n"
+
+            return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\n\nPractice for the journeys yet to come.")
 
         return Embed(title="Beyond the Veil", description="Hello, wayward adventurer. You've reached the in-between -- how strange.")
 
@@ -348,6 +442,8 @@ class DuelView(discord.ui.View):
         self.add_item(AttackActionButton())
         self.add_item(AbilityActionButton())
         self.add_item(ItemActionButton())
+
+        self._reset_turn_variables()
 
         return Embed(title="Choose an Action", description=self.get_duel_info_str())
 
@@ -385,37 +481,49 @@ class DuelView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(targets) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
-        # TODO: Add button for going back to previous screen, depending on Intent
+        self.add_item(BackUsingIntentButton(min(4, len(page_slots))))
 
         return Embed(title="Choose a Target", description=description)
 
     def attack_selected_targets(self):
         attacker = self._turn_order[self._turn_index]
         attacker_name = self.get_name(attacker)
-        attacker_expertise = attacker.get_expertise()
+        attacker_attrs = attacker.get_combined_attributes()
         attacker_equipment = attacker.get_equipment()
-        attacker_str = attacker_expertise.strength
-        equipment_str = attacker_equipment.get_total_buffs().str_buff
 
         main_hand_item = attacker_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         # Base possible damage is [1, 2], basically fist fighting
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        result_str = ""
-        for i, target in enumerate(self._selected_targets):
-            damage = weapon_stats.get_random_damage()
-            damage += int(damage * STR_DMG_SCALE * (attacker_str + equipment_str))
- 
+        result_strs = []
+        for target in self._selected_targets:
             target_expertise = target.get_expertise()
+            target_equipment = target.get_equipment()
+            target_attrs = target.get_combined_attributes()
 
-            target_expertise.damage(damage)
-            
             target_name = self.get_name(target)
-            result_str += f"{attacker_name} dealt {damage} to {target_name}"
-            if i != len(self._selected_targets) - 1:
-                result_str += "\n"
+            target_dodged = random() < target_attrs.dexterity * DEX_DODGE_SCALE
+            
+            if target_dodged:
+                result_strs.append(f"{target_name} dodged the attack")
+                continue
+
+            critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < attacker_attrs.luck * LUCK_CRIT_SCALE else 1
+            damage = int(weapon_stats.get_random_damage() * critical_hit_boost)
+            damage += int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0))
+ 
+            target_armor = target_equipment.get_total_reduced_armor()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
+            
+            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+
+            result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} to {target_name}")
         
-        return result_str
+        return "\n".join(result_strs)
 
     def use_ability_on_selected_targets(self):
         caster = self._turn_order[self._turn_index]
@@ -429,6 +537,8 @@ class DuelView(discord.ui.View):
         return "How did you get here?"
 
     def choose_target(self, target: Player | NPC, index: int):
+        # TODO: Need to display more information about targets -- probably should devise a Dueling info string
+        # that has status effects in addition to health and armor details?
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
         selected_targets_str = "Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
 
@@ -441,9 +551,11 @@ class DuelView(discord.ui.View):
         self._selected_targets.append(target)
         self._targets_remaining -= 1
 
+        # TODO: Handle case where, for example, you might need to select 3 targets, but only 2 targets exist.
+        # TODO: Handle case where the user doesn't want to select the maximum number of targets -- might need a new button?
         if self._targets_remaining == 0:
             self.clear_items()
-            self.add_item(ContinueToNextAction())
+            self.add_item(ContinueToNextActionButton())
 
             catch_phrases = []
             result_str = ""
@@ -478,6 +590,11 @@ class DuelView(discord.ui.View):
 
     def show_items(self):
         self._get_current_items_page_buttons()
+        return self._get_current_page_info()
+
+    def show_abilities(self):
+        self._get_current_abilities_page_buttons()
+        return self._get_current_page_info()
 
     def _get_current_items_page_buttons(self):
         self.clear_items()
@@ -574,20 +691,35 @@ class DuelView(discord.ui.View):
 
     def confirm_ability(self):
         # TODO: Add validation that ability selected still exists and index works
+        # TODO: Handle case when num_targets == 0 and targets self or == -1 and
+        # targets all of the relevant group
         self._targets_remaining = self._selected_ability.get_num_targets()
         return self.show_targets()
  
     def continue_turn(self):
         cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
         dueling: Dueling = cur_entity.get_dueling()
-        if dueling.actions_remaining == 0:
-            dueling.actions_remaining = dueling.init_actions_remaining
+        if dueling.actions_remaining == 0:          
+            # CDs and status effect time remaining decrement at the end of the turn,
+            # so they actually last a turn
+            dueling.decrement_all_ability_cds()
+            dueling.decrement_statuses_time_remaining()
             self.set_next_turn()
         
         next_entity: (Player | NPC) = self._turn_order[self._turn_index]
+        next_entity_dueling: Dueling = next_entity.get_dueling()
         if isinstance(next_entity, Player):
+            next_entity_dueling.actions_remaining = next_entity_dueling.init_actions_remaining
             return self.show_actions()
         # TODO: Handle NPC AI doing their own turns
+
+    def go_back_using_intent(self):
+        if self._intent == Intent.Attack:
+            return self.show_actions()
+        if self._intent == Intent.Ability:
+            return self.show_abilities()
+        if self._intent == Intent.Item:
+            return self.show_items()
 
 # -----------------------------------------------------------------------------
 # PvP DUEL VIEW AND GUI

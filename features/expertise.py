@@ -32,6 +32,7 @@ INT_MANA_SCALE = 0.11
 INT_MANA_REGEN_SCALE = 0.01
 INT_DMG_SCALE = 0.02
 LUCK_CRIT_SCALE = 0.005
+LUCK_CRIT_DMG_BOOST = 1.5
 
 # -----------------------------------------------------------------------------
 # ENUMS
@@ -55,6 +56,38 @@ class Attribute(StrEnum):
 # -----------------------------------------------------------------------------
 # CLASSES
 # -----------------------------------------------------------------------------
+
+# This is a convenient container for handling merging attributes from various
+# sources. One day, I might update the Expertise class to use this.
+class Attributes():
+    def __init__(self, constitution, strength, dexterity, intelligence, luck, memory):
+        self.constitution = constitution
+        self.strength = strength
+        self.dexterity = dexterity
+        self.intelligence = intelligence
+        self.luck = luck
+        self.memory = memory
+
+    def __add__(self, other: Attributes | Buffs):
+        if isinstance(other, Attributes):
+            return Attributes(
+                self.constitution + other.constitution,
+                self.strength + other.strength,
+                self.dexterity + other.dexterity,
+                self.intelligence + other.intelligence,
+                self.luck + other.luck,
+                self.memory + other.memory
+            )
+        
+        if isinstance(other, Buffs):
+            return Attributes(
+                self.constitution + other.con_buff,
+                self.strength + other.str_buff,
+                self.dexterity + other.dex_buff,
+                self.intelligence + other.int_buff,
+                self.luck + other.lck_buff,
+                self.memory + other.mem_buff
+            )
 
 # Expertise is similar to a class system in RPG games, such as being able to
 # level Illusion magic in Skyrim or level cooking in WoW. While somewhat related
@@ -117,7 +150,7 @@ class MerchantExpertise(BaseExpertise):
 
 class GuardianExpertise(BaseExpertise):
     def get_xp_to_level(self, level: int) -> int:
-        return ceil(15 + 15 * level * (level - 1) + 25 * (2 ** ((level - 1) / 8.0) - 1) / (1 - 2 ** (-1 / 8.0)))
+        return ceil(30 + 30 * level * (level - 1) + 20 * (2 ** ((level - 1) / 7.0) - 1) / (1 - 2 ** (-1 / 7.0)))
 
 
 class Expertise():
@@ -174,8 +207,11 @@ class Expertise():
     def heal(self, heal_amount: int):
         self.hp = min(self.max_hp, self.hp + heal_amount)
 
-    def damage(self, damage: int):
-        self.hp = max(0, self.hp - damage)
+    def damage(self, damage: int, armor: int, percent_reduct: float):
+        actual_damage = damage - armor
+        actual_damage -= int(actual_damage * percent_reduct)
+        self.hp = max(0, self.hp - actual_damage)
+        return actual_damage
 
     def restore_mana(self, restore_amount: int):
         self.mana = min(self.max_mana, self.mana + restore_amount)
@@ -252,6 +288,9 @@ class Expertise():
             info_string += f"\n\n*You have {self.points_to_spend} attribute {point_str} to spend!*"
 
         return info_string
+
+    def get_all_attributes(self) -> Attributes:
+        return Attributes(self.constitution, self.strength, self.dexterity, self.intelligence, self.luck, self.memory)
 
     def __getstate__(self):
         return self.__dict__

@@ -140,6 +140,16 @@ class Buffs():
         self.lck_buff = lck_buff
         self.mem_buff = mem_buff
 
+    def __add__(self, other: Buffs):
+        return Buffs(
+            self.con_buff + other.con_buff,
+            self.str_buff + other.str_buff,
+            self.dex_buff + other.dex_buff,
+            self.int_buff + other.int_buff,
+            self.lck_buff + other.lck_buff,
+            self.mem_buff + other.mem_buff
+        )
+
     def __str__(self):
         display_string = ""
         if self.con_buff != 0:

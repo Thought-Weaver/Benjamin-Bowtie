@@ -8,6 +8,7 @@ from features.inventory import Inventory
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
+    from features.expertise import Attributes
     from features.mail import Mail
 
 
@@ -19,6 +20,9 @@ class Player():
         self._expertise: Expertise = Expertise()
         self._equipment: Equipment = Equipment()
         self._dueling: Dueling = Dueling()
+
+    def get_combined_attributes(self):
+        return self._expertise.get_all_attributes() + self._equipment.get_total_buffs() + self._dueling.get_combined_attribute_mods()
 
     def get_inventory(self):
         return self._inventory
