@@ -209,11 +209,13 @@ class Ability():
         if self._cooldown > 0:
             cooldown_str = f"{self._cooldown} Turn CD"
 
+        flavor_text: str = f"*{self._flavor_text}*\n\n" if self._flavor_text != "" else ""
+
         return (
             f"{self._icon} **{self._name}**\n"
             f"{self._mana_cost} Mana / {target_str} / {cooldown_str}\n\n"
             f"{self._description}\n\n"
-            f"*{self._flavor_text}*\n\n"
+            f"{flavor_text}"
             f"Requires {self._class_key} level {self._level_requirement}"
         )
 
@@ -221,7 +223,7 @@ class Ability():
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        self._num_targets = state.get("_num_targets", 0)
+        super().__init__()
 
 # -----------------------------------------------------------------------------
 # FISHER ABILITIES
