@@ -11,7 +11,7 @@ from features.equipment import Equipment
 
 from features.expertise import DEX_DODGE_SCALE, INT_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE, ExpertiseClass
 from features.shared.item import ClassTag, WeaponStats
-from features.shared.statuseffect import BLEED_PERCENT_HP, AttrBuffOnDamage, Bleeding, ConBuff, ConDebuff, DexBuff, DexDebuff, DmgReduction, FixedDmgTick, Generating, IntBuff, IntDebuff, LckBuff, ManaToHP, NonTargetable, StatusEffect, StatusEffectKey, StrBuff, StrDebuff, Tarnished, Taunted, TurnSkipChance
+from features.shared.statuseffect import BLEED_PERCENT_HP, AttrBuffOnDamage, Bleeding, CannotTarget, ConBuff, ConDebuff, DexBuff, DexDebuff, DmgReduction, FixedDmgTick, Generating, IntBuff, IntDebuff, LckBuff, ManaToHP, StatusEffect, StatusEffectKey, StrBuff, StrDebuff, Tarnished, Taunted, TurnSkipChance
 
 if TYPE_CHECKING:
     from features.npcs.npc import NPC
@@ -29,7 +29,7 @@ class NegativeAbilityResult():
 
 
 class Ability():
-    def __init__(self, icon: str, name: str, class_key: ExpertiseClass, description: str, flavor_text: str, mana_cost: int, cooldown: int, num_targets: int, level_requirement: int):
+    def __init__(self, icon: str, name: str, class_key: ExpertiseClass, description: str, flavor_text: str, mana_cost: int, cooldown: int, num_targets: int, level_requirement: int, target_own_group: bool):
         # TODO: Handle whether ability status effects stack with a new param
         self._icon = icon
         self._name = name
@@ -42,6 +42,7 @@ class Ability():
         self._cooldown = cooldown
         self._num_targets = num_targets
         self._level_requirement = level_requirement
+        self._target_own_group = target_own_group
 
         # Turns remaining until it can be used again
         # If this is -1, then it's a once-per-duel ability that's already been used
@@ -64,6 +65,9 @@ class Ability():
 
     def get_level_requirement(self):
         return self._level_requirement
+
+    def get_target_own_group(self):
+        return self._target_own_group
 
     def get_cur_cooldown(self):
         return self._cur_cooldown
@@ -110,7 +114,19 @@ class Ability():
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         return results
@@ -132,7 +148,19 @@ class Ability():
 
             results.append(NegativeAbilityResult("{1}" + f" is now {status_effects_str}", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         return results
@@ -160,7 +188,19 @@ class Ability():
             target.get_expertise().update_stats()
             results.append("{1}" + f" is now {status_effects_str}")
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(f"You took {damage} damage to cast this from Contract: Mana to Blood")
         self._cur_cooldown = self._cooldown
 
         return results
@@ -185,7 +225,19 @@ class Ability():
 
             results.append("{1}" + f" was healed for {heal_amount}{critical_hit_str} HP")
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(f"You took {damage} damage to cast this from Contract: Mana to Blood")
         self._cur_cooldown = self._cooldown
 
         return results
@@ -251,7 +303,8 @@ class SeaSprayI(Ability):
             mana_cost=5,
             cooldown=0,
             num_targets=1,
-            level_requirement=2
+            level_requirement=2,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -281,7 +334,8 @@ class SeaSprayII(Ability):
             mana_cost=5,
             cooldown=0,
             num_targets=1,
-            level_requirement=4
+            level_requirement=4,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -309,7 +363,8 @@ class SeaSprayIII(Ability):
             mana_cost=5,
             cooldown=0,
             num_targets=1,
-            level_requirement=4
+            level_requirement=6,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -337,7 +392,8 @@ class SeaSprayIV(Ability):
             mana_cost=5,
             cooldown=0,
             num_targets=1,
-            level_requirement=4
+            level_requirement=8,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -365,7 +421,8 @@ class SeaSprayV(Ability):
             mana_cost=5,
             cooldown=0,
             num_targets=1,
-            level_requirement=4
+            level_requirement=10,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -396,7 +453,8 @@ class CurseOfTheSeaI(Ability):
             mana_cost=10,
             cooldown=0,
             num_targets=1,
-            level_requirement=5
+            level_requirement=5,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -442,7 +500,8 @@ class CurseOfTheSeaII(Ability):
             mana_cost=10,
             cooldown=0,
             num_targets=1,
-            level_requirement=9
+            level_requirement=9,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -488,7 +547,8 @@ class CurseOfTheSeaIII(Ability):
             mana_cost=10,
             cooldown=0,
             num_targets=1,
-            level_requirement=13
+            level_requirement=13,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -537,7 +597,8 @@ class HookI(Ability):
             mana_cost=15,
             cooldown=1,
             num_targets=1,
-            level_requirement=8
+            level_requirement=8,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -571,7 +632,8 @@ class HookII(Ability):
             mana_cost=15,
             cooldown=1,
             num_targets=1,
-            level_requirement=10
+            level_requirement=10,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -605,7 +667,8 @@ class HookIII(Ability):
             mana_cost=15,
             cooldown=1,
             num_targets=1,
-            level_requirement=12
+            level_requirement=12,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -642,7 +705,8 @@ class WrathOfTheWavesI(Ability):
             mana_cost=35,
             cooldown=1,
             num_targets=3,
-            level_requirement=10
+            level_requirement=10,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -677,7 +741,19 @@ class WrathOfTheWavesI(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -703,7 +779,8 @@ class WrathOfTheWavesII(Ability):
             mana_cost=35,
             cooldown=1,
             num_targets=3,
-            level_requirement=12
+            level_requirement=12,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -738,7 +815,19 @@ class WrathOfTheWavesII(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -764,7 +853,8 @@ class WrathOfTheWavesIII(Ability):
             mana_cost=35,
             cooldown=1,
             num_targets=3,
-            level_requirement=14
+            level_requirement=14,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -799,7 +889,19 @@ class WrathOfTheWavesIII(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -828,7 +930,8 @@ class HighTideI(Ability):
             mana_cost=20,
             cooldown=2,
             num_targets=0,
-            level_requirement=12
+            level_requirement=12,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -862,7 +965,8 @@ class HighTideII(Ability):
             mana_cost=20,
             cooldown=2,
             num_targets=0,
-            level_requirement=15
+            level_requirement=15,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -896,7 +1000,8 @@ class HighTideIII(Ability):
             mana_cost=20,
             cooldown=2,
             num_targets=0,
-            level_requirement=18
+            level_requirement=18,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -933,7 +1038,8 @@ class ThunderingTorrentI(Ability):
             mana_cost=20,
             cooldown=1,
             num_targets=2,
-            level_requirement=14
+            level_requirement=14,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -974,7 +1080,19 @@ class ThunderingTorrentI(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1000,7 +1118,8 @@ class ThunderingTorrentII(Ability):
             mana_cost=20,
             cooldown=1,
             num_targets=2,
-            level_requirement=16
+            level_requirement=16,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1041,7 +1160,19 @@ class ThunderingTorrentII(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1067,7 +1198,8 @@ class ThunderingTorrentIII(Ability):
             mana_cost=20,
             cooldown=1,
             num_targets=2,
-            level_requirement=18
+            level_requirement=18,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1108,7 +1240,19 @@ class ThunderingTorrentIII(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1137,7 +1281,8 @@ class DrownInTheDeepI(Ability):
             mana_cost=70,
             cooldown=3,
             num_targets=3,
-            level_requirement=18
+            level_requirement=18,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1165,7 +1310,19 @@ class DrownInTheDeepI(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1191,7 +1348,8 @@ class DrownInTheDeepII(Ability):
             mana_cost=70,
             cooldown=3,
             num_targets=3,
-            level_requirement=22
+            level_requirement=22,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1219,7 +1377,19 @@ class DrownInTheDeepII(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1245,7 +1415,8 @@ class DrownInTheDeepIII(Ability):
             mana_cost=70,
             cooldown=3,
             num_targets=3,
-            level_requirement=26
+            level_requirement=26,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1273,7 +1444,19 @@ class DrownInTheDeepIII(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1302,7 +1485,8 @@ class WhirlpoolI(Ability):
             mana_cost=50,
             cooldown=2,
             num_targets=-1,
-            level_requirement=20
+            level_requirement=20,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1340,7 +1524,19 @@ class WhirlpoolI(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1366,7 +1562,8 @@ class WhirlpoolII(Ability):
             mana_cost=50,
             cooldown=2,
             num_targets=-1,
-            level_requirement=22
+            level_requirement=22,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1404,7 +1601,19 @@ class WhirlpoolII(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1430,7 +1639,8 @@ class WhirlpoolIII(Ability):
             mana_cost=50,
             cooldown=2,
             num_targets=-1,
-            level_requirement=24
+            level_requirement=24,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1468,7 +1678,19 @@ class WhirlpoolIII(Ability):
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        caster_expertise.remove_mana(self.get_mana_cost())
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0)
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1497,7 +1719,8 @@ class ShatteringStormI(Ability):
             mana_cost=150,
             cooldown=5,
             num_targets=5,
-            level_requirement=22
+            level_requirement=22,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1531,7 +1754,8 @@ class ShatteringStormII(Ability):
             mana_cost=150,
             cooldown=5,
             num_targets=5,
-            level_requirement=24
+            level_requirement=24,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1565,7 +1789,8 @@ class ShatteringStormIII(Ability):
             mana_cost=150,
             cooldown=5,
             num_targets=5,
-            level_requirement=24
+            level_requirement=26,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1604,7 +1829,8 @@ class WhirlwindI(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=-1,
-            level_requirement=2
+            level_requirement=2,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1640,7 +1866,8 @@ class WhirlwindII(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=-1,
-            level_requirement=5
+            level_requirement=5,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1676,7 +1903,8 @@ class WhirlwindIII(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=-1,
-            level_requirement=8
+            level_requirement=8,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1715,7 +1943,8 @@ class SecondWindI(Ability):
             mana_cost=0,
             cooldown=5,
             num_targets=0,
-            level_requirement=3
+            level_requirement=3,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1745,7 +1974,8 @@ class SecondWindII(Ability):
             mana_cost=0,
             cooldown=5,
             num_targets=0,
-            level_requirement=8
+            level_requirement=8,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1775,7 +2005,8 @@ class SecondWindIII(Ability):
             mana_cost=0,
             cooldown=5,
             num_targets=0,
-            level_requirement=13
+            level_requirement=13,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1808,7 +2039,8 @@ class ScarArmorI(Ability):
             mana_cost=0,
             cooldown=-1,
             num_targets=0,
-            level_requirement=5
+            level_requirement=5,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1846,7 +2078,8 @@ class ScarArmorII(Ability):
             mana_cost=0,
             cooldown=-1,
             num_targets=0,
-            level_requirement=15
+            level_requirement=15,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1887,7 +2120,8 @@ class UnbreakingI(Ability):
             mana_cost=0,
             cooldown=-1,
             num_targets=0,
-            level_requirement=8
+            level_requirement=8,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1921,7 +2155,8 @@ class UnbreakingII(Ability):
             mana_cost=0,
             cooldown=-1,
             num_targets=0,
-            level_requirement=12
+            level_requirement=12,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1955,7 +2190,8 @@ class UnbreakingIII(Ability):
             mana_cost=0,
             cooldown=-1,
             num_targets=0,
-            level_requirement=16
+            level_requirement=16,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1992,7 +2228,8 @@ class CounterstrikeI(Ability):
             mana_cost=0,
             cooldown=2,
             num_targets=1,
-            level_requirement=9
+            level_requirement=9,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2028,7 +2265,8 @@ class CounterstrikeII(Ability):
             mana_cost=0,
             cooldown=2,
             num_targets=1,
-            level_requirement=12
+            level_requirement=12,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2064,7 +2302,8 @@ class CounterstrikeIII(Ability):
             mana_cost=0,
             cooldown=2,
             num_targets=1,
-            level_requirement=15
+            level_requirement=15,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2103,7 +2342,8 @@ class BidedAttackI(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=0,
-            level_requirement=10
+            level_requirement=10,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2137,7 +2377,8 @@ class BidedAttackII(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=0,
-            level_requirement=11
+            level_requirement=11,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2171,7 +2412,8 @@ class BidedAttackIII(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=0,
-            level_requirement=12
+            level_requirement=12,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2208,7 +2450,8 @@ class TauntI(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=1,
-            level_requirement=12
+            level_requirement=12,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2245,7 +2488,8 @@ class PiercingStrikeI(Ability):
             mana_cost=0,
             cooldown=2,
             num_targets=1,
-            level_requirement=15
+            level_requirement=15,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2293,7 +2537,8 @@ class PiercingStrikeII(Ability):
             mana_cost=0,
             cooldown=2,
             num_targets=1,
-            level_requirement=18
+            level_requirement=18,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2341,7 +2586,8 @@ class PiercingStrikeIII(Ability):
             mana_cost=0,
             cooldown=2,
             num_targets=1,
-            level_requirement=18
+            level_requirement=20,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2392,7 +2638,8 @@ class PressTheAdvantageI(Ability):
             mana_cost=0,
             cooldown=-1,
             num_targets=0,
-            level_requirement=18
+            level_requirement=18,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2420,7 +2667,8 @@ class EvadeI(Ability):
             mana_cost=0,
             cooldown=5,
             num_targets=0,
-            level_requirement=20
+            level_requirement=20,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2454,7 +2702,8 @@ class EvadeII(Ability):
             mana_cost=0,
             cooldown=5,
             num_targets=0,
-            level_requirement=22
+            level_requirement=22,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2488,7 +2737,8 @@ class EvadeIII(Ability):
             mana_cost=0,
             cooldown=5,
             num_targets=0,
-            level_requirement=24
+            level_requirement=24,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2525,7 +2775,8 @@ class HeavySlamI(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=1,
-            level_requirement=22
+            level_requirement=22,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2560,7 +2811,8 @@ class HeavySlamII(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=1,
-            level_requirement=24
+            level_requirement=24,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2595,7 +2847,8 @@ class HeavySlamIII(Ability):
             mana_cost=0,
             cooldown=3,
             num_targets=1,
-            level_requirement=26
+            level_requirement=26,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2635,7 +2888,8 @@ class ContractWealthForPowerI(Ability):
             mana_cost=10,
             cooldown=-1,
             num_targets=0,
-            level_requirement=2
+            level_requirement=2,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2705,7 +2959,8 @@ class ContractWealthForPowerII(Ability):
             mana_cost=10,
             cooldown=-1,
             num_targets=0,
-            level_requirement=6
+            level_requirement=6,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2775,7 +3030,8 @@ class ContractWealthForPowerIII(Ability):
             mana_cost=10,
             cooldown=-1,
             num_targets=0,
-            level_requirement=10
+            level_requirement=10,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2848,7 +3104,8 @@ class BoundToGetLuckyI(Ability):
             mana_cost=15,
             cooldown=4,
             num_targets=0,
-            level_requirement=4
+            level_requirement=4,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2882,7 +3139,8 @@ class BoundToGetLuckyII(Ability):
             mana_cost=15,
             cooldown=4,
             num_targets=0,
-            level_requirement=6
+            level_requirement=6,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2916,7 +3174,8 @@ class BoundToGetLuckyIII(Ability):
             mana_cost=15,
             cooldown=4,
             num_targets=0,
-            level_requirement=8
+            level_requirement=8,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2939,32 +3198,33 @@ class BoundToGetLuckyIII(Ability):
         self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
-# SMOOTH TALKING
+# SILKSPEAKING
 # -----------------------------------------------------------------------------
 
-class SmoothTalkingI(Ability):
+class SilkspeakingI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDDE3\uFE0F",
-            name="Smooth Talking",
+            name="Silkspeaking",
             class_key=ExpertiseClass.Merchant,
             description="Convince an enemy not to attack, use an ability, or target you with an item next turn.",
             flavor_text="",
             mana_cost=20,
             cooldown=3,
             num_targets=1,
-            level_requirement=6
+            level_requirement=6,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        non_targetable = NonTargetable(
+        cannot_target = CannotTarget(
             turns_remaining=1,
-            who_cant_target=targets,
+            cant_target=caster,
             source_ability_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [non_targetable])
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [cannot_target])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
@@ -2990,7 +3250,8 @@ class ATidySumI(Ability):
             mana_cost=25,
             cooldown=5,
             num_targets=1,
-            level_requirement=8
+            level_requirement=8,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3025,7 +3286,8 @@ class ATidySumII(Ability):
             mana_cost=25,
             cooldown=5,
             num_targets=1,
-            level_requirement=10
+            level_requirement=10,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3060,7 +3322,8 @@ class ATidySumIII(Ability):
             mana_cost=25,
             cooldown=5,
             num_targets=1,
-            level_requirement=12
+            level_requirement=12,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3098,7 +3361,8 @@ class CursedCoinsI(Ability):
             mana_cost=25,
             cooldown=4,
             num_targets=0,
-            level_requirement=10
+            level_requirement=10,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3132,7 +3396,8 @@ class CursedCoinsII(Ability):
             mana_cost=25,
             cooldown=4,
             num_targets=0,
-            level_requirement=12
+            level_requirement=12,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3166,7 +3431,8 @@ class CursedCoinsIII(Ability):
             mana_cost=25,
             cooldown=4,
             num_targets=0,
-            level_requirement=14
+            level_requirement=14,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3203,7 +3469,8 @@ class UnseenRichesI(Ability):
             mana_cost=30,
             cooldown=5,
             num_targets=0,
-            level_requirement=11
+            level_requirement=11,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3231,7 +3498,8 @@ class UnseenRichesII(Ability):
             mana_cost=30,
             cooldown=5,
             num_targets=0,
-            level_requirement=13
+            level_requirement=13,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3259,7 +3527,8 @@ class UnseenRichesIII(Ability):
             mana_cost=30,
             cooldown=5,
             num_targets=0,
-            level_requirement=15
+            level_requirement=15,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3290,7 +3559,8 @@ class ContractManaToBloodI(Ability):
             mana_cost=10,
             cooldown=2,
             num_targets=0,
-            level_requirement=14
+            level_requirement=14,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3324,7 +3594,8 @@ class ContractManaToBloodII(Ability):
             mana_cost=10,
             cooldown=2,
             num_targets=0,
-            level_requirement=16
+            level_requirement=16,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3358,7 +3629,8 @@ class ContractManaToBloodIII(Ability):
             mana_cost=10,
             cooldown=2,
             num_targets=0,
-            level_requirement=16
+            level_requirement=18,
+            target_own_group=True
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3395,7 +3667,8 @@ class ContractBloodForBloodI(Ability):
             mana_cost=75,
             cooldown=5,
             num_targets=3,
-            level_requirement=16
+            level_requirement=16,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3426,7 +3699,8 @@ class ContractBloodForBloodII(Ability):
             mana_cost=75,
             cooldown=5,
             num_targets=3,
-            level_requirement=18
+            level_requirement=18,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3457,7 +3731,8 @@ class ContractBloodForBloodIII(Ability):
             mana_cost=75,
             cooldown=5,
             num_targets=3,
-            level_requirement=20
+            level_requirement=20,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3491,7 +3766,8 @@ class HeavyPocketsI(Ability):
             mana_cost=80,
             cooldown=2,
             num_targets=1,
-            level_requirement=19
+            level_requirement=19,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3521,7 +3797,8 @@ class HeavyPocketsII(Ability):
             mana_cost=80,
             cooldown=2,
             num_targets=1,
-            level_requirement=22
+            level_requirement=22,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3551,7 +3828,8 @@ class HeavyPocketsIII(Ability):
             mana_cost=80,
             cooldown=2,
             num_targets=1,
-            level_requirement=22
+            level_requirement=25,
+            target_own_group=False
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:

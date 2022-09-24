@@ -20,9 +20,7 @@ POISONED_PERCENT_HP = 0.01
 # -----------------------------------------------------------------------------
 
 class StatusEffectKey(StrEnum):
-    # TODO: Implement this at the start of duel turns
     Bleeding = "Bleeding"
-    # TODO: Implement this at the start of duel turns
     Poisoned = "Poisoned"
     
     ConBuff = "ConBuff"
@@ -44,22 +42,14 @@ class StatusEffectKey(StrEnum):
     FixedDmgTick = "FixedDmgTick"
     TurnSkipChance = "TurnSkipChance"
 
-    # TODO: Implement this when being attacked
     AttrBuffOnDamage = "AttrBuffOnDamage"
 
-    # TODO: Implement this by limiting the available targets
     Taunted = "Taunted"
+    CannotTarget = "CannotTarget"
 
-    # TODO: Implement this by limiting the available targets
-    NonTargetable = "NonTargetable"
-
-    # TODO: Implement this when a particular target is hit by the caster
     Generating = "Generating"
-
-    # TODO: Implement this when Generating happens
     Tarnished = "Tarnished"
 
-    # TODO: Implement this anywhere mana is removed for abilities
     ManaToHP = "ManaToHP"
 
 # -----------------------------------------------------------------------------
@@ -315,8 +305,11 @@ class AttrBuffOnDamage(StatusEffect):
             return "Luck"
         return "Unknown"
 
+    def get_buffs_str(self):
+        return ", ".join([f"+{buff.value} {self._get_attr_for_buff(buff)}" for buff in self.on_being_hit_buffs])
+
     def __str__(self):
-        buffs_str = ", ".join([f"+{buff.value} {self._get_attr_for_buff(buff)}" for buff in self.on_being_hit_buffs])
+        buffs_str = self.get_buffs_str()
         display_str = f"{self.name}: Gain {buffs_str} whenever you're damaged for the next {self.turns_remaining} {self.get_singular_or_plural_turns()}"
         
         if self.source_ability_str is not None:
@@ -339,13 +332,13 @@ class Taunted(StatusEffect):
         return display_str
 
 
-class NonTargetable(StatusEffect):
-    def __init__(self, turns_remaining: int, who_cant_target: List[Player | NPC], source_ability_str: str=None):
-        super().__init__(turns_remaining, 0, "Silkspeaking", StatusEffectKey.NonTargetable, source_ability_str)
-        self.who_cant_target = who_cant_target
+class CannotTarget(StatusEffect):
+    def __init__(self, turns_remaining: int, cant_target: Player | NPC, source_ability_str: str=None):
+        super().__init__(turns_remaining, 0, "Convinced", StatusEffectKey.CannotTarget, source_ability_str)
+        self.cant_target = cant_target
 
     def __str__(self):
-        display_str = f"{self.name}: The chosen enemies can't target the caster for the next {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: Can't target the caster for the next {self.turns_remaining} {self.get_singular_or_plural_turns()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"

@@ -77,6 +77,12 @@ class Dueling():
                 remaining_effects.append(status_effect)
         self.status_effects = remaining_effects
 
+    def ability_exists(self, ability: Ability):
+        for i, dueling_ability in enumerate(self.abilities):
+            if dueling_ability == ability:
+                return i
+        return -1
+
     def get_combined_attribute_mods(self) -> Attributes:
         result = Attributes(0, 0, 0, 0, 0, 0)
         for status_effect in self.status_effects:
@@ -232,7 +238,7 @@ class ConfirmAbilityButton(discord.ui.Button):
         
         view: DuelView = self.view
         if interaction.user == view.get_user_for_current_turn():
-            response = view.show_targets()
+            response = view.confirm_ability()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -246,7 +252,7 @@ class ConfirmItemButton(discord.ui.Button):
         
         view: DuelView = self.view
         if interaction.user == view.get_user_for_current_turn():
-            response = view.show_targets()
+            response = view.confirm_item()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -278,6 +284,20 @@ class BackUsingIntentButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
+class DoActionOnTargetsButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.green, label=f"Finish", row=row)
+        
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: DuelView = self.view
+        if interaction.user == view.get_user_for_current_turn():
+            response = view.do_action_on_selected_targets()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class DuelView(discord.ui.View):
     # Using a data class instead of a tuple to make the code more readable
     @dataclass
@@ -304,7 +324,7 @@ class DuelView(discord.ui.View):
         self._selected_ability_index: int = -1
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1
-        self._selecting_targets: bool = False
+        self._target_own_group: bool = False
 
         self._page = 0
         self._NUM_PER_PAGE = 4
@@ -362,7 +382,7 @@ class DuelView(discord.ui.View):
         self._selected_ability_index = -1
         self._selected_item = None
         self._selected_item_index = -1
-        self._selecting_targets = False
+        self._target_own_group = False
 
         if reset_actions:
             self._actions_remaining = self._turn_order[self._turn_index].get_dueling().init_actions_remaining
@@ -373,18 +393,20 @@ class DuelView(discord.ui.View):
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
 
         entity: Player | NPC = self._turn_order[self._turn_index]
-        fixed_damage: int = 0
+        start_damage: int = 0
         max_should_skip_chance: float = 0
         for se in entity.get_dueling().status_effects:
             if se.key == StatusEffectKey.FixedDmgTick:
-                fixed_damage += se.value
+                start_damage += se.value
+            if se.key == StatusEffectKey.Bleeding or se.key == StatusEffectKey.Poisoned:
+                start_damage += entity.get_expertise().max_hp * se.value
             # Only take the largest chance to skip the turn
             if se.key == StatusEffectKey.TurnSkipChance:
                 max_should_skip_chance = max(se.value, max_should_skip_chance)
         # Fixed damage is taken directly, no reduction
-        entity.get_expertise().damage(fixed_damage, 0, 0)
-        if fixed_damage > 0:
-            self._additional_info_string_data += f"{self.get_name(entity)} took {fixed_damage} damage! "
+        entity.get_expertise().damage(start_damage, 0, 0)
+        if start_damage > 0:
+            self._additional_info_string_data += f"{self.get_name(entity)} took {start_damage} damage! "
 
         if random() < max_should_skip_chance:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
@@ -475,14 +497,24 @@ class DuelView(discord.ui.View):
         self._intent = intent
 
     def show_targets(self, target_own_group: bool=False):
-        self._selecting_targets = True
         self.clear_items()
+
+        cur_turn_entity: Player = self._turn_order[self._turn_index]
+        taunt_target: Player | NPC = None
+        for se in cur_turn_entity.get_dueling().status_effects:
+            if se.key == StatusEffectKey.Taunted:
+                taunt_target = se.value
+                break
+        if taunt_target is not None:
+            self._selected_targets = [taunt_target]
+            return self.do_action_on_selected_targets()
 
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
         selected_targets_str = "Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
+        
+        self._target_own_group = target_own_group
 
         # This should only be called for a Player
-        cur_turn_entity: Player = self._turn_order[self._turn_index]
         targets: List[Player | NPC] = []
         description = ""
         if (cur_turn_entity in self._enemies and target_own_group) or (cur_turn_entity in self._allies and not target_own_group):
@@ -505,6 +537,10 @@ class DuelView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(targets) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
+        if len(self._selected_targets) > 0:
+            # This handles the cases where you might not want/need to select the max number
+            # of possible targets.
+            self.add_item(DoActionOnTargetsButton(min(4, len(page_slots))))
         self.add_item(BackUsingIntentButton(min(4, len(page_slots))))
 
         return Embed(title="Choose a Target", description=description)
@@ -515,6 +551,15 @@ class DuelView(discord.ui.View):
         attacker_attrs = attacker.get_combined_attributes()
         attacker_equipment = attacker.get_equipment()
 
+        generating_value = 0
+        tarnished_value = 0
+        for se in attacker.get_dueling().status_effects:
+            if se.key == StatusEffectKey.Generating:
+                generating_value = se.value
+            if se.key == StatusEffectKey.Tarnished:
+                tarnished_value = se.value
+        cursed_coins_damage = 0
+
         main_hand_item = attacker_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         # Base possible damage is [1, 2], basically fist fighting
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
@@ -523,6 +568,7 @@ class DuelView(discord.ui.View):
         for target in self._selected_targets:
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
+            target_dueling = target.get_dueling()
             target_attrs = target.get_combined_attributes()
 
             target_name = self.get_name(target)
@@ -537,16 +583,40 @@ class DuelView(discord.ui.View):
             damage += int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0))
  
             target_armor = target_equipment.get_total_reduced_armor()
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
 
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    target_dueling.status_effects += se.on_being_hit_buffs
+                    result_strs.append(f"{target_name} gained {se.get_buffs_str()}")
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
+
+            generating_string = ""
+            if generating_value != 0:
+                attacker.get_inventory().add_coins(generating_value)
+                generating_string = f" and gained {generating_value} coins"
+
+                if tarnished_value != 0:
+                    cursed_coins_damage += tarnished_value * generating_value
             
             critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
 
-            result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} to {target_name}")
+            result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} to {target_name}{generating_string}")
         
+        if cursed_coins_damage != 0:
+            if attacker in self._enemies:
+                for other in self._allies:
+                    other.get_expertise().damage(cursed_coins_damage, 0, 0)
+                names_str = ", ".join([self.get_name(other) in self._allies])
+                result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} to {names_str}")
+            elif attacker in self._allies:
+                for other in self._enemies:
+                    other.get_expertise().damage(cursed_coins_damage, 0, 0)
+                names_str = ", ".join([self.get_name(other) in self._enemies])
+                result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} to {names_str} using Cursed Coins")
+
         return "\n".join(result_strs)
 
     def use_ability_on_selected_targets(self):
@@ -572,11 +642,20 @@ class DuelView(discord.ui.View):
         if target in self._selected_targets:
             return Embed(title="Choose a Target", description=f"{selected_targets_str}You already selected that target. {self._targets_remaining} targets remaining.")
         
+        entity = self._turn_order[self._turn_index]
+        if any(se.key == StatusEffectKey.CannotTarget and se.cant_target == entity for se in entity.get_dueling().status_effects):
+            return Embed(title="Choose a Target", description=f"{selected_targets_str}You can't select that target due to being Convinced. {self._targets_remaining} targets remaining.")
+
         self._selected_targets.append(target)
         self._targets_remaining -= 1
 
-        # TODO: Handle case where, for example, you might need to select 3 targets, but only 2 targets exist.
-        # TODO: Handle case where the user doesn't want to select the maximum number of targets -- might need a new button?
+        return self.do_action_on_selected_targets()
+
+    def do_action_on_selected_targets(self):
+        selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
+        selected_targets_str = "Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
+
+        # TODO: Better handle case where, for example, you might need to select 3 targets, but only 2 targets exist.
         if self._targets_remaining == 0:
             self.clear_items()
             self.add_item(ContinueToNextActionButton())
@@ -612,13 +691,13 @@ class DuelView(discord.ui.View):
         
         return Embed(title="Choose a Target", description=f"{selected_targets_str}Choose the next target. {self._targets_remaining} targets remaining.")
 
-    def show_items(self):
+    def show_items(self, error_str: str | None=None):
         self._get_current_items_page_buttons()
-        return self._get_current_page_info()
+        return self._get_current_page_info(error_str)
 
-    def show_abilities(self):
+    def show_abilities(self, error_str: str | None=None):
         self._get_current_abilities_page_buttons()
-        return self._get_current_page_info()
+        return self._get_current_page_info(error_str)
 
     def _get_current_items_page_buttons(self):
         self.clear_items()
@@ -667,7 +746,7 @@ class DuelView(discord.ui.View):
         self._reset_turn_variables()
         return self.show_actions()
 
-    def _get_current_page_info(self):
+    def _get_current_page_info(self, error_str: str | None=None):
         description = ""
         if self._intent == Intent.Item:
             description = "Selected item info will be displayed here."
@@ -677,6 +756,8 @@ class DuelView(discord.ui.View):
             description = "Selected ability info will be displayed here."
             if self._selected_ability is not None:
                 description = f"──────────\n{self._selected_ability}\n──────────"
+        if error_str is not None:
+            description += f"\n\n{error_str}"
         return Embed(title=f"Choose an {self._intent}", description=description)
 
     def next_page(self):
@@ -710,15 +791,32 @@ class DuelView(discord.ui.View):
         return self._get_current_page_info()
 
     def confirm_item(self):
-        # TODO: Add validation that item selected still exists and index works
-        return self.show_targets()
+        entity: Player | NPC = self._turn_order[self._turn_index]
+        found_index = entity.get_inventory().item_exists(self._selected_item)
+        if found_index == self._selected_item_index:
+            return self.show_targets()
+        return self.show_items("*Error: That item couldn't be selected.*")
 
     def confirm_ability(self):
-        # TODO: Add validation that ability selected still exists and index works
-        # TODO: Handle case when num_targets == 0 and targets self or == -1 and
-        # targets all of the relevant group
-        self._targets_remaining = self._selected_ability.get_num_targets()
-        return self.show_targets()
+        entity: Player | NPC = self._turn_order[self._turn_index]
+        found_index = entity.get_dueling().ability_exists(self._selected_ability)
+        if found_index == self._selected_ability_index:
+            self._targets_remaining = self._selected_ability.get_num_targets()
+            target_own_group = self._selected_ability.get_target_own_group()
+
+            if self._targets_remaining == 0:
+                self._selected_targets = [entity]
+                return self.do_action_on_selected_targets()
+            
+            if self._targets_remaining == -1:
+                if (entity in self._enemies and target_own_group) or (entity in self._allies and not target_own_group):
+                    self._selected_targets = self._enemies
+                elif (entity in self._enemies and not target_own_group) or (entity in self._allies and target_own_group):
+                    self._selected_targets = self._allies
+                return self.do_action_on_selected_targets()
+            
+            return self.show_targets(target_own_group)
+        return self.show_abilities("*Error: That ability couldn't be selected.*")
  
     def continue_turn(self):
         cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
