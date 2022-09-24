@@ -223,7 +223,16 @@ class Ability():
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        super().__init__()
+        self._icon = state.get("_icon", "")
+        self._name = state.get("_name", "")
+        self._class_key = state.get("_class_key", ExpertiseClass.Unknown)
+        self._description = state.get("_description", "")
+        self._flavor_text = state.get("_flavor_text", "")
+        self._mana_cost = state.get("_mana_cost", 0)
+        self._cooldown = state.get("_cooldown", 0)
+        self._num_targets = state.get("_num_targets", 0)
+        self._level_requirement = state.get("_level_requirement", 0)
+        self._cur_cooldown = state.get("_cur_cooldown", 0)
 
 # -----------------------------------------------------------------------------
 # FISHER ABILITIES
@@ -252,6 +261,14 @@ class SeaSprayI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        # This is a bit of a hack to ignore the state being passed in and
+        # use the defaults in init since no state vars are ever needed.
+        self.__init__() # type: ignore
+
 
 class SeaSprayII(Ability):
     def __init__(self):
@@ -273,6 +290,12 @@ class SeaSprayII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class SeaSprayIII(Ability):
@@ -296,6 +319,12 @@ class SeaSprayIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class SeaSprayIV(Ability):
     def __init__(self):
@@ -318,6 +347,12 @@ class SeaSprayIV(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class SeaSprayV(Ability):
     def __init__(self):
@@ -339,6 +374,12 @@ class SeaSprayV(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # CURSE OF THE SEA
@@ -383,6 +424,12 @@ class CurseOfTheSeaI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class CurseOfTheSeaII(Ability):
     def __init__(self):
@@ -422,6 +469,12 @@ class CurseOfTheSeaII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class CurseOfTheSeaIII(Ability):
@@ -463,6 +516,12 @@ class CurseOfTheSeaIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # HOOK
 # -----------------------------------------------------------------------------
@@ -494,6 +553,12 @@ class HookI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class HookII(Ability):
     def __init__(self):
@@ -522,6 +587,12 @@ class HookII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class HookIII(Ability):
     def __init__(self):
@@ -549,6 +620,12 @@ class HookIII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # WRATH OF THE WAVES
@@ -608,6 +685,12 @@ class WrathOfTheWavesI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class WrathOfTheWavesII(Ability):
     def __init__(self):
@@ -662,6 +745,12 @@ class WrathOfTheWavesII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class WrathOfTheWavesIII(Ability):
@@ -718,6 +807,12 @@ class WrathOfTheWavesIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # HIGH TIDE
 # -----------------------------------------------------------------------------
@@ -749,6 +844,13 @@ class HighTideI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
 class HighTideII(Ability):
     def __init__(self):
         super().__init__(
@@ -775,6 +877,12 @@ class HighTideII(Ability):
         result_str += "\n".join(results)
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class HighTideIII(Ability):
@@ -803,6 +911,12 @@ class HighTideIII(Ability):
         result_str += "\n".join(results)
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # THUNDERING TORRENT
@@ -868,6 +982,12 @@ class ThunderingTorrentI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ThunderingTorrentII(Ability):
     def __init__(self):
@@ -928,6 +1048,12 @@ class ThunderingTorrentII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class ThunderingTorrentIII(Ability):
@@ -990,6 +1116,12 @@ class ThunderingTorrentIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # DROWN IN THE DEEP
 # -----------------------------------------------------------------------------
@@ -1041,6 +1173,12 @@ class DrownInTheDeepI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class DrownInTheDeepII(Ability):
     def __init__(self):
@@ -1089,6 +1227,12 @@ class DrownInTheDeepII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class DrownInTheDeepIII(Ability):
     def __init__(self):
@@ -1136,6 +1280,12 @@ class DrownInTheDeepIII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # WHIRLPOOL
@@ -1198,6 +1348,12 @@ class WhirlpoolI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class WhirlpoolII(Ability):
     def __init__(self):
@@ -1255,6 +1411,12 @@ class WhirlpoolII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class WhirlpoolIII(Ability):
@@ -1314,6 +1476,12 @@ class WhirlpoolIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # SHATTERING STORM 
 # -----------------------------------------------------------------------------
@@ -1345,6 +1513,12 @@ class ShatteringStormI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ShatteringStormII(Ability):
     def __init__(self):
@@ -1373,6 +1547,12 @@ class ShatteringStormII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ShatteringStormIII(Ability):
     def __init__(self):
@@ -1400,6 +1580,12 @@ class ShatteringStormIII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # GUARDIAN ABILITIES
@@ -1436,6 +1622,12 @@ class WhirlwindI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class WhirlwindII(Ability):
     def __init__(self):
@@ -1465,6 +1657,12 @@ class WhirlwindII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class WhirlwindIII(Ability):
@@ -1496,6 +1694,12 @@ class WhirlwindIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # SECOND WIND
 # -----------------------------------------------------------------------------
@@ -1523,6 +1727,12 @@ class SecondWindI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class SecondWindII(Ability):
     def __init__(self):
@@ -1547,6 +1757,12 @@ class SecondWindII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class SecondWindIII(Ability):
     def __init__(self):
@@ -1570,6 +1786,12 @@ class SecondWindIII(Ability):
         result_str += "\n".join(results)
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # SCAR ARMOR
@@ -1606,6 +1828,12 @@ class ScarArmorI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ScarArmorII(Ability):
     def __init__(self):
@@ -1638,6 +1866,12 @@ class ScarArmorII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # EVADE
 # -----------------------------------------------------------------------------
@@ -1669,6 +1903,12 @@ class UnbreakingI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class UnbreakingII(Ability):
     def __init__(self):
@@ -1697,6 +1937,12 @@ class UnbreakingII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class UnbreakingIII(Ability):
     def __init__(self):
@@ -1724,6 +1970,12 @@ class UnbreakingIII(Ability):
         result_str += "\n".join(results)
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # COUNTERSTRIKE
@@ -1758,6 +2010,12 @@ class CounterstrikeI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class CounterstrikeII(Ability):
     def __init__(self):
@@ -1788,6 +2046,12 @@ class CounterstrikeII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class CounterstrikeIII(Ability):
     def __init__(self):
@@ -1817,6 +2081,12 @@ class CounterstrikeIII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # BIDED ATTACK
@@ -1849,6 +2119,12 @@ class BidedAttackI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class BidedAttackII(Ability):
     def __init__(self):
@@ -1877,6 +2153,12 @@ class BidedAttackII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class BidedAttackIII(Ability):
     def __init__(self):
@@ -1904,6 +2186,12 @@ class BidedAttackIII(Ability):
         result_str += "\n".join(results)
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # TAUNT
@@ -1935,6 +2223,12 @@ class TauntI(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # PIERCING STRIKE
@@ -1981,6 +2275,12 @@ class PiercingStrikeI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class PiercingStrikeII(Ability):
     def __init__(self):
@@ -2022,6 +2322,12 @@ class PiercingStrikeII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class PiercingStrikeIII(Ability):
@@ -2065,6 +2371,12 @@ class PiercingStrikeIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # PRESS THE ADVANTAGE
 # -----------------------------------------------------------------------------
@@ -2086,6 +2398,12 @@ class PressTheAdvantageI(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster.get_dueling().actions_remaining += 2
         return "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 2 actions available."
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # EVADE
@@ -2118,6 +2436,12 @@ class EvadeI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class EvadeII(Ability):
     def __init__(self):
@@ -2146,6 +2470,12 @@ class EvadeII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class EvadeIII(Ability):
     def __init__(self):
@@ -2173,6 +2503,12 @@ class EvadeIII(Ability):
         result_str += "\n".join(results)
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # HEAVY SLAM
@@ -2206,6 +2542,12 @@ class HeavySlamI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class HeavySlamII(Ability):
     def __init__(self):
@@ -2235,6 +2577,12 @@ class HeavySlamII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class HeavySlamIII(Ability):
     def __init__(self):
@@ -2263,6 +2611,12 @@ class HeavySlamIII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # MERCHANT ABILITIES
@@ -2333,6 +2687,12 @@ class ContractWealthForPowerI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ContractWealthForPowerII(Ability):
     def __init__(self):
@@ -2396,6 +2756,12 @@ class ContractWealthForPowerII(Ability):
             result_str += "\n".join(self._use_positive_status_effect_ability(caster, targets, [int_buff, str_buff, dex_buff]))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class ContractWealthForPowerIII(Ability):
@@ -2461,6 +2827,12 @@ class ContractWealthForPowerIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # BOUND TO GET LUCKY
 # -----------------------------------------------------------------------------
@@ -2492,6 +2864,12 @@ class BoundToGetLuckyI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class BoundToGetLuckyII(Ability):
     def __init__(self):
@@ -2520,6 +2898,12 @@ class BoundToGetLuckyII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class BoundToGetLuckyIII(Ability):
     def __init__(self):
@@ -2547,6 +2931,12 @@ class BoundToGetLuckyIII(Ability):
         result_str += "\n".join(results)
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # SMOOTH TALKING
@@ -2578,6 +2968,12 @@ class SmoothTalkingI(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # A TIDY SUM
@@ -2611,6 +3007,12 @@ class ATidySumI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ATidySumII(Ability):
     def __init__(self):
@@ -2640,6 +3042,12 @@ class ATidySumII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ATidySumIII(Ability):
     def __init__(self):
@@ -2668,6 +3076,12 @@ class ATidySumIII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # CURSED COINS
@@ -2700,6 +3114,12 @@ class CursedCoinsI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class CursedCoinsII(Ability):
     def __init__(self):
@@ -2727,6 +3147,12 @@ class CursedCoinsII(Ability):
         result_str += "\n".join(results)
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class CursedCoinsIII(Ability):
@@ -2756,6 +3182,12 @@ class CursedCoinsIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # UNSEEN RICHES
 # -----------------------------------------------------------------------------
@@ -2781,6 +3213,12 @@ class UnseenRichesI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class UnseenRichesII(Ability):
     def __init__(self):
@@ -2803,6 +3241,12 @@ class UnseenRichesII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class UnseenRichesIII(Ability):
     def __init__(self):
@@ -2824,6 +3268,12 @@ class UnseenRichesIII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # CONTRACT: MANA TO BLOOD
@@ -2856,6 +3306,12 @@ class ContractManaToBloodI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ContractManaToBloodII(Ability):
     def __init__(self):
@@ -2883,6 +3339,12 @@ class ContractManaToBloodII(Ability):
         result_str += "\n".join(results)
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 
 class ContractManaToBloodIII(Ability):
@@ -2912,6 +3374,12 @@ class ContractManaToBloodIII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # CONTRACT: BLOOD FOR BLOOD
 # -----------------------------------------------------------------------------
@@ -2940,6 +3408,12 @@ class ContractBloodForBloodI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ContractBloodForBloodII(Ability):
     def __init__(self):
@@ -2965,6 +3439,12 @@ class ContractBloodForBloodII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class ContractBloodForBloodIII(Ability):
     def __init__(self):
@@ -2989,6 +3469,12 @@ class ContractBloodForBloodIII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # HEAVY POCKETS
@@ -3017,6 +3503,12 @@ class HeavyPocketsI(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class HeavyPocketsII(Ability):
     def __init__(self):
@@ -3041,6 +3533,12 @@ class HeavyPocketsII(Ability):
 
         return result_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 
 class HeavyPocketsIII(Ability):
     def __init__(self):
@@ -3064,3 +3562,9 @@ class HeavyPocketsIII(Ability):
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore

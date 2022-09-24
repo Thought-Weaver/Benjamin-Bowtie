@@ -40,10 +40,8 @@ class StatusEffectKey(StrEnum):
     DmgReduction = "DmgReduction"
     DmgVulnerability = "DmgVulnerability"
 
-    # TODO: Implement this at the start of duel turns
+    # Both of these happen at the start of the turn
     FixedDmgTick = "FixedDmgTick"
-
-    # TODO: Implement this at the start of duel turns
     TurnSkipChance = "TurnSkipChance"
 
     # TODO: Implement this when being attacked

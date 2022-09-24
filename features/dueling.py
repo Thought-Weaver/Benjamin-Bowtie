@@ -309,6 +309,8 @@ class DuelView(discord.ui.View):
         self._page = 0
         self._NUM_PER_PAGE = 4
 
+        self._additional_info_string_data = ""
+
         for entity in allies + enemies:
             entity.get_dueling().is_in_combat = True
 
@@ -366,14 +368,36 @@ class DuelView(discord.ui.View):
             self._actions_remaining = self._turn_order[self._turn_index].get_dueling().init_actions_remaining
 
     def set_next_turn(self):
-        if self.check_for_win().game_won:
-            return
-
         self._turn_index = (self._turn_index + 1) % len(self._turn_order)
         while self._turn_order[self._turn_index].get_expertise().hp == 0:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
 
+        entity: Player | NPC = self._turn_order[self._turn_index]
+        fixed_damage: int = 0
+        max_should_skip_chance: float = 0
+        for se in entity.get_dueling().status_effects:
+            if se.key == StatusEffectKey.FixedDmgTick:
+                fixed_damage += se.value
+            # Only take the largest chance to skip the turn
+            if se.key == StatusEffectKey.TurnSkipChance:
+                max_should_skip_chance = max(se.value, max_should_skip_chance)
+        # Fixed damage is taken directly, no reduction
+        entity.get_expertise().damage(fixed_damage, 0, 0)
+        if fixed_damage > 0:
+            self._additional_info_string_data += f"{self.get_name(entity)} took {fixed_damage} damage! "
+
+        if random() < max_should_skip_chance:
+            self._turn_index = (self._turn_index + 1) % len(self._turn_order)
+            self._additional_info_string_data += f"{self.get_name(entity)}'s turn was skipped!"
+
+        # Continue to iterate if the fixed damage killed the current entity
+        while self._turn_order[self._turn_index].get_expertise().hp == 0:
+            self._turn_index = (self._turn_index + 1) % len(self._turn_order)
+
         self._reset_turn_variables(True)
+
+        duel_result = self.check_for_win()
+        return duel_result
 
     def get_duel_info_str(self):
         info_str = "──────────\n"
@@ -705,7 +729,9 @@ class DuelView(discord.ui.View):
             # so they actually last a turn
             dueling.decrement_all_ability_cds()
             dueling.decrement_statuses_time_remaining()
-            self.set_next_turn()
+            duel_result = self.set_next_turn()
+            if duel_result.game_won:
+                return self.get_victory_screen()
         
         next_entity: (Player | NPC) = self._turn_order[self._turn_index]
         next_entity_dueling: Dueling = next_entity.get_dueling()
