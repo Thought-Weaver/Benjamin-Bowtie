@@ -699,6 +699,7 @@ class DuelView(discord.ui.View):
     def continue_turn(self):
         cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
         dueling: Dueling = cur_entity.get_dueling()
+        dueling.actions_remaining = max(0, dueling.actions_remaining - 1)
         if dueling.actions_remaining == 0:          
             # CDs and status effect time remaining decrement at the end of the turn,
             # so they actually last a turn

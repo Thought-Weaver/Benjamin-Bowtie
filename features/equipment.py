@@ -173,6 +173,20 @@ class Equipment():
             return f"{armor} (-{armor - reduced_armor}) Armor"
         return f"{armor} Armor"
 
+    def get_num_slots_unequipped(self):
+        equipment = [
+            self._helmet,
+            self._amulet,
+            self._chest_armor,
+            self._gloves,
+            self._ring,
+            self._leggings,
+            self._boots,
+            self._main_hand,
+            self._off_hand
+        ]
+        return len(list(filter(lambda item: item is None, equipment)))
+
     def __getstate__(self):
         return self.__dict__
 
