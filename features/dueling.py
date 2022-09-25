@@ -461,6 +461,10 @@ class DuelView(discord.ui.View):
         self.clear_items()
 
         if duel_result.winners is None:
+            for entity in self._turn_order:
+                entity.get_stats().dueling.duels_fought += 1
+                entity.get_stats().dueling.duels_tied += 1
+
             return Embed(
                 title="Victory for Both and Neither",
                 description="A hard-fought battle resulting in a tie. Neither side emerges victorious and yet both have defeated their enemies."
@@ -468,6 +472,13 @@ class DuelView(discord.ui.View):
         
         # TODO: Implement what happens when an NPC group wins/loses.
         losers = self._allies if duel_result.winners == self._enemies else self._enemies
+
+        for winner in duel_result.winners:
+            winner.get_stats().dueling.duels_fought += 1
+            winner.get_stats().dueling.duels_won += 1
+        for loser in losers:
+            loser.get_stats().dueling.duels_fought += 1
+
         if all(isinstance(entity, Player) for entity in self._turn_order):
             # This should only happen in a PvP duel
             winner_str = ""
@@ -603,10 +614,15 @@ class DuelView(discord.ui.View):
             target_dodged = random() < target_attrs.dexterity * DEX_DODGE_SCALE
             
             if target_dodged:
+                target.get_stats().dueling.attacks_dodged += 1
                 result_strs.append(f"{target_name} dodged the attack")
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < attacker_attrs.luck * LUCK_CRIT_SCALE else 1
+
+            if critical_hit_boost > 1:
+                attacker.get_stats().dueling.critical_hit_successes += 1
+
             damage = int(weapon_stats.get_random_damage() * critical_hit_boost)
             damage += int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0))
  
@@ -614,6 +630,11 @@ class DuelView(discord.ui.View):
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
 
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            attacker.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     target_dueling.status_effects += se.on_being_hit_buffs
@@ -626,22 +647,28 @@ class DuelView(discord.ui.View):
                 generating_string = f" and gained {generating_value} coins"
 
                 if tarnished_value != 0:
-                    cursed_coins_damage += tarnished_value * generating_value
+                    cursed_coins_damage += int(tarnished_value * generating_value)
             
             critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
 
             result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} to {target_name}{generating_string}")
         
+            attacker.get_stats().dueling.attacks_done += 1
+        
         if cursed_coins_damage != 0:
             if attacker in self._enemies:
                 for other in self._allies:
                     other.get_expertise().damage(cursed_coins_damage, 0, 0)
+                    attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
+                
                 names_str = ", ".join([self.get_name(other) in self._allies])
                 result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} to {names_str}")
             elif attacker in self._allies:
                 for other in self._enemies:
                     other.get_expertise().damage(cursed_coins_damage, 0, 0)
+                    attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
+                
                 names_str = ", ".join([self.get_name(other) in self._enemies])
                 result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} to {names_str} using Cursed Coins")
 
@@ -651,11 +678,14 @@ class DuelView(discord.ui.View):
         caster = self._turn_order[self._turn_index]
         names = [self.get_name(caster), *[self.get_name(target) for target in self._selected_targets]]
         result_str = self._selected_ability.use_ability(caster, self._selected_targets)
-        
+
+        caster.get_stats().dueling.abilities_used += 1
+
         return result_str.format(*names)
 
     def use_item_on_selected_targets(self):
         # TODO: Implement item usage when said items exist.
+        # TODO: And implement the stat increment.
         return "How did you get here?"
 
     def confirm_target(self):

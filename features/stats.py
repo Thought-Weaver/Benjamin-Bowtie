@@ -13,6 +13,7 @@ class StatCategory(LowercaseStrEnum):
     Market = "market"
     Knucklebones = "knucklebones"
     WishingWell = "wishingwell"
+    Dueling = "dueling"
 
 # Based on the command names; the user will do b!stats [name] or omit the name
 # and get all of them at once. I'm using a class to help with deserializing the
@@ -185,12 +186,79 @@ class Stats():
             self.items_received = state.get("items_received", 0)
             self.something_stirs = state.get("something_stirs", 0)
 
+    class DuelingStats():
+        def __init__(self):
+            self.duels_fought: int = 0
+            self.duels_won: int = 0
+            self.duels_tied: int = 0
+
+            self.attacks_done: int = 0
+            self.abilities_used: int = 0
+            self.items_used: int = 0
+
+            self.damage_dealt: int = 0
+            self.damage_taken: int = 0
+            self.damage_blocked_or_reduced: int = 0
+            
+            self.attacks_dodged: int = 0
+            self.abilities_dodged: int = 0
+            self.critical_hit_successes: int = 0
+
+            self.alchemist_abilities_used: int = 0
+            self.fisher_abilities_used: int = 0
+            self.guardian_abilities_used: int = 0
+            self.merchant_abilities_used: int = 0
+
+        def get_name(self):
+            return "Dueling Stats"
+
+        def get_stats_str(self):
+            return (
+                f"Duels Fought: *{self.duels_fought}*\n"
+                f"Duels Won: *{self.duels_won}*\n"
+                f"Duels Tied: *{self.duels_tied}*\n\n"
+                f"Attacks Done: *{self.attacks_done}*\n"
+                f"Abilities Used: *{self.abilities_used}*\n"
+                f"Items Used: *{self.items_used}*\n\n"
+                f"Damage Dealt: *{self.damage_dealt}*\n"
+                f"Damage Taken: *{self.damage_taken}*\n"
+                f"Damage Blocked or Reduced: *{self.damage_blocked_or_reduced}*\n\n"
+                f"Attacks Dodged: *{self.attacks_dodged}*\n"
+                f"Abilities Dodged: *{self.abilities_dodged}*\n"
+                f"Criticals Hit Successes: *{self.critical_hit_successes}*\n\n"
+                f"Alchemist Abilities Used: *{self.alchemist_abilities_used}*\n"
+                f"Fisher Abilities Used: *{self.fisher_abilities_used}*\n"
+                f"Guardian Abilities Used: *{self.guardian_abilities_used}*\n"
+                f"Merchant Abilities Used: *{self.merchant_abilities_used}*"
+            )
+
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.duels_fought = state.get("duels_fought", 0)
+            self.duels_won = state.get("duels_won", 0)
+            self.duels_tied = state.get("duels_tied", 0)
+            self.attacks_done = state.get("attacks_done", 0)
+            self.abilities_used = state.get("abilities_used", 0)
+            self.items_used = state.get("items_used", 0)
+            self.damage_dealt = state.get("damage_dealt", 0)
+            self.damage_taken = state.get("damage_taken", 0)
+            self.damage_blocked_with_armor = state.get("damage_blocked_with_armor", 0)
+            self.attacks_dodged = state.get("attacks_dodged", 0)
+            self.critical_hit_successes = state.get("critical_hit_successes", 0)
+            self.alchemist_abilities_used = state.get("alchemist_abilities_used", 0)
+            self.fisher_abilities_used = state.get("fisher_abilities_used", 0)
+            self.guardian_abilities_used = state.get("guardian_abilities_used", 0)
+            self.merchant_abilities_used = state.get("merchant_abilities_used", 0)
+
     def __init__(self):
         self.fish = self.FishStats()
         self.mail = self.MailStats()
         self.market = self.MarketStats()
         self.knucklebones = self.KnucklebonesStats()
         self.wishingwell = self.WishingWellStats()
+        self.dueling = self.DuelingStats()
 
     def category_to_class(self, category: StatCategory):
         if category == category.Fish:
@@ -203,11 +271,13 @@ class Stats():
             return self.knucklebones
         if category == category.WishingWell:
             return self.wishingwell
+        if category == category.Dueling:
+            return self.dueling
 
     def list(self):
         # Can simply change the order of this list if I want the pages
         # to be organized differently.
-        return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell]
+        return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell, self.dueling]
 
     def __getstate__(self):
         return self.__dict__
@@ -218,6 +288,7 @@ class Stats():
         self.market = state.get("market", self.MarketStats())
         self.knucklebones = state.get("knucklebones", self.KnucklebonesStats())
         self.wishingwell = state.get("wishingwell", self.WishingWellStats())
+        self.dueling = state.get("dueling", self.DuelingStats())
 
 
 class StatView(discord.ui.View):

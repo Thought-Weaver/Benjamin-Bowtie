@@ -526,7 +526,9 @@ class Adventures(commands.Cog):
             "Convinced: Can't attack the caster\n"
             "Generating: When hit, whoever applied this status gains coins\n"
             "Tarnished: Whenever you gain coins, damage is dealt relative to the amount gained\n"
-            "Sanguinated: All abilities use HP instead of Mana"
+            "Sanguinated: All abilities use HP instead of Mana\n\n"
+            "**Misc:**\n\n"
+            "Overleveled: Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing"
         )
 
         embed = Embed(title="Glossary", description=description)

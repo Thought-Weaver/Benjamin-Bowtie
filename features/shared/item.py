@@ -254,7 +254,7 @@ class Item():
         if weapon_data is not None:
             weapon_stats = WeaponStats()
             weapon_stats.__setstate__(weapon_data)
-
+        
         buffs_data = item_data.get("buffs")
         buffs = None
         if buffs_data is not None:
@@ -363,7 +363,7 @@ class Item():
         return self._weapon_stats
 
     def __str__(self):
-        display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*\n\n"
+        display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*" + " (Unique)" if ClassTag.Misc.IsUnique in self._class_tags else "" + "\n\n"
         
         if self._armor_stats is not None:
             display_string += f"{self._armor_stats.get_armor_amount()} Armor\n"
@@ -377,6 +377,9 @@ class Item():
         if self._armor_stats is not None or self._weapon_stats is not None or self._buffs is not None:
             display_string += "\n"
 
+        if ClassTag.Misc.NeedsIdentification in self._class_tags:
+            display_string += "*Needs Identification*\n\n"
+
         if self._description != "":
             display_string += f"{self._description}\n\n"
         if self._flavor_text != "":
@@ -386,6 +389,7 @@ class Item():
             display_string += f"Quantity: *{self._count}*\n"
         
         display_string += f"Value: *{self._value}* each"
+        display_string += f"Level Requirement: {self._level_requirement}"
         
         return display_string
 

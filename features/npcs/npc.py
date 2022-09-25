@@ -4,6 +4,7 @@ from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
+from features.stats import Stats
 
 
 class NPC():
@@ -11,6 +12,7 @@ class NPC():
         self._name = name
 
         self._inventory: Inventory = Inventory()
+        self._stats: Stats = Stats()
         self._expertise: Expertise = Expertise()
         self._equipment: Equipment = Equipment()
         self._dueling: Dueling = Dueling()

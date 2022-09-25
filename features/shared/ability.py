@@ -95,10 +95,14 @@ class Ability():
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(dmg_range.start, dmg_range.stop) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -107,6 +111,11 @@ class Ability():
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
@@ -140,6 +149,7 @@ class Ability():
         for target in targets:
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
@@ -312,6 +322,8 @@ class SeaSprayI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 4))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -343,6 +355,8 @@ class SeaSprayII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(3, 6))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -371,6 +385,8 @@ class SeaSprayIII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(4, 8))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -401,6 +417,8 @@ class SeaSprayIV(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(5, 10))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -429,6 +447,8 @@ class SeaSprayV(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(6, 12))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -480,6 +500,8 @@ class CurseOfTheSeaI(Ability):
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [con_debuff, str_debuff, dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -526,6 +548,8 @@ class CurseOfTheSeaII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [con_debuff, str_debuff, dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -574,6 +598,8 @@ class CurseOfTheSeaIII(Ability):
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [con_debuff, str_debuff, dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -612,6 +638,8 @@ class HookI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(5, 10), [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -647,6 +675,8 @@ class HookII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(6, 12), [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -681,6 +711,8 @@ class HookIII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(7, 14), [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -721,11 +753,15 @@ class WrathOfTheWavesI(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
             bonus_dmg_boost = 1.5 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(5, 10) * bonus_dmg_boost * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -734,6 +770,11 @@ class WrathOfTheWavesI(Ability):
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
@@ -758,6 +799,8 @@ class WrathOfTheWavesI(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -795,11 +838,15 @@ class WrathOfTheWavesII(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
             bonus_dmg_boost = 1.8 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(8, 12) * bonus_dmg_boost * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -808,6 +855,11 @@ class WrathOfTheWavesII(Ability):
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
@@ -832,6 +884,8 @@ class WrathOfTheWavesII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -869,11 +923,15 @@ class WrathOfTheWavesIII(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
             bonus_dmg_boost = 2.1 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(10, 15) * bonus_dmg_boost * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -882,6 +940,11 @@ class WrathOfTheWavesIII(Ability):
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
@@ -906,6 +969,8 @@ class WrathOfTheWavesIII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -945,6 +1010,8 @@ class HighTideI(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dmg_reduction])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -980,6 +1047,8 @@ class HighTideII(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dmg_reduction])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -1014,6 +1083,8 @@ class HighTideIII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dmg_reduction])
         result_str += "\n".join(results)
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1054,10 +1125,14 @@ class ThunderingTorrentI(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(10, 15) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -1067,6 +1142,11 @@ class ThunderingTorrentI(Ability):
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             target_dueling.status_effects.append(FixedDmgTick(
@@ -1097,6 +1177,8 @@ class ThunderingTorrentI(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1134,10 +1216,14 @@ class ThunderingTorrentII(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(12, 18) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -1147,6 +1233,11 @@ class ThunderingTorrentII(Ability):
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             target_dueling.status_effects.append(FixedDmgTick(
@@ -1177,6 +1268,8 @@ class ThunderingTorrentII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1214,10 +1307,14 @@ class ThunderingTorrentIII(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(15, 20) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -1227,6 +1324,11 @@ class ThunderingTorrentIII(Ability):
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             target_dueling.status_effects.append(FixedDmgTick(
@@ -1257,6 +1359,8 @@ class ThunderingTorrentIII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1297,6 +1401,7 @@ class DrownInTheDeepI(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
@@ -1307,6 +1412,10 @@ class DrownInTheDeepI(Ability):
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
 
             actual_damage_dealt = target_expertise.damage(damage, 0, 0)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
         
@@ -1327,6 +1436,8 @@ class DrownInTheDeepI(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1364,6 +1475,7 @@ class DrownInTheDeepII(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
@@ -1374,6 +1486,10 @@ class DrownInTheDeepII(Ability):
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
 
             actual_damage_dealt = target_expertise.damage(damage, 0, 0)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
         
@@ -1394,6 +1510,8 @@ class DrownInTheDeepII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1431,6 +1549,7 @@ class DrownInTheDeepIII(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
@@ -1441,6 +1560,10 @@ class DrownInTheDeepIII(Ability):
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
 
             actual_damage_dealt = target_expertise.damage(damage, 0, 0)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
         
@@ -1461,6 +1584,8 @@ class DrownInTheDeepIII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1501,10 +1626,14 @@ class WhirlpoolI(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(10, 20) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -1517,6 +1646,11 @@ class WhirlpoolI(Ability):
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
@@ -1541,6 +1675,8 @@ class WhirlpoolI(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1578,10 +1714,14 @@ class WhirlpoolII(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(15, 25) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -1594,6 +1734,11 @@ class WhirlpoolII(Ability):
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
@@ -1618,6 +1763,8 @@ class WhirlpoolII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1655,10 +1802,14 @@ class WhirlpoolIII(Ability):
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
+
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(20, 30) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
@@ -1671,6 +1822,11 @@ class WhirlpoolIII(Ability):
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
             critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
@@ -1695,6 +1851,8 @@ class WhirlpoolIII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1734,6 +1892,8 @@ class ShatteringStormI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(40, 60), [skip_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -1769,6 +1929,8 @@ class ShatteringStormII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(40, 60), [skip_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -1803,6 +1965,8 @@ class ShatteringStormIII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(40, 60), [skip_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -1846,6 +2010,8 @@ class WhirlwindI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -1882,6 +2048,8 @@ class WhirlwindII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -1920,6 +2088,8 @@ class WhirlwindIII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -1954,6 +2124,8 @@ class SecondWindI(Ability):
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -1985,6 +2157,8 @@ class SecondWindII(Ability):
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2015,6 +2189,8 @@ class SecondWindIII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
         result_str += "\n".join(results)
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -2058,6 +2234,8 @@ class ScarArmorI(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [on_damage_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2097,6 +2275,8 @@ class ScarArmorII(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [on_damage_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2135,6 +2315,8 @@ class UnbreakingI(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [con_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2170,6 +2352,8 @@ class UnbreakingII(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [con_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2204,6 +2388,8 @@ class UnbreakingIII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [con_buff])
         result_str += "\n".join(results)
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -2245,6 +2431,8 @@ class CounterstrikeI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2282,6 +2470,8 @@ class CounterstrikeII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2318,6 +2508,8 @@ class CounterstrikeIII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -2357,6 +2549,8 @@ class BidedAttackI(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [str_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2392,6 +2586,8 @@ class BidedAttackII(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [str_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2426,6 +2622,8 @@ class BidedAttackIII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [str_buff])
         result_str += "\n".join(results)
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -2464,6 +2662,8 @@ class TauntI(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [taunt])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -2517,6 +2717,8 @@ class PiercingStrikeI(Ability):
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2565,6 +2767,8 @@ class PiercingStrikeII(Ability):
             results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -2615,6 +2819,8 @@ class PiercingStrikeIII(Ability):
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2644,6 +2850,8 @@ class PressTheAdvantageI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster.get_dueling().actions_remaining += 2
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 2 actions available."
 
     def __getstate__(self):
@@ -2682,6 +2890,8 @@ class EvadeI(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dex_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2717,6 +2927,8 @@ class EvadeII(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dex_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2751,6 +2963,8 @@ class EvadeIII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dex_buff])
         result_str += "\n".join(results)
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -2791,6 +3005,8 @@ class HeavySlamI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2827,6 +3043,8 @@ class HeavySlamII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -2862,6 +3080,8 @@ class HeavySlamIII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -2939,6 +3159,8 @@ class ContractWealthForPowerI(Ability):
 
             result_str += "\n".join(self._use_positive_status_effect_ability(caster, targets, [int_buff, str_buff, dex_buff]))
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3009,6 +3231,8 @@ class ContractWealthForPowerII(Ability):
             )
 
             result_str += "\n".join(self._use_positive_status_effect_ability(caster, targets, [int_buff, str_buff, dex_buff]))
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
 
@@ -3081,6 +3305,8 @@ class ContractWealthForPowerIII(Ability):
 
             result_str += "\n".join(self._use_positive_status_effect_ability(caster, targets, [int_buff, str_buff, dex_buff]))
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3119,6 +3345,8 @@ class BoundToGetLuckyI(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [lck_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3154,6 +3382,8 @@ class BoundToGetLuckyII(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [lck_buff])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3188,6 +3418,8 @@ class BoundToGetLuckyIII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [lck_buff])
         result_str += "\n".join(results)
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
 
@@ -3226,6 +3458,8 @@ class SilkspeakingI(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [cannot_target])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
 
@@ -3266,6 +3500,8 @@ class ATidySumI(Ability):
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [generating])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3302,6 +3538,8 @@ class ATidySumII(Ability):
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [generating])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3337,6 +3575,8 @@ class ATidySumIII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [generating])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
 
@@ -3376,6 +3616,8 @@ class CursedCoinsI(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [tarnished])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3410,6 +3652,8 @@ class CursedCoinsII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [tarnished])
         result_str += "\n".join(results)
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
 
@@ -3446,6 +3690,8 @@ class CursedCoinsIII(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [tarnished])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3478,6 +3724,8 @@ class UnseenRichesI(Ability):
         caster.get_inventory().add_coins(0.5 * coins_to_add)
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3507,6 +3755,8 @@ class UnseenRichesII(Ability):
         caster.get_inventory().add_coins(coins_to_add)
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3535,6 +3785,8 @@ class UnseenRichesIII(Ability):
         coins_to_add: int = caster.get_combined_attributes().luck
         caster.get_inventory().add_coins(1.5 * coins_to_add)
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
 
@@ -3574,6 +3826,8 @@ class ContractManaToBloodI(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [mana_to_hp])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3608,6 +3862,8 @@ class ContractManaToBloodII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [mana_to_hp])
         result_str += "\n".join(results)
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
 
@@ -3644,6 +3900,8 @@ class ContractManaToBloodIII(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [mana_to_hp])
         result_str += "\n".join(results)
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3679,6 +3937,8 @@ class ContractBloodForBloodI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3710,6 +3970,8 @@ class ContractBloodForBloodII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
 
@@ -3743,6 +4005,8 @@ class ContractBloodForBloodIII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3752,14 +4016,14 @@ class ContractBloodForBloodIII(Ability):
         self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
-# HEAVY POCKETS
+# DEEP POCKETS
 # -----------------------------------------------------------------------------
 
-class HeavyPocketsI(Ability):
+class DeepPocketsI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDDFE",
-            name="Heavy Pockets",
+            name="Deep Pockets",
             class_key=ExpertiseClass.Merchant,
             description="Deal damage equal to 1% of your current coins (up to 100 damage) and lose that many coins.",
             flavor_text="",
@@ -3777,6 +4041,8 @@ class HeavyPocketsI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3786,11 +4052,11 @@ class HeavyPocketsI(Ability):
         self.__init__() # type: ignore
 
 
-class HeavyPocketsII(Ability):
+class DeepPocketsII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDDFE",
-            name="Heavy Pockets",
+            name="Deep Pockets",
             class_key=ExpertiseClass.Merchant,
             description="Deal damage equal to 1% of your current coins (up to 100 damage) and lose that many coins.",
             flavor_text="",
@@ -3808,6 +4074,8 @@ class HeavyPocketsII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
         return result_str
 
     def __getstate__(self):
@@ -3817,11 +4085,11 @@ class HeavyPocketsII(Ability):
         self.__init__() # type: ignore
 
 
-class HeavyPocketsIII(Ability):
+class DeepPocketsIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDDFE",
-            name="Heavy Pockets",
+            name="Deep Pockets",
             class_key=ExpertiseClass.Merchant,
             description="Deal damage equal to 1% of your current coins (up to 100 damage) and lose that many coins.",
             flavor_text="",
@@ -3838,6 +4106,8 @@ class HeavyPocketsIII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
 
