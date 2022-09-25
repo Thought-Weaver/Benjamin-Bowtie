@@ -395,10 +395,48 @@ class EquipmentView(discord.ui.View):
             self.add_item(UnequipButton(min(4, len(page_slots))))
         self.add_item(SelectSlotExitButton(min(4, len(page_slots))))
 
+    def get_full_equipment_str(self):
+        player_equipment: Equipment = self.get_player().get_equipment()
+        base_none_equipped_str: str = "──────────{0}None Equipped{1}──────────"
+
+        first_line = [str(player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet) is not None else base_none_equipped_str]
+        
+        second_line = [
+            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves) is not None else "",
+            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet) is not None else "",
+            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Ring)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Ring) is not None else ""
+        ]
+        max_newlines = max([s.count("\n") for s in second_line])
+        second_line = list(map(lambda x: base_none_equipped_str.format("\n" * max_newlines, "\n" * max_newlines) if x == "" else x, second_line))
+
+        third_line = [
+            str(player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)) if player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand) is not None else "",
+            str(player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor)) if player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor) is not None else "",
+            str(player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand)) if player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand) is not None else ""
+        ]
+        max_newlines = max([s.count("\n") for s in third_line])
+        third_line = list(map(lambda x: base_none_equipped_str.format("\n" * max_newlines, "\n" * max_newlines) if x == "" else x, third_line))
+
+        fourth_line = [
+            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings) is not None else "",
+            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Boots)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Boots) is not None else ""
+        ]
+        max_newlines = max([s.count("\n") for s in fourth_line])
+        fourth_line = list(map(lambda x: base_none_equipped_str.format("\n" * max_newlines, "\n" * max_newlines) if x == "" else x, fourth_line))
+
+        format_str = (
+            "      {0}      \n"
+            "{1}   {2}   {3}\n"
+            "{4}   {5}   {6}\n"
+            "   {7}   {8}   "
+        ).format(*(first_line + second_line + third_line + fourth_line))
+
+        return format_str
+
     def get_initial_info(self):
         return Embed(
             title=f"{self._user.display_name}'s Equipment",
-            description="Choose a slot to see currently equipped item and equip another or unequip it."
+            description=f"{self.get_full_equipment_str()}\n\nChoose a slot to see currently equipped item and equip another or unequip it."
         )
 
     def exit_to_main_menu(self):
