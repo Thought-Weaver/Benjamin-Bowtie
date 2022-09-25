@@ -98,6 +98,9 @@ class Dueling():
                 result.luck += status_effect.value
         return result
 
+    def get_statuses_string(self) -> str:
+        return "*Status Effects:*\n\n" + "\n".join([str(se) for se in self.status_effects])
+
     def __getstate__(self):
         return self.__dict__
 
@@ -176,7 +179,7 @@ class TargetButton(discord.ui.Button):
         
         view: DuelView = self.view
         if interaction.user == view.get_user_for_current_turn():
-            response = view.choose_target(self._target)
+            response = view.select_target(self._target, self._index)
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -230,7 +233,7 @@ class BackToActionSelectButton(discord.ui.Button):
 
 class ConfirmAbilityButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.green, label=f"Confirm", row=row)
+        super().__init__(style=discord.ButtonStyle.green, label=f"Choose", row=row)
         
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -244,7 +247,7 @@ class ConfirmAbilityButton(discord.ui.Button):
 
 class ConfirmItemButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.green, label=f"Confirm", row=row)
+        super().__init__(style=discord.ButtonStyle.green, label=f"Choose", row=row)
         
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -298,6 +301,20 @@ class DoActionOnTargetsButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
+class ConfirmTargetButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.green, label=f"Choose", row=row)
+        
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: DuelView = self.view
+        if interaction.user == view.get_user_for_current_turn():
+            response = view.confirm_target()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class DuelView(discord.ui.View):
     # Using a data class instead of a tuple to make the code more readable
     @dataclass
@@ -325,6 +342,8 @@ class DuelView(discord.ui.View):
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1
         self._target_own_group: bool = False
+        self._current_target: Player | NPC = None # For passing along to the confirmation
+        self._current_target_index: int = -1
 
         self._page = 0
         self._NUM_PER_PAGE = 4
@@ -424,16 +443,19 @@ class DuelView(discord.ui.View):
     def get_duel_info_str(self):
         info_str = "──────────\n"
         for i, entity in enumerate(i, self._turn_order):
-            if isinstance(entity, NPC):
-                info_str += f"({i + 1}) {entity.get_name()} {entity.get_expertise().get_health_string()}\n"
-            if isinstance(entity, Player):
-                player_name: str = self.get_name(entity)
-                info_str += f"({i + 1}) {player_name} {entity.get_expertise().get_health_string()}\n"
+            info_str += f"({i + 1}) **{self.get_name(entity)}**: {entity.get_expertise().get_health_string()}\n"
 
         player_name = self.get_user_for_current_turn().display_name
-        current_turn_str = f"It's {player_name}'s turn!"
+        current_turn_str = f"\nIt's {player_name}'s turn!"
 
         return info_str + f"──────────\n\n{current_turn_str}"
+
+    def get_selected_entity_full_duel_info_str(self):
+        name = self.get_name(self._current_target)
+        expertise = self._current_target.get_expertise()
+        dueling = self._current_target.get_dueling()
+
+        return f"──────────\n({self._current_target_index + 1}) **{name}**\n{expertise.get_health_string()}\n\n{dueling.get_statuses_string()}\n──────────"
 
     def get_victory_screen(self, duel_result: DuelResult):
         self.clear_items()
@@ -517,6 +539,10 @@ class DuelView(discord.ui.View):
         # This should only be called for a Player
         targets: List[Player | NPC] = []
         description = ""
+
+        if self._current_target is not None:
+            description += self.get_selected_entity_full_duel_info_str() + "\n\n"
+
         if (cur_turn_entity in self._enemies and target_own_group) or (cur_turn_entity in self._allies and not target_own_group):
             targets = self._enemies
             description = f"{selected_targets_str}Choose an opponent. {self._targets_remaining} targets remaining."
@@ -537,6 +563,8 @@ class DuelView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(targets) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
+        if self._current_target is not None and self._current_target_index != -1:
+            self.add_item(ConfirmTargetButton(min(4, len(page_slots))))
         if len(self._selected_targets) > 0:
             # This handles the cases where you might not want/need to select the max number
             # of possible targets.
@@ -630,23 +658,21 @@ class DuelView(discord.ui.View):
         # TODO: Implement item usage when said items exist.
         return "How did you get here?"
 
-    def choose_target(self, target: Player | NPC, index: int):
-        # TODO: Need to display more information about targets -- probably should devise a Dueling info string
-        # that has status effects in addition to health and armor details?
+    def confirm_target(self):
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
         selected_targets_str = "Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
 
-        if target != self._turn_order[index]:
+        if self._current_target != self._turn_order[self._current_target_index]:
             return Embed(title="Choose a Target", description=f"{selected_targets_str}Error: That target changed position in the turn order or something else terrible happened. {self._targets_remaining} targets remaining.")
         
-        if target in self._selected_targets:
+        if self._current_target in self._selected_targets:
             return Embed(title="Choose a Target", description=f"{selected_targets_str}You already selected that target. {self._targets_remaining} targets remaining.")
         
         entity = self._turn_order[self._turn_index]
         if any(se.key == StatusEffectKey.CannotTarget and se.cant_target == entity for se in entity.get_dueling().status_effects):
             return Embed(title="Choose a Target", description=f"{selected_targets_str}You can't select that target due to being Convinced. {self._targets_remaining} targets remaining.")
 
-        self._selected_targets.append(target)
+        self._selected_targets.append(self._current_target)
         self._targets_remaining -= 1
 
         return self.do_action_on_selected_targets()
@@ -656,7 +682,7 @@ class DuelView(discord.ui.View):
         selected_targets_str = "Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
 
         # TODO: Better handle case where, for example, you might need to select 3 targets, but only 2 targets exist.
-        if self._targets_remaining == 0:
+        if self._targets_remaining == 0 or self._targets_remaining == -1:
             self.clear_items()
             self.add_item(ContinueToNextActionButton())
 
@@ -719,7 +745,7 @@ class DuelView(discord.ui.View):
             self.add_item(NextButton(min(4, len(page_slots))))
         
         if self._selected_item is not None:
-            self.add_item(ConfirmItemButton(self._selected_item_index, self._selected_item, min(4, len(page_slots))))
+            self.add_item(ConfirmItemButton(min(4, len(page_slots))))
         self.add_item(BackToActionSelectButton(min(4, len(page_slots))))
 
     def _get_current_abilities_page_buttons(self):
@@ -739,7 +765,7 @@ class DuelView(discord.ui.View):
 
         if self._selected_ability is not None:
             if expertise.mana >= self._selected_ability.get_mana_cost() and self._selected_ability.get_cur_cooldown() == 0:
-                self.add_item(ConfirmAbilityButton(self._selected_ability_index, self._selected_ability, min(4, len(page_slots))))
+                self.add_item(ConfirmAbilityButton(min(4, len(page_slots))))
         self.add_item(BackToActionSelectButton(min(4, len(page_slots))))
 
     def exit_to_action_select(self):
@@ -817,6 +843,12 @@ class DuelView(discord.ui.View):
             
             return self.show_targets(target_own_group)
         return self.show_abilities("*Error: That ability couldn't be selected.*")
+
+    def select_target(self, target: Player | NPC, index: int):
+        self._current_target_index = index
+        self._current_target = target
+
+        return self.show_targets(self._target_own_group)
  
     def continue_turn(self):
         cur_entity: (Player | NPC) = self._turn_order[self._turn_index]

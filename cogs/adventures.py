@@ -492,6 +492,46 @@ class Adventures(commands.Cog):
 
         await context.send(embed=pvp_duel.get_info_embed(), view=pvp_duel)
 
+    @commands.command(name="glossary", help="Shows a list of adventure-related words and their definitions")
+    async def glossary_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+
+        description = (
+            "**Attributes:**\n\n"
+            "Constitution: Affects max HP and increases the speed of any health regen\n"
+            "Strength: Affects how much damage is dealt with weapons and weapon-based abilities\n"
+            "Dexterity: Affects dodge chance and whether you go first when dueling\n"
+            "Intelligence: Affects how much damage is done with mana-based abilities, max mana, and increases mana regen\n"
+            "Luck: Increases your prowess in matters of chance and acts as a modifier for critical hit chance\n"
+            "Memory: Adds additional ability slots\n\n"
+            "**Status Effects:**\n\n"
+            "Bleeding: Take x% max health as damage at the start of each turn\n"
+            "Posioned: Take x% max health as damage at the start of each turn\n"
+            "Echoing: Take a fixed amount of damage at the start of each turn\n\n"
+            "Fortified: Gain additional Constitution\n"
+            "Bolstered: Gain additional Strength\n"
+            "Hastened: Gain additional Dexterity\n"
+            "Insightful: Gain additional Intelligence\n"
+            "Lucky: Gain additional Luck\n\n"
+            "Frail: Constitution is reduced\n"
+            "Weakened: Strength is reduced\n"
+            "Slowed: Dexterity is reduced\n"
+            "Enfeebled: Intelligence is reduced\n"
+            "Unlucky: Luck is reduced\n\n"
+            "Protected: +x% damage reduction (up to 75%)\n"
+            "Vulnerable: +x% additional damage taken (up to 25%)\n\n"
+            "Faltering: % chance to skip your turn\n"
+            "Enraged: Gain additional attributes whenever you take damage\n"
+            "Taunted: Forced to attack the caster\n"
+            "Convinced: Can't attack the caster\n"
+            "Generating: When hit, whoever applied this status gains coins\n"
+            "Tarnished: Whenever you gain coins, damage is dealt relative to the amount gained\n"
+            "Sanguinated: All abilities use HP instead of Mana"
+        )
+
+        embed = Embed(title="Glossary", description=description)
+        await context.send(embed=embed)
+
 
 async def setup(bot: BenjaminBowtieBot):
     await bot.add_cog(Adventures(bot))

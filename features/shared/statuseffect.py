@@ -320,7 +320,7 @@ class AttrBuffOnDamage(StatusEffect):
 
 class Taunted(StatusEffect):
     def __init__(self, turns_remaining: int, forced_to_attack: Player | NPC, source_ability_str: str=None):
-        super().__init__(turns_remaining, 0, "Enraged", StatusEffectKey.Taunted, source_ability_str)
+        super().__init__(turns_remaining, 0, "Taunted", StatusEffectKey.Taunted, source_ability_str)
         self.forced_to_attack = forced_to_attack
 
     def __str__(self):
