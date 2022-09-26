@@ -8,7 +8,6 @@ from features.inventory import Inventory
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
-    from features.expertise import Attributes
     from features.mail import Mail
 
 

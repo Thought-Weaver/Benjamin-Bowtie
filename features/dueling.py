@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from math import ceil
 from random import choice, random
 
@@ -8,8 +9,6 @@ from dataclasses import dataclass
 from discord.embeds import Embed
 from discord.ext import commands
 from features.expertise import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE, Attributes, Expertise, ExpertiseClass
-from features.player import Player
-from features.npcs.npc import NPC
 from features.shared.item import ClassTag, WeaponStats
 from strenum import StrEnum
 
@@ -17,7 +16,7 @@ from typing import List, TYPE_CHECKING
 from features.shared.nextbutton import NextButton
 
 from features.shared.prevbutton import PrevButton
-from features.shared.statuseffect import DmgReduction, DmgVulnerability, StatusEffectKey
+from features.shared.statuseffect import StatusEffectKey
 if TYPE_CHECKING:
     from features.shared.ability import Ability
     from features.shared.item import Item
@@ -29,6 +28,9 @@ if TYPE_CHECKING:
 
 class Dueling():
     def __init__(self):
+        # All abilities unlocked and purchased
+        self.available_abilities: List[Ability] = []
+        # Abilities that the player has equipped and can be used
         self.abilities: List[Ability] = []
 
         # Temporary variables maintained for duels
@@ -49,8 +51,12 @@ class Dueling():
     def format_armor_dmg_reduct_str(damage: int, actual_damage_dealt: int):
         # Could deal more damage due to weaknesses or less due to armor and resistances
         # This is here since it's only really used during Dueling
-        damage_reduction_str = "+" if actual_damage_dealt > damage else "-"
+        if damage == actual_damage_dealt:
+            return ""
+        
+        damage_reduction_str = "+" if actual_damage_dealt > damage else ""
         damage_reduction_str = f" ({damage_reduction_str}{-(damage - actual_damage_dealt)})" if damage != actual_damage_dealt else ""
+        return damage_reduction_str
 
     def get_total_percent_dmg_reduct(self):
         total_percent_reduction = 0
@@ -105,6 +111,7 @@ class Dueling():
         return self.__dict__
 
     def __setstate__(self, state: dict):
+        self.available_abilities = state.get("available_abilities", [])
         self.abilities = state.get("abilities", [])
 
         self.is_in_combat = False
@@ -115,6 +122,9 @@ class Dueling():
 # -----------------------------------------------------------------------------
 # DUEL VIEW AND GUI
 # -----------------------------------------------------------------------------
+
+from features.npcs.npc import NPC
+from features.player import Player
 
 class Intent(StrEnum):
     Attack = "Attack"
@@ -360,7 +370,7 @@ class DuelView(discord.ui.View):
 
     def get_user_from_player(self, player: Player):
         for user in self._users:
-            if self._database[self._guild_id]["members"][user.id] == player:
+            if self._database[str(self._guild_id)]["members"][str(user.id)] == player:
                 return user
         return None
 
@@ -402,6 +412,9 @@ class DuelView(discord.ui.View):
         self._selected_item = None
         self._selected_item_index = -1
         self._target_own_group = False
+        self._current_target = None
+        self._current_target_index = -1
+        self._page = 0
 
         if reset_actions:
             self._actions_remaining = self._turn_order[self._turn_index].get_dueling().init_actions_remaining
@@ -442,7 +455,7 @@ class DuelView(discord.ui.View):
 
     def get_duel_info_str(self):
         info_str = "──────────\n"
-        for i, entity in enumerate(i, self._turn_order):
+        for i, entity in enumerate(self._turn_order):
             info_str += f"({i + 1}) **{self.get_name(entity)}**: {entity.get_expertise().get_health_string()}\n"
 
         player_name = self.get_user_for_current_turn().display_name
@@ -455,7 +468,11 @@ class DuelView(discord.ui.View):
         expertise = self._current_target.get_expertise()
         dueling = self._current_target.get_dueling()
 
-        return f"──────────\n({self._current_target_index + 1}) **{name}**\n{expertise.get_health_string()}\n\n{dueling.get_statuses_string()}\n──────────"
+        duel_string = f"──────────\n({self._current_target_index + 1}) **{name}**\n\n{expertise.get_health_string()}"
+        if len(dueling.status_effects) > 0:
+            duel_string += f"\n\n{dueling.get_statuses_string()}"
+
+        return f"{duel_string}\n──────────"
 
     def get_victory_screen(self, duel_result: DuelResult):
         self.clear_items()
@@ -493,6 +510,7 @@ class DuelView(discord.ui.View):
                 
                 winner_dueling.reset_ability_cds()
                 winner_dueling.status_effects = []
+                winner_dueling.is_in_combat = False
 
                 winner_str += f"{self.get_name(winner)} *(+{winner_xp} Guardian xp)*\n"
 
@@ -508,10 +526,11 @@ class DuelView(discord.ui.View):
 
                 loser_dueling.reset_ability_cds()
                 loser_dueling.status_effects = []
+                loser_dueling.is_in_combat = False
 
                 loser_str += f"{self.get_name(loser)} *(+{loser_xp} Guardian xp)*\n"
 
-            return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\n\nPractice for the journeys yet to come.")
+            return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\nPractice for the journeys yet to come.")
 
         return Embed(title="Beyond the Veil", description="Hello, wayward adventurer. You've reached the in-between -- how strange.")
 
@@ -543,9 +562,9 @@ class DuelView(discord.ui.View):
             return self.do_action_on_selected_targets()
 
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
-        selected_targets_str = "Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
+        selected_targets_str = f"Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
         
-        self._target_own_group = target_own_group
+        self._target_own_group = target_own_group and self._intent != Intent.Attack
 
         # This should only be called for a Player
         targets: List[Player | NPC] = []
@@ -556,19 +575,21 @@ class DuelView(discord.ui.View):
 
         if (cur_turn_entity in self._enemies and target_own_group) or (cur_turn_entity in self._allies and not target_own_group):
             targets = self._enemies
-            description = f"{selected_targets_str}Choose an opponent. {self._targets_remaining} targets remaining."
+            target_str = "target" if self._targets_remaining == 1 else "targets"
+            description += f"{selected_targets_str}Choose an opponent. {self._targets_remaining} {target_str} remaining."
         elif (cur_turn_entity in self._enemies and not target_own_group) or (cur_turn_entity in self._allies and target_own_group):
             targets = self._allies
-            description = f"{selected_targets_str}Choose an ally. {self._targets_remaining} targets remaining."
+            target_str = "target" if self._targets_remaining == 1 else "targets"
+            description += f"{selected_targets_str}Choose an ally. {self._targets_remaining} {target_str} remaining."
         
         page_slots = targets[self._page * self._NUM_PER_PAGE:min(len(targets), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, target in enumerate(page_slots):
             turn_number: int = self.get_turn_index(target)
             if isinstance(target, NPC):
-                self.add_item(TargetButton(f"({turn_number + 1}) {target.get_name()}", target, i + (self._page * self._NUM_PER_PAGE), i))
+                self.add_item(TargetButton(f"({turn_number + 1}) {target.get_name()}", target, turn_number, i))
             if isinstance(target, Player):
                 user = self.get_user_from_player(target)
-                self.add_item(TargetButton(f"({turn_number + 1}) {user.display_name}", target, i + (self._page * self._NUM_PER_PAGE), i))
+                self.add_item(TargetButton(f"({turn_number + 1}) {user.display_name}", target, turn_number, i))
 
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
@@ -626,7 +647,7 @@ class DuelView(discord.ui.View):
             damage = int(weapon_stats.get_random_damage() * critical_hit_boost)
             damage += int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0))
  
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
 
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
@@ -649,10 +670,10 @@ class DuelView(discord.ui.View):
                 if tarnished_value != 0:
                     cursed_coins_damage += int(tarnished_value * generating_value)
             
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} to {target_name}{generating_string}")
+            result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage to {target_name}{generating_string}")
         
             attacker.get_stats().dueling.attacks_done += 1
         
@@ -663,14 +684,14 @@ class DuelView(discord.ui.View):
                     attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
                 
                 names_str = ", ".join([self.get_name(other) in self._allies])
-                result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} to {names_str}")
+                result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} damage to {names_str}")
             elif attacker in self._allies:
                 for other in self._enemies:
                     other.get_expertise().damage(cursed_coins_damage, 0, 0)
                     attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
                 
                 names_str = ", ".join([self.get_name(other) in self._enemies])
-                result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} to {names_str} using Cursed Coins")
+                result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} damage to {names_str} using Cursed Coins")
 
         return "\n".join(result_strs)
 
@@ -690,10 +711,10 @@ class DuelView(discord.ui.View):
 
     def confirm_target(self):
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
-        selected_targets_str = "Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
+        selected_targets_str = f"Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
 
         if self._current_target != self._turn_order[self._current_target_index]:
-            return Embed(title="Choose a Target", description=f"{selected_targets_str}Error: That target changed position in the turn order or something else terrible happened. {self._targets_remaining} targets remaining.")
+            return Embed(title="Choose a Target", description=f"{selected_targets_str}*Error: That target changed position in the turn order or something else terrible happened.*\n\n{self._targets_remaining} targets remaining.")
         
         if self._current_target in self._selected_targets:
             return Embed(title="Choose a Target", description=f"{selected_targets_str}You already selected that target. {self._targets_remaining} targets remaining.")
@@ -709,10 +730,11 @@ class DuelView(discord.ui.View):
 
     def do_action_on_selected_targets(self):
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
-        selected_targets_str = "Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
+        selected_targets_str = f"Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
 
         # TODO: Better handle case where, for example, you might need to select 3 targets, but only 2 targets exist.
         if self._targets_remaining == 0 or self._targets_remaining == -1:
+            self._page = 0
             self.clear_items()
             self.add_item(ContinueToNextActionButton())
 
@@ -748,10 +770,12 @@ class DuelView(discord.ui.View):
         return Embed(title="Choose a Target", description=f"{selected_targets_str}Choose the next target. {self._targets_remaining} targets remaining.")
 
     def show_items(self, error_str: str | None=None):
+        self._page = 0
         self._get_current_items_page_buttons()
         return self._get_current_page_info(error_str)
 
     def show_abilities(self, error_str: str | None=None):
+        self._page = 0
         self._get_current_abilities_page_buttons()
         return self._get_current_page_info(error_str)
 
@@ -784,7 +808,7 @@ class DuelView(discord.ui.View):
         expertise: Expertise = player.get_expertise()
         dueling: Dueling = player.get_dueling()
 
-        page_slots = dueling.abilities[self._page * self._NUM_PER_PAGE:min(len(dueling.abilities), (self._page + 1) * self._NUM_PER_PAGE)]
+        page_slots = dueling.abilities[self._page * self._NUM_PER_PAGE:min(len(dueling.abilities), (self._page + 1) * self._NUM_PER_PAGE)][:expertise.memory]
         for i, ability in enumerate(page_slots):
             self.add_item(ChooseAbilityButton(i + (self._page * self._NUM_PER_PAGE), ability, i))
         
@@ -881,6 +905,7 @@ class DuelView(discord.ui.View):
         return self.show_targets(self._target_own_group)
  
     def continue_turn(self):
+        self._page = 0
         cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
         dueling: Dueling = cur_entity.get_dueling()
         dueling.actions_remaining = max(0, dueling.actions_remaining - 1)
@@ -901,6 +926,7 @@ class DuelView(discord.ui.View):
         # TODO: Handle NPC AI doing their own turns
 
     def go_back_using_intent(self):
+        self._page = 0
         if self._intent == Intent.Attack:
             return self.show_actions()
         if self._intent == Intent.Ability:
@@ -935,7 +961,7 @@ class AcceptButton(discord.ui.Button):
             opponents_players: List[Player] = view.get_opponents_players()
             
             duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), users, [challenger_player], opponents_players)
-            initial_info: Embed = duel_view.get_duel_info_str()
+            initial_info: Embed = duel_view.show_actions()
 
             await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)
 
@@ -974,12 +1000,13 @@ class PlayerVsPlayerDuelView(discord.ui.View):
         self.add_item(DeclineButton())
 
     def get_info_embed(self):
-        accepted_names = "\n".join(list(filter(lambda x: x not in self._acceptances, self._opponents)))
+        not_accepted = list(filter(lambda x: x not in self._acceptances, self._opponents))
+        not_accepted_names = "\n".join(list(map(lambda x: x.display_name, not_accepted)))
         return Embed(title="PvP Duel", description=(
-            "Players will enter combat in turn order according to their Dexterity attribute. Each turn, you will choose an action to take:"
+            "Players will enter combat in turn order according to their Dexterity attribute. Each turn, you will choose an action to take: "
             "Attacking using their main hand weapon, using an ability, or using an item.\n\n"
-            "The duel ends when all opponents have been reduced to 0 HP. Following the duel, all players are restored to full HP and mana.\n\n"
-            f"The game will begin when all challenged players accept the invitation to play. Waiting on acceptances from:\n\n{accepted_names}"
+            "The duel ends when all opponents have been reduced to 0 HP. Following the duel, all players will be restored to full HP and mana.\n\n"
+            f"The game will begin when all challenged players accept the invitation to play.\n\n**Waiting on acceptances from:**\n\n{not_accepted_names}"
         ))
 
     def accept_request(self, user: discord.User):

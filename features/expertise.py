@@ -5,6 +5,8 @@ from discord.embeds import Embed
 from math import ceil
 from strenum import StrEnum
 
+from features.shared.item import Buffs
+
 import discord
 
 from typing import TYPE_CHECKING
@@ -12,7 +14,6 @@ if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.equipment import Equipment
     from features.player import Player
-    from features.shared.item import Buffs
 
 # -----------------------------------------------------------------------------
 # CONSTANTS
@@ -61,12 +62,12 @@ class Attribute(StrEnum):
 # sources. One day, I might update the Expertise class to use this.
 class Attributes():
     def __init__(self, constitution, strength, dexterity, intelligence, luck, memory):
-        self.constitution = constitution
-        self.strength = strength
-        self.dexterity = dexterity
-        self.intelligence = intelligence
-        self.luck = luck
-        self.memory = memory
+        self.constitution: int = constitution
+        self.strength: int = strength
+        self.dexterity: int = dexterity
+        self.intelligence: int = intelligence
+        self.luck: int = luck
+        self.memory: int = memory
 
     def __add__(self, other: Attributes | Buffs):
         if isinstance(other, Attributes):
@@ -291,6 +292,15 @@ class Expertise():
 
     def get_all_attributes(self) -> Attributes:
         return Attributes(self.constitution, self.strength, self.dexterity, self.intelligence, self.luck, self.memory)
+
+    def get_level_for_class(self, expertise_class: ExpertiseClass) -> int:
+        if expertise_class == ExpertiseClass.Fisher:
+            return self._fisher.get_level()
+        if expertise_class == ExpertiseClass.Guardian:
+            return self._guardian.get_level()
+        if expertise_class == ExpertiseClass.Merchant:
+            return self._merchant.get_level()
+        return -1
 
     def __getstate__(self):
         return self.__dict__

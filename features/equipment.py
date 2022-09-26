@@ -15,6 +15,15 @@ if TYPE_CHECKING:
     from features.player import Player
     from features.shared.item import ArmorStats
 
+# -----------------------------------------------------------------------------
+# CONSTANTS
+# -----------------------------------------------------------------------------
+
+ARMOR_OVERLEVELED_DEBUFF = 0.15
+
+# -----------------------------------------------------------------------------
+# CLASSES
+# -----------------------------------------------------------------------------
 
 class Equipment():
     def __init__(self):
@@ -27,8 +36,6 @@ class Equipment():
         self._boots: Item = None
         self._main_hand: Item = None
         self._off_hand: Item = None
-
-        self._ARMOR_OVERLEVELED_DEBUFF = 0.15
 
     def get_all_equipped_items(self):
         equipment = [
@@ -161,7 +168,7 @@ class Equipment():
         for item in self.get_all_equipped_items():
             armor_stats: ArmorStats = item.get_armor_stats()
             if armor_stats is not None:
-                reduce_to: float = 1.0 - (self._ARMOR_OVERLEVELED_DEBUFF * max(0, item.get_level_requirement() - level))
+                reduce_to: float = max(0, 1.0 - (ARMOR_OVERLEVELED_DEBUFF * max(0, item.get_level_requirement() - level)))
                 armor += int(armor_stats.get_armor_amount() * reduce_to)
         return armor
 
@@ -397,41 +404,21 @@ class EquipmentView(discord.ui.View):
 
     def get_full_equipment_str(self):
         player_equipment: Equipment = self.get_player().get_equipment()
-        base_none_equipped_str: str = "──────────{0}None Equipped{1}──────────"
+        base_none_equipped_str: str = "──────────\nNone Equipped\n──────────"
 
-        first_line = [str(player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet) is not None else base_none_equipped_str]
-        
-        second_line = [
-            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves) is not None else "",
-            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet) is not None else "",
-            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Ring)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Ring) is not None else ""
+        equipment_strs = [
+            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet) is not None else base_none_equipped_str,
+            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves) is not None else base_none_equipped_str,
+            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet) is not None else base_none_equipped_str,
+            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Ring))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Ring) is not None else base_none_equipped_str,
+            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand) is not None else base_none_equipped_str,
+            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor) is not None else base_none_equipped_str,
+            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand) is not None else base_none_equipped_str,
+            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings) is not None else base_none_equipped_str,
+            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Boots))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Boots) is not None else base_none_equipped_str
         ]
-        max_newlines = max([s.count("\n") for s in second_line])
-        second_line = list(map(lambda x: base_none_equipped_str.format("\n" * max_newlines, "\n" * max_newlines) if x == "" else x, second_line))
 
-        third_line = [
-            str(player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)) if player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand) is not None else "",
-            str(player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor)) if player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor) is not None else "",
-            str(player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand)) if player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand) is not None else ""
-        ]
-        max_newlines = max([s.count("\n") for s in third_line])
-        third_line = list(map(lambda x: base_none_equipped_str.format("\n" * max_newlines, "\n" * max_newlines) if x == "" else x, third_line))
-
-        fourth_line = [
-            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings) is not None else "",
-            str(player_equipment.get_item_in_slot(ClassTag.Equipment.Boots)) if player_equipment.get_item_in_slot(ClassTag.Equipment.Boots) is not None else ""
-        ]
-        max_newlines = max([s.count("\n") for s in fourth_line])
-        fourth_line = list(map(lambda x: base_none_equipped_str.format("\n" * max_newlines, "\n" * max_newlines) if x == "" else x, fourth_line))
-
-        format_str = (
-            "      {0}      \n"
-            "{1}   {2}   {3}\n"
-            "{4}   {5}   {6}\n"
-            "   {7}   {8}   "
-        ).format(*(first_line + second_line + third_line + fourth_line))
-
-        return format_str
+        return "\n\n".join(equipment_strs)
 
     def get_initial_info(self):
         return Embed(

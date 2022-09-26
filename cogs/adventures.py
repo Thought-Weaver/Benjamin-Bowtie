@@ -24,6 +24,7 @@ from features.stories.forest import ForestStory
 from features.stories.ocean import OceanStory
 from features.stories.story import Story
 from features.stories.underworld import UnderworldStory
+from features.trainers import TrainerView
 from games.knucklebones import Knucklebones
 
 from typing import TYPE_CHECKING, List
@@ -460,14 +461,16 @@ class Adventures(commands.Cog):
         await context.send(embed=embed, view=equipment_view)
 
     @commands.command(name="duel", help="Challenge another player to a duel")
-    async def duel_handler(self, context: commands.Context, users: List[User]=None):
-        if users is None:
+    async def duel_handler(self, context: commands.Context, user: User=None):
+        if user is None:
             await context.send("You need to @ a member to use b!duel.")
             return
 
-        if context.author in users:
-            await context.send("You can't challenge yourself to a duel.")
-            return
+        users: List[User] = [user]
+
+        # if context.author in users:
+        #     await context.send("You can't challenge yourself to a duel.")
+        #     return
             
         if any(user.bot for user in users):
             await context.send("You can't challenge a bot to a duel.")
@@ -497,42 +500,57 @@ class Adventures(commands.Cog):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         description = (
-            "**Attributes:**\n\n"
-            "Constitution: Affects max HP and increases the speed of any health regen\n"
-            "Strength: Affects how much damage is dealt with weapons and weapon-based abilities\n"
-            "Dexterity: Affects dodge chance and whether you go first when dueling\n"
-            "Intelligence: Affects how much damage is done with mana-based abilities, max mana, and increases mana regen\n"
-            "Luck: Increases your prowess in matters of chance and acts as a modifier for critical hit chance\n"
-            "Memory: Adds additional ability slots\n\n"
-            "**Status Effects:**\n\n"
-            "Bleeding: Take x% max health as damage at the start of each turn\n"
-            "Posioned: Take x% max health as damage at the start of each turn\n"
-            "Echoing: Take a fixed amount of damage at the start of each turn\n\n"
-            "Fortified: Gain additional Constitution\n"
-            "Bolstered: Gain additional Strength\n"
-            "Hastened: Gain additional Dexterity\n"
-            "Insightful: Gain additional Intelligence\n"
-            "Lucky: Gain additional Luck\n\n"
-            "Frail: Constitution is reduced\n"
-            "Weakened: Strength is reduced\n"
-            "Slowed: Dexterity is reduced\n"
-            "Enfeebled: Intelligence is reduced\n"
-            "Unlucky: Luck is reduced\n\n"
-            "Protected: +x% damage reduction (up to 75%)\n"
-            "Vulnerable: +x% additional damage taken (up to 25%)\n\n"
-            "Faltering: % chance to skip your turn\n"
-            "Enraged: Gain additional attributes whenever you take damage\n"
-            "Taunted: Forced to attack the caster\n"
-            "Convinced: Can't attack the caster\n"
-            "Generating: When hit, whoever applied this status gains coins\n"
-            "Tarnished: Whenever you gain coins, damage is dealt relative to the amount gained\n"
-            "Sanguinated: All abilities use HP instead of Mana\n\n"
-            "**Misc:**\n\n"
-            "Overleveled: Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing"
+            "__Attributes:__\n\n"
+            "**Constitution:** Affects max HP and increases the speed of any health regen\n"
+            "**Strength:** Affects how much damage is dealt with weapons and weapon-based abilities\n"
+            "**Dexterity:** Affects dodge chance and whether you go first when dueling\n"
+            "**Intelligence:** Affects how much damage is done with mana-based abilities, max mana, and increases mana regen\n"
+            "**Luck:** Increases your prowess in matters of chance and acts as a modifier for critical hit chance\n"
+            "**Memory:** Adds additional ability slots\n\n"
+            "__Status Effects:__\n\n"
+            "**Bleeding:** Take x% max health as damage at the start of each turn\n"
+            "**Poisoned:** Take x% max health as damage at the start of each turn\n"
+            "**Echoing:** Take a fixed amount of damage at the start of each turn\n\n"
+            "**Fortified:** Gain additional Constitution\n"
+            "**Bolstered:** Gain additional Strength\n"
+            "**Hastened:** Gain additional Dexterity\n"
+            "**Insightful:** Gain additional Intelligence\n"
+            "**Lucky:** Gain additional Luck\n\n"
+            "**Frail:** Constitution is reduced\n"
+            "**Weakened:** Strength is reduced\n"
+            "**Slowed:** Dexterity is reduced\n"
+            "**Enfeebled:** Intelligence is reduced\n"
+            "**Unlucky:** Luck is reduced\n\n"
+            "**Protected:** +x% damage reduction (up to 75%)\n"
+            "**Vulnerable:** +x% additional damage taken (up to 25%)\n\n"
+            "**Faltering:** % chance to skip your turn\n"
+            "**Enraged:** Gain additional attributes whenever you take damage\n"
+            "**Taunted:** Forced to attack the caster\n"
+            "**Convinced:** Can't attack the caster\n"
+            "**Generating:** When hit, whoever applied this status gains coins\n"
+            "**Tarnished:** Whenever you gain coins, damage is dealt relative to the amount gained\n"
+            "**Sanguinated:** All abilities use HP instead of Mana\n\n"
+            "__Misc:__\n\n"
+            "**Armor:** Items with Armor reduce the amount of damage you take during duels by that amount"
+            "**Overleveled:** Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing"
         )
 
         embed = Embed(title="Glossary", description=description)
         await context.send(embed=embed)
+
+    @commands.command(name="train", help="Visit trainers to acquire new abilities and equip them", aliases=["abilities"])
+    async def train_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit the trainers or change your abilities.")
+            return
+
+        equipment_view = TrainerView(self._bot, self._database, context.guild.id, context.author)
+        embed = equipment_view.get_initial_info()
+        await context.send(embed=embed, view=equipment_view)
 
 
 async def setup(bot: BenjaminBowtieBot):

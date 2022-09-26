@@ -29,7 +29,7 @@ class NegativeAbilityResult():
 
 
 class Ability():
-    def __init__(self, icon: str, name: str, class_key: ExpertiseClass, description: str, flavor_text: str, mana_cost: int, cooldown: int, num_targets: int, level_requirement: int, target_own_group: bool):
+    def __init__(self, icon: str, name: str, class_key: ExpertiseClass, description: str, flavor_text: str, mana_cost: int, cooldown: int, num_targets: int, level_requirement: int, target_own_group: bool, purchase_cost: int):
         # TODO: Handle whether ability status effects stack with a new param
         self._icon = icon
         self._name = name
@@ -43,6 +43,7 @@ class Ability():
         self._num_targets = num_targets
         self._level_requirement = level_requirement
         self._target_own_group = target_own_group
+        self._purchase_cost = purchase_cost
 
         # Turns remaining until it can be used again
         # If this is -1, then it's a once-per-duel ability that's already been used
@@ -71,6 +72,12 @@ class Ability():
 
     def get_cur_cooldown(self):
         return self._cur_cooldown
+
+    def get_purchase_cost(self):
+        return self._purchase_cost
+
+    def get_class_key(self):
+        return self._class_key
 
     def reset_cd(self):
         self._cur_cooldown = 0
@@ -107,7 +114,7 @@ class Ability():
             damage = int(randint(dmg_range.start, dmg_range.stop) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
 
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
@@ -118,8 +125,8 @@ class Ability():
 
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -231,7 +238,7 @@ class Ability():
 
             target_expertise.heal(heal_amount)
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
 
             results.append("{1}" + f" was healed for {heal_amount}{critical_hit_str} HP")
         
@@ -278,7 +285,7 @@ class Ability():
             f"{self._mana_cost} Mana / {target_str} / {cooldown_str}\n\n"
             f"{self._description}\n\n"
             f"{flavor_text}"
-            f"Requires {self._class_key} level {self._level_requirement}"
+            f"*Requires {self._class_key} Level {self._level_requirement}*"
         )
 
     def __getstate__(self):
@@ -295,6 +302,8 @@ class Ability():
         self._num_targets = state.get("_num_targets", 0)
         self._level_requirement = state.get("_level_requirement", 0)
         self._cur_cooldown = state.get("_cur_cooldown", 0)
+        self._target_own_group = state.get("_target_own_group", False)
+        self._purchase_cost = state.get("_purchase_cost", 0)
 
 # -----------------------------------------------------------------------------
 # FISHER ABILITIES
@@ -306,7 +315,7 @@ class SeaSprayI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA6",
-            name="Sea Spray",
+            name="Sea Spray I",
             class_key=ExpertiseClass.Fisher,
             description="Summon a rush of water that deals 2-4 damage to an enemy.",
             flavor_text="",
@@ -314,7 +323,8 @@ class SeaSprayI(Ability):
             cooldown=0,
             num_targets=1,
             level_requirement=2,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -339,7 +349,7 @@ class SeaSprayII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA6",
-            name="Sea Spray",
+            name="Sea Spray II",
             class_key=ExpertiseClass.Fisher,
             description="Summon a rush of water that deals 3-6 damage to an enemy.",
             flavor_text="",
@@ -347,7 +357,8 @@ class SeaSprayII(Ability):
             cooldown=0,
             num_targets=1,
             level_requirement=4,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -370,7 +381,7 @@ class SeaSprayIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA6",
-            name="Sea Spray",
+            name="Sea Spray III",
             class_key=ExpertiseClass.Fisher,
             description="Summon a rush of water that deals 4-8 damage to an enemy.",
             flavor_text="",
@@ -378,7 +389,8 @@ class SeaSprayIII(Ability):
             cooldown=0,
             num_targets=1,
             level_requirement=6,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -401,7 +413,7 @@ class SeaSprayIV(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA6",
-            name="Sea Spray",
+            name="Sea Spray IV",
             class_key=ExpertiseClass.Fisher,
             description="Summon a rush of water that deals 5-10 damage to an enemy.",
             flavor_text="",
@@ -409,7 +421,8 @@ class SeaSprayIV(Ability):
             cooldown=0,
             num_targets=1,
             level_requirement=8,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -432,7 +445,7 @@ class SeaSprayV(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA6",
-            name="Sea Spray",
+            name="Sea Spray V",
             class_key=ExpertiseClass.Fisher,
             description="Summon a rush of water that deals 6-12 damage to an enemy.",
             flavor_text="",
@@ -440,7 +453,8 @@ class SeaSprayV(Ability):
             cooldown=0,
             num_targets=1,
             level_requirement=10,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -466,7 +480,7 @@ class CurseOfTheSeaI(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2620\uFE0F",
-            name="Curse of the Sea",
+            name="Curse of the Sea I",
             class_key=ExpertiseClass.Fisher,
             description="Curse an enemy to lose -1 Constitution, -1 Strength, and -1 Dexterity for 2 turns.",
             flavor_text="",
@@ -474,7 +488,8 @@ class CurseOfTheSeaI(Ability):
             cooldown=0,
             num_targets=1,
             level_requirement=5,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -515,7 +530,7 @@ class CurseOfTheSeaII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2620\uFE0F",
-            name="Curse of the Sea",
+            name="Curse of the Sea II",
             class_key=ExpertiseClass.Fisher,
             description="Curse an enemy to lose -2 Constitution, -2 Strength, and -2 Dexterity for 2 turns.",
             flavor_text="",
@@ -523,7 +538,8 @@ class CurseOfTheSeaII(Ability):
             cooldown=0,
             num_targets=1,
             level_requirement=9,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -564,7 +580,7 @@ class CurseOfTheSeaIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2620\uFE0F",
-            name="Curse of the Sea",
+            name="Curse of the Sea III",
             class_key=ExpertiseClass.Fisher,
             description="Curse an enemy to lose -3 Constitution, -3 Strength, and -3 Dexterity for 2 turns.",
             flavor_text="",
@@ -572,7 +588,8 @@ class CurseOfTheSeaIII(Ability):
             cooldown=0,
             num_targets=1,
             level_requirement=13,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -616,7 +633,7 @@ class HookI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE9D",
-            name="Hook",
+            name="Hook I",
             class_key=ExpertiseClass.Fisher,
             description="Hook an enemy on the line, dealing 5-10 damage and causing them to lose -3 Dexterity for 1 turn.",
             flavor_text="",
@@ -624,7 +641,8 @@ class HookI(Ability):
             cooldown=1,
             num_targets=1,
             level_requirement=8,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -653,7 +671,7 @@ class HookII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE9D",
-            name="Hook",
+            name="Hook II",
             class_key=ExpertiseClass.Fisher,
             description="Hook an enemy on the line, dealing 6-12 damage and causing them to lose -3 Dexterity for 1 turn.",
             flavor_text="",
@@ -661,7 +679,8 @@ class HookII(Ability):
             cooldown=1,
             num_targets=1,
             level_requirement=10,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -690,7 +709,7 @@ class HookIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE9D",
-            name="Hook",
+            name="Hook III",
             class_key=ExpertiseClass.Fisher,
             description="Hook an enemy on the line, dealing 7-14 damage and causing them to lose -3 Dexterity for 1 turn.",
             flavor_text="",
@@ -698,7 +717,8 @@ class HookIII(Ability):
             cooldown=1,
             num_targets=1,
             level_requirement=12,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -730,7 +750,7 @@ class WrathOfTheWavesI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF0A",
-            name="Wrath of the Waves",
+            name="Wrath of the Waves I",
             class_key=ExpertiseClass.Fisher,
             description="Call forth tidal waves to crash against up to 3 enemies, dealing 5-10 damage each. They take 50% more damage if they have a Dexterity debuff.",
             flavor_text="",
@@ -738,7 +758,8 @@ class WrathOfTheWavesI(Ability):
             cooldown=1,
             num_targets=3,
             level_requirement=10,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -766,7 +787,7 @@ class WrathOfTheWavesI(Ability):
             damage = int(randint(5, 10) * bonus_dmg_boost * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
 
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
@@ -777,8 +798,8 @@ class WrathOfTheWavesI(Ability):
 
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -815,7 +836,7 @@ class WrathOfTheWavesII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF0A",
-            name="Wrath of the Waves",
+            name="Wrath of the Waves II",
             class_key=ExpertiseClass.Fisher,
             description="Call forth tidal waves to crash against up to 3 enemies, dealing 6-12 damage each. They take 80% more damage if they have a Dexterity debuff.",
             flavor_text="",
@@ -823,7 +844,8 @@ class WrathOfTheWavesII(Ability):
             cooldown=1,
             num_targets=3,
             level_requirement=12,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -851,7 +873,7 @@ class WrathOfTheWavesII(Ability):
             damage = int(randint(8, 12) * bonus_dmg_boost * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
 
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
@@ -862,8 +884,8 @@ class WrathOfTheWavesII(Ability):
 
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -900,7 +922,7 @@ class WrathOfTheWavesIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF0A",
-            name="Wrath of the Waves",
+            name="Wrath of the Waves III",
             class_key=ExpertiseClass.Fisher,
             description="Call forth tidal waves to crash against up to 3 enemies, dealing 10-15 damage each. They take 110% more damage if they have a Dexterity debuff.",
             flavor_text="",
@@ -908,7 +930,8 @@ class WrathOfTheWavesIII(Ability):
             cooldown=1,
             num_targets=3,
             level_requirement=14,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -936,7 +959,7 @@ class WrathOfTheWavesIII(Ability):
             damage = int(randint(10, 15) * bonus_dmg_boost * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
@@ -947,8 +970,8 @@ class WrathOfTheWavesIII(Ability):
 
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -988,7 +1011,7 @@ class HighTideI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF0A",
-            name="High Tide",
+            name="High Tide I",
             class_key=ExpertiseClass.Fisher,
             description="Raise a protective wall of water, reducing all damage you take next turn by 25%.",
             flavor_text="",
@@ -996,7 +1019,8 @@ class HighTideI(Ability):
             cooldown=2,
             num_targets=0,
             level_requirement=12,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1025,7 +1049,7 @@ class HighTideII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF0A",
-            name="High Tide",
+            name="High Tide II",
             class_key=ExpertiseClass.Fisher,
             description="Raise a protective wall of water, reducing all damage you take next turn by 35%.",
             flavor_text="",
@@ -1033,7 +1057,8 @@ class HighTideII(Ability):
             cooldown=2,
             num_targets=0,
             level_requirement=15,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1062,7 +1087,7 @@ class HighTideIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF0A",
-            name="High Tide",
+            name="High Tide III",
             class_key=ExpertiseClass.Fisher,
             description="Raise a protective wall of water, reducing all damage you take next turn by 45%.",
             flavor_text="",
@@ -1070,7 +1095,8 @@ class HighTideIII(Ability):
             cooldown=2,
             num_targets=0,
             level_requirement=18,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1102,7 +1128,7 @@ class ThunderingTorrentI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDEE7",
-            name="Thundering Torrent",
+            name="Thundering Torrent I",
             class_key=ExpertiseClass.Fisher,
             description="Conjure a raging current against up to 2 enemies, dealing 10-15 damage and half that again next turn.",
             flavor_text="",
@@ -1110,7 +1136,8 @@ class ThunderingTorrentI(Ability):
             cooldown=1,
             num_targets=2,
             level_requirement=14,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1137,7 +1164,7 @@ class ThunderingTorrentI(Ability):
             damage = int(randint(10, 15) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
@@ -1155,8 +1182,8 @@ class ThunderingTorrentI(Ability):
                 source_ability_str=self.get_icon_and_name()
             ))
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -1193,7 +1220,7 @@ class ThunderingTorrentII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDEE7",
-            name="Thundering Torrent",
+            name="Thundering Torrent II",
             class_key=ExpertiseClass.Fisher,
             description="Conjure a raging current against up to 2 enemies, dealing 12-18 damage and half that again next turn.",
             flavor_text="",
@@ -1201,7 +1228,8 @@ class ThunderingTorrentII(Ability):
             cooldown=1,
             num_targets=2,
             level_requirement=16,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1228,7 +1256,7 @@ class ThunderingTorrentII(Ability):
             damage = int(randint(12, 18) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
@@ -1246,8 +1274,8 @@ class ThunderingTorrentII(Ability):
                 source_ability_str=self.get_icon_and_name()
             ))
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -1284,7 +1312,7 @@ class ThunderingTorrentIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDEE7",
-            name="Thundering Torrent",
+            name="Thundering Torrent III",
             class_key=ExpertiseClass.Fisher,
             description="Conjure a raging current against up to 2 enemies, dealing 15-20 damage and half that again next turn.",
             flavor_text="",
@@ -1292,7 +1320,8 @@ class ThunderingTorrentIII(Ability):
             cooldown=1,
             num_targets=2,
             level_requirement=18,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1319,7 +1348,7 @@ class ThunderingTorrentIII(Ability):
             damage = int(randint(15, 20) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
@@ -1337,8 +1366,8 @@ class ThunderingTorrentIII(Ability):
                 source_ability_str=self.get_icon_and_name()
             ))
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -1378,7 +1407,7 @@ class DrownInTheDeepI(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2693",
-            name="Drown in the Deep",
+            name="Drown in the Deep I",
             class_key=ExpertiseClass.Fisher,
             description="Drag up to 3 enemies into the depths, dealing each (1.5 * # of status effects reducing their Dexterity)% of their max health as damage.",
             flavor_text="",
@@ -1386,7 +1415,8 @@ class DrownInTheDeepI(Ability):
             cooldown=3,
             num_targets=3,
             level_requirement=18,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1452,7 +1482,7 @@ class DrownInTheDeepII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2693",
-            name="Drown in the Deep",
+            name="Drown in the Deep II",
             class_key=ExpertiseClass.Fisher,
             description="Drag up to 3 enemies into the depths, dealing each (2 * # of status effects reducing their Dexterity)% of their max health as damage.",
             flavor_text="",
@@ -1460,7 +1490,8 @@ class DrownInTheDeepII(Ability):
             cooldown=3,
             num_targets=3,
             level_requirement=22,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1526,7 +1557,7 @@ class DrownInTheDeepIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2693",
-            name="Drown in the Deep",
+            name="Drown in the Deep III",
             class_key=ExpertiseClass.Fisher,
             description="Drag up to 3 enemies into the depths, dealing each (2.5 * # of status effects reducing their Dexterity)% of their max health as damage.",
             flavor_text="",
@@ -1534,7 +1565,8 @@ class DrownInTheDeepIII(Ability):
             cooldown=3,
             num_targets=3,
             level_requirement=26,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1603,7 +1635,7 @@ class WhirlpoolI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF00",
-            name="Whirlpool",
+            name="Whirlpool I",
             class_key=ExpertiseClass.Fisher,
             description="Summon a vortex that deals 10-20 damage to all enemies and removes the Protected status effect from all of them.",
             flavor_text="",
@@ -1611,7 +1643,8 @@ class WhirlpoolI(Ability):
             cooldown=2,
             num_targets=-1,
             level_requirement=20,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1638,7 +1671,7 @@ class WhirlpoolI(Ability):
             damage = int(randint(10, 20) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
 
             target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
@@ -1653,8 +1686,8 @@ class WhirlpoolI(Ability):
 
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -1691,7 +1724,7 @@ class WhirlpoolII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF00",
-            name="Whirlpool",
+            name="Whirlpool II",
             class_key=ExpertiseClass.Fisher,
             description="Summon a vortex that deals 15-25 damage to all enemies and removes the Protected status effect from all of them.",
             flavor_text="",
@@ -1699,7 +1732,8 @@ class WhirlpoolII(Ability):
             cooldown=2,
             num_targets=-1,
             level_requirement=22,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1726,7 +1760,7 @@ class WhirlpoolII(Ability):
             damage = int(randint(15, 25) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
 
             target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
@@ -1741,8 +1775,8 @@ class WhirlpoolII(Ability):
 
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -1779,7 +1813,7 @@ class WhirlpoolIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF00",
-            name="Whirlpool",
+            name="Whirlpool III",
             class_key=ExpertiseClass.Fisher,
             description="Summon a vortex that deals 20-30 damage to all enemies and removes the Protected status effect from all of them.",
             flavor_text="",
@@ -1787,7 +1821,8 @@ class WhirlpoolIII(Ability):
             cooldown=2,
             num_targets=-1,
             level_requirement=24,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1814,7 +1849,7 @@ class WhirlpoolIII(Ability):
             damage = int(randint(20, 30) * critical_hit_boost)
             damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             
-            target_armor = target_equipment.get_total_reduced_armor()
+            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
 
             target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
@@ -1829,8 +1864,8 @@ class WhirlpoolIII(Ability):
 
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
 
-            critical_hit_str = "" if critical_hit_boost == 0 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)"
+            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
@@ -1870,7 +1905,7 @@ class ShatteringStormI(Ability):
     def __init__(self):
         super().__init__(
             icon="\u26C8\uFE0F",
-            name="Shattering Storm",
+            name="Shattering Storm I",
             class_key=ExpertiseClass.Fisher,
             description="Invoke the tempest against up to 5 enemies, dealing 40-60 damage with a 15% chance for each to lose their next turn.",
             flavor_text="",
@@ -1878,7 +1913,8 @@ class ShatteringStormI(Ability):
             cooldown=5,
             num_targets=5,
             level_requirement=22,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1907,7 +1943,7 @@ class ShatteringStormII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u26C8\uFE0F",
-            name="Shattering Storm",
+            name="Shattering Storm II",
             class_key=ExpertiseClass.Fisher,
             description="Invoke the tempest against up to 5 enemies, dealing 40-60 damage with a 25% chance for each to lose their next turn.",
             flavor_text="",
@@ -1915,7 +1951,8 @@ class ShatteringStormII(Ability):
             cooldown=5,
             num_targets=5,
             level_requirement=24,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1944,7 +1981,7 @@ class ShatteringStormIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u26C8\uFE0F",
-            name="Shattering Storm",
+            name="Shattering Storm III",
             class_key=ExpertiseClass.Fisher,
             description="Invoke the tempest against up to 5 enemies, dealing 40-60 damage with a 35% chance for each to lose their next turn.",
             flavor_text="",
@@ -1952,7 +1989,8 @@ class ShatteringStormIII(Ability):
             cooldown=5,
             num_targets=5,
             level_requirement=26,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1986,7 +2024,7 @@ class WhirlwindI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF2A\uFE0F",
-            name="Whirlwind",
+            name="Whirlwind I",
             class_key=ExpertiseClass.Guardian,
             description="Swing your weapon around you, dealing 50% of your weapon damage to all enemies.",
             flavor_text="",
@@ -1994,7 +2032,8 @@ class WhirlwindI(Ability):
             cooldown=3,
             num_targets=-1,
             level_requirement=2,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2025,7 +2064,7 @@ class WhirlwindII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF2A\uFE0F",
-            name="Whirlwind",
+            name="Whirlwind II",
             class_key=ExpertiseClass.Guardian,
             description="Swing your weapon around you, dealing 60% of your weapon damage to all enemies.",
             flavor_text="",
@@ -2033,7 +2072,8 @@ class WhirlwindII(Ability):
             cooldown=3,
             num_targets=-1,
             level_requirement=5,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2064,7 +2104,7 @@ class WhirlwindIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF2A\uFE0F",
-            name="Whirlwind",
+            name="Whirlwind III",
             class_key=ExpertiseClass.Guardian,
             description="Swing your weapon around you, dealing 70% of your weapon damage to all enemies.",
             flavor_text="",
@@ -2072,7 +2112,8 @@ class WhirlwindIII(Ability):
             cooldown=3,
             num_targets=-1,
             level_requirement=8,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2106,7 +2147,7 @@ class SecondWindI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE78",
-            name="Second Wind",
+            name="Second Wind I",
             class_key=ExpertiseClass.Guardian,
             description="Restore 5% of your missing health.",
             flavor_text="",
@@ -2114,7 +2155,8 @@ class SecondWindI(Ability):
             cooldown=5,
             num_targets=0,
             level_requirement=3,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2139,7 +2181,7 @@ class SecondWindII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE78",
-            name="Second Wind",
+            name="Second Wind II",
             class_key=ExpertiseClass.Guardian,
             description="Restore 10% of your missing health.",
             flavor_text="",
@@ -2147,7 +2189,8 @@ class SecondWindII(Ability):
             cooldown=5,
             num_targets=0,
             level_requirement=8,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2172,7 +2215,7 @@ class SecondWindIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE78",
-            name="Second Wind",
+            name="Second Wind III",
             class_key=ExpertiseClass.Guardian,
             description="Restore 15% of your missing health.",
             flavor_text="",
@@ -2180,7 +2223,8 @@ class SecondWindIII(Ability):
             cooldown=5,
             num_targets=0,
             level_requirement=13,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2208,7 +2252,7 @@ class ScarArmorI(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2620\uFE0F",
-            name="Scar Armor",
+            name="Scar Armor I",
             class_key=ExpertiseClass.Guardian,
             description="Whenever you're attacked over the next 3 turns, increase your Constitution by 1 until the end of the duel.",
             flavor_text="",
@@ -2216,7 +2260,8 @@ class ScarArmorI(Ability):
             cooldown=-1,
             num_targets=0,
             level_requirement=5,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2249,7 +2294,7 @@ class ScarArmorII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2620\uFE0F",
-            name="Scar Armor",
+            name="Scar Armor II",
             class_key=ExpertiseClass.Guardian,
             description="Whenever you're attacked over the next 5 turns, increase your Constitution by 1 until the end of the duel.",
             flavor_text="",
@@ -2257,7 +2302,8 @@ class ScarArmorII(Ability):
             cooldown=-1,
             num_targets=0,
             level_requirement=15,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2293,7 +2339,7 @@ class UnbreakingI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDEE1\uFE0F",
-            name="Unbreaking",
+            name="Unbreaking I",
             class_key=ExpertiseClass.Guardian,
             description="Gain +1 Constitution for each slot of armor you don't have equipped until the end of the duel.",
             flavor_text="",
@@ -2301,7 +2347,8 @@ class UnbreakingI(Ability):
             cooldown=-1,
             num_targets=0,
             level_requirement=8,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2330,7 +2377,7 @@ class UnbreakingII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDEE1\uFE0F",
-            name="Unbreaking",
+            name="Unbreaking II",
             class_key=ExpertiseClass.Guardian,
             description="Gain +2 Constitution for each slot of armor you don't have equipped until the end of the duel.",
             flavor_text="",
@@ -2338,7 +2385,8 @@ class UnbreakingII(Ability):
             cooldown=-1,
             num_targets=0,
             level_requirement=12,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2367,7 +2415,7 @@ class UnbreakingIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDEE1\uFE0F",
-            name="Unbreaking",
+            name="Unbreaking III",
             class_key=ExpertiseClass.Guardian,
             description="Gain +3 Constitution for each slot of armor you don't have equipped until the end of the duel.",
             flavor_text="",
@@ -2375,7 +2423,8 @@ class UnbreakingIII(Ability):
             cooldown=-1,
             num_targets=0,
             level_requirement=16,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2407,7 +2456,7 @@ class CounterstrikeI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDD04",
-            name="Counterstrike",
+            name="Counterstrike I",
             class_key=ExpertiseClass.Guardian,
             description="Strike back at an enemy dealing 75% of your weapon damage + 10% of your missing health as damage.",
             flavor_text="",
@@ -2415,7 +2464,8 @@ class CounterstrikeI(Ability):
             cooldown=2,
             num_targets=1,
             level_requirement=9,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2446,7 +2496,7 @@ class CounterstrikeII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDD04",
-            name="Counterstrike",
+            name="Counterstrike II",
             class_key=ExpertiseClass.Guardian,
             description="Strike back at an enemy dealing 80% of your weapon damage + 20% of your missing health as damage.",
             flavor_text="",
@@ -2454,7 +2504,8 @@ class CounterstrikeII(Ability):
             cooldown=2,
             num_targets=1,
             level_requirement=12,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2485,7 +2536,7 @@ class CounterstrikeIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDD04",
-            name="Counterstrike",
+            name="Counterstrike III",
             class_key=ExpertiseClass.Guardian,
             description="Strike back at an enemy dealing 85% of your weapon damage + 30% of your missing health as damage.",
             flavor_text="",
@@ -2493,7 +2544,8 @@ class CounterstrikeIII(Ability):
             cooldown=2,
             num_targets=1,
             level_requirement=15,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2527,7 +2579,7 @@ class BidedAttackI(Ability):
     def __init__(self):
         super().__init__(
             icon="\u23F3",
-            name="Bided Attack",
+            name="Bided Attack I",
             class_key=ExpertiseClass.Guardian,
             description="Prepare your attack, gaining +3 Strength for 1 turn.",
             flavor_text="",
@@ -2535,7 +2587,8 @@ class BidedAttackI(Ability):
             cooldown=3,
             num_targets=0,
             level_requirement=10,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2564,7 +2617,7 @@ class BidedAttackII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u23F3",
-            name="Bided Attack",
+            name="Bided Attack II",
             class_key=ExpertiseClass.Guardian,
             description="Prepare your attack, gaining +4 Strength for 1 turn.",
             flavor_text="",
@@ -2572,7 +2625,8 @@ class BidedAttackII(Ability):
             cooldown=3,
             num_targets=0,
             level_requirement=11,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2601,7 +2655,7 @@ class BidedAttackIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u23F3",
-            name="Bided Attack",
+            name="Bided Attack III",
             class_key=ExpertiseClass.Guardian,
             description="Prepare your attack, gaining +5 Strength for 1 turn.",
             flavor_text="",
@@ -2609,7 +2663,8 @@ class BidedAttackIII(Ability):
             cooldown=3,
             num_targets=0,
             level_requirement=12,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2649,7 +2704,8 @@ class TauntI(Ability):
             cooldown=3,
             num_targets=1,
             level_requirement=12,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2681,7 +2737,7 @@ class PiercingStrikeI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCCD",
-            name="Piercing Strike",
+            name="Piercing Strike I",
             class_key=ExpertiseClass.Guardian,
             description="Lunge forward at an enemy, dealing 110% of your weapon damage with a 20% chance to set Bleeding.",
             flavor_text="",
@@ -2689,7 +2745,8 @@ class PiercingStrikeI(Ability):
             cooldown=2,
             num_targets=1,
             level_requirement=15,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2732,7 +2789,7 @@ class PiercingStrikeII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCCD",
-            name="Piercing Strike",
+            name="Piercing Strike II",
             class_key=ExpertiseClass.Guardian,
             description="Lunge forward at an enemy, dealing 120% of your weapon damage with a 25% chance to set Bleeding.",
             flavor_text="",
@@ -2740,7 +2797,8 @@ class PiercingStrikeII(Ability):
             cooldown=2,
             num_targets=1,
             level_requirement=18,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2783,7 +2841,7 @@ class PiercingStrikeIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCCD",
-            name="Piercing Strike",
+            name="Piercing Strike III",
             class_key=ExpertiseClass.Guardian,
             description="Lunge forward at an enemy, dealing 130% of your weapon damage with a 30% chance to set Bleeding.",
             flavor_text="",
@@ -2791,7 +2849,8 @@ class PiercingStrikeIII(Ability):
             cooldown=2,
             num_targets=1,
             level_requirement=20,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2837,7 +2896,7 @@ class PressTheAdvantageI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDD3A",
-            name="Press the Advantage",
+            name="Press the Advantage I",
             class_key=ExpertiseClass.Guardian,
             description="Gain 2 actions this turn.",
             flavor_text="",
@@ -2845,7 +2904,8 @@ class PressTheAdvantageI(Ability):
             cooldown=-1,
             num_targets=0,
             level_requirement=18,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2868,7 +2928,7 @@ class EvadeI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA8",
-            name="Evade",
+            name="Evade I",
             class_key=ExpertiseClass.Guardian,
             description="Gain +200 Dexterity for 1 turn.",
             flavor_text="",
@@ -2876,7 +2936,8 @@ class EvadeI(Ability):
             cooldown=5,
             num_targets=0,
             level_requirement=20,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2905,7 +2966,7 @@ class EvadeII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA8",
-            name="Evade",
+            name="Evade II",
             class_key=ExpertiseClass.Guardian,
             description="Gain +300 Dexterity for 1 turn.",
             flavor_text="",
@@ -2913,7 +2974,8 @@ class EvadeII(Ability):
             cooldown=5,
             num_targets=0,
             level_requirement=22,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2942,7 +3004,7 @@ class EvadeIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA8",
-            name="Evade",
+            name="Evade III",
             class_key=ExpertiseClass.Guardian,
             description="Gain +400 Dexterity for 1 turn.",
             flavor_text="",
@@ -2950,7 +3012,8 @@ class EvadeIII(Ability):
             cooldown=5,
             num_targets=0,
             level_requirement=24,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -2982,7 +3045,7 @@ class HeavySlamI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA5",
-            name="Heavy Slam",
+            name="Heavy Slam I",
             class_key=ExpertiseClass.Guardian,
             description="Power forward with your weapon, dealing 40% of your weapon damage + 5% for each point of Constitution you have",
             flavor_text="",
@@ -2990,7 +3053,8 @@ class HeavySlamI(Ability):
             cooldown=3,
             num_targets=1,
             level_requirement=22,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3020,7 +3084,7 @@ class HeavySlamII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA5",
-            name="Heavy Slam",
+            name="Heavy Slam II",
             class_key=ExpertiseClass.Guardian,
             description="Power forward with your weapon, dealing 60% of your weapon damage + 5% for each point of Constitution you have",
             flavor_text="",
@@ -3028,7 +3092,8 @@ class HeavySlamII(Ability):
             cooldown=3,
             num_targets=1,
             level_requirement=24,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3058,7 +3123,7 @@ class HeavySlamIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCA5",
-            name="Heavy Slam",
+            name="Heavy Slam III",
             class_key=ExpertiseClass.Guardian,
             description="Power forward with your weapon, dealing 80% of your weapon damage + 5% for each point of Constitution you have",
             flavor_text="",
@@ -3066,7 +3131,8 @@ class HeavySlamIII(Ability):
             cooldown=3,
             num_targets=1,
             level_requirement=26,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3101,7 +3167,7 @@ class ContractWealthForPowerI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCDC",
-            name="Contract: Wealth for Power",
+            name="Contract: Wealth for Power I",
             class_key=ExpertiseClass.Merchant,
             description="Summon a binding contract, exchanging 50 coins for +1 Intelligence, +1 Strength, and +1 Dexterity until the end of the duel. If you can't pay, you instead receive -1 to those attributes.",
             flavor_text="",
@@ -3109,7 +3175,8 @@ class ContractWealthForPowerI(Ability):
             cooldown=-1,
             num_targets=0,
             level_requirement=2,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3174,7 +3241,7 @@ class ContractWealthForPowerII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCDC",
-            name="Contract: Wealth for Power",
+            name="Contract: Wealth for Power II",
             class_key=ExpertiseClass.Merchant,
             description="Summon a binding contract, exchanging 50 coins for +3 Intelligence, +3 Strength, and +3 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
             flavor_text="",
@@ -3182,7 +3249,8 @@ class ContractWealthForPowerII(Ability):
             cooldown=-1,
             num_targets=0,
             level_requirement=6,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3247,7 +3315,7 @@ class ContractWealthForPowerIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCDC",
-            name="Contract: Wealth for Power",
+            name="Contract: Wealth for Power III",
             class_key=ExpertiseClass.Merchant,
             description="Summon a binding contract, exchanging 50 coins for +5 Intelligence, +5 Strength, and +5 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
             flavor_text="",
@@ -3255,7 +3323,8 @@ class ContractWealthForPowerIII(Ability):
             cooldown=-1,
             num_targets=0,
             level_requirement=10,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3323,7 +3392,7 @@ class BoundToGetLuckyI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF40",
-            name="Bound to Get Lucky",
+            name="Bound to Get Lucky I",
             class_key=ExpertiseClass.Merchant,
             description="Gain +4 Luck for the next 2 turns.",
             flavor_text="",
@@ -3331,7 +3400,8 @@ class BoundToGetLuckyI(Ability):
             cooldown=4,
             num_targets=0,
             level_requirement=4,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3360,7 +3430,7 @@ class BoundToGetLuckyII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF40",
-            name="Bound to Get Lucky",
+            name="Bound to Get Lucky II",
             class_key=ExpertiseClass.Merchant,
             description="Gain +6 Luck for the next 2 turns.",
             flavor_text="",
@@ -3368,7 +3438,8 @@ class BoundToGetLuckyII(Ability):
             cooldown=4,
             num_targets=0,
             level_requirement=6,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3397,7 +3468,7 @@ class BoundToGetLuckyIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF40",
-            name="Bound to Get Lucky",
+            name="Bound to Get Lucky III",
             class_key=ExpertiseClass.Merchant,
             description="Gain +8 Luck for the next 2 turns.",
             flavor_text="",
@@ -3405,7 +3476,8 @@ class BoundToGetLuckyIII(Ability):
             cooldown=4,
             num_targets=0,
             level_requirement=8,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3445,7 +3517,8 @@ class SilkspeakingI(Ability):
             cooldown=3,
             num_targets=1,
             level_requirement=6,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3477,7 +3550,7 @@ class ATidySumI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCB0",
-            name="A Tidy Sum",
+            name="A Tidy Sum I",
             class_key=ExpertiseClass.Merchant,
             description="Whenever you attack for the next 2 turns, part of the enemy struct turns into coins, awarding you 5 coins per attack hit.",
             flavor_text="",
@@ -3485,7 +3558,8 @@ class ATidySumI(Ability):
             cooldown=5,
             num_targets=1,
             level_requirement=8,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3515,7 +3589,7 @@ class ATidySumII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCB0",
-            name="A Tidy Sum",
+            name="A Tidy Sum II",
             class_key=ExpertiseClass.Merchant,
             description="Whenever you attack for the next 2 turns, part of the enemy struct turns into coins, awarding you 10 coins per attack hit.",
             flavor_text="",
@@ -3523,7 +3597,8 @@ class ATidySumII(Ability):
             cooldown=5,
             num_targets=1,
             level_requirement=10,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3553,7 +3628,7 @@ class ATidySumIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCB0",
-            name="A Tidy Sum",
+            name="A Tidy Sum III",
             class_key=ExpertiseClass.Merchant,
             description="Whenever you attack for the next 2 turns, part of the enemy struct turns into coin, awarding you 15 coins per attack hit.",
             flavor_text="",
@@ -3561,7 +3636,8 @@ class ATidySumIII(Ability):
             cooldown=5,
             num_targets=1,
             level_requirement=12,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3594,7 +3670,7 @@ class CursedCoinsI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE99",
-            name="Cursed Coins",
+            name="Cursed Coins I",
             class_key=ExpertiseClass.Merchant,
             description="For the next 3 turns, whenever you gain coins, deal 0.25 times that much damage to all enemies.",
             flavor_text="",
@@ -3602,7 +3678,8 @@ class CursedCoinsI(Ability):
             cooldown=4,
             num_targets=0,
             level_requirement=10,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3631,7 +3708,7 @@ class CursedCoinsII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE99",
-            name="Cursed Coins",
+            name="Cursed Coins II",
             class_key=ExpertiseClass.Merchant,
             description="For the next 3 turns, whenever you gain coins, deal 0.5 times that much damage to all enemies.",
             flavor_text="",
@@ -3639,7 +3716,8 @@ class CursedCoinsII(Ability):
             cooldown=4,
             num_targets=0,
             level_requirement=12,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3668,7 +3746,7 @@ class CursedCoinsIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE99",
-            name="Cursed Coins",
+            name="Cursed Coins III",
             class_key=ExpertiseClass.Merchant,
             description="For the next 3 turns, whenever you gain coins, deal 0.75 times that much damage to all enemies.",
             flavor_text="",
@@ -3676,7 +3754,8 @@ class CursedCoinsIII(Ability):
             cooldown=4,
             num_targets=0,
             level_requirement=14,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3708,7 +3787,7 @@ class UnseenRichesI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDC8E",
-            name="Unseen Riches",
+            name="Unseen Riches I",
             class_key=ExpertiseClass.Merchant,
             description="Gain coins equal to 0.5 times your current Luck.",
             flavor_text="",
@@ -3716,7 +3795,8 @@ class UnseenRichesI(Ability):
             cooldown=5,
             num_targets=0,
             level_requirement=11,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3739,7 +3819,7 @@ class UnseenRichesII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDC8E",
-            name="Unseen Riches",
+            name="Unseen Riches II",
             class_key=ExpertiseClass.Merchant,
             description="Gain coins equal to 1 times your current Luck.",
             flavor_text="",
@@ -3747,7 +3827,8 @@ class UnseenRichesII(Ability):
             cooldown=5,
             num_targets=0,
             level_requirement=13,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3770,7 +3851,7 @@ class UnseenRichesIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDC8E",
-            name="Unseen Riches",
+            name="Unseen Riches III",
             class_key=ExpertiseClass.Merchant,
             description="Gain coins equal to 1.5 times your current Luck.",
             flavor_text="",
@@ -3778,7 +3859,8 @@ class UnseenRichesIII(Ability):
             cooldown=5,
             num_targets=0,
             level_requirement=15,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3804,7 +3886,7 @@ class ContractManaToBloodI(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2728",
-            name="Contract: Mana to Blood",
+            name="Contract: Mana to Blood I",
             class_key=ExpertiseClass.Merchant,
             description="All of your abilities that use Mana instead take 70% of their cost in HP next turn.",
             flavor_text="",
@@ -3812,7 +3894,8 @@ class ContractManaToBloodI(Ability):
             cooldown=2,
             num_targets=0,
             level_requirement=14,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3841,7 +3924,7 @@ class ContractManaToBloodII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2728",
-            name="Contract: Mana to Blood",
+            name="Contract: Mana to Blood II",
             class_key=ExpertiseClass.Merchant,
             description="All of your abilities that use Mana instead take 50% of their cost in HP next turn.",
             flavor_text="",
@@ -3849,7 +3932,8 @@ class ContractManaToBloodII(Ability):
             cooldown=2,
             num_targets=0,
             level_requirement=16,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3878,7 +3962,7 @@ class ContractManaToBloodIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2728",
-            name="Contract: Mana to Blood",
+            name="Contract: Mana to Blood III",
             class_key=ExpertiseClass.Merchant,
             description="All of your abilities that use Mana instead take 30% of their cost in HP next turn.",
             flavor_text="",
@@ -3886,7 +3970,8 @@ class ContractManaToBloodIII(Ability):
             cooldown=2,
             num_targets=0,
             level_requirement=18,
-            target_own_group=True
+            target_own_group=True,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3918,7 +4003,7 @@ class ContractBloodForBloodI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE78",
-            name="Contract: Blood for Blood",
+            name="Contract: Blood for Blood I",
             class_key=ExpertiseClass.Merchant,
             description="Create a binding contract that exchanges 15% of your current health and deals 0.5 times that damage against up to 3 targets.",
             flavor_text="",
@@ -3926,7 +4011,8 @@ class ContractBloodForBloodI(Ability):
             cooldown=5,
             num_targets=3,
             level_requirement=16,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3952,7 +4038,7 @@ class ContractBloodForBloodII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE78",
-            name="Contract: Blood for Blood",
+            name="Contract: Blood for Blood II",
             class_key=ExpertiseClass.Merchant,
             description="Create a binding contract that exchanges 10% of your current health and deals 1 times that damage against up to 3 targets.",
             flavor_text="",
@@ -3960,7 +4046,8 @@ class ContractBloodForBloodII(Ability):
             cooldown=5,
             num_targets=3,
             level_requirement=18,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -3986,7 +4073,7 @@ class ContractBloodForBloodIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE78",
-            name="Contract: Blood for Blood",
+            name="Contract: Blood for Blood III",
             class_key=ExpertiseClass.Merchant,
             description="Create a binding contract that exchanges 5% of your current health and deals 3 times that damage against up to 3 targets.",
             flavor_text="",
@@ -3994,7 +4081,8 @@ class ContractBloodForBloodIII(Ability):
             cooldown=5,
             num_targets=3,
             level_requirement=20,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -4023,7 +4111,7 @@ class DeepPocketsI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDDFE",
-            name="Deep Pockets",
+            name="Deep Pockets I",
             class_key=ExpertiseClass.Merchant,
             description="Deal damage equal to 1% of your current coins (up to 100 damage) and lose that many coins.",
             flavor_text="",
@@ -4031,7 +4119,8 @@ class DeepPocketsI(Ability):
             cooldown=2,
             num_targets=1,
             level_requirement=19,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -4056,7 +4145,7 @@ class DeepPocketsII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDDFE",
-            name="Deep Pockets",
+            name="Deep Pockets II",
             class_key=ExpertiseClass.Merchant,
             description="Deal damage equal to 1% of your current coins (up to 100 damage) and lose that many coins.",
             flavor_text="",
@@ -4064,7 +4153,8 @@ class DeepPocketsII(Ability):
             cooldown=2,
             num_targets=1,
             level_requirement=22,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -4089,7 +4179,7 @@ class DeepPocketsIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDDFE",
-            name="Deep Pockets",
+            name="Deep Pockets III",
             class_key=ExpertiseClass.Merchant,
             description="Deal damage equal to 1% of your current coins (up to 100 damage) and lose that many coins.",
             flavor_text="",
@@ -4097,7 +4187,8 @@ class DeepPocketsIII(Ability):
             cooldown=2,
             num_targets=1,
             level_requirement=25,
-            target_own_group=False
+            target_own_group=False,
+            purchase_cost=0
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
