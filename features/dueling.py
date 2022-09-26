@@ -576,11 +576,13 @@ class DuelView(discord.ui.View):
         if (cur_turn_entity in self._enemies and target_own_group) or (cur_turn_entity in self._allies and not target_own_group):
             targets = self._enemies
             target_str = "target" if self._targets_remaining == 1 else "targets"
-            description += f"{selected_targets_str}Choose an opponent. {self._targets_remaining} {target_str} remaining."
+            ally_or_op_str = "ally" if target_own_group else "opponent"
+            description += f"{selected_targets_str}Choose an {ally_or_op_str}. {self._targets_remaining} {target_str} remaining."
         elif (cur_turn_entity in self._enemies and not target_own_group) or (cur_turn_entity in self._allies and target_own_group):
             targets = self._allies
             target_str = "target" if self._targets_remaining == 1 else "targets"
-            description += f"{selected_targets_str}Choose an ally. {self._targets_remaining} {target_str} remaining."
+            ally_or_op_str = "ally" if target_own_group else "opponent"
+            description += f"{selected_targets_str}Choose an {ally_or_op_str}. {self._targets_remaining} {target_str} remaining."
         
         page_slots = targets[self._page * self._NUM_PER_PAGE:min(len(targets), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, target in enumerate(page_slots):
