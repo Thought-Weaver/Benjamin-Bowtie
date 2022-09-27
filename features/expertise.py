@@ -209,7 +209,7 @@ class Expertise():
         self.hp = min(self.max_hp, self.hp + heal_amount)
 
     def damage(self, damage: int, armor: int, percent_reduct: float):
-        actual_damage = damage - armor
+        actual_damage = max(0, damage - armor)
         actual_damage -= int(actual_damage * percent_reduct)
         self.hp = max(0, self.hp - actual_damage)
         return actual_damage

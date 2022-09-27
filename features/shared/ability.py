@@ -160,8 +160,8 @@ class Ability():
                 results.append(NegativeAbilityResult("{1} dodged the ability", True))
                 continue
 
-            target.get_dueling().status_effects += status_effects
-            target.get_expertise().update_stats()
+            target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
+            target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_buffs())
 
             results.append(NegativeAbilityResult("{1}" + f" is now {status_effects_str}", False))
         
@@ -188,9 +188,9 @@ class Ability():
 
         for i in range(len(results)):
             if not results[i].dodged:
-                targets[i].get_dueling().status_effects += status_effects
-                targets[i].get_expertise().update_stats()
-            results[i].target_str += f" and is now {status_effects_str}"
+                targets[i].get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(targets[i] != caster), status_effects))
+                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_buffs())
+                results[i].target_str += f" and is now {status_effects_str}"
         
         return results
 
@@ -201,8 +201,8 @@ class Ability():
         caster_expertise = caster.get_expertise()
 
         for target in targets:
-            target.get_dueling().status_effects += status_effects
-            target.get_expertise().update_stats()
+            target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
+            target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_buffs())
             results.append("{1}" + f" is now {status_effects_str}")
         
         mana_to_blood_percent = 0
@@ -280,12 +280,19 @@ class Ability():
 
         flavor_text: str = f"*{self._flavor_text}*\n\n" if self._flavor_text != "" else ""
 
+        cur_cooldown_str: str = ""
+        if self._cur_cooldown == -1:
+            cur_cooldown_str = "\n\n**Already used once this duel**"
+        if self._cur_cooldown > 0:
+            cur_cooldown_str = f"\n\n**CD Remaining: {self._cur_cooldown}**"
+
         return (
             f"{self._icon} **{self._name}**\n"
             f"{self._mana_cost} Mana / {target_str} / {cooldown_str}\n\n"
             f"{self._description}\n\n"
             f"{flavor_text}"
             f"*Requires {self._class_key} Level {self._level_requirement}*"
+            f"{cur_cooldown_str}"
         )
 
     def __getstate__(self):
@@ -635,7 +642,7 @@ class HookI(Ability):
             icon="\uD83E\uDE9D",
             name="Hook I",
             class_key=ExpertiseClass.Fisher,
-            description="Hook an enemy on the line, dealing 5-10 damage and causing them to lose -3 Dexterity for 1 turn.",
+            description="Hook an enemy on the line, dealing 5-10 damage and causing them to lose -3 Dexterity for 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=1,
@@ -647,7 +654,7 @@ class HookI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
-            turns_remaining=1,
+            turns_remaining=2,
             value=-3,
             source_ability_str=self.get_icon_and_name()
         )
@@ -673,7 +680,7 @@ class HookII(Ability):
             icon="\uD83E\uDE9D",
             name="Hook II",
             class_key=ExpertiseClass.Fisher,
-            description="Hook an enemy on the line, dealing 6-12 damage and causing them to lose -3 Dexterity for 1 turn.",
+            description="Hook an enemy on the line, dealing 6-12 damage and causing them to lose -3 Dexterity for 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=1,
@@ -685,7 +692,7 @@ class HookII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
-            turns_remaining=1,
+            turns_remaining=2,
             value=-3,
             source_ability_str=self.get_icon_and_name()
         )
@@ -711,7 +718,7 @@ class HookIII(Ability):
             icon="\uD83E\uDE9D",
             name="Hook III",
             class_key=ExpertiseClass.Fisher,
-            description="Hook an enemy on the line, dealing 7-14 damage and causing them to lose -3 Dexterity for 1 turn.",
+            description="Hook an enemy on the line, dealing 7-14 damage and causing them to lose -3 Dexterity for 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=1,
@@ -723,7 +730,7 @@ class HookIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
-            turns_remaining=1,
+            turns_remaining=2,
             value=-3,
             source_ability_str=self.get_icon_and_name()
         )
@@ -2160,7 +2167,7 @@ class SecondWindI(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        heal_amount = caster.get_expertise().max_hp * 0.05
+        heal_amount = int(caster.get_expertise().max_hp * 0.05)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -2194,7 +2201,7 @@ class SecondWindII(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        heal_amount = caster.get_expertise().max_hp * 0.1
+        heal_amount = int(caster.get_expertise().max_hp * 0.1)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -2228,7 +2235,7 @@ class SecondWindIII(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        heal_amount = caster.get_expertise().max_hp * 0.15
+        heal_amount = int(caster.get_expertise().max_hp * 0.15)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -2474,7 +2481,7 @@ class CounterstrikeI(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = 0.75 * weapon_stats.get_random_damage() + 0.1 * (caster_expertise.max_hp - caster_expertise.hp)
+        damage = int(0.75 * weapon_stats.get_random_damage() + 0.1 * (caster_expertise.max_hp - caster_expertise.hp))
         damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2514,7 +2521,7 @@ class CounterstrikeII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = 0.8 * weapon_stats.get_random_damage() + 0.2 * (caster_expertise.max_hp - caster_expertise.hp)
+        damage = int(0.8 * weapon_stats.get_random_damage() + 0.2 * (caster_expertise.max_hp - caster_expertise.hp))
         damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2554,7 +2561,7 @@ class CounterstrikeIII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = 0.85 * weapon_stats.get_random_damage() + 0.3 * (caster_expertise.max_hp - caster_expertise.hp)
+        damage = int(0.85 * weapon_stats.get_random_damage() + 0.3 * (caster_expertise.max_hp - caster_expertise.hp))
         damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2754,7 +2761,7 @@ class PiercingStrikeI(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = 1.1 * weapon_stats.get_random_damage()
+        damage = int(1.1 * weapon_stats.get_random_damage())
         damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2769,7 +2776,7 @@ class PiercingStrikeI(Ability):
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.2:
                 targets[i].get_dueling().status_effects.append(bleed)
-                targets[i].get_expertise().update_stats()
+                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_buffs())
             results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -2806,7 +2813,7 @@ class PiercingStrikeII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = 1.2 * weapon_stats.get_random_damage()
+        damage = int(1.2 * weapon_stats.get_random_damage())
         damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2821,7 +2828,7 @@ class PiercingStrikeII(Ability):
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.25:
                 targets[i].get_dueling().status_effects.append(bleed)
-                targets[i].get_expertise().update_stats()
+                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_buffs())
             results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -2858,7 +2865,7 @@ class PiercingStrikeIII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = 1.3 * weapon_stats.get_random_damage()
+        damage = int(1.3 * weapon_stats.get_random_damage())
         damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2873,7 +2880,7 @@ class PiercingStrikeIII(Ability):
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.3:
                 targets[i].get_dueling().status_effects.append(bleed)
-                targets[i].get_expertise().update_stats()
+                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_buffs())
             results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -2909,7 +2916,8 @@ class PressTheAdvantageI(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 2
+        # Adding one because actions_remaining are reduced when pressing Continue
+        caster.get_dueling().actions_remaining += 3
         caster.get_stats().dueling.guardian_abilities_used += 1
 
         return "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 2 actions available."
@@ -3062,7 +3070,7 @@ class HeavySlamI(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = 0.4 * weapon_stats.get_random_damage() + 0.05 * caster_attrs.constitution
+        damage = int((0.4 + 0.05 * caster_attrs.constitution) * weapon_stats.get_random_damage())
         damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3101,7 +3109,7 @@ class HeavySlamII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = 0.6 * weapon_stats.get_random_damage() + 0.05 * caster_attrs.constitution
+        damage = int((0.6 + 0.05 * caster_attrs.constitution) * weapon_stats.get_random_damage())
         damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3140,7 +3148,7 @@ class HeavySlamIII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = 0.8 * weapon_stats.get_random_damage() + 0.05 * caster_attrs.constitution
+        damage = int((0.8 + 0.05 * caster_attrs.constitution) * weapon_stats.get_random_damage())
         damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3552,7 +3560,7 @@ class ATidySumI(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum I",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 2 turns, part of the enemy struct turns into coins, awarding you 5 coins per attack hit.",
+            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coins, awarding you 5 coins per attack hit.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -3591,7 +3599,7 @@ class ATidySumII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum II",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 2 turns, part of the enemy struct turns into coins, awarding you 10 coins per attack hit.",
+            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coins, awarding you 10 coins per attack hit.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -3630,7 +3638,7 @@ class ATidySumIII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum III",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 2 turns, part of the enemy struct turns into coin, awarding you 15 coins per attack hit.",
+            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coin, awarding you 15 coins per attack hit.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -3801,7 +3809,7 @@ class UnseenRichesI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
-        caster.get_inventory().add_coins(0.5 * coins_to_add)
+        caster.get_inventory().add_coins(int(0.5 * coins_to_add))
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
 
         caster.get_stats().dueling.merchant_abilities_used += 1
@@ -3865,7 +3873,7 @@ class UnseenRichesIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
-        caster.get_inventory().add_coins(1.5 * coins_to_add)
+        caster.get_inventory().add_coins(int(1.5 * coins_to_add))
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
 
         caster.get_stats().dueling.merchant_abilities_used += 1
@@ -3890,7 +3898,7 @@ class ContractManaToBloodI(Ability):
             class_key=ExpertiseClass.Merchant,
             description="All of your abilities that use Mana instead take 70% of their cost in HP next turn.",
             flavor_text="",
-            mana_cost=10,
+            mana_cost=0,
             cooldown=2,
             num_targets=0,
             level_requirement=14,
@@ -3928,7 +3936,7 @@ class ContractManaToBloodII(Ability):
             class_key=ExpertiseClass.Merchant,
             description="All of your abilities that use Mana instead take 50% of their cost in HP next turn.",
             flavor_text="",
-            mana_cost=10,
+            mana_cost=0,
             cooldown=2,
             num_targets=0,
             level_requirement=16,
@@ -3966,7 +3974,7 @@ class ContractManaToBloodIII(Ability):
             class_key=ExpertiseClass.Merchant,
             description="All of your abilities that use Mana instead take 30% of their cost in HP next turn.",
             flavor_text="",
-            mana_cost=10,
+            mana_cost=0,
             cooldown=2,
             num_targets=0,
             level_requirement=18,

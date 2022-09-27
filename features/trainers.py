@@ -92,7 +92,7 @@ class ConfirmPurchaseButton(discord.ui.Button):
 
 class EnterEquipAbilitiesButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"Equip Abilities", row=row)
+        super().__init__(style=discord.ButtonStyle.blurple, label=f"Equip Abilities", row=row)
                 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -200,7 +200,7 @@ class TrainerView(discord.ui.View):
         return Embed(title="Where are you?", description="In the midst of knowing where you were, suddenly now there is a bleak unknown, a pale that sparks fear and awe.")
 
     def get_available_abilities(self, player: Player, all_abilities: List[List[Ability]]):
-        player_abilities: List[Ability] = player.get_dueling().abilities
+        player_abilities: List[Ability] = player.get_dueling().available_abilities
         available_abilities: List[Ability] = []
         # TODO: Could optimize this significantly?
         for ability_group in all_abilities:
@@ -276,11 +276,13 @@ class TrainerView(discord.ui.View):
 
     def next_page(self):
         self._page += 1
+        self._current_ability = None
         self._get_current_page_buttons()
         return self._get_page_info()
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
+        self._current_ability = None
         self._get_current_page_buttons()
         return self._get_page_info()
 
@@ -310,17 +312,58 @@ class TrainerView(discord.ui.View):
         self._get_current_page_buttons()
         return self._get_page_info()
 
+    def remove_lower_level_abilities(self, player: Player, purchased_ability: Ability, all_abilities: List[List[Ability]]):
+        player_abilities: List[Ability] = player.get_dueling().abilities
+        available_abilities: List[Ability] = player.get_dueling().available_abilities
+
+        for ability_group in all_abilities:
+            for i, ability_class in enumerate(ability_group):
+                found_equipped = False
+                found_available = False
+
+                for j, ability in enumerate(player_abilities):
+                    if isinstance(ability, ability_class) and any(isinstance(purchased_ability, ac) for ac in ability_group):
+                        if i < len(ability_group) - 1:
+                            player.get_dueling().abilities.pop(j)
+                            found_equipped = True
+                            break
+                
+                for j, ability in enumerate(available_abilities):
+                    if isinstance(ability, ability_class) and any(isinstance(purchased_ability, ac) for ac in ability_group):
+                        if i < len(ability_group) - 1:
+                            player.get_dueling().available_abilities.pop(j)
+                            found_available = True
+                            break
+
+                if found_equipped or found_available:
+                    return found_equipped
+
     def purchase_ability(self):
         if self._current_ability is not None:
             player: Player = self._get_player()
             ability: Ability = self._current_ability
 
             player.get_inventory().remove_coins(ability.get_purchase_cost())
+            
+            available_abilities = []
+            if self._current_class == ExpertiseClass.Fisher:
+                available_abilities = self._fisher_abilities
+            if self._current_class == ExpertiseClass.Guardian:
+                available_abilities = self._guardian_abilities
+            if self._current_class == ExpertiseClass.Merchant:
+                available_abilities = self._merchant_abilities
+            found_equipped = self.remove_lower_level_abilities(player, ability, available_abilities)
+
+            if found_equipped: # Replace the removed version with the new one
+                player.get_dueling().abilities.append(ability)
             player.get_dueling().available_abilities.append(ability)
 
             self._current_ability = None
 
+            self._get_current_page_buttons()
             return self._get_page_info(ability)
+
+        self._get_current_page_buttons()
         return self._get_page_info()
 
     def exit_to_main_menu(self):
@@ -445,6 +488,7 @@ class EquipAbilitiesView(discord.ui.View):
         self._page: int = 0
         # The alternative is unequipping, in which case this is True
         self._equipping: bool = False
+        self._additional_info_str: str = ""
 
         self._NUM_PER_PAGE = 4
 
@@ -481,16 +525,13 @@ class EquipAbilitiesView(discord.ui.View):
 
         ability_strs = []
         for i in range(self._NUM_PER_PAGE):
-            if i > len(page_slots) - 1:
-                ability_strs.append("")
-            else:
+            if i <= len(page_slots) - 1:
                 ability_strs.append(f"──────────\n{page_slots[i]}\n──────────")
+        
         just_equipped_str = f"\n\n{ability_just_equipped.get_icon_and_name()} equipped!" if ability_just_equipped is not None else ""
+        formatted_additional_info_str = f"\n\n{self._additional_info_str}" if self._additional_info_str != "" else ""
 
-        description = (
-            "{0}    {1}\n"
-            "{2}    {3}"
-        ).format(*ability_strs) + just_equipped_str
+        description = "\n".join(ability_strs) + just_equipped_str + formatted_additional_info_str
 
         return Embed(title="Equip an Ability", description=description)
 
@@ -543,15 +584,24 @@ class EquipAbilitiesView(discord.ui.View):
 
     def equip_ability(self, ability: Ability):
         player: Player = self._get_player()
-        player.get_dueling().abilities.append(ability)
-        return self._get_equip_page_buttons(ability)
+        
+        if len(player.get_dueling().abilities) < player.get_expertise().memory:
+            self._additional_info_str = ""
+            player.get_dueling().abilities.append(ability)
+            return self._get_equip_page_buttons(ability)
+        
+        self._additional_info_str = "*You don't have enough memory to equip this!*"
+        return self._get_equip_page_buttons()
 
     def unequip_ability(self, ability: Ability, ability_index: int):
         player: Player = self._get_player()
+        self._additional_info_str = ""
+
         if isinstance(player.get_dueling().abilities[ability_index], ability.__class__):
             player.get_dueling().abilities.pop(ability_index)
             return self._get_unequip_page_buttons(ability)
-        return self._get_unequip_page_buttons(None)
+        
+        return self._get_unequip_page_buttons()
 
     def get_bot(self):
         return self._bot

@@ -18,7 +18,7 @@ class NPC():
         self._dueling: Dueling = Dueling()
 
     def get_combined_attributes(self):
-        return self._expertise.get_all_attributes() + self._equipment.get_total_buffs() + self._dueling.get_combined_attribute_mods()
+        return self._expertise.get_all_attributes() + (self._equipment.get_total_buffs() + self._dueling.get_combined_attribute_mods())
 
     def get_name(self):
         return self._name
