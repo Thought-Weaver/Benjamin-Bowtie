@@ -139,7 +139,7 @@ class Ability():
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -174,7 +174,7 @@ class Ability():
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -214,7 +214,7 @@ class Ability():
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(f"You took {damage} damage to cast this from Contract: Mana to Blood")
@@ -251,7 +251,7 @@ class Ability():
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(f"You took {damage} damage to cast this from Contract: Mana to Blood")
@@ -819,7 +819,7 @@ class WrathOfTheWavesI(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -905,7 +905,7 @@ class WrathOfTheWavesII(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -991,7 +991,7 @@ class WrathOfTheWavesIII(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -1203,7 +1203,7 @@ class ThunderingTorrentI(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -1295,7 +1295,7 @@ class ThunderingTorrentII(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -1387,7 +1387,7 @@ class ThunderingTorrentIII(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -1465,7 +1465,7 @@ class DrownInTheDeepI(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -1540,7 +1540,7 @@ class DrownInTheDeepII(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -1615,7 +1615,7 @@ class DrownInTheDeepIII(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -1707,7 +1707,7 @@ class WhirlpoolI(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -1796,7 +1796,7 @@ class WhirlpoolII(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
@@ -1885,7 +1885,7 @@ class WhirlpoolIII(Ability):
         if mana_to_blood_percent == 0:
             caster_expertise.remove_mana(self.get_mana_cost())
         else:
-            damage = int(mana_to_blood_percent * caster_expertise.max_hp)
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
                 caster_expertise.damage(damage, 0, 0)
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))

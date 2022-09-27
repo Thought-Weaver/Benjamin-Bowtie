@@ -350,6 +350,20 @@ class DuelingPrevButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
+class SkipButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.red, label="Skip")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: DuelView = self.view
+        if interaction.user == view.get_user_for_current_turn():
+            response = view.continue_turn(skip_turn=True)
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class DuelView(discord.ui.View):
     # Using a data class instead of a tuple to make the code more readable
     @dataclass
@@ -586,6 +600,7 @@ class DuelView(discord.ui.View):
         self.add_item(AttackActionButton())
         self.add_item(AbilityActionButton())
         self.add_item(ItemActionButton())
+        self.add_items(SkipButton())
 
         self._reset_turn_variables()
 
@@ -813,9 +828,6 @@ class DuelView(discord.ui.View):
                 ]
                 result_str = self.use_item_on_selected_targets()
             
-            duel_result = self.check_for_win()
-            if duel_result.game_won:
-                return self.get_victory_screen(duel_result)
             return Embed(title=choice(catch_phrases), description=result_str)
         self._page = 0
         self._selecting_targets = True
@@ -869,9 +881,12 @@ class DuelView(discord.ui.View):
         if len(dueling.abilities) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(DuelingNextButton(min(4, len(page_slots))))
 
+        sanguinated_active = any(se.key == StatusEffectKey.ManaToHP for se in dueling.status_effects)
+
         if self._selected_ability is not None:
-            if expertise.mana >= self._selected_ability.get_mana_cost() and self._selected_ability.get_cur_cooldown() == 0:
-                self.add_item(ConfirmAbilityButton(min(4, len(page_slots))))
+            if self._selected_ability.get_cur_cooldown() == 0:
+                if expertise.mana >= self._selected_ability.get_mana_cost() or sanguinated_active:
+                    self.add_item(ConfirmAbilityButton(min(4, len(page_slots))))
         self.add_item(BackToActionSelectButton(min(4, len(page_slots))))
 
     def exit_to_action_select(self):
@@ -979,12 +994,18 @@ class DuelView(discord.ui.View):
 
         return self.show_targets(self._target_own_group)
  
-    def continue_turn(self):
+    def continue_turn(self, skip_turn=False):
         self._page = 0
         cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
+
+        # Check here before setting next turn, just in case
+        duel_result = self.check_for_win()
+        if duel_result.game_won:
+            return self.get_victory_screen()
+
         dueling: Dueling = cur_entity.get_dueling()
         dueling.actions_remaining = max(0, dueling.actions_remaining - 1)
-        if dueling.actions_remaining == 0:
+        if dueling.actions_remaining == 0 or skip_turn:
             # CDs and status effect time remaining decrement at the end of the turn,
             # so they actually last a turn
             dueling.decrement_all_ability_cds()

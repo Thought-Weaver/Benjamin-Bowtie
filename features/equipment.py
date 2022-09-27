@@ -270,19 +270,22 @@ class SelectSlotExitButton(discord.ui.Button):
 
 
 class EquipmentView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, show_without_buttons: bool):
         super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
         self._guild_id = guild_id
         self._user = user
+        self._show_without_buttons = show_without_buttons
+
         self._page = 0
         self._cur_equip_slot = None
 
         self._NUM_PER_PAGE = 4
 
-        self._display_slot_select_buttons()
+        if show_without_buttons:
+            self._display_slot_select_buttons()
 
     def get_player(self) -> Player:
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
@@ -407,23 +410,24 @@ class EquipmentView(discord.ui.View):
         base_none_equipped_str: str = "──────────\nNone Equipped\n──────────"
 
         equipment_strs = [
-            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet) is not None else base_none_equipped_str,
-            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves) is not None else base_none_equipped_str,
-            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet) is not None else base_none_equipped_str,
-            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Ring))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Ring) is not None else base_none_equipped_str,
-            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand) is not None else base_none_equipped_str,
-            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor) is not None else base_none_equipped_str,
-            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand) is not None else base_none_equipped_str,
-            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings) is not None else base_none_equipped_str,
-            f"──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Boots))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Boots) is not None else base_none_equipped_str
+            f"**Helmet:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet) is not None else "**Helmet:**\n" + base_none_equipped_str,
+            f"**Gloves:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves) is not None else "**Gloves:**\n" + base_none_equipped_str,
+            f"**Amulet:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet) is not None else "**Amulet:**\n" + base_none_equipped_str,
+            f"**Ring:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Ring))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Ring) is not None else "**Ring:**\n" + base_none_equipped_str,
+            f"**Chest Armor:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor) is not None else "**Chest Armor:**\n" + base_none_equipped_str,
+            f"**Main Hand:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand) is not None else "**Main Hand:**\n" + base_none_equipped_str,
+            f"**Off Hand:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand) is not None else "**Off Hand:**\n" + base_none_equipped_str,
+            f"**Leggings:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings) is not None else "**Leggings:**\n" + base_none_equipped_str,
+            f"**Boots:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Boots))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Boots) is not None else "**Boots:**\n" + base_none_equipped_str
         ]
 
         return "\n\n".join(equipment_strs)
 
     def get_initial_info(self):
+        click_to_see_str = "\n\nChoose a slot to see currently equipped item and equip another or unequip it." if not self._show_without_buttons else ""
         return Embed(
             title=f"{self._user.display_name}'s Equipment",
-            description=f"{self.get_full_equipment_str()}\n\nChoose a slot to see currently equipped item and equip another or unequip it."
+            description=f"{self.get_full_equipment_str()}{click_to_see_str}"
         )
 
     def exit_to_main_menu(self):
