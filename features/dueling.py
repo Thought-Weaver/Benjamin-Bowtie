@@ -600,7 +600,7 @@ class DuelView(discord.ui.View):
         self.add_item(AttackActionButton())
         self.add_item(AbilityActionButton())
         self.add_item(ItemActionButton())
-        self.add_items(SkipButton())
+        self.add_item(SkipButton())
 
         self._reset_turn_variables()
 
