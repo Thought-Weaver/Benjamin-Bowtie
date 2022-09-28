@@ -76,7 +76,7 @@ class Dueling():
         remaining_effects = []
         for status_effect in self.status_effects:
             status_effect.decrement_turns_remaining()
-            if status_effect.turns_remaining > 0:
+            if status_effect.turns_remaining > 0 or status_effect.turns_remaining == -1:
                 remaining_effects.append(status_effect)
         self.status_effects = remaining_effects
 
