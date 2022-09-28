@@ -252,7 +252,7 @@ class Expertise():
         self.points_to_spend += fisher_level_diff + merchant_level_diff + guardian_level_diff
         self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level()
 
-    def get_info_string(self, buffs: Buffs):
+    def get_info_string(self, buffs: Buffs, armor_str: str):
         self.level_up_check()
 
         fisher_level: int = self._fisher.get_level()
@@ -269,7 +269,7 @@ class Expertise():
 
         info_string = (
             f"**Base Stats**\n\n"
-            f"{self.get_health_and_mana_string()}\n\n"
+            f"{self.get_health_and_mana_string()}\n{armor_str}\n\n"
             f"**Classes**\n\n"
             f"Alchemist: ???\n"
             f"Fisher: Lvl. {fisher_level} *({self._fisher.get_xp_to_level(fisher_level + 1) - self._fisher.get_xp()} xp to next)*\n"
@@ -359,9 +359,11 @@ class ExpertiseView(discord.ui.View):
     def get_current_page_info(self):
         expertise: Expertise = self.get_player().get_expertise()
         equipment: Equipment = self.get_player().get_equipment()
+        
         expertise.level_up_check()
+        armor_str = equipment.get_total_armor_str()
 
-        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs()))
+        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs(), armor_str))
 
     def _get_current_buttons(self):
         self.clear_items()
@@ -405,7 +407,9 @@ class ExpertiseView(discord.ui.View):
         expertise.level_up_check()
         self._get_current_buttons()
 
-        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs()))
+        armor_str = equipment.get_total_armor_str()
+
+        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs(), armor_str))
 
     def get_user(self):
         return self._user

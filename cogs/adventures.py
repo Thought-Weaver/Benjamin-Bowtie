@@ -460,16 +460,18 @@ class Adventures(commands.Cog):
         await context.send(embed=embed, view=equipment_view)
 
     @commands.command(name="duel", help="Challenge another player to a duel")
-    async def duel_handler(self, context: commands.Context, user: User=None):
-        if user is None:
+    async def duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+        if users is None:
             await context.send("You need to @ a member to use b!duel.")
             return
 
-        users: List[User] = [user]
+        if len(set(users)) != len(users):
+            await context.send("You can't @ another player multiple times in a single duel.")
+            return
 
-        # if context.author in users:
-        #     await context.send("You can't challenge yourself to a duel.")
-        #     return
+        if context.author in users:
+            await context.send("You can't challenge yourself to a duel.")
+            return
             
         if any(user.bot for user in users):
             await context.send("You can't challenge a bot to a duel.")
@@ -529,9 +531,11 @@ class Adventures(commands.Cog):
             "**Generating:** When hit, whoever applied this status gains coins\n"
             "**Tarnished:** Whenever you gain coins, damage is dealt relative to the amount gained\n"
             "**Sanguinated:** All abilities use HP instead of Mana\n\n"
-            "__Misc:__\n\n"
-            "**Armor:** Items with Armor reduce the amount of damage you take during duels by that amount"
-            "**Overleveled:** Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing"
+            "__General:__\n\n"
+            "**HP:** Your health points; when these reach 0, you die\n"
+            "**Mana:** A resource used for casting certain abilities during duels\n"
+            "**Armor:** Items with Armor reduce the amount of damage you take during duels by that amount\n"
+            "**Overlevelled:** Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing"
         )
 
         embed = Embed(title="Glossary", description=description)
