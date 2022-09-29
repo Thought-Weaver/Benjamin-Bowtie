@@ -361,7 +361,7 @@ class ExpertiseView(discord.ui.View):
         equipment: Equipment = self.get_player().get_equipment()
         
         expertise.level_up_check()
-        armor_str = equipment.get_total_armor_str()
+        armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level)
 
         return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs(), armor_str))
 
@@ -407,7 +407,7 @@ class ExpertiseView(discord.ui.View):
         expertise.level_up_check()
         self._get_current_buttons()
 
-        armor_str = equipment.get_total_armor_str()
+        armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level)
 
         return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs(), armor_str))
 

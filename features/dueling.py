@@ -8,13 +8,14 @@ import discord
 from dataclasses import dataclass
 from discord.embeds import Embed
 from discord.ext import commands
-from features.expertise import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE, Attributes, Expertise, ExpertiseClass
+from features.expertise import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE, ExpertiseClass
 from features.shared.item import Buffs, ClassTag, WeaponStats
 from features.shared.statuseffect import StatusEffectKey
 from strenum import StrEnum
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
+    from features.expertise import Expertise
     from features.shared.ability import Ability
     from features.shared.item import Item
     from features.shared.statuseffect import StatusEffect
