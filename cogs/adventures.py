@@ -450,12 +450,15 @@ class Adventures(commands.Cog):
     async def equipment_handler(self, context: commands.Context, user: User=None):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
+        display_user = context.author
+        if user is not None:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+            display_user = user
+
         author_player: Player = self._get_player(context.guild.id, context.author.id)
         author_dueling: Dueling = author_player.get_dueling()
 
-        display_user = context.author if user is None else user
-
-        equipment_view = EquipmentView(self._bot, self._database, context.guild.id, context.author, author_dueling.is_in_combat or display_user == context.author)
+        equipment_view = EquipmentView(self._bot, self._database, context.guild.id, display_user, not author_dueling.is_in_combat and display_user == context.author)
         embed = equipment_view.get_initial_info()
         await context.send(embed=embed, view=equipment_view)
 

@@ -1002,7 +1002,7 @@ class DuelView(discord.ui.View):
         # Check here before setting next turn, just in case
         duel_result = self.check_for_win()
         if duel_result.game_won:
-            return self.get_victory_screen()
+            return self.get_victory_screen(duel_result)
 
         dueling: Dueling = cur_entity.get_dueling()
         dueling.actions_remaining = max(0, dueling.actions_remaining - 1)
@@ -1013,7 +1013,7 @@ class DuelView(discord.ui.View):
             dueling.decrement_statuses_time_remaining()
             duel_result = self.set_next_turn()
             if duel_result.game_won:
-                return self.get_victory_screen()
+                return self.get_victory_screen(duel_result)
         
         next_entity: (Player | NPC) = self._turn_order[self._turn_index]
         next_entity_dueling: Dueling = next_entity.get_dueling()

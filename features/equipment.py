@@ -270,21 +270,21 @@ class SelectSlotExitButton(discord.ui.Button):
 
 
 class EquipmentView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, show_without_buttons: bool):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, show_with_buttons: bool):
         super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
         self._guild_id = guild_id
         self._user = user
-        self._show_without_buttons = show_without_buttons
+        self._show_with_buttons = show_with_buttons
 
         self._page = 0
         self._cur_equip_slot = None
 
         self._NUM_PER_PAGE = 4
 
-        if show_without_buttons:
+        if show_with_buttons:
             self._display_slot_select_buttons()
 
     def get_player(self) -> Player:
@@ -424,7 +424,7 @@ class EquipmentView(discord.ui.View):
         return "\n\n".join(equipment_strs)
 
     def get_initial_info(self):
-        click_to_see_str = "\n\nChoose a slot to see currently equipped item and equip another or unequip it." if not self._show_without_buttons else ""
+        click_to_see_str = "\n\nChoose a slot to see currently equipped item and equip another or unequip it." if self._show_with_buttons else ""
         return Embed(
             title=f"{self._user.display_name}'s Equipment",
             description=f"{self.get_full_equipment_str()}{click_to_see_str}"

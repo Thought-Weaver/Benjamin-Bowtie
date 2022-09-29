@@ -269,7 +269,7 @@ class Expertise():
 
         info_string = (
             f"**Base Stats**\n\n"
-            f"{self.get_health_and_mana_string()}\n{armor_str}\n\n"
+            f"{self.get_health_and_mana_string()}\nEquipment: {armor_str}\n\n"
             f"**Classes**\n\n"
             f"Alchemist: ???\n"
             f"Fisher: Lvl. {fisher_level} *({self._fisher.get_xp_to_level(fisher_level + 1) - self._fisher.get_xp()} xp to next)*\n"
