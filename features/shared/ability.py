@@ -3402,7 +3402,7 @@ class BoundToGetLuckyI(Ability):
             icon="\uD83C\uDF40",
             name="Bound to Get Lucky I",
             class_key=ExpertiseClass.Merchant,
-            description="Gain +4 Luck for the next 2 turns.",
+            description="Gain +10 Luck for the next 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=4,
@@ -3415,7 +3415,7 @@ class BoundToGetLuckyI(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
             turns_remaining=2,
-            value=4,
+            value=10,
             source_ability_str=self.get_icon_and_name()
         )
 
@@ -3440,7 +3440,7 @@ class BoundToGetLuckyII(Ability):
             icon="\uD83C\uDF40",
             name="Bound to Get Lucky II",
             class_key=ExpertiseClass.Merchant,
-            description="Gain +6 Luck for the next 2 turns.",
+            description="Gain +20 Luck for the next 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=4,
@@ -3453,7 +3453,7 @@ class BoundToGetLuckyII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
             turns_remaining=2,
-            value=6,
+            value=20,
             source_ability_str=self.get_icon_and_name()
         )
 
@@ -3478,7 +3478,7 @@ class BoundToGetLuckyIII(Ability):
             icon="\uD83C\uDF40",
             name="Bound to Get Lucky III",
             class_key=ExpertiseClass.Merchant,
-            description="Gain +8 Luck for the next 2 turns.",
+            description="Gain +30 Luck for the next 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=4,
@@ -3491,7 +3491,7 @@ class BoundToGetLuckyIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
             turns_remaining=2,
-            value=8,
+            value=30,
             source_ability_str=self.get_icon_and_name()
         )
 

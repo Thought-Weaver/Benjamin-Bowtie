@@ -194,14 +194,14 @@ class Expertise():
         percent_health = self.hp / self.max_hp
         updated_max_hp: int = BASE_HP
         for _ in range(self.constitution + equipment_buffs.con_buff):
-            updated_max_hp += int(updated_max_hp * CON_HEALTH_SCALE)
+            updated_max_hp += ceil(updated_max_hp * CON_HEALTH_SCALE)
         self.max_hp = updated_max_hp
         self.hp = int(percent_health * self.max_hp)
 
         percent_mana = self.mana / self.max_mana
         updated_max_mana: int = BASE_MANA
         for _ in range(self.intelligence + equipment_buffs.int_buff):
-            updated_max_mana += int(updated_max_mana * INT_MANA_SCALE)
+            updated_max_mana += ceil(updated_max_mana * INT_MANA_SCALE)
         self.max_mana = updated_max_mana
         self.mana = int(percent_mana * self.max_mana)
 

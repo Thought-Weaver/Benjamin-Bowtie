@@ -74,15 +74,17 @@ class StatusEffect():
         if self.turns_remaining != -1:
             self.turns_remaining = max(0, self.turns_remaining - 1)
 
-    def get_singular_or_plural_turns(self):
-        if self.turns_remaining == 1:
-            return "turn"
-        return "turns"
-
     def set_trigger_first_turn(self, is_self_cast: bool):
         # Used for mapping this to account for self-cast abilities
         self.trigger_first_turn = is_self_cast
         return self
+
+    def get_turns_remaining_str(self):
+        if self.turns_remaining == 1:
+            return "1 turn"
+        if self.turns_remaining == -1:
+            return "until the end of the duel"
+        return f"{self.turns_remaining} turns"
 
     def __str__(self):
         # This should get overriden for a more informative string in each class
@@ -94,7 +96,7 @@ class Bleeding(StatusEffect):
         super().__init__(turns_remaining, value, "Bleeding", StatusEffectKey.Bleeding, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Lose {self.value}% health every turn for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: Lose {self.value}% health every turn for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -107,7 +109,7 @@ class Poisoned(StatusEffect):
         super().__init__(turns_remaining, value, "Poisoned", StatusEffectKey.Poisoned, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Lose {self.value}% health every turn for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: Lose {self.value}% health every turn for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -120,7 +122,7 @@ class ConBuff(StatusEffect):
         super().__init__(turns_remaining, value, "Fortified", StatusEffectKey.ConBuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: +{self.value} Con for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: +{self.value} Con for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -133,7 +135,7 @@ class StrBuff(StatusEffect):
         super().__init__(turns_remaining, value, "Bolstered", StatusEffectKey.StrBuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: +{self.value} Str for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: +{self.value} Str for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -146,7 +148,7 @@ class DexBuff(StatusEffect):
         super().__init__(turns_remaining, value, "Hastened", StatusEffectKey.DexBuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: +{self.value} Dex for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: +{self.value} Dex for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -159,7 +161,7 @@ class IntBuff(StatusEffect):
         super().__init__(turns_remaining, value, "Insightful", StatusEffectKey.IntBuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: +{self.value} Int for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: +{self.value} Int for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -172,7 +174,7 @@ class LckBuff(StatusEffect):
         super().__init__(turns_remaining, value, "Lucky", StatusEffectKey.LckBuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: +{self.value} Lck for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: +{self.value} Lck for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -185,7 +187,7 @@ class ConDebuff(StatusEffect):
         super().__init__(turns_remaining, value, "Frail", StatusEffectKey.ConDebuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: {self.value} Con for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: {self.value} Con for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -198,7 +200,7 @@ class StrDebuff(StatusEffect):
         super().__init__(turns_remaining, value, "Weakened", StatusEffectKey.StrDebuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: {self.value} Str for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: {self.value} Str for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -211,7 +213,7 @@ class DexDebuff(StatusEffect):
         super().__init__(turns_remaining, value, "Slowed", StatusEffectKey.DexDebuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: {self.value} Dex for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: {self.value} Dex for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -224,7 +226,7 @@ class IntDebuff(StatusEffect):
         super().__init__(turns_remaining, value, "Enfeebled", StatusEffectKey.IntDebuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: {self.value} Int for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: {self.value} Int for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -237,7 +239,7 @@ class LckDebuff(StatusEffect):
         super().__init__(turns_remaining, value, "Unlucky", StatusEffectKey.LckDebuff, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: {self.value} Lck for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: {self.value} Lck for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -250,7 +252,7 @@ class DmgReduction(StatusEffect):
         super().__init__(turns_remaining, value, "Protected", StatusEffectKey.DmgReduction, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: {self.value * 100}% damage reduction for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: {self.value * 100}% damage reduction for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -263,7 +265,7 @@ class DmgVulnerability(StatusEffect):
         super().__init__(turns_remaining, value, "Vulnerable", StatusEffectKey.DmgReduction, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: {self.value * 100}% damage taken increase for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: {self.value * 100}% damage taken increase for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -276,7 +278,7 @@ class FixedDmgTick(StatusEffect):
         super().__init__(turns_remaining, value, "Echoing", StatusEffectKey.FixedDmgTick, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Take {self.value} damage at the start of your turn for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: Take {self.value} damage at the start of your turn for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -289,7 +291,7 @@ class TurnSkipChance(StatusEffect):
         super().__init__(turns_remaining, value, "Faltering", StatusEffectKey.TurnSkipChance, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: {self.value * 100}% chance to skip a turn for {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: {self.value * 100}% chance to skip a turn for {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -320,7 +322,7 @@ class AttrBuffOnDamage(StatusEffect):
 
     def __str__(self):
         buffs_str = self.get_buffs_str()
-        display_str = f"{self.name}: Gain {buffs_str} whenever you're damaged for the next {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: Gain {buffs_str} whenever you're damaged for the next {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -334,7 +336,7 @@ class Taunted(StatusEffect):
         self.forced_to_attack = forced_to_attack
 
     def __str__(self):
-        display_str = f"{self.name}: Forced to attack the caster for the next {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: Forced to attack the caster for the next {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -348,7 +350,7 @@ class CannotTarget(StatusEffect):
         self.cant_target = cant_target
 
     def __str__(self):
-        display_str = f"{self.name}: Can't target the caster for the next {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: Can't target the caster for the next {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -362,7 +364,7 @@ class Generating(StatusEffect):
         self.targets_that_generate_on_hit = targets_that_generate_on_hit
 
     def __str__(self):
-        display_str = f"{self.name}: The chosen targets generate coins when hit for the next {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: The chosen targets generate coins when hit for the next {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -375,7 +377,7 @@ class Tarnished(StatusEffect):
         super().__init__(turns_remaining, value, "Tarnished", StatusEffectKey.Tarnished, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Whenever you gain coins, deal damage relative to the amount gained for the next {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: Whenever you gain coins, deal damage relative to the amount gained for the next {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
@@ -388,7 +390,7 @@ class ManaToHP(StatusEffect):
         super().__init__(turns_remaining, value, "Sanguinated", StatusEffectKey.ManaToHP, source_ability_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: All your abilities that use Mana instead use HP for the next {self.turns_remaining} {self.get_singular_or_plural_turns()}"
+        display_str = f"{self.name}: All your abilities that use Mana instead use HP for the next {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
