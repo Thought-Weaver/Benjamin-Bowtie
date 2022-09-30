@@ -57,6 +57,8 @@ class ClassTag(Enum):
     @skip
     class Consumable(StrEnum):
         Consumable = "Consumable"
+        UsableOutsideDuels = "Usable_Outside_Duels"
+        UsableWithinDuels = "Usable_Within_Duels"
         Potion = "Potion"
         Food = "Food"
         AbilityScroll = "Ability_Scroll"

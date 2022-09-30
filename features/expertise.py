@@ -343,7 +343,7 @@ class AttributeButton(discord.ui.Button):
 
 
 class ExpertiseView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, show_with_buttons: bool):
         super().__init__(timeout=900)
 
         self._bot = bot
@@ -351,7 +351,8 @@ class ExpertiseView(discord.ui.View):
         self._guild_id = guild_id
         self._user = user
 
-        self._get_current_buttons()
+        if show_with_buttons:
+            self._get_current_buttons()
 
     def get_player(self) -> Player:
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
