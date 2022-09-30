@@ -584,8 +584,11 @@ class EquipAbilitiesView(discord.ui.View):
 
     def equip_ability(self, ability: Ability):
         player: Player = self._get_player()
-        
-        if len(player.get_dueling().abilities) < player.get_expertise().memory:
+        # Outside of dueling, status effects shouldn't affect this, but just in case I make
+        # a permanent memory adjustment status effect.
+        available_memory: int = max(0, player.get_combined_attributes().memory)
+
+        if len(player.get_dueling().abilities) < available_memory:
             self._additional_info_str = ""
             player.get_dueling().abilities.append(ability)
             return self._get_equip_page_buttons(ability)

@@ -246,6 +246,7 @@ class Stats():
             self.damage_taken = state.get("damage_taken", 0)
             self.damage_blocked_or_reduced = state.get("damage_blocked_or_reduced", 0)
             self.attacks_dodged = state.get("attacks_dodged", 0)
+            self.abilities_dodged = state.get("abilities_dodged", 0)
             self.critical_hit_successes = state.get("critical_hit_successes", 0)
             self.alchemist_abilities_used = state.get("alchemist_abilities_used", 0)
             self.fisher_abilities_used = state.get("fisher_abilities_used", 0)

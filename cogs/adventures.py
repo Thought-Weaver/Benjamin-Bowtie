@@ -82,6 +82,35 @@ class Adventures(commands.Cog):
         await self.save_database()
         await context.send("The adventures database has been saved!")
 
+    @commands.is_owner()
+    @commands.command(name="endduel", help="Ends combat for specific members", hidden=True)
+    async def end_duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+        if users is None:
+            await context.send("You need to @ a member to use b!endduel.")
+            return
+
+        players: List[Player] = []
+        for user in users:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+            players.append(self._get_player(context.guild.id, user.id))
+
+        for player in players:
+            player_dueling = player.get_dueling()
+            player_expertise = player.get_expertise()
+            
+            if player_dueling.is_in_combat:
+                player_dueling.status_effects = []
+                player_dueling.is_in_combat = False
+                player_dueling.reset_ability_cds()
+
+                player_expertise.update_stats(player.get_equipment().get_total_buffs())
+                player_expertise.hp = player_expertise.max_hp
+                player_expertise.mana = player_expertise.max_mana
+                
+                player.get_stats().dueling.duels_fought += 1
+                player.get_stats().dueling.duels_tied += 1
+        await context.send("The duel has been ended for those players.")
+
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items")
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def fish_handler(self, context: commands.Context):
@@ -409,11 +438,18 @@ class Adventures(commands.Cog):
         if rand_val == 2:
             result: Item = story.get_wishing_well_item()
 
+            xp_to_add: int = 0
             expertise: Expertise = author_player.get_expertise()
             if result.get_key() == ItemKey.Diamond:
-                expertise.add_xp_to_class(8, ExpertiseClass.Merchant)
+                xp_to_add = 8
+                expertise.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant)
             else:
-                expertise.add_xp_to_class(34, ExpertiseClass.Merchant)
+                xp_to_add = 34
+                expertise.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant)
+
+            xp_str: str = ""
+            if xp_to_add > 0:
+                xp_str += f"\n\n*(+{xp_to_add} {ExpertiseClass.Merchant} xp)*"
 
             mail: Mail = Mail("Wishing Well", result, 0, "A piece of the whole.", str(time.time()).split(".")[0], -1)
             author_player.get_mailbox().append(mail)
@@ -422,7 +458,7 @@ class Adventures(commands.Cog):
 
             embed = Embed(
                 title="You toss the coin in...",
-                description="It plummets into the darkness below. Then, you close your eyes and are surrounded by a gust of wind. Something has arrived where things sent are brought."
+                description=f"It plummets into the darkness below. Then, you close your eyes and are surrounded by a gust of wind. Something has arrived where things sent are brought.{xp_str}"
             )
             await context.send(embed=embed)
         # 0.01% base chance of stirring something in the world
@@ -510,7 +546,7 @@ class Adventures(commands.Cog):
             "**Dexterity:** Affects dodge chance and whether you go first when dueling\n"
             "**Intelligence:** Affects how much damage is done with mana-based abilities, max mana, and increases mana regen\n"
             "**Luck:** Increases your prowess in matters of chance and acts as a modifier for critical hit chance\n"
-            "**Memory:** Adds additional ability slots\n\n"
+            "**Memory:** Adds additional ability slots, one per point of memory\n\n"
             "__Status Effects:__\n\n"
             "**Bleeding:** Take x% max health as damage at the start of each turn\n"
             "**Poisoned:** Take x% max health as damage at the start of each turn\n"
@@ -538,7 +574,9 @@ class Adventures(commands.Cog):
             "**HP:** Your health points; when these reach 0, you die\n"
             "**Mana:** A resource used for casting certain abilities during duels\n"
             "**Armor:** Items with Armor reduce the amount of damage you take during duels by that amount\n"
-            "**Overlevelled:** Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing"
+            "**Overlevelled:** Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing\n"
+            "**Critical Hit:** A critical hit (crit) randomly occurs based on your Luck and deals 150% weapon or ability damage\n"
+            "**Cooldown:** A cooldown (CD) is how many turns until you can use the ability again during a duel"
         )
 
         embed = Embed(title="Glossary", description=description)

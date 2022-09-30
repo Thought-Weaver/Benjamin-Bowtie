@@ -872,8 +872,11 @@ class DuelView(discord.ui.View):
         player: Player = self._turn_order[self._turn_index]
         expertise: Expertise = player.get_expertise()
         dueling: Dueling = player.get_dueling()
+        # Theoretically, this should only account for equipment/expertise, but if I add in an ability that reduces memory,
+        # I'll want to have this.
+        available_memory: int = max(0, player.get_combined_attributes().memory)
 
-        page_slots = dueling.abilities[self._page * self._NUM_PER_PAGE:min(len(dueling.abilities), (self._page + 1) * self._NUM_PER_PAGE)][:expertise.memory]
+        page_slots = dueling.abilities[self._page * self._NUM_PER_PAGE:min(len(dueling.abilities), (self._page + 1) * self._NUM_PER_PAGE)][:available_memory]
         for i, ability in enumerate(page_slots):
             self.add_item(ChooseAbilityButton(i + (self._page * self._NUM_PER_PAGE), ability, i))
         
