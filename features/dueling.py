@@ -1111,7 +1111,7 @@ class PlayerVsPlayerDuelView(discord.ui.View):
             "Players will enter combat in turn order according to their Dexterity attribute. Each turn, you will choose an action to take: "
             "Attacking using their main hand weapon, using an ability, or using an item.\n\n"
             "The duel ends when all opponents have been reduced to 0 HP. Following the duel, all players will be restored to full HP and mana.\n\n"
-            f"The game will begin when all challenged players accept the invitation to play.\n\n**Waiting on acceptances from:**\n\n{not_accepted_names}"
+            f"The game will begin when all challenged players accept the invitation to duel.\n\n**Waiting on acceptances from:**\n\n{not_accepted_names}"
         ))
 
     def accept_request(self, user: discord.User):

@@ -9,7 +9,7 @@
     "class_tags": ["Equipment", "Amulet"],
     "state_tags": [],
     "count": 1,
-    "level_requirement": 20,
+    "level_requirement": 50,
     "buffs": {
         "con_buff": 1,
         "str_buff": 1,

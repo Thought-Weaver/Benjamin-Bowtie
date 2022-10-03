@@ -2156,10 +2156,10 @@ class SecondWindI(Ability):
             icon="\uD83E\uDE78",
             name="Second Wind I",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 5% of your missing health.",
+            description="Restore 25% of your missing health.",
             flavor_text="",
             mana_cost=0,
-            cooldown=5,
+            cooldown=-1,
             num_targets=0,
             level_requirement=3,
             target_own_group=True,
@@ -2167,7 +2167,7 @@ class SecondWindI(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        heal_amount = int(caster.get_expertise().max_hp * 0.05)
+        heal_amount = ceil(caster.get_expertise().max_hp * 0.25)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -2190,10 +2190,10 @@ class SecondWindII(Ability):
             icon="\uD83E\uDE78",
             name="Second Wind II",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 10% of your missing health.",
+            description="Restore 50% of your missing health.",
             flavor_text="",
             mana_cost=0,
-            cooldown=5,
+            cooldown=-1,
             num_targets=0,
             level_requirement=8,
             target_own_group=True,
@@ -2201,7 +2201,7 @@ class SecondWindII(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        heal_amount = int(caster.get_expertise().max_hp * 0.1)
+        heal_amount = ceil(caster.get_expertise().max_hp * 0.5)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -2224,10 +2224,10 @@ class SecondWindIII(Ability):
             icon="\uD83E\uDE78",
             name="Second Wind III",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 15% of your missing health.",
+            description="Restore 75% of your missing health.",
             flavor_text="",
             mana_cost=0,
-            cooldown=5,
+            cooldown=-1,
             num_targets=0,
             level_requirement=13,
             target_own_group=True,
@@ -2235,7 +2235,7 @@ class SecondWindIII(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        heal_amount = int(caster.get_expertise().max_hp * 0.15)
+        heal_amount = ceil(caster.get_expertise().max_hp * 0.75)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -2508,44 +2508,6 @@ class UnbreakingII(Ability):
             mana_cost=0,
             cooldown=-1,
             num_targets=0,
-            level_requirement=12,
-            target_own_group=True,
-            purchase_cost=1200
-        )
-
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        con_buff = ConBuff(
-            turns_remaining=-1,
-            value=2 * caster.get_equipment().get_num_slots_unequipped(),
-            source_ability_str=self.get_icon_and_name()
-        )
-
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [con_buff])
-        result_str += "\n".join(results)
-
-        caster.get_stats().dueling.guardian_abilities_used += 1
-
-        return result_str
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, state: dict):
-        self.__init__() # type: ignore
-
-
-class UnbreakingIII(Ability):
-    def __init__(self):
-        super().__init__(
-            icon="\uD83D\uDEE1\uFE0F",
-            name="Unbreaking III",
-            class_key=ExpertiseClass.Guardian,
-            description="Gain +3 Constitution for each slot of armor you don't have equipped until the end of the duel.",
-            flavor_text="",
-            mana_cost=0,
-            cooldown=-1,
-            num_targets=0,
             level_requirement=16,
             target_own_group=True,
             purchase_cost=2400
@@ -2554,7 +2516,7 @@ class UnbreakingIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         con_buff = ConBuff(
             turns_remaining=-1,
-            value=3 * caster.get_equipment().get_num_slots_unequipped(),
+            value=2 * caster.get_equipment().get_num_slots_unequipped(),
             source_ability_str=self.get_icon_and_name()
         )
 

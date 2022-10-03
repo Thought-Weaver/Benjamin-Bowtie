@@ -111,7 +111,7 @@ class Adventures(commands.Cog):
                 player.get_stats().dueling.duels_tied += 1
         await context.send("The duel has been ended for those players.")
 
-    @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items")
+    @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items", aliases=["ghoti"])
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def fish_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)

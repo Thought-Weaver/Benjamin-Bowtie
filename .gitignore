@@ -8,6 +8,7 @@ patchnotes/
 __pycache__/
 .vscode/
 .mypy_cache/
+features/npcs/images
 
 # Databases
 database

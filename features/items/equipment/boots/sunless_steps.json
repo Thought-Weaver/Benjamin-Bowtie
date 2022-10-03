@@ -9,7 +9,7 @@
     "class_tags": ["Equipment", "Boots"],
     "state_tags": [],
     "count": 1,
-    "level_requirement": 20,
+    "level_requirement": 50,
     "buffs": {
         "dex_buff": 2
     },

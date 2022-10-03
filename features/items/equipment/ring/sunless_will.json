@@ -9,7 +9,7 @@
     "class_tags": ["Equipment", "Ring"],
     "state_tags": [],
     "count": 1,
-    "level_requirement": 20,
+    "level_requirement": 50,
     "buffs": {
         "lck_buff": 2
     }

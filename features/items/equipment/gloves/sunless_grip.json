@@ -9,7 +9,7 @@
     "class_tags": ["Equipment", "Gloves"],
     "state_tags": [],
     "count": 1,
-    "level_requirement": 20,
+    "level_requirement": 50,
     "buffs": {
         "str_buff": 2
     },
