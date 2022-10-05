@@ -52,6 +52,18 @@ class StatusEffectKey(StrEnum):
 
     ManaToHP = "ManaToHP"
 
+    # TODO: Implement this on item usage
+    PotionBuff = "PotionBuff"
+
+    # TODO: Implement this when Poisoned ticks
+    PoisonHeals = "PoisonHeals"
+
+    # TODO: Implement this at the top of the turn
+    RegenerateHP = "RegenerateHP"
+
+    # TODO: Implement this when showing action buttons, limiting to only items
+    RestrictedToItems = "RestrictedToItems"
+
 # -----------------------------------------------------------------------------
 # CLASSES
 # -----------------------------------------------------------------------------
@@ -391,6 +403,58 @@ class ManaToHP(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: All your abilities that use Mana instead use HP for the next {self.get_turns_remaining_str()}"
+        
+        if self.source_ability_str is not None:
+            display_str += f" (from {self.source_ability_str})"
+        
+        return display_str
+
+
+class PotionBuff(StatusEffect):
+    def __init__(self, turns_remaining: int, value: int, source_ability_str: str=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Eureka", StatusEffectKey.PotionBuff, source_ability_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: Potions you use are {self.value * 100}% more powerful for the next {self.get_turns_remaining_str()}"
+        
+        if self.source_ability_str is not None:
+            display_str += f" (from {self.source_ability_str})"
+        
+        return display_str
+
+
+class PoisonHeals(StatusEffect):
+    def __init__(self, turns_remaining: int, value: int, source_ability_str: str=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Absorbing", StatusEffectKey.PoisonHeals, source_ability_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: Poison damage heals you for the next {self.get_turns_remaining_str()}"
+        
+        if self.source_ability_str is not None:
+            display_str += f" (from {self.source_ability_str})"
+        
+        return display_str
+
+
+class RestrictedToItems(StatusEffect):
+    def __init__(self, turns_remaining: int, value: int, source_ability_str: str=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Acervophilic", StatusEffectKey.RestrictedToItems, source_ability_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: You can only use items for the next {self.get_turns_remaining_str()}"
+        
+        if self.source_ability_str is not None:
+            display_str += f" (from {self.source_ability_str})"
+        
+        return display_str
+
+
+class RegenerateHP(StatusEffect):
+    def __init__(self, turns_remaining: int, value: int, source_ability_str: str=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Regenerating", StatusEffectKey.RegenerateHP, source_ability_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: You regain {self.value}% of your health for the next {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"
