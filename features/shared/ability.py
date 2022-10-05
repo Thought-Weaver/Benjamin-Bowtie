@@ -11,7 +11,7 @@ from features.equipment import Equipment
 
 from features.expertise import DEX_DODGE_SCALE, INT_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE, ExpertiseClass
 from features.shared.item import ClassTag, WeaponStats
-from features.shared.statuseffect import BLEED_PERCENT_HP, AttrBuffOnDamage, Bleeding, CannotTarget, ConBuff, ConDebuff, DexBuff, DexDebuff, DmgReduction, FixedDmgTick, Generating, IntBuff, IntDebuff, LckBuff, ManaToHP, StatusEffect, StatusEffectKey, StrBuff, StrDebuff, Tarnished, Taunted, TurnSkipChance
+from features.shared.statuseffect import BLEED_PERCENT_HP, POISONED_PERCENT_HP, AttrBuffOnDamage, Bleeding, CannotTarget, ConBuff, ConDebuff, DexBuff, DexDebuff, DmgReduction, FixedDmgTick, Generating, IntBuff, IntDebuff, LckBuff, ManaToHP, PoisonHeals, Poisoned, PotionBuff, RegenerateHP, RestrictedToItems, StatusEffect, StatusEffectKey, StrBuff, StrDebuff, Tarnished, Taunted, TurnSkipChance
 
 if TYPE_CHECKING:
     from features.npcs.npc import NPC
@@ -2456,7 +2456,7 @@ class ScarArmorII(Ability):
         self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
-# EVADE
+# UNBREAKING
 # -----------------------------------------------------------------------------
 
 class UnbreakingI(Ability):
@@ -2732,7 +2732,7 @@ class PiercingStrikeI(Ability):
         bleed = Bleeding(
             turns_remaining=3,
             value=BLEED_PERCENT_HP,
-            source_ability_str=self
+            source_ability_str=self.get_icon_and_name()
         )
 
         for i in range(len(results)):
@@ -2784,7 +2784,7 @@ class PiercingStrikeII(Ability):
         bleed = Bleeding(
             turns_remaining=3,
             value=BLEED_PERCENT_HP,
-            source_ability_str=self
+            source_ability_str=self.get_icon_and_name()
         )
 
         for i in range(len(results)):
@@ -2836,7 +2836,7 @@ class PiercingStrikeIII(Ability):
         bleed = Bleeding(
             turns_remaining=3,
             value=BLEED_PERCENT_HP,
-            source_ability_str=self
+            source_ability_str=self.get_icon_and_name()
         )
 
         for i in range(len(results)):
@@ -4171,6 +4171,1026 @@ class DeepPocketsIII(Ability):
         caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# ALCHEMIST ABILITIES
+# -----------------------------------------------------------------------------
+# INCENSE
+# -----------------------------------------------------------------------------
+
+class IncenseI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2601\uFE0F",
+            name="Incense I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Restore 2-4 health to all allies.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=0,
+            num_targets=-1,
+            level_requirement=1,
+            target_own_group=True,
+            purchase_cost=100
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_heal_ability(caster, targets, range(2, 4))
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class IncenseII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2601\uFE0F",
+            name="Incense II",
+            class_key=ExpertiseClass.Alchemist,
+            description="Restore 5-7 health to all allies.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=0,
+            num_targets=-1,
+            level_requirement=4,
+            target_own_group=True,
+            purchase_cost=200
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_heal_ability(caster, targets, range(5, 7))
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class IncenseIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2601\uFE0F",
+            name="Incense III",
+            class_key=ExpertiseClass.Alchemist,
+            description="Restore 7-9 health to all allies.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=0,
+            num_targets=-1,
+            level_requirement=7,
+            target_own_group=True,
+            purchase_cost=400
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_heal_ability(caster, targets, range(7, 9))
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# PREPARE POTIONS
+# -----------------------------------------------------------------------------
+
+class PreparePotionsI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2697\uFE0F",
+            name="Prepare Potions I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Potions you use are 15% more effective for 3 turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=3,
+            num_targets=0,
+            level_requirement=3,
+            target_own_group=True,
+            purchase_cost=150
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        prep_potions_buff = PotionBuff(
+            turns_remaining=3,
+            value=0.15,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [prep_potions_buff])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class PreparePotionsII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2697\uFE0F",
+            name="Prepare Potions II",
+            class_key=ExpertiseClass.Alchemist,
+            description="Potions you use are 25% more effective for 3 turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=3,
+            num_targets=0,
+            level_requirement=5,
+            target_own_group=True,
+            purchase_cost=150
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        prep_potions_buff = PotionBuff(
+            turns_remaining=3,
+            value=0.25,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [prep_potions_buff])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class PreparePotionsIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2697\uFE0F",
+            name="Prepare Potions III",
+            class_key=ExpertiseClass.Alchemist,
+            description="Potions you use are 35% more effective for 3 turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=3,
+            num_targets=0,
+            level_requirement=7,
+            target_own_group=True,
+            purchase_cost=150
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        prep_potions_buff = PotionBuff(
+            turns_remaining=3,
+            value=0.25,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [prep_potions_buff])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# VITALITY TRANSFER
+# -----------------------------------------------------------------------------
+
+class VitalityTransferI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDC9E",
+            name="Vitality Transfer I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Take 15% of your max health as damage and restore 15% of an ally's max health.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=3,
+            num_targets=1,
+            level_requirement=5,
+            target_own_group=True,
+            purchase_cost=300
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        damage_amount = ceil(caster.get_expertise().max_hp * 0.15)
+        caster.get_expertise().damage(damage_amount)
+
+        heal_amount = ceil(targets[0].get_expertise().max_hp * 0.15)
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class VitalityTransferII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDC9E",
+            name="Vitality Transfer II",
+            class_key=ExpertiseClass.Alchemist,
+            description="Take 25% of your max health as damage and restore 25% of an ally's max health.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=3,
+            num_targets=1,
+            level_requirement=8,
+            target_own_group=True,
+            purchase_cost=600
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        damage_amount = ceil(caster.get_expertise().max_hp * 0.25)
+        caster.get_expertise().damage(damage_amount)
+
+        heal_amount = ceil(targets[0].get_expertise().max_hp * 0.25)
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class VitalityTransferIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDC9E",
+            name="Vitality Transfer III",
+            class_key=ExpertiseClass.Alchemist,
+            description="Take 35% of your max health as damage and restore 35% of an ally's max health.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=3,
+            num_targets=1,
+            level_requirement=11,
+            target_own_group=True,
+            purchase_cost=1200
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        damage_amount = ceil(caster.get_expertise().max_hp * 0.35)
+        caster.get_expertise().damage(damage_amount)
+
+        heal_amount = ceil(targets[0].get_expertise().max_hp * 0.35)
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# CLEANSE
+# -----------------------------------------------------------------------------
+
+class CleanseI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDEE7",
+            name="Cleanse I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Remove all status effects from an ally.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=7,
+            target_own_group=True,
+            purchase_cost=1600
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+
+        results: List[str] = []
+        for target in targets:
+            target.get_dueling().status_effects = []
+            target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_buffs())
+            results.append("{1}" + f" has had their status effects removed")
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# TOXIC CLOUD
+# -----------------------------------------------------------------------------
+
+class ToxicCloudI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF2B",
+            name="Toxic Cloud I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Create a miasma that deals 1-3 damage to all enemies with a 30% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=3,
+            num_targets=-1,
+            level_requirement=9,
+            target_own_group=False,
+            purchase_cost=400
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(1, 3))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        poisoned = Poisoned(
+            turns_remaining=2,
+            value=POISONED_PERCENT_HP,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged and random() < 0.3:
+                targets[i].get_dueling().status_effects.append(poisoned)
+                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_buffs())
+            results[i].target_str += f" and is now {poisoned.name}"
+        
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        # This is a bit of a hack to ignore the state being passed in and
+        # use the defaults in init since no state vars are ever needed.
+        self.__init__() # type: ignore
+
+
+class ToxicCloudII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF2B",
+            name="Toxic Cloud II",
+            class_key=ExpertiseClass.Alchemist,
+            description="Create a miasma that deals 2-4 damage to all enemies with a 50% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=3,
+            num_targets=-1,
+            level_requirement=12,
+            target_own_group=False,
+            purchase_cost=800
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 4))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        poisoned = Poisoned(
+            turns_remaining=2,
+            value=POISONED_PERCENT_HP,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged and random() < 0.5:
+                targets[i].get_dueling().status_effects.append(poisoned)
+                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_buffs())
+            results[i].target_str += f" and is now {poisoned.name}"
+        
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        # This is a bit of a hack to ignore the state being passed in and
+        # use the defaults in init since no state vars are ever needed.
+        self.__init__() # type: ignore
+
+
+class ToxicCloudIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF2B",
+            name="Toxic Cloud III",
+            class_key=ExpertiseClass.Alchemist,
+            description="Create a miasma that deals 3-5 damage to all enemies with a 70% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=3,
+            num_targets=-1,
+            level_requirement=15,
+            target_own_group=False,
+            purchase_cost=1600
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 4))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        poisoned = Poisoned(
+            turns_remaining=2,
+            value=POISONED_PERCENT_HP,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged and random() < 0.7:
+                targets[i].get_dueling().status_effects.append(poisoned)
+                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_buffs())
+            results[i].target_str += f" and is now {poisoned.name}"
+        
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        # This is a bit of a hack to ignore the state being passed in and
+        # use the defaults in init since no state vars are ever needed.
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# SMOKESCREEN
+# -----------------------------------------------------------------------------
+
+class SmokescreenI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDCA3",
+            name="Smokescreen I",
+            class_key=ExpertiseClass.Alchemist,
+            description="All allies gain +25 Dexterity for 2 turns.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=5,
+            num_targets=-1,
+            level_requirement=11,
+            target_own_group=True,
+            purchase_cost=600
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        dex_buff = DexBuff(
+            turns_remaining=1,
+            value=25,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dex_buff])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class SmokescreenII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDCA3",
+            name="Smokescreen II",
+            class_key=ExpertiseClass.Alchemist,
+            description="All allies gain +50 Dexterity for 2 turns.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=5,
+            num_targets=-1,
+            level_requirement=14,
+            target_own_group=True,
+            purchase_cost=1200
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        dex_buff = DexBuff(
+            turns_remaining=1,
+            value=50,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dex_buff])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class SmokescreenIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDCA3",
+            name="Smokescreen III",
+            class_key=ExpertiseClass.Alchemist,
+            description="All allies gain +75 Dexterity for 2 turns.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=5,
+            num_targets=-1,
+            level_requirement=17,
+            target_own_group=True,
+            purchase_cost=2400
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        dex_buff = DexBuff(
+            turns_remaining=1,
+            value=75,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dex_buff])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# EMPOWERMENT
+# -----------------------------------------------------------------------------
+
+class EmpowermentI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2728",
+            name="Empowerment I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Choose an ally. They regain Mana equal to their Intelligence.",
+            flavor_text="",
+            mana_cost=25,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=13,
+            target_own_group=True,
+            purchase_cost=2800
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+
+        results: List[str] = []
+        for target in targets:
+            mana_to_restore: int = target.get_expertise().intelligence
+            target.get_expertise().restore_mana(mana_to_restore)
+            results.append("{1}" + f" regained {mana_to_restore} mana")
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# FESTERING VAPOR
+# -----------------------------------------------------------------------------
+
+class FesteringVaporI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2620\uFE0F",
+            name="Festering Vapor I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Deal 10-20 damage to all enemies that are Poisoned.",
+            flavor_text="",
+            mana_cost=15,
+            cooldown=3,
+            num_targets=-1,
+            level_requirement=15,
+            target_own_group=False,
+            purchase_cost=800
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        filtered_targets = [target for target in targets if any(se.key == StatusEffectKey.Poisoned for se in target.get_dueling().status_effects)]
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, filtered_targets, range(10, 20))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        # This is a bit of a hack to ignore the state being passed in and
+        # use the defaults in init since no state vars are ever needed.
+        self.__init__() # type: ignore
+
+
+class FesteringVaporII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2620\uFE0F",
+            name="Festering Vapor II",
+            class_key=ExpertiseClass.Alchemist,
+            description="Deal 20-30 damage to all enemies that are Poisoned.",
+            flavor_text="",
+            mana_cost=15,
+            cooldown=3,
+            num_targets=-1,
+            level_requirement=15,
+            target_own_group=False,
+            purchase_cost=800
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        filtered_targets = [target for target in targets if any(se.key == StatusEffectKey.Poisoned for se in target.get_dueling().status_effects)]
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, filtered_targets, range(20, 30))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        # This is a bit of a hack to ignore the state being passed in and
+        # use the defaults in init since no state vars are ever needed.
+        self.__init__() # type: ignore
+
+
+class FesteringVaporIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2620\uFE0F",
+            name="Festering Vapor III",
+            class_key=ExpertiseClass.Alchemist,
+            description="Deal 30-40 damage to all enemies that are Poisoned.",
+            flavor_text="",
+            mana_cost=15,
+            cooldown=3,
+            num_targets=-1,
+            level_requirement=15,
+            target_own_group=False,
+            purchase_cost=800
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        filtered_targets = [target for target in targets if any(se.key == StatusEffectKey.Poisoned for se in target.get_dueling().status_effects)]
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, filtered_targets, range(30, 40))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        # This is a bit of a hack to ignore the state being passed in and
+        # use the defaults in init since no state vars are ever needed.
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# POISONOUS SKIN
+# -----------------------------------------------------------------------------
+
+class PoisonousSkinI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDD8E",
+            name="Poisonous Skin I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Poison damage instead heals you until the end of the fight.",
+            flavor_text="",
+            mana_cost=25,
+            cooldown=-1,
+            num_targets=0,
+            level_requirement=17,
+            target_own_group=True,
+            purchase_cost=3000
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        poison_heals_buff = PoisonHeals(
+            turns_remaining=-1,
+            value=1,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [poison_heals_buff])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# REGENERATION
+# -----------------------------------------------------------------------------
+
+class RegenerationI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u267B\uFE0F",
+            name="Regeneration I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Choose up to 3 allies. For the next 2 turns, they regain 5% of their max health at the start of each turn.",
+            flavor_text="",
+            mana_cost=75,
+            cooldown=3,
+            num_targets=3,
+            level_requirement=19,
+            target_own_group=True,
+            purchase_cost=1200
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        regenerating = RegenerateHP(
+            turns_remaining=2,
+            value=0.05,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [regenerating])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class RegenerationII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u267B\uFE0F",
+            name="Regeneration II",
+            class_key=ExpertiseClass.Alchemist,
+            description="Choose up to 3 allies. For the next 2 turns, they regain 8% of their max health at the start of each turn.",
+            flavor_text="",
+            mana_cost=75,
+            cooldown=3,
+            num_targets=3,
+            level_requirement=21,
+            target_own_group=True,
+            purchase_cost=2400
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        regenerating = RegenerateHP(
+            turns_remaining=2,
+            value=0.08,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [regenerating])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class RegenerationIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u267B\uFE0F",
+            name="Regeneration III",
+            class_key=ExpertiseClass.Alchemist,
+            description="Choose up to 3 allies. For the next 2 turns, they regain 10% of their max health at the start of each turn.",
+            flavor_text="",
+            mana_cost=75,
+            cooldown=3,
+            num_targets=3,
+            level_requirement=23,
+            target_own_group=True,
+            purchase_cost=4800
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        regenerating = RegenerateHP(
+            turns_remaining=2,
+            value=0.1,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [regenerating])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# PARALYZING FUMES
+# -----------------------------------------------------------------------------
+
+class ParalyzingFumesI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDCAB",
+            name="Paralyzing Fumes I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Apply Faltering to all enemies, giving them a 50% chance to lose their next turn.",
+            flavor_text="",
+            mana_cost=40,
+            cooldown=6,
+            num_targets=-1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=5000
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        faltering = TurnSkipChance(
+            turns_remaining=1,
+            value=0.5,
+            source_ability_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [faltering])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# QUICK ACCESS
+# -----------------------------------------------------------------------------
+
+class QuickAccessI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDCBC",
+            name="Quick Access I",
+            class_key=ExpertiseClass.Alchemist,
+            description="With deft hands, you are able to use 3 items this turn.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=-1,
+            num_targets=0,
+            level_requirement=22,
+            target_own_group=True,
+            purchase_cost=8000
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        # Adding one because actions_remaining are reduced when pressing Continue
+        caster.get_dueling().actions_remaining += 4
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        restriction = RestrictedToItems(
+            turns_remaining=3,
+            value=0,
+            source_ability_str=self.get_icon_and_name()
+        )
+        self._use_positive_status_effect_ability(caster, targets, [restriction])
+
+        return "{0}" + f" used {self.get_icon_and_name()}!\n\nYou may now use up to 3 items from your inventory."
 
     def __getstate__(self):
         return self.__dict__
