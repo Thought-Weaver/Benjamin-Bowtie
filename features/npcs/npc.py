@@ -5,11 +5,24 @@ from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 from features.stats import Stats
+from strenum import StrEnum
 
+# -----------------------------------------------------------------------------
+# ENUMS
+# -----------------------------------------------------------------------------
+
+class NPCRoles(StrEnum):
+    FortuneTeller = "FortuneTeller"
+    Blacksmith = "Blacksmith"
+
+# -----------------------------------------------------------------------------
+# CLASSES
+# -----------------------------------------------------------------------------
 
 class NPC():
-    def __init__(self, name: str):
+    def __init__(self, name: str, role: NPCRoles):
         self._name = name
+        self._role = role
 
         self._inventory: Inventory = Inventory()
         self._stats: Stats = Stats()

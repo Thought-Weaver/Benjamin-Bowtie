@@ -1,5 +1,4 @@
 from __future__ import annotations
-from math import floor
 
 import discord
 
@@ -7,6 +6,7 @@ from discord.embeds import Embed
 from features.expertise import Expertise, ExpertiseClass
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
+from math import floor
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
