@@ -616,16 +616,10 @@ class DuelView(discord.ui.View):
 
         entity: Player | NPC = self._turn_order[self._turn_index]
         restricted_to_items: bool = any(se.key == StatusEffectKey.RestrictedToItems for se in entity.get_dueling().status_effects)
-        if restricted_to_items:
-            self.add_item(ItemActionButton())
-            self.add_item(SkipButton())
 
-            self._reset_turn_variables()
-
-            return Embed(title="Choose an Action", description=self.get_duel_info_str())
-
-        self.add_item(AttackActionButton())
-        self.add_item(AbilityActionButton())
+        if not restricted_to_items:
+            self.add_item(AttackActionButton())
+            self.add_item(AbilityActionButton())
         self.add_item(ItemActionButton())
         self.add_item(SkipButton())
 
