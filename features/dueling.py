@@ -469,20 +469,36 @@ class DuelView(discord.ui.View):
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
 
         entity: Player | NPC = self._turn_order[self._turn_index]
+        
         start_damage: int = 0
+        start_heals: int = 0
         max_should_skip_chance: float = 0
+        heals_from_poison: bool = any(se.key == StatusEffectKey.PoisonHeals for se in entity.get_dueling().status_effects)
+
         for se in entity.get_dueling().status_effects:
             if se.key == StatusEffectKey.FixedDmgTick:
                 start_damage += se.value
-            if se.key == StatusEffectKey.Bleeding or se.key == StatusEffectKey.Poisoned:
-                start_damage += entity.get_expertise().max_hp * se.value
+            if se.key == StatusEffectKey.Bleeding:
+                start_damage += int(entity.get_expertise().max_hp * se.value)
+            if se.key == StatusEffectKey.Poisoned:
+                if heals_from_poison:
+                    start_heals += int(entity.get_expertise().max_hp * se.value)
+                else:
+                    start_damage += int(entity.get_expertise().max_hp * se.value)
+            if se.key == StatusEffectKey.RegenerateHP:
+                start_heals += int(entity.get_expertise().max_hp * se.value)
             # Only take the largest chance to skip the turn
             if se.key == StatusEffectKey.TurnSkipChance:
                 max_should_skip_chance = max(se.value, max_should_skip_chance)
+        
         # Fixed damage is taken directly, no reduction
         entity.get_expertise().damage(start_damage, 0, 0)
         if start_damage > 0:
             self._additional_info_string_data += f"{self.get_name(entity)} took {start_damage} damage! "
+
+        entity.get_expertise().heal(start_heals)
+        if start_heals > 0:
+            self._additional_info_string_data += f"{self.get_name(entity)} had {start_heals} health restored! "
 
         if random() < max_should_skip_chance:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
@@ -597,6 +613,16 @@ class DuelView(discord.ui.View):
 
     def show_actions(self):
         self.clear_items()
+
+        entity: Player | NPC = self._turn_order[self._turn_index]
+        restricted_to_items: bool = any(se.key == StatusEffectKey.RestrictedToItems for se in entity.get_dueling().status_effects)
+        if restricted_to_items:
+            self.add_item(ItemActionButton())
+            self.add_item(SkipButton())
+
+            self._reset_turn_variables()
+
+            return Embed(title="Choose an Action", description=self.get_duel_info_str())
 
         self.add_item(AttackActionButton())
         self.add_item(AbilityActionButton())

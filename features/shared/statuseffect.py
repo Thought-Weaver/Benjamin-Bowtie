@@ -55,13 +55,10 @@ class StatusEffectKey(StrEnum):
     # TODO: Implement this on item usage
     PotionBuff = "PotionBuff"
 
-    # TODO: Implement this when Poisoned ticks
     PoisonHeals = "PoisonHeals"
 
-    # TODO: Implement this at the top of the turn
     RegenerateHP = "RegenerateHP"
 
-    # TODO: Implement this when showing action buttons, limiting to only items
     RestrictedToItems = "RestrictedToItems"
 
 # -----------------------------------------------------------------------------
