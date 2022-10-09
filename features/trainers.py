@@ -218,13 +218,14 @@ class TrainerView(discord.ui.View):
         if self._current_class == ExpertiseClass.Guardian:
             return Embed(title="Dueling Grounds", description=(
                 "At a grassy clearing just outside the village, a circle of wooden posts loosely held together with a length of rope between them marks the officially recognized dueling grounds.\n\n"
-                "An elderly gentleman wearing an elegant black and gold doublet waits on a stool, sharpening one weapon after another meticulously with a whetstone. Galos, a well-recognized figure around town and a practiced fighter, looks up as you approach."
+                "An elderly gentleman wearing an elegant black and gold doublet waits on a stool, sharpening one weapon after another meticulously with a whetstone. Galos, a well-recognized figure around town and a practiced fighter, looks up as you approach.\n\n"
+                "\"Ha ha! There's never a shortage of hopeful guardians looking to train. En garde!\""
             ))
         if self._current_class == ExpertiseClass.Merchant:
             return Embed(title="The Crown & Anchor Tavern", description=(
                 "The warm glow of the large, wooden tavern near the center of the village is always an inviting presence. In the evenings, people gather for knucklebones, good conversation with friends, and excellent food. "
                 "Quinan stands behind the bar polishing a tankard, an eye always looking around at the tables to see where she's needed.\n\n"
-                "As you approach, she greets you with a wide smile and leans against the countertop, \"Good to see you. What can I get you today?\""
+                "As you approach, she greets you with a wide smile and leans against the countertop, \"Good to see you! What can I get you today?\""
             ))
         if self._current_class == ExpertiseClass.Alchemist:
             return Embed(title="Madame Yenna's Tent", description=(
@@ -232,7 +233,7 @@ class TrainerView(discord.ui.View):
                 "Stepping inside, the daylight suddenly disperses and shadow engulfs you. Your eyes adjust to the dim interior, oddly larger than it appeared from the outside. "
                 "A flickering light passes across the shadows cast by the setup in front of you: Dark wooden chairs, one near you and another on the opposite side of a rectangular table hewn of the same wood. "
                 "The table has white wax candles on either side, illuminating tarot cards, potions, herbs, and various occult implements that belong to the figure hidden in the shadows beyond the table's edge.\n\n"
-                "\"Matters of fate and destiny are often complex,\" she says, moving closer to the light, though you remain unable to see the upper half of her face. \"What can I do to aid your journey?\""
+                "\"Alchemy? I can teach you, but the road is seldom an easy one.\""
             ))
         return Embed(title="Where are you?", description="In the midst of knowing where you were, suddenly now there is a bleak unknown, a pale that sparks fear and awe.")
 
