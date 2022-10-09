@@ -4,7 +4,7 @@ import discord
 
 from discord import Embed
 from features.expertise import Expertise, ExpertiseClass
-from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CursedCoinsI, CursedCoinsII, CursedCoinsIII, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EvadeI, EvadeII, EvadeIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HookI, HookII, HookIII, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PressTheAdvantageI, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, TauntI, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, UnbreakingI, UnbreakingII, UnbreakingIII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlwindI, WhirlwindII, WhirlwindIII, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
+from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CursedCoinsI, CursedCoinsII, CursedCoinsIII, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HookI, HookII, HookIII, IncenseI, IncenseII, IncenseIII, ParalyzingFumesI, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ToxicCloudI, ToxicCloudII, ToxicCloudIII, UnbreakingI, UnbreakingII, UnbreakingIII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlwindI, WhirlwindII, WhirlwindIII, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
 
 from typing import TYPE_CHECKING, List
 from features.shared.nextbutton import NextButton
@@ -57,6 +57,20 @@ class GuardianTrainerButton(discord.ui.Button):
         view: TrainerView = self.view
         if interaction.user == view.get_user():
             response = view.visit_dueling_grounds()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class AlchemistTrainerButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"Dueling Grounds", row=row)
+        
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: TrainerView = self.view
+        if interaction.user == view.get_user():
+            response = view.visit_madame_yennas_tent()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -171,6 +185,21 @@ class TrainerView(discord.ui.View):
             [DeepPocketsI, DeepPocketsII, DeepPocketsIII]
         ]
 
+        self._alchemist_abilities: List[List[Ability]] = [
+            [IncenseI, IncenseII, IncenseIII],
+            [PreparePotionsI, PreparePotionsII, PreparePotionsIII],
+            [VitalityTransferI, VitalityTransferII, VitalityTransferIII],
+            [CleanseI],
+            [ToxicCloudI, ToxicCloudII, ToxicCloudIII],
+            [SmokescreenI, SmokescreenII, SmokescreenIII],
+            [EmpowermentI],
+            [FesteringVaporI, FesteringVaporII, FesteringVaporIII],
+            [PoisonousSkinI],
+            [RegenerationI, RegenerationII, RegenerationIII],
+            [ParalyzingFumesI],
+            [QuickAccessI]
+        ]
+
         self._display_initial_buttons()
 
     def _get_player(self) -> Player:
@@ -197,6 +226,14 @@ class TrainerView(discord.ui.View):
                 "Quinan stands behind the bar polishing a tankard, an eye always looking around at the tables to see where she's needed.\n\n"
                 "As you approach, she greets you with a wide smile and leans against the countertop, \"Good to see you. What can I get you today?\""
             ))
+        if self._current_class == ExpertiseClass.Alchemist:
+            return Embed(title="Madame Yenna's Tent", description=(
+                "In the bustling village market stands an unusual tent, covered in a patterned red, gold, and purple fabric. "
+                "Stepping inside, the daylight suddenly disperses and shadow engulfs you. Your eyes adjust to the dim interior, oddly larger than it appeared from the outside. "
+                "A flickering light passes across the shadows cast by the setup in front of you: Dark wooden chairs, one near you and another on the opposite side of a rectangular table hewn of the same wood. "
+                "The table has white wax candles on either side, illuminating tarot cards, potions, herbs, and various occult implements that belong to the figure hidden in the shadows beyond the table's edge.\n\n"
+                "\"Matters of fate and destiny are often complex,\" she says, moving closer to the light, though you remain unable to see the upper half of her face. \"What can I do to aid your journey?\""
+            ))
         return Embed(title="Where are you?", description="In the midst of knowing where you were, suddenly now there is a bleak unknown, a pale that sparks fear and awe.")
 
     def get_available_abilities(self, player: Player, all_abilities: List[List[Ability]]):
@@ -221,7 +258,8 @@ class TrainerView(discord.ui.View):
         self.add_item(FisherTrainerButton(0))
         self.add_item(GuardianTrainerButton(1))
         self.add_item(MerchantTrainerButton(2))
-        self.add_item(EnterEquipAbilitiesButton(3))
+        self.add_item(AlchemistTrainerButton(3))
+        self.add_item(EnterEquipAbilitiesButton(4))
 
     def _get_page_info(self, purchased_ability: Ability | None=None):
         player: Player = self._get_player()
@@ -240,6 +278,8 @@ class TrainerView(discord.ui.View):
             return Embed(title="Dueling Grounds", description=description)
         if self._current_class == ExpertiseClass.Merchant:
             return Embed(title="The Crown & Anchor Tavern", description=description)
+        if self._current_class == ExpertiseClass.Alchemist:
+            return Embed(title="Madame Yenna's Tent", description=description)
         return Embed(title="Where are you?", description="In the midst of knowing where you were, suddenly now there is a bleak unknown, a pale that sparks fear and awe.")
 
     def _get_current_page_buttons(self):
@@ -303,6 +343,13 @@ class TrainerView(discord.ui.View):
     def visit_dueling_grounds(self):
         self._current_ability = None
         self._current_class = ExpertiseClass.Guardian
+        self._page = 0
+        self._get_current_page_buttons()
+        return self.get_initial_embed_for_class()
+
+    def visit_madame_yennas_tent(self):
+        self._current_ability = None
+        self._current_class = ExpertiseClass.Alchemist
         self._page = 0
         self._get_current_page_buttons()
         return self.get_initial_embed_for_class()
