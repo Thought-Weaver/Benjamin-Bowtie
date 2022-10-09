@@ -9,6 +9,7 @@
     "class_tags": ["Equipment", "Boots"],
     "state_tags": [],
     "count": 1,
+    "level_requirement": 2,
     "armor_stats": {
         "armor_amount": 1
     }

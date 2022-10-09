@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 # CONSTANTS
 # -----------------------------------------------------------------------------
 
-ARMOR_OVERLEVELLED_DEBUFF = 0.15
+ARMOR_OVERLEVELED_DEBUFF = 0.15
 
 # -----------------------------------------------------------------------------
 # CLASSES
@@ -168,7 +168,7 @@ class Equipment():
         for item in self.get_all_equipped_items():
             armor_stats: ArmorStats = item.get_armor_stats()
             if armor_stats is not None:
-                reduce_to: float = max(0, 1.0 - (ARMOR_OVERLEVELLED_DEBUFF * max(0, item.get_level_requirement() - level)))
+                reduce_to: float = max(0, 1.0 - (ARMOR_OVERLEVELED_DEBUFF * max(0, item.get_level_requirement() - level)))
                 armor += int(armor_stats.get_armor_amount() * reduce_to)
         return armor
 

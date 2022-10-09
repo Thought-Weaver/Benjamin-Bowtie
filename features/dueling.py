@@ -381,7 +381,7 @@ class DuelView(discord.ui.View):
         self._users = users
         self._allies = allies
         self._enemies = enemies
-        self._turn_order = sorted(allies + enemies, key=lambda x: x.get_expertise().dexterity)
+        self._turn_order = sorted(allies + enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
         self._turn_index = 0
 
         self._intent: (Intent | None) = None
@@ -788,8 +788,12 @@ class DuelView(discord.ui.View):
         result_str = self._selected_ability.use_ability(caster, self._selected_targets)
 
         caster.get_stats().dueling.abilities_used += 1
+        # TODO: Add level up check mid-combat?
+        xp_to_add: int = self._selected_ability.get_level_requirement()
+        class_key: ExpertiseClass = self._selected_ability.get_class_key()
+        caster.get_expertise().add_xp_to_class(xp_to_add, class_key)
 
-        return result_str.format(*names)
+        return result_str.format(*names) + f"\n\nYou gained {xp_to_add} {class_key} xp!"
 
     def use_item_on_selected_targets(self):
         # TODO: Implement item usage when said items exist.
@@ -1034,6 +1038,7 @@ class DuelView(discord.ui.View):
             # so they actually last a turn
             dueling.decrement_all_ability_cds()
             dueling.decrement_statuses_time_remaining()
+            cur_entity.get_expertise().update_stats(cur_entity.get_dueling().get_combined_attribute_mods() + cur_entity.get_equipment().get_total_buffs())
             duel_result = self.set_next_turn()
             if duel_result.game_won:
                 return self.get_victory_screen(duel_result)
@@ -1081,6 +1086,10 @@ class AcceptButton(discord.ui.Button):
         if not view.all_accepted():
             await interaction.response.edit_message(embed=response, view=view, content=None)
         else:
+            if view.any_in_duels_currently():
+                await interaction.response.edit_message(embed=None, view=None, content="At least one person is already in a duel. This duel has been cancelled.")
+                return
+            
             users: List[discord.User] = [view.get_challenger(), *view.get_opponents()]
             challenger_player: Player = view.get_challenger_player()
             opponents_players: List[Player] = view.get_opponents_players()
@@ -1124,6 +1133,9 @@ class PlayerVsPlayerDuelView(discord.ui.View):
         self.add_item(AcceptButton())
         self.add_item(DeclineButton())
 
+    def _get_player(self, user_id: int) -> Player:
+        return self._database[str(self._guild_id)]["members"][str(user_id)]
+
     def get_info_embed(self):
         not_accepted = list(filter(lambda x: x not in self._acceptances, self._opponents))
         not_accepted_names = "\n".join(list(map(lambda x: x.display_name, not_accepted)))
@@ -1135,6 +1147,13 @@ class PlayerVsPlayerDuelView(discord.ui.View):
         ))
 
     def accept_request(self, user: discord.User):
+        if self._get_player(user.id).get_dueling().is_in_combat:
+            self.clear_items()
+            return Embed(
+                title="PvP Duel Cancelled",
+                description=f"{user.display_name} is already in a duel and can't accept this one!"
+            )
+
         if user not in self._acceptances:
             self._acceptances.append(user)
         
@@ -1142,6 +1161,9 @@ class PlayerVsPlayerDuelView(discord.ui.View):
 
     def all_accepted(self):
         return all(user in self._acceptances for user in self._opponents)
+
+    def any_in_duels_currently(self):
+        return any(self._get_player(user.id).get_dueling().is_in_combat for user in [*self._opponents, self._challenger])
 
     def get_bot(self):
         return self._bot
@@ -1157,9 +1179,6 @@ class PlayerVsPlayerDuelView(discord.ui.View):
 
     def get_opponents(self):
         return self._opponents
-
-    def _get_player(self, user_id: int) -> Player:
-        return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_challenger_player(self):
         return self._get_player(self._challenger.id)

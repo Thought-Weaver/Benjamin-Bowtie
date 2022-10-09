@@ -161,19 +161,19 @@ class MailModal(discord.ui.Modal):
         self._view = view
         self._message_id = message_id
 
-        self._count_input = discord.ui.TextInput(
+        self._count_input: discord.ui.TextInput = discord.ui.TextInput(
             label="Quantity",
             default="1",
         )
         self.add_item(self._count_input)
 
-        self._coins_input = discord.ui.TextInput(
+        self._coins_input: discord.ui.TextInput = discord.ui.TextInput(
             label="Coins",
             default="0"
         )
         self.add_item(self._coins_input)
 
-        self._message_input = discord.ui.TextInput(
+        self._message_input: discord.ui.TextInput = discord.ui.TextInput(
             label="Message",
             required=False,
             style=discord.TextStyle.paragraph,

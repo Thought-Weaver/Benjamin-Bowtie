@@ -582,7 +582,7 @@ class Adventures(commands.Cog):
             "**HP:** Your health points; when these reach 0, you die\n"
             "**Mana:** A resource used for casting certain abilities during duels\n"
             "**Armor:** Items with Armor reduce the amount of damage you take during duels by that amount\n"
-            "**Overlevelled:** Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing\n"
+            "**Overleveled:** Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing\n"
             "**Critical Hit:** A critical hit (crit) randomly occurs based on your Luck and deals 150% weapon or ability damage\n"
             "**Cooldown:** A cooldown (CD) is how many turns until you can use the ability again during a duel"
         )
