@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/stranglekelp",
+    "icon": "\uD83C\uDF3F",
+    "name": "Stranglekelp",
+    "value": 5,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "The third-most common variety of kelp and a terrible mess to get caught in.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

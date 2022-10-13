@@ -126,6 +126,56 @@ class ItemKey(StrEnum):
     SunlessWill = "items/equipment/ring/sunless_will"
     SunlessChains = "items/equipment/amulet/sunless_chains"
 
+    # Potions
+    LesserHealthPotion = "items/consumable/potions/lesser_health_potion"
+    HealthPotion = "items/consumable/potions/health_potion"
+    GreaterHealthPotion = "items/consumable/potions/greater_health_potion"
+    LesserManaPotion = "items/consumable/potions/lesser_mana_potion"
+    ManaPotion = "items/consumable/potions/mana_potion"
+    GreaterManaPotion = "items/consumable/potions/greater_mana_potion"
+
+    # Herbs
+    AntlerCoral = "items/ingredient/herbs/antler_coral"
+    Asptongue = "items/ingredient/herbs/asptongue"
+    BandedCoral = "items/ingredient/herbs/banded_coral"
+    BlazeCluster = "items/ingredient/herbs/blaze_cluster"
+    Bloodcrown = "items/ingredient/herbs/bloodcrown"
+    Bramblefrond = "items/ingredient/herbs/bramblefrond"
+    DawnsGlory = "items/ingredient/herbs/dawns_glory"
+    DragonsTeeth = "items/ingredient/herbs/dragons_teeth"
+    DreamMaker = "items/ingredient/herbs/dream_maker"
+    Fissureleaf = "items/ingredient/herbs/fissureleaf"
+    FoolsDelight = "items/ingredient/herbs/fools_delight"
+    ForgottenTears = "items/ingredient/herbs/forgotten_tears"
+    Frostwort = "items/ingredient/herbs/frostwort"
+    GoldenClover = "items/ingredient/herbs/golden_clover"
+    Graspleaf = "items/ingredient/herbs/graspleaf"
+    GraveMoss = "items/ingredient/herbs/grave_moss"
+    Hushvine = "items/ingredient/herbs/hushvine"
+    Lichbloom = "items/ingredient/herbs/lichbloom"
+    Lithewood = "items/ingredient/herbs/lithewood"
+    MagesBane = "items/ingredient/herbs/mages_bane"
+    Manabloom = "items/ingredient/herbs/manabloom"
+    Meddlespread = "items/ingredient/herbs/meddlespread"
+    Razorgrass = "items/ingredient/herbs/razorgrass"
+    Riverblossom = "items/ingredient/herbs/riverblossom"
+    Rotstalk = "items/ingredient/herbs/rotstalk"
+    Seaclover = "items/ingredient/herbs/seaclover"
+    Shellflower = "items/ingredient/herbs/shellflower"
+    Shellplate = "items/ingredient/herbs/shellplate"
+    Shelterfoil = "items/ingredient/herbs/shelterfoil"
+    Shiverroot = "items/ingredient/herbs/shiverroot"
+    SingingCoral = "items/ingredient/herbs/singing_coral"
+    SirensKiss = "items/ingredient/herbs/sirens_kiss"
+    Snowdew = "items/ingredient/herbs/snowdew"
+    SpeckledCap = "items/ingredient/herbs/speckled_cap"
+    SpidersGrove = "items/ingredient/herbs/spiders_grove"
+    Stranglekelp = "items/ingredient/herbs/stranglekelp"
+    Sungrain = "items/ingredient/herbs/sungrain"
+    Wanderweed = "items/ingredient/herbs/wanderweed"
+    Witherheart = "items/ingredient/herbs/witherheart"
+    Wrathbark = "items/ingredient/herbs/wrathbark"
+
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"
 
@@ -225,8 +275,21 @@ class WeaponStats():
         self._max_damage = state.get("max_damage", 0)
 
 
+class ConsumableStats():
+    def __init__(self, num_targets: int=0, target_own_group: bool=True):
+        self._num_targets = num_targets
+        self._target_own_group = target_own_group
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._num_targets = state.get("num_targets", 0)
+        self._target_own_group = state.get("target_own_group", True)
+
+
 class Item():
-    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[str], state_tags: List[str]=[], count=1, level_requirement=0, buffs: Buffs=None, armor_stats: ArmorStats=None, weapon_stats: WeaponStats=None):
+    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[str], state_tags: List[str]=[], count=1, level_requirement=0, buffs: Buffs=None, armor_stats: ArmorStats=None, weapon_stats: WeaponStats=None, consumable_stats: ConsumableStats=None):
         self._key = key
         self._icon = icon
         self._name = name
@@ -242,6 +305,7 @@ class Item():
 
         self._armor_stats = armor_stats
         self._weapon_stats = weapon_stats
+        self._consumable_stats = consumable_stats
 
     @staticmethod
     def load_from_state(item_data: dict):
@@ -256,7 +320,13 @@ class Item():
         if weapon_data is not None:
             weapon_stats = WeaponStats()
             weapon_stats.__setstate__(weapon_data)
-        
+
+        consumable_data = item_data.get("consumable_stats")
+        consumable_stats = None
+        if consumable_data is not None:
+            consumable_stats = ConsumableStats()
+            consumable_stats.__setstate__(consumable_data)
+
         buffs_data = item_data.get("buffs")
         buffs = None
         if buffs_data is not None:
@@ -277,7 +347,8 @@ class Item():
             item_data.get("level_requirement", 0),
             buffs,
             armor_stats,
-            weapon_stats
+            weapon_stats,
+            consumable_stats
         )
 
     def remove_amount(self, amount: int):
@@ -296,7 +367,8 @@ class Item():
                 self._level_requirement,
                 self._buffs,
                 self._armor_stats,
-                self._weapon_stats)
+                self._weapon_stats,
+                self._consumable_stats)
             self._count -= amount
             return result
         return None
@@ -349,6 +421,9 @@ class Item():
     def get_state_tags(self) -> List[str]:
         return self._state_tags
 
+    def set_state_tags(self, new_tags: List[StateTag]) -> None:
+        self._state_tags += new_tags
+
     def get_key(self) -> str:
         return self._key
 
@@ -367,16 +442,34 @@ class Item():
     def __str__(self):
         display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*" + (" (Unique)" if ClassTag.Misc.IsUnique in self._class_tags else "") + "\n\n"
         
+        has_any_stats: bool = False
+
         if self._armor_stats is not None:
+            has_any_stats = True
             display_string += f"{self._armor_stats.get_armor_amount()} Armor\n"
 
         if self._weapon_stats is not None:
+            has_any_stats = True
             display_string += f"{self._weapon_stats.get_range_str()}\n"
 
+        if self._consumable_stats is not None:
+            has_any_stats = True
+            target_str: str = ""
+            if self._consumable_stats._num_targets == -1:
+                target_str = "Targets All\n"
+            if self._consumable_stats._num_targets == 0:
+                target_str = "Targets Self\n"
+            if self._consumable_stats._num_targets == 1:
+                target_str = "1 Target\n"
+            if self._consumable_stats._num_targets > 1:
+                target_str = f"1-{self._consumable_stats._num_targets} Targets\n"
+            display_string += target_str
+
         if self._buffs is not None:
+            has_any_stats = True
             display_string += f"{self._buffs}"
 
-        if self._armor_stats is not None or self._weapon_stats is not None or self._buffs is not None:
+        if has_any_stats:
             display_string += "\n"
 
         if ClassTag.Misc.NeedsIdentification in self._class_tags:
@@ -410,6 +503,14 @@ class Item():
         return self.__dict__
 
     def __setstate__(self, state: dict):
+        # TODO: This handles the case where I've deleted an item JSON or the key
+        # doesn't exist, but it should ideally somehow make this None instead of an Item,
+        # though an Item with everything default will work too because it should
+        # be cleaned up by the inventory automatically. I'll need to figure that out
+        # at some point in the future.
+        if state.get("_key", "") not in LOADED_ITEMS.get_all_keys():
+            return
+        
         base_data = LOADED_ITEMS.get_item_state(state["_key"])
 
         # Always replace these values; the base data overrides them.
@@ -437,6 +538,12 @@ class Item():
         else:
             self._weapon_stats = None
 
+        consumable_data = base_data.get("consumable_stats")
+        consumable_stats = None
+        if consumable_data is not None:
+            consumable_stats = ConsumableStats()
+            consumable_stats.__setstate__(consumable_data)
+
         buffs_data = base_data.get("buffs")
         if buffs_data is not None:
             self._buffs = Buffs()
@@ -461,6 +568,9 @@ class LoadedItems():
     _states: MappingProxyType[ItemKey, dict] = MappingProxyType({
         item_key.value: json.load(open(f"./features/{item_key.value}.json", "r")) for item_key in ItemKey
     })
+
+    def get_all_keys(self):
+        return self._states.keys()
 
     def get_item_state(self, key: ItemKey):
         return self._states[key]

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/bramblefrond",
+    "icon": "\uD83C\uDF3F",
+    "name": "Bramblefrond",
+    "value": 7,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Often found in dense forest floors, this herb is found in the pantries of most alchemists across the world.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

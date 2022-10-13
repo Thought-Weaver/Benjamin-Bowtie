@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/wrathbark",
+    "icon": "\uD83E\uDEB5",
+    "name": "Wrathbark",
+    "value": 40,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "Always feels slightly warm to the touch. And angry.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/fissureleaf",
+    "icon": "\uD83C\uDF31",
+    "name": "Fissureleaf",
+    "value": 20,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Typically found near crags and cliffs, it has a delightfully sweet taste.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

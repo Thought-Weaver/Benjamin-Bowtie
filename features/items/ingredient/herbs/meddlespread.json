@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/meddlespread",
+    "icon": "\uD83C\uDF44",
+    "name": "Meddlespread",
+    "value": 3,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "A gardener's worst enemy. Can be put into a stew, but isn't particularly tasty.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

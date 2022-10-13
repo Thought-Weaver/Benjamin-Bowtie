@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/rotstalk",
+    "icon": "\uD83E\uDD40",
+    "name": "Rotstalk",
+    "value": 150,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "Its unpleasant scent is often masked due to its environment: fields of corpses.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

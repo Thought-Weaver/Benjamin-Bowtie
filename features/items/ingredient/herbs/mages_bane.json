@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/mages_bane",
+    "icon": "\uD83E\uDD40",
+    "name": "Mage's Bane",
+    "value": 100,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "As its name suggests, this herb can act as a powerful suppressant against channeling mana when prepared properly. For good reason, most practitioners of the arcane tend to check their food carefully.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

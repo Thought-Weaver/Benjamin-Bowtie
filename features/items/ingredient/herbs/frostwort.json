@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/frostwort",
+    "icon": "\uD83C\uDF3C",
+    "name": "Frostwort",
+    "value": 4,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Usually found in clusters in cold or wet terrestrial environments.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

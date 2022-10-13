@@ -1,0 +1,16 @@
+{
+    "key": "items/consumable/potions/mana_potion",
+    "icon": "\uD83E\uDDEA",
+    "name": "Mana Potion",
+    "value": 300,
+    "rarity": "Rare",
+    "description": "Restores 25 mana when used.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 0,
+        "target_own_group": true
+    }
+}

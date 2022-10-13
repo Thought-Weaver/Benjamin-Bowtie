@@ -1,5 +1,4 @@
 from __future__ import annotations
-from random import choice
 
 import discord
 
@@ -9,12 +8,12 @@ from features.expertise import ExpertiseClass
 from features.npcs.npc import NPC, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, SilkspeakingI, VitalityTransferIII
 from features.shared.item import LOADED_ITEMS, ClassTag, Item, ItemKey
+from features.shared.nextbutton import NextButton
+from features.shared.prevbutton import PrevButton
+from random import choice
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, List
-from features.shared.nextbutton import NextButton
-
-from features.shared.prevbutton import PrevButton
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
@@ -181,7 +180,26 @@ class YennaView(discord.ui.View):
         self._user = user
 
         self._yenna: Yenna = database[str(guild_id)]["npcs"][NPCRoles.FortuneTeller]
-        self._wares: List[Item] = []
+        self._wares: List[Item] = [
+            # Potions
+            LOADED_ITEMS.get_new_item(ItemKey.LesserHealthPotion),
+            LOADED_ITEMS.get_new_item(ItemKey.HealthPotion),
+            LOADED_ITEMS.get_new_item(ItemKey.GreaterHealthPotion),
+            LOADED_ITEMS.get_new_item(ItemKey.LesserManaPotion),
+            LOADED_ITEMS.get_new_item(ItemKey.ManaPotion),
+            LOADED_ITEMS.get_new_item(ItemKey.GreaterManaPotion),
+
+            # Herbs
+            LOADED_ITEMS.get_new_item(ItemKey.AntlerCoral),
+            LOADED_ITEMS.get_new_item(ItemKey.Asptongue),
+            LOADED_ITEMS.get_new_item(ItemKey.Bloodcrown),
+            LOADED_ITEMS.get_new_item(ItemKey.FoolsDelight),
+            LOADED_ITEMS.get_new_item(ItemKey.Graspleaf),
+            LOADED_ITEMS.get_new_item(ItemKey.Seaclover),
+            LOADED_ITEMS.get_new_item(ItemKey.SpeckledCap),
+            LOADED_ITEMS.get_new_item(ItemKey.Stranglekelp),
+            LOADED_ITEMS.get_new_item(ItemKey.Graspleaf)
+        ]
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1
 
@@ -514,11 +532,11 @@ class Yenna(NPC):
         ]
 
         # Story Variables
-        self._scroll_text: str = ""
+        self._scroll_text: str = "You walk on chains with your eyes. Push the fingers through the surface into the void. The trees are talking now. Through a maze you are rewarded in chaos. They are in the dreaming, in the wanting, in the knowing. Beware the red hexagons. It is the world in the mirror of ocean's make. How do you walk? Repeat it. The name of the sound. We build it until nothing remains. Don't you want these waves to drag you away? Come hither to us, Fisher King. You can almost hear us now. Your throne is waiting."
         self._words_identified: List[str] = []
         self._last_to_identify_scroll: str = ""
         self._num_fish_maybe_identified: int = 0
-        self._NUM_FISH_PER_RESULT: int = 3
+        self._NUM_FISH_PER_RESULT: int = 5 # Theoretically this could scale with the number of active players
 
     @tasks.loop(hours=24)
     async def restock(self):
@@ -531,7 +549,7 @@ class Yenna(NPC):
     def identify_scroll(self, player: Player, selected_item_index: int, display_name: str, identify_cost: int):
         inventory = player.get_inventory()
 
-        word_set = set(self._scroll_text.replace(".", "").replace(",", "").replace("!", "").split(" "))
+        word_set = set(self._scroll_text.lower().replace(".", "").replace(",", "").replace("?", "").replace("!", "").split(" "))
         found_words = set(self._words_identified)
         words_remaining = word_set - found_words
         
@@ -555,7 +573,9 @@ class Yenna(NPC):
         
         result_text = self._scroll_text
         for word in words_remaining:
+            # Replace both the lowercase and the capitalized forms of the word
             result_text.replace(word, "▮" * len(word))
+            result_text.replace(word.capitalize(), "▮" * len(word))
 
         last_to_identify_str = ""
         if display_name == self._last_to_identify_scroll:
@@ -591,37 +611,51 @@ class Yenna(NPC):
             if result_num == 0:
                 return Embed(title="A Fish?",
                     description=(
-                        ""
+                        "*Yenna stares for a moment at what you've procured from your pack, cocking her head ever so slightly.*\n\n"
+                        "\"A fish? If you want to know its nature, seek out Quinan's mother, not me.\"\n\n"
+                        "*But again she looks at it -- or perhaps tries to -- for something seems... wrong. She goes silent for a moment, then reaches out a hand.*\n\n"
+                        "\"Acquire me some more and I'll see what alchemy can reveal about their nature.\""
                     )
                 )
             if result_num == 1:
                 return Embed(title="A Fish?",
                     description=(
-                        ""
+                        "\"This should be enough to try a few different alchemical tests. I've prepared some potions that should help identify the properties of these fish.\"\n\n"
+                        "*She procures a few implements, some vials, and liquids of various hues and viscosities from her supplies. As she deposits them one by one onto different parts of the fish, but no smoke, color changes, flashes of fire, or otherwise appear before you.*\n\n"
+                        "\"At least one of those should have produced some reaction... It's as though they're ordinary, but I can't let this feeling of unease pass. I'm going to need more of these fish, if you can find them.\""
                     )
                 )
             if result_num == 2:
                 return Embed(title="A Fish?",
                     description=(
-                        ""
+                        "\"I've acquired some rare herbs that should reveal any magical nature to these creatures. They might be able to channel mana, weaving some kind of ward against those who would try to eat them.\"\n\n"
+                        "*She laughs at her own joke, though nervously. You can tell she doesn't believe her own words.*\n\n"
+                        "*In the dim light, she lays the fish before her and lights a bowl of incense. She places the fish into a bath of salt water, the scent mingling with the burning manabloom. With care, she adds two vials of liquid to the bath, each clear and unfamiliar to you.*\n\n"
+                        "*At first, nothing happens. There's stillness, but for a moment you could swear you saw one of the fish... move. Wriggle. Then stillness again. Then out of the corner of your eye: A mouth gaping? Closing and opening? It couldn't be alive.*\n\n"
+                        "*Yenna takes a separated, green and yellow liquid that looks like golden oil atop a shallow sea from her bag, then adds it to the bath.*\n\n"
+                        "\"What-- get back!\"\n\n"
+                        "*Her exclamation rings out as the tub suddenly explodes with blood and a black liquid that overflows and covers the table.*\n\n"
+                        "\"This is no fish. And certainly no power of mana. Bring me more of them and we'll try a different approach.\""
                     )
                 )
             if result_num == 3:
                 return Embed(title="A Fish?",
                     description=(
-                        ""
+                        "\"Thus far we have tried alchemy in its many forms, but for a deeper look at what these creatures are, I'll need to channel mana.\"\n\n"
+                        "*With a snap of her fingers, she starts a fire under some kind of alembic. She waves a hand over the fish and, with delicate precision, she plucks off a scale from the fish binding it with some unseen power, then another, then another --*\n\n"
+                        "*And it shrieks, a shattering noise inside your very mind, not of pain but something else. How could it feel any pain? It's been dead since you caught it. From her sudden withdrawal, you can tell Yenna felt the same outburst.*\n\n"
+                        "*There's silence. For now, Yenna stops. Carefully, she beings to approach and places it into a jar to keep it contained.*\n\n"
+                        "\"There is one last thing I can do. I dread to, for what it might mean, but bring me a fresh set of these creatures and we will settle this matter.\""
                     )
                 )
             if result_num == 4:
                 return Embed(title="A Fish?",
                     description=(
-                        ""
-                    )
-                )
-            if result_num == 5:
-                return Embed(title="A Fish?",
-                    description=(
-                        ""
+                        "\"I've grown greatly concerned about what may lurk beneath the waters. At first, I thought it some mutation or rare creature previously unknown, but these...\"\n\n"
+                        "*She begins to move her hands over the fish in the beginnings of a powerful ritual. The candlelight flickers in and out, shadows growing longer, shapes and figures seeming to dance in the fading glow.*\n\n"
+                        "*Yenna dashes a flash of powder into a pot containing the last of the flames, only for it to erupt brightly with an overpowering scent of starpepper and charred wood.*\n\n"
+                        "*In that moment, the light reduced to a mere ember, you can glimpse something. Almost in the reflection of its scales. Eyes. Far too many eyes. And something else… Like the fish was stitched together on the inside. Like tendrils should be wriggling out from every part of its body. Like there's another version of this thing, something hidden away, beneath.*\n\n"
+                        "\"There are things in this world that we all agreed would be better kept secret. Dealt with on our own, so that no one would spend every waking moment in fear. I believe now that some such force is at play here, in the depths, though it's unlike any I've encountered before. To uncover it, you'll need to brave the ocean and find the source. We'll speak on this more later.\""
                     )
                 )
         else:
@@ -629,6 +663,7 @@ class Yenna(NPC):
             
             return Embed(title="A Fish?",
                 description=(
-                    ""
+                    "\"Thank you for bringing another of these to me. Any others you can find would be appreciated.\"\n\n"
+                    f"*{self._NUM_FISH_PER_RESULT - (self._num_fish_maybe_identified % self._NUM_FISH_PER_RESULT)} Fish? needed*"
                 )
             )

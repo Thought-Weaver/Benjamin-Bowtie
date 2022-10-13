@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/graspleaf",
+    "icon": "\uD83C\uDF3F",
+    "name": "Graspleaf",
+    "value": 5,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Often found in the forest undergrowth, it's distinguished by its long, barbed stems that lay slightly above the ground, perfect for tripping oblivious travelers.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

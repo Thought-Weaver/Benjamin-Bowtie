@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/witherheart",
+    "icon": "\uD83E\uDD40",
+    "name": "Witherheart",
+    "value": 200,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "Love is a bargain. Death is a promise.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

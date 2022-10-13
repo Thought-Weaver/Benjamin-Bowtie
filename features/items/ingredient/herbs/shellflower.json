@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/shellflower",
+    "icon": "\uD83C\uDF37",
+    "name": "Shellflower",
+    "value": 35,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "You can almost imagine field mice using their tough petals as shields in a tiny war.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

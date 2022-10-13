@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/forgotten_tears",
+    "icon": "\uD83C\uDF3E",
+    "name": "Forgotten Tears",
+    "value": 800,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "An exceedingly rare herb found growing only in misty caverns where moonlight can reach through the cracks and provide it a place to grow.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

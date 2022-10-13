@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/banded_coral",
+    "icon": "\uD83D\uDC1A",
+    "name": "Banded Coral",
+    "value": 30,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "A spiraling coral that grows sporadically in tropical waters.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

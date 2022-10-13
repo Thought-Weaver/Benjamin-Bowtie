@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/sungrain",
+    "icon": "\uD83C\uDF3E",
+    "name": "Sungrain",
+    "value": 5,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Often grown for food, it also has applications in alchemy when refined.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

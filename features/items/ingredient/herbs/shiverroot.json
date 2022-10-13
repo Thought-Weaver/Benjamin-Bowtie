@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/shiverroot",
+    "icon": "\uD83C\uDF8D",
+    "name": "Shiverroot",
+    "value": 10,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Typically found in cold climates, it's easily noted by its slight quavering back and forth even without the influence of wind.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

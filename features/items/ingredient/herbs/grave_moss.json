@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/grave_moss",
+    "icon": "\uD83E\uDEA8",
+    "name": "Grave Moss",
+    "value": 12,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "In the old tales, it was said that wherever this grew, someone would be fated to die.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

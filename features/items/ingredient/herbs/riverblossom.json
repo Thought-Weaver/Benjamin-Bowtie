@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/riverblossom",
+    "icon": "\uD83E\uDEB7",
+    "name": "Riverblossom",
+    "value": 15,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Occasionally seen floating down rivers, they detach from underwater stalks to help populate it to the far reaches of the world.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

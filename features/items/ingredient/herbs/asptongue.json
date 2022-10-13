@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/asptongue",
+    "icon": "\uD83C\uDF31",
+    "name": "Asptongue",
+    "value": 10,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "A common, poisonous plant that becomes significantly more potent when combined with other herbs.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

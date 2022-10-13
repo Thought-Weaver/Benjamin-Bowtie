@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/lichbloom",
+    "icon": "\uD83C\uDF39",
+    "name": "Lichbloom",
+    "value": 700,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "Never shall we die.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

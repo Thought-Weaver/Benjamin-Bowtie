@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/speckled_cap",
+    "icon": "\uD83C\uDF44",
+    "name": "Speckled Cap",
+    "value": 8,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Looks like one of those mushrooms you really shouldn't put into a stew, but is actually fine.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

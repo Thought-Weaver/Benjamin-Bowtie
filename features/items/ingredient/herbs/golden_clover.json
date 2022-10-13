@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/golden_clover",
+    "icon": "\uD83C\uDF40",
+    "name": "Golden Glover",
+    "value": 75,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "Though folk tales speak of golden clovers as covered in real gold, in truth it's simply that the veins have a shimmering golden hue, blending with an otherwise verdant leaf.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/spiders_grove",
+    "icon": "\uD83D\uDD78\uFE0F",
+    "name": "Spider's Grove",
+    "value": 120,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "Easily mistaken for a spider's web, this herb grows on bark and hangs in strands between the trees.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

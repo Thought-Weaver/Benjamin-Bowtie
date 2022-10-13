@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/hushvine",
+    "icon": "\uD83C\uDF31",
+    "name": "Hushvine",
+    "value": 80,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "Difficult to acquire -- mostly because it has a propensity for eating people.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/shellplate",
+    "icon": "\uD83D\uDC1A",
+    "name": "Shellplate",
+    "value": 20,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "A flat coral, typically coming in four types of colors depending on the surrounding environment.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/seaclover",
+    "icon": "\u2618\uFE0F",
+    "name": "Seaclover",
+    "value": 3,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Unlike terrestrial clovers, these tend to grow in clumps on rocks in the ocean. They make marvelous shelters for smaller fish (and tiny crabs).",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

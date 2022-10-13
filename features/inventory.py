@@ -3,7 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
-from features.shared.item import Item
+from features.shared.item import LOADED_ITEMS, Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -25,22 +25,10 @@ class Inventory():
         item_set: List[Item] = []
         if len(self._inventory_slots) == 1:
             item = self._inventory_slots[0]
-            item_set.append(Item(
-                item.get_key(),
-                item.get_icon(),
-                item.get_name(),
-                item.get_value(),
-                item.get_rarity(),
-                item.get_description(),
-                item.get_flavor_text(),
-                item.get_class_tags(),
-                item.get_state_tags(),
-                0,
-                item.get_level_requirement(),
-                item.get_buffs(),
-                item.get_armor_stats(),
-                item.get_weapon_stats())
-            )
+            empty_item = LOADED_ITEMS.get_new_item(item.get_key())
+            empty_item.remove_amount(empty_item.get_count())
+            empty_item.set_state_tags(item.get_state_tags()) # Copy from state
+            item_set.append(empty_item)
         if len(self._inventory_slots) >= 2:
             for item in self._inventory_slots:
                 exists = False
@@ -49,22 +37,10 @@ class Inventory():
                         exists = True
                         break
                 if not exists:
-                    item_set.append(Item(
-                        item.get_key(),
-                        item.get_icon(),
-                        item.get_name(),
-                        item.get_value(),
-                        item.get_rarity(),
-                        item.get_description(),
-                        item.get_flavor_text(),
-                        item.get_class_tags(),
-                        item.get_state_tags(),
-                        0,
-                        item.get_level_requirement(),
-                        item.get_buffs(),
-                        item.get_armor_stats(),
-                        item.get_weapon_stats())
-                    )
+                    empty_item = LOADED_ITEMS.get_new_item(item.get_key())
+                    empty_item.remove_amount(empty_item.get_count())
+                    empty_item.set_state_tags(item.get_state_tags())
+                    item_set.append(empty_item)
 
         new_slots: List[Item] = []
         for item in item_set:

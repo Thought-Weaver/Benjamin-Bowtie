@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/dawns_glory",
+    "icon": "\uD83C\uDFF5\uFE0F",
+    "name": "Dawn's Glory",
+    "value": 60,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "Only when the sun rises highest in the sky will it bloom.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,16 @@
+{
+    "key": "items/consumable/potions/lesser_mana_potion",
+    "icon": "\uD83E\uDDEA",
+    "name": "Lesser Mana Potion",
+    "value": 25,
+    "rarity": "Uncommon",
+    "description": "Restores 5 mana when used.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 0,
+        "target_own_group": true
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/shelterfoil",
+    "icon": "\u2618\uFE0F",
+    "name": "Shelterfoil",
+    "value": 15,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "A large, leafy plant that notably provides protection from the rain for small rodents. Certain birds also use it to make nests.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

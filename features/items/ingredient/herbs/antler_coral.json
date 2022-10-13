@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/antler_coral",
+    "icon": "\uD83E\uDEB8",
+    "name": "Antler Coral",
+    "value": 15,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Antler? I hardly know 'er!",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/sirens_kiss",
+    "icon": "\uD83E\uDEB7",
+    "name": "Siren's Kiss",
+    "value": 120,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "Where do they come from, rising from the deep? Oddly beautiful and anatomically distinct from almost all known flowers.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

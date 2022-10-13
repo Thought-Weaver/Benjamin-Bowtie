@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/dream_maker",
+    "icon": "\uD83C\uDF38",
+    "name": "Dream Maker",
+    "value": 100,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "\"You ever seen a high squirrel before? Lemme tell ya, it's damn funny.\"",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

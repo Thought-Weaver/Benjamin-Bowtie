@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/singing_coral",
+    "icon": "\uD83E\uDEB8",
+    "name": "Singing Coral",
+    "value": 40,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "Underwater, this coral echoes with a soft humming that seems to attract certain species of fish.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

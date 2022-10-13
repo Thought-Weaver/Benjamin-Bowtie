@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/snowdew",
+    "icon": "\uD83C\uDF3C",
+    "name": "Snowdew",
+    "value": 7,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "Catch a glance on a field as its petals drift off, snow in the wind.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

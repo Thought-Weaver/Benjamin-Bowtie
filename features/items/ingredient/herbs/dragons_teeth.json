@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/dragons_teeth",
+    "icon": "\uD83C\uDF41",
+    "name": "Dragon's Teeth",
+    "value": 500,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "An exceedingly rare herb, found growing only in stygian, torrid regions of the world.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/bloodcrown",
+    "icon": "\uD83C\uDF44",
+    "name": "Bloodcrown",
+    "value": 5,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "It's one of the mushrooms you really shouldn't put into a stew.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

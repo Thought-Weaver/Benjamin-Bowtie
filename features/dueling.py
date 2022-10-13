@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from discord.embeds import Embed
 from discord.ext import commands
 from features.expertise import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE, ExpertiseClass
+from features.shared.consumables import DUELING_CONSUMABLE_ITEM_EFFECTS
 from features.shared.item import Buffs, ClassTag, WeaponStats
 from features.shared.statuseffect import StatusEffectKey
 from strenum import StrEnum
@@ -555,6 +556,8 @@ class DuelView(discord.ui.View):
                 entity.get_stats().dueling.duels_fought += 1
                 entity.get_stats().dueling.duels_tied += 1
 
+                entity.get_expertise().level_up_check()
+
             return Embed(
                 title="Victory for Both and Neither",
                 description="A hard-fought battle resulting in a tie. Neither side emerges truly victorious and yet both have defeated their enemies."
@@ -587,6 +590,8 @@ class DuelView(discord.ui.View):
                 winner_expertise.hp = winner_expertise.max_hp
                 winner_expertise.mana = winner_expertise.max_mana
 
+                winner_expertise.level_up_check()
+
                 winner_str += f"{self.get_name(winner)} *(+{winner_xp} Guardian xp)*\n"
 
             loser_str = ""
@@ -604,6 +609,8 @@ class DuelView(discord.ui.View):
                 loser_expertise.update_stats(loser.get_equipment().get_total_buffs())
                 loser_expertise.hp = loser_expertise.max_hp
                 loser_expertise.mana = loser_expertise.max_mana
+
+                loser_expertise.level_up_check()
 
                 loser_str += f"{self.get_name(loser)} *(+{loser_xp} Guardian xp)*\n"
 
@@ -796,9 +803,14 @@ class DuelView(discord.ui.View):
         return result_str.format(*names) + f"\n\nYou gained {xp_to_add} {class_key} xp!"
 
     def use_item_on_selected_targets(self):
-        # TODO: Implement item usage when said items exist.
-        # TODO: And implement the stat increment.
-        return "How did you get here?"
+        applicator = self._turn_order[self._turn_index]
+        names = [self.get_name(applicator), *[self.get_name(target) for target in self._selected_targets]]
+        result_str = DUELING_CONSUMABLE_ITEM_EFFECTS[self._selected_item.get_key()](self._selected_item, applicator, self._selected_targets)
+
+        applicator.get_inventory().remove_item(self._selected_item_index, 1)
+        applicator.get_stats().dueling.items_used += 1
+        
+        return result_str.format(*names)
 
     def confirm_target(self):
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
@@ -821,7 +833,6 @@ class DuelView(discord.ui.View):
         return self.do_action_on_selected_targets()
 
     def do_action_on_selected_targets(self, is_finished=False):
-        # TODO: Better handle case where, for example, you might need to select 3 targets, but only 2 targets exist.
         # I'm using a boolean for that case at the moment rather than setting self._targets_remaining to 0, just to
         # make a clear distinction about this case in the code.
         if self._targets_remaining == 0 or self._targets_remaining == -1 or is_finished:
@@ -874,7 +885,7 @@ class DuelView(discord.ui.View):
         inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Consumable.Consumable])
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Consumable.UsableWithinDuels])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]

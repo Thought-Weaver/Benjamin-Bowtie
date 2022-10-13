@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/blaze_cluster",
+    "icon": "\uD83C\uDF44",
+    "name": "Blaze Cluster",
+    "value": 40,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "Can be used in a stew (and confers quite a spicy flavor), but make sure to use gloves when handling because let me tell you, that rash isn't pleasant.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}

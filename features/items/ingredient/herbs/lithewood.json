@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/lithewood",
+    "icon": "\uD83E\uDEB5",
+    "name": "Lithewood",
+    "value": 60,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "An extremely flexible wood that when pulped creates a substance used for a few different alchemical recipes.",
+    "class_tags": ["Ingredient", "Herb"],
+    "state_tags": [],
+    "count": 1
+}
