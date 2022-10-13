@@ -362,6 +362,7 @@ class ExpertiseView(discord.ui.View):
         equipment: Equipment = self.get_player().get_equipment()
         
         expertise.level_up_check()
+        expertise.update_stats(equipment.get_total_buffs())
         armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level)
 
         return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs(), armor_str))

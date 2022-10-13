@@ -5,6 +5,7 @@ import discord
 from discord.embeds import Embed
 from discord.ext import commands
 from features.expertise import Expertise, ExpertiseClass
+from features.npcs.yenna import YennaView
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from math import floor
@@ -90,6 +91,7 @@ class SellModal(discord.ui.Modal):
         )
 
         await self._view.refresh(self._message_id, embed)
+        await interaction.response.defer()
 
     async def on_error(self, interaction: discord.Interaction, error: Exception):
         await interaction.response.send_message("Error: Something has gone terribly wrong.")
@@ -123,8 +125,8 @@ class InventorySellButton(discord.ui.Button):
 
 
 class MarketSellButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Sell")
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Sell", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -148,6 +150,21 @@ class MarketExitButton(discord.ui.Button):
         if interaction.user == view.get_user():
             response = view.exit_to_main_menu()
             await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class YennaButton(discord.ui.Button):
+    def __init__(self, row):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Visit Yenna", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MarketView = self.view
+        if interaction.user == view.get_user():
+            yenna_view: YennaView = YennaView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
+            embed = yenna_view.get_initial_embed()
+            await interaction.response.edit_message(content=None, embed=embed, view=yenna_view)
 
 
 class MarketView(discord.ui.View):
@@ -208,7 +225,8 @@ class MarketView(discord.ui.View):
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(MarketSellButton())
+        self.add_item(YennaButton(0))
+        self.add_item(MarketSellButton(1))
 
     def enter_sell_market(self):
         self._get_current_page_buttons()
@@ -233,11 +251,11 @@ class MarketView(discord.ui.View):
         message: discord.Message = await self._context.fetch_message(message_id)
         await message.edit(view=self, embed=embed)
 
+    def get_bot(self):
+        return self._bot
+
     def get_user(self):
         return self._user
-
-    def get_giftee(self):
-        return self._giftee
 
     def get_database(self):
         return self._database

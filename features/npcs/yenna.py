@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import discord
+import re
 
 from discord import Embed
 from discord.ext import tasks
@@ -158,7 +159,7 @@ class IdentifyDisplayButton(discord.ui.Button):
 
 class ConfirmButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Confirm", row=row)
+        super().__init__(style=discord.ButtonStyle.green, label="Confirm", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -210,6 +211,8 @@ class YennaView(discord.ui.View):
 
         self._COST_ADJUST = 1.5 # 50% price increase from base when purchasing items
         self._IDENTIFY_COST = 50 # Fixed at 50 coins for right now
+
+        self.show_initial_buttons()
         
     def _get_player(self) -> Player:
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
@@ -219,7 +222,7 @@ class YennaView(discord.ui.View):
             title="Madame Yenna's Tent",
             description=(
                 "In the bustling village market stands an unusual tent, covered in a patterned red, gold, and purple fabric. "
-                "Stepping inside, the daylight suddenly disperses and shadow engulfs you. Your eyes adjust to the dim interior, oddly larger than it appeared from the outside. "
+                "Stepping inside, the daylight suddenly disperses and shadow engulfs you. Your eyes adjust to the dim interior, oddly larger than it appeared from the outside.\n\n"
                 "A flickering light passes across the shadows cast by the setup in front of you: Dark wooden chairs, one near you and another on the opposite side of a rectangular table hewn of the same wood. "
                 "The table has white wax candles on either side, illuminating tarot cards, potions, herbs, and various occult implements that belong to the figure hidden in the shadows beyond the table's edge.\n\n"
                 "\"Matters of fate and destiny are often complex,\" she says, moving closer to the light, though you remain unable to see the upper half of her face. \"What can I do to aid your journey?\""
@@ -259,6 +262,7 @@ class YennaView(discord.ui.View):
         player: Player = self._get_player()
         if self._selected_item is None or not (0 <= self._selected_item_index < len(self._wares) and self._wares[self._selected_item_index] == self._selected_item):
             self._get_wares_page_buttons()
+            
             return Embed(
                 title="Browse Wares",
                 description=(
@@ -274,7 +278,7 @@ class YennaView(discord.ui.View):
             title="Browse Wares",
             description=(
                 f"You have {player.get_inventory().get_coins_str()}.\n\n"
-                f"──────────\n{self._selected_item}\nPrice: {actual_cost_str}\n──────────\n\n"
+                f"──────────\n{self._selected_item}\n\n**Price: {actual_cost_str}**\n──────────\n\n"
                 "Navigate through available wares using the Prev and Next buttons."
             )
         )
@@ -282,6 +286,8 @@ class YennaView(discord.ui.View):
     def select_wares_item(self, index: int, item: Item):
         self._selected_item = item
         self._selected_item_index = index
+
+        self._get_wares_page_buttons()
         return self.display_item_info()
 
     def _get_wares_page_buttons(self):
@@ -337,7 +343,7 @@ class YennaView(discord.ui.View):
         player: Player = self._get_player()
         all_slots: List[Item] = player.get_inventory().get_inventory_slots()
         if self._selected_item is None or not (0 <= self._selected_item_index < len(all_slots) and all_slots[self._selected_item_index] == self._selected_item):
-            self._get_wares_page_buttons()
+            self._get_identify_page_buttons()
             return Embed(
                 title="Identify Item",
                 description=(
@@ -359,7 +365,9 @@ class YennaView(discord.ui.View):
     def select_identify_item(self, index: int, item: Item):
         self._selected_item = item
         self._selected_item_index = index
-        return self.display_item_info()
+
+        self._get_identify_page_buttons()
+        return self.display_identify_info()
 
     def _get_identify_page_buttons(self):
         self.clear_items()
@@ -373,7 +381,7 @@ class YennaView(discord.ui.View):
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
             exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
-            self.add_item(WaresDisplayButton(exact_item_index, item, i))
+            self.add_item(IdentifyDisplayButton(exact_item_index, item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
@@ -385,7 +393,8 @@ class YennaView(discord.ui.View):
     def _identify_item(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        if self._selected_item is None or self._wares[self._selected_item_index] != self._selected_item:
+        all_slots: List[Item] = inventory.get_inventory_slots()
+        if self._selected_item is None or all_slots[self._selected_item_index] != self._selected_item:
             return Embed(
                 title="Identify Item",
                 description=(
@@ -444,9 +453,21 @@ class YennaView(discord.ui.View):
 
     def confirm_using_intent(self):
         if self._intent == Intent.Wares:
-            return self._purchase_item()
+            result = self._purchase_item()
+
+            self._selected_item = None
+            self._selected_item_index = -1
+            self._get_wares_page_buttons()
+
+            return result
         if self._intent == Intent.Identify:
-            return self._identify_item()
+            result = self._identify_item()
+
+            self._selected_item = None
+            self._selected_item_index = -1
+            self._get_identify_page_buttons()
+
+            return result
         if self._intent == Intent.Tarot:
             return self._tarot_reading()
         return self.get_initial_embed()
@@ -561,7 +582,7 @@ class Yenna(NPC):
                 description=(
                     "\"Ah, another one of these scrolls. It looks like there's nothing more I can glean from the text. The final message is:\"\n\n"
                     f"{self._scroll_text}\n\n"
-                    "However, allow me to offer compensation at least for trusting the scroll to me.\"\n\n"
+                    "\"However, allow me to offer compensation at least for trusting the scroll to me.\"\n\n"
                     "*You received 60 coins.*"
                 )
             )
@@ -574,8 +595,8 @@ class Yenna(NPC):
         result_text = self._scroll_text
         for word in words_remaining:
             # Replace both the lowercase and the capitalized forms of the word
-            result_text.replace(word, "▮" * len(word))
-            result_text.replace(word.capitalize(), "▮" * len(word))
+            result_text = re.sub(r"\b%s\b" % word, "▮" * len(word), result_text)
+            result_text = re.sub(r"\b%s\b" % word.capitalize(), "▮" * len(word), result_text)
 
         last_to_identify_str = ""
         if display_name == self._last_to_identify_scroll:
@@ -585,6 +606,8 @@ class Yenna(NPC):
         
         inventory.remove_coins(identify_cost)
         inventory.remove_item(selected_item_index)
+        self._last_to_identify_scroll = display_name
+
         return Embed(
             title="A Mysterious Scroll",
             description=(
@@ -593,7 +616,7 @@ class Yenna(NPC):
                 "\"This scroll is degrading -- not from being previously submerged in water, but perhaps due to its exposure to air? The parchment is some kind of pulped kelp, dyed made to look like the off-white coloration I'd typically expect in a scroll of this design. "
                 "There are words written here, but they're more like a failed attempt to write the Common tongue with some borrowed elements from other languages and more still I don't recognize. I might be able to make some sense of them...\"\n\n"
                 "*Yenna pours over the scroll for hours, comparing to her books and other texts in an effort to understand it. Eventually, the parchment begins to fully fall apart in the warm light.*\n\n"
-                "Here's what I have for you:\n\n"
+                f"Here's what I have for you (identified the word *{random_word}*):\n\n"
                 f"{result_text}"
             )
         )
@@ -604,12 +627,21 @@ class Yenna(NPC):
         inventory.remove_coins(identify_cost)
         inventory.remove_item(selected_item_index)
 
-        if self._num_fish_maybe_identified % self._NUM_FISH_PER_RESULT == 0:
-            self._num_fish_maybe_identified += 1
+        result = Embed()
+        result_num: int = int(self._num_fish_maybe_identified / self._NUM_FISH_PER_RESULT)
 
-            result_num: int = int(self._num_fish_maybe_identified / self._NUM_FISH_PER_RESULT)
+        if self._num_fish_maybe_identified / self._NUM_FISH_PER_RESULT > 4:
+            inventory.add_coins(identify_cost + 25)
+            return Embed(title="A Fish?",
+                description=(
+                    "\"Thank you for bringing another of these to me. I'll destroy it safely. Have these in return.\"\n\n"
+                    "*You received 25 coins.*"
+                )
+            )
+
+        if self._num_fish_maybe_identified % self._NUM_FISH_PER_RESULT == 0:
             if result_num == 0:
-                return Embed(title="A Fish?",
+                result = Embed(title="A Fish?",
                     description=(
                         "*Yenna stares for a moment at what you've procured from your pack, cocking her head ever so slightly.*\n\n"
                         "\"A fish? If you want to know its nature, seek out Quinan's mother, not me.\"\n\n"
@@ -618,7 +650,7 @@ class Yenna(NPC):
                     )
                 )
             if result_num == 1:
-                return Embed(title="A Fish?",
+                result = Embed(title="A Fish?",
                     description=(
                         "\"This should be enough to try a few different alchemical tests. I've prepared some potions that should help identify the properties of these fish.\"\n\n"
                         "*She procures a few implements, some vials, and liquids of various hues and viscosities from her supplies. As she deposits them one by one onto different parts of the fish, but no smoke, color changes, flashes of fire, or otherwise appear before you.*\n\n"
@@ -626,7 +658,7 @@ class Yenna(NPC):
                     )
                 )
             if result_num == 2:
-                return Embed(title="A Fish?",
+                result = Embed(title="A Fish?",
                     description=(
                         "\"I've acquired some rare herbs that should reveal any magical nature to these creatures. They might be able to channel mana, weaving some kind of ward against those who would try to eat them.\"\n\n"
                         "*She laughs at her own joke, though nervously. You can tell she doesn't believe her own words.*\n\n"
@@ -634,12 +666,12 @@ class Yenna(NPC):
                         "*At first, nothing happens. There's stillness, but for a moment you could swear you saw one of the fish... move. Wriggle. Then stillness again. Then out of the corner of your eye: A mouth gaping? Closing and opening? It couldn't be alive.*\n\n"
                         "*Yenna takes a separated, green and yellow liquid that looks like golden oil atop a shallow sea from her bag, then adds it to the bath.*\n\n"
                         "\"What-- get back!\"\n\n"
-                        "*Her exclamation rings out as the tub suddenly explodes with blood and a black liquid that overflows and covers the table.*\n\n"
+                        "*Her exclamation rings out as the tub suddenly explodes with blood and a black liquid that overflows and covers the table. It drips to the floor, thick and oozing more and more from the tub. Yenna raises her hands and a web of light descends on the tub. With some resistance, it slows and begins to die down.*\n\n"
                         "\"This is no fish. And certainly no power of mana. Bring me more of them and we'll try a different approach.\""
                     )
                 )
             if result_num == 3:
-                return Embed(title="A Fish?",
+                result = Embed(title="A Fish?",
                     description=(
                         "\"Thus far we have tried alchemy in its many forms, but for a deeper look at what these creatures are, I'll need to channel mana.\"\n\n"
                         "*With a snap of her fingers, she starts a fire under some kind of alembic. She waves a hand over the fish and, with delicate precision, she plucks off a scale from the fish binding it with some unseen power, then another, then another --*\n\n"
@@ -649,7 +681,7 @@ class Yenna(NPC):
                     )
                 )
             if result_num == 4:
-                return Embed(title="A Fish?",
+                result = Embed(title="A Fish?",
                     description=(
                         "\"I've grown greatly concerned about what may lurk beneath the waters. At first, I thought it some mutation or rare creature previously unknown, but these...\"\n\n"
                         "*She begins to move her hands over the fish in the beginnings of a powerful ritual. The candlelight flickers in and out, shadows growing longer, shapes and figures seeming to dance in the fading glow.*\n\n"
@@ -658,12 +690,13 @@ class Yenna(NPC):
                         "\"There are things in this world that we all agreed would be better kept secret. Dealt with on our own, so that no one would spend every waking moment in fear. I believe now that some such force is at play here, in the depths, though it's unlike any I've encountered before. To uncover it, you'll need to brave the ocean and find the source. We'll speak on this more later.\""
                     )
                 )
-        else:
-            self._num_fish_maybe_identified += 1
-            
-            return Embed(title="A Fish?",
+        else:           
+            result = Embed(title="A Fish?",
                 description=(
                     "\"Thank you for bringing another of these to me. Any others you can find would be appreciated.\"\n\n"
                     f"*{self._NUM_FISH_PER_RESULT - (self._num_fish_maybe_identified % self._NUM_FISH_PER_RESULT)} Fish? needed*"
                 )
             )
+
+        self._num_fish_maybe_identified += 1
+        return result

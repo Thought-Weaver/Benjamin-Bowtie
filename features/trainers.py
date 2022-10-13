@@ -4,7 +4,7 @@ import discord
 
 from discord import Embed
 from features.expertise import Expertise, ExpertiseClass
-from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CursedCoinsI, CursedCoinsII, CursedCoinsIII, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HookI, HookII, HookIII, IncenseI, IncenseII, IncenseIII, ParalyzingFumesI, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ToxicCloudI, ToxicCloudII, ToxicCloudIII, UnbreakingI, UnbreakingII, UnbreakingIII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlwindI, WhirlwindII, WhirlwindIII, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
+from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CursedCoinsI, CursedCoinsII, CursedCoinsIII, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HookI, HookII, HookIII, IncenseI, IncenseII, IncenseIII, ParalyzingFumesI, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ToxicCloudI, ToxicCloudII, ToxicCloudIII, UnbreakingI, UnbreakingII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlwindI, WhirlwindII, WhirlwindIII, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
 
 from typing import TYPE_CHECKING, List
 from features.shared.nextbutton import NextButton
@@ -62,7 +62,7 @@ class GuardianTrainerButton(discord.ui.Button):
 
 class AlchemistTrainerButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"Dueling Grounds", row=row)
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"Yenna's Tent", row=row)
         
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -163,7 +163,7 @@ class TrainerView(discord.ui.View):
             [WhirlwindI, WhirlwindII, WhirlwindIII],
             [SecondWindI, SecondWindII, SecondWindIII],
             [ScarArmorI, ScarArmorII],
-            [UnbreakingI, UnbreakingII, UnbreakingIII],
+            [UnbreakingI, UnbreakingII],
             [CounterstrikeI, CounterstrikeII, CounterstrikeIII],
             [BidedAttackI, BidedAttackII, BidedAttackIII],
             [TauntI],
@@ -230,7 +230,7 @@ class TrainerView(discord.ui.View):
         if self._current_class == ExpertiseClass.Alchemist:
             return Embed(title="Madame Yenna's Tent", description=(
                 "In the bustling village market stands an unusual tent, covered in a patterned red, gold, and purple fabric. "
-                "Stepping inside, the daylight suddenly disperses and shadow engulfs you. Your eyes adjust to the dim interior, oddly larger than it appeared from the outside. "
+                "Stepping inside, the daylight suddenly disperses and shadow engulfs you. Your eyes adjust to the dim interior, oddly larger than it appeared from the outside.\n\n"
                 "A flickering light passes across the shadows cast by the setup in front of you: Dark wooden chairs, one near you and another on the opposite side of a rectangular table hewn of the same wood. "
                 "The table has white wax candles on either side, illuminating tarot cards, potions, herbs, and various occult implements that belong to the figure hidden in the shadows beyond the table's edge.\n\n"
                 "\"Alchemy? I can teach you, but the road is seldom an easy one.\""
@@ -296,6 +296,8 @@ class TrainerView(discord.ui.View):
             available_abilities = self._guardian_abilities
         if self._current_class == ExpertiseClass.Merchant:
             available_abilities = self._merchant_abilities
+        if self._current_class == ExpertiseClass.Alchemist:
+            available_abilities = self._alchemist_abilities
         all_slots = self.get_available_abilities(player, available_abilities)
 
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -400,6 +402,8 @@ class TrainerView(discord.ui.View):
                 available_abilities = self._guardian_abilities
             if self._current_class == ExpertiseClass.Merchant:
                 available_abilities = self._merchant_abilities
+            if self._current_class == ExpertiseClass.Alchemist:
+                available_abilities = self._alchemist_abilities
             found_equipped = self.remove_lower_level_abilities(player, ability, available_abilities)
 
             if found_equipped: # Replace the removed version with the new one

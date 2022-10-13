@@ -17,6 +17,8 @@ from features.expertise import ExpertiseClass, ExpertiseView
 from features.inventory import InventoryView
 from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
+from features.npcs.npc import NPCRoles
+from features.npcs.yenna import Yenna
 from features.player import Player
 from features.stats import StatCategory, StatView
 from features.shared.item import Item, LOADED_ITEMS, ItemKey
@@ -57,6 +59,10 @@ class Adventures(commands.Cog):
             self._database[guild_id_str]["stories"][Story.Forest] = ForestStory()
             self._database[guild_id_str]["stories"][Story.Ocean] = OceanStory()
             self._database[guild_id_str]["stories"][Story.Underworld] = UnderworldStory()
+
+        if self._database[guild_id_str].get("npcs") is None:
+            self._database[guild_id_str]["npcs"] = {}
+            self._database[guild_id_str]["npcs"][NPCRoles.FortuneTeller] = Yenna()
         
         if self._database[guild_id_str]["members"].get(user_id_str) is None:
             self._database[guild_id_str]["members"][user_id_str] = Player()
@@ -349,7 +355,7 @@ class Adventures(commands.Cog):
             title="Welcome to the Market!",
             description="Select an action below to get started."
         )
-        await context.send(embed=embed, view=MarketView(self._bot, self._database, context.guild.id, context.author))
+        await context.send(embed=embed, view=MarketView(self._bot, self._database, context.guild.id, context.author, context))
 
     @commands.command(name="mailbox", help="Open mail you've received from others", aliases=["inbox"])
     async def mailbox_handler(self, context: commands.Context):

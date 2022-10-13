@@ -539,10 +539,11 @@ class Item():
             self._weapon_stats = None
 
         consumable_data = base_data.get("consumable_stats")
-        consumable_stats = None
         if consumable_data is not None:
-            consumable_stats = ConsumableStats()
-            consumable_stats.__setstate__(consumable_data)
+            self._consumable_stats = ConsumableStats()
+            self._consumable_stats.__setstate__(consumable_data)
+        else:
+            self._consumable_stats = None
 
         buffs_data = base_data.get("buffs")
         if buffs_data is not None:
