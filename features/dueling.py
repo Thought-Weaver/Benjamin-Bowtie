@@ -796,11 +796,11 @@ class DuelView(discord.ui.View):
 
         caster.get_stats().dueling.abilities_used += 1
         # TODO: Add level up check mid-combat?
-        xp_to_add: int = self._selected_ability.get_level_requirement()
+        xp_to_add: int = int(self._selected_ability.get_level_requirement() / 2)
         class_key: ExpertiseClass = self._selected_ability.get_class_key()
         caster.get_expertise().add_xp_to_class(xp_to_add, class_key)
 
-        return result_str.format(*names) + f"\n\nYou gained {xp_to_add} {class_key} xp!"
+        return result_str.format(*names) + f"\n\n*You gained {xp_to_add} {class_key} xp!*"
 
     def use_item_on_selected_targets(self):
         applicator = self._turn_order[self._turn_index]

@@ -885,4 +885,3 @@ class Yenna(NPC):
         self._last_to_identify_scroll = state.get("_last_to_identify_scroll", "")
         self._num_fish_maybe_identified = state.get("_num_fish_maybe_identified", 0)
         self._NUM_FISH_PER_RESULT = 5 # Theoretically this could scale with the number of active players
-
