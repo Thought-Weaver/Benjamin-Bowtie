@@ -280,6 +280,12 @@ class ConsumableStats():
         self._num_targets = num_targets
         self._target_own_group = target_own_group
 
+    def get_num_targets(self):
+        return self._num_targets
+
+    def get_target_own_group(self):
+        return self._target_own_group
+
     def __getstate__(self):
         return self.__dict__
 
@@ -438,6 +444,9 @@ class Item():
 
     def get_weapon_stats(self) -> (WeaponStats | None):
         return self._weapon_stats
+
+    def get_consumable_stats(self) -> (ConsumableStats | None):
+        return self._consumable_stats
 
     def __str__(self):
         display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*" + (" (Unique)" if ClassTag.Misc.IsUnique in self._class_tags else "") + "\n\n"

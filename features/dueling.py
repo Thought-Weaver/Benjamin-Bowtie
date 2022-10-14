@@ -985,7 +985,7 @@ class DuelView(discord.ui.View):
         self._selected_item_index = exact_item_index
         self._selected_item = item
 
-        self._get_current_abilities_page_buttons()
+        self._get_current_items_page_buttons()
         return self._get_current_page_info()
         
     def select_ability(self, ability_index: int, ability: Ability):
@@ -999,9 +999,23 @@ class DuelView(discord.ui.View):
         entity: Player | NPC = self._turn_order[self._turn_index]
         found_index = entity.get_inventory().item_exists(self._selected_item)
         if found_index == self._selected_item_index:
+            self._targets_remaining = self._selected_item.get_consumable_stats().get_num_targets()
+            target_own_group = self._selected_item.get_consumable_stats().get_target_own_group()
+
+            if self._targets_remaining == 0:
+                self._selected_targets = [entity]
+                return self.do_action_on_selected_targets()
+            
+            if self._targets_remaining == -1:
+                if (entity in self._enemies and target_own_group) or (entity in self._allies and not target_own_group):
+                    self._selected_targets = self._enemies
+                elif (entity in self._enemies and not target_own_group) or (entity in self._allies and target_own_group):
+                    self._selected_targets = self._allies
+                return self.do_action_on_selected_targets()
+
             self._page = 0
             self._selecting_targets = True
-            return self.show_targets()
+            return self.show_targets(target_own_group)
         return self.show_items("*Error: That item couldn't be selected.*")
 
     def confirm_ability(self):

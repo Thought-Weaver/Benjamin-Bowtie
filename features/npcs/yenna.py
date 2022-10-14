@@ -5,13 +5,13 @@ import re
 
 from discord import Embed
 from discord.ext import tasks
-from features.expertise import ExpertiseClass
+from features.expertise import Attribute, ExpertiseClass
 from features.npcs.npc import NPC, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, SilkspeakingI, VitalityTransferIII
 from features.shared.item import LOADED_ITEMS, ClassTag, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
-from random import choice
+from random import choice, randint, random
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, List
@@ -198,8 +198,7 @@ class YennaView(discord.ui.View):
             LOADED_ITEMS.get_new_item(ItemKey.Graspleaf),
             LOADED_ITEMS.get_new_item(ItemKey.Seaclover),
             LOADED_ITEMS.get_new_item(ItemKey.SpeckledCap),
-            LOADED_ITEMS.get_new_item(ItemKey.Stranglekelp),
-            LOADED_ITEMS.get_new_item(ItemKey.Graspleaf)
+            LOADED_ITEMS.get_new_item(ItemKey.Stranglekelp)
         ]
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1
@@ -210,7 +209,8 @@ class YennaView(discord.ui.View):
         self._NUM_PER_PAGE = 4
 
         self._COST_ADJUST = 1.5 # 50% price increase from base when purchasing items
-        self._IDENTIFY_COST = 50 # Fixed at 50 coins for right now
+        self._IDENTIFY_COST = 50 # Fixed at 50 coins for now
+        self._TAROT_COST = 500 # Fixed at 500 coins for now
 
         self.show_initial_buttons()
         
@@ -255,7 +255,14 @@ class YennaView(discord.ui.View):
                 )
             )
         if self._intent == Intent.Tarot:
-            pass
+            return Embed(
+                title="Tarot Reading",
+                description=(
+                    "\"You wish to see what the cards reveal? Come, sit. Let us look into the past, the present, and the future.\"\n\n"
+                    f"This will cost **{self._TAROT_COST} coins**. You have {player.get_inventory().get_coins_str()}.\n\n"
+                    "*Note: This will RESET your attribute points, allowing you to reallocate them.*"
+                )
+            )
         return self.get_initial_embed()
 
     def display_item_info(self):
@@ -292,6 +299,9 @@ class YennaView(discord.ui.View):
 
     def _get_wares_page_buttons(self):
         self.clear_items()
+        
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
         all_slots = self._wares
 
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -301,8 +311,11 @@ class YennaView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
+        
         if self._selected_item is not None:
-            self.add_item(ConfirmButton(min(4, len(page_slots))))
+            actual_value: int = int(self._selected_item.get_value() * self._COST_ADJUST)
+            if inventory.get_coins() >= actual_value:
+                self.add_item(ConfirmButton(min(4, len(page_slots))))
         self.add_item(ExitButton(min(4, len(page_slots))))
 
     def _purchase_item(self):
@@ -310,7 +323,7 @@ class YennaView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         if self._selected_item is not None and self._wares[self._selected_item_index] == self._selected_item:
             actual_value: int = int(self._selected_item.get_value() * self._COST_ADJUST)
-            if inventory.get_coins() < actual_value:
+            if inventory.get_coins() >= actual_value:
                 inventory.remove_coins(actual_value)
                 inventory.add_item(LOADED_ITEMS.get_new_item(self._selected_item.get_key()))
                 self._get_wares_page_buttons()
@@ -321,6 +334,17 @@ class YennaView(discord.ui.View):
                         f"You have {inventory.get_coins_str()}.\n\n"
                         "Navigate through available wares using the Prev and Next buttons.\n\n"
                         f"*You purchased 1 {self._selected_item.get_full_name()}!*"
+                    )
+                )
+            else:
+                self._get_wares_page_buttons()
+
+                return Embed(
+                    title="Browse Wares",
+                    description=(
+                        f"You have {inventory.get_coins_str()}.\n\n"
+                        "Navigate through available wares using the Prev and Next buttons.\n\n"
+                        f"*Error: You don't have enough coins to buy that!*"
                     )
                 )
 
@@ -442,13 +466,113 @@ class YennaView(discord.ui.View):
         return self.get_embed_for_intent()
 
     def _tarot_reading(self):
-        # TODO: Implement this based on player's expertise and suggest an alternative, then reset points.
-        pass
+        self.clear_items()
+        self.add_item(ExitButton(0))
+
+        attrs = self._get_player().get_expertise().get_all_attributes()
+
+        description = (
+            "*The flicker of the candlelight dances across Yenna's hands as she shuffles the cards. She asks you to split the deck, then again, merging the pieces as you see fit. She lets you shuffle for a time, then takes the cards back and spreads them in a fan before you. You choose three.*\n\n"
+            "\"Let us begin with the past...\"\n\n"
+            "*She flips over the first card: It's an image of a blank figure, wrapped in shadow like cloth, no features visible beyond a vaguely humanoid body. Behind them are a series of desaturated lights of various colors that blend into a fog.*\n\n"
+            "\"The Stranger. When you arrived here in town, you were unknown and without direction. You've come from beyond with a destiny your own to create. The possibilities were endless and you chose...\"\n\n"
+        )
+
+        max_val = max([attrs.constitution, attrs.dexterity, attrs.intelligence, attrs.luck, attrs.memory, attrs.strength])
+        best_attr = None
+        if attrs.constitution == max_val:
+            description += (
+                "*She flips over the next card: It's an image of a castle on a hill, powerful shields depicted on the tapestries that drape over its walls. The sky is clear and the hill itself is a hale and hearty green.*\n\n"
+                "\"The Fortress. You're seldom one to take risks and your endurance is a point of pride. Though you're a tough contender, beware the dangers of poison and curses which may easily sap that away.  Your role is best served as a protector for the moment, though what you choose is entirely up to you.\"\n\n"
+            )
+            best_attr = Attribute.Constitution
+        if attrs.dexterity == max_val:
+            description += (
+                "*She flips over the next card. It's an image of two people: One a person in a hooded cloak with daggers gleaming at their side, the other a dashing rapier-wielder in a fine doublet -- the latter bears an uncanny resemblance to Galos. They're back to back, almost as though two sides of the same coin.*\n\n"
+                "\"The Dancers. You're elegant and quick, there's no doubt about that; those who try to stop you will find themselves suddenly facing nothing at all. Despite this, you can't keep running forever. There will come a time when you have to hit back: Prepare for that day.\"\n\n"
+            )
+            best_attr = Attribute.Dexterity
+        if attrs.intelligence == max_val:
+            description += (
+                "*She flips over the next card: It's an painterly image of the stars with blue and white swirling gases, but in the center is an amorphous gap leading only to darkness. You could almost swear there's something inside that void.*\n\n"
+                "\"The Eternal. You have a hunger for knowledge and power -- not to mention an affinity for the arcane. These are useful traits that will aid you in life, but be careful about how far you go. There are some things better left unknown and some things not worth reaching for.\"\n\n"
+            )
+            best_attr = Attribute.Intelligence
+        if attrs.luck == max_val:
+            description += (
+                "*She flips over the next card: It's an image of a golden coin flipping through the air, a visage of chaos on one side and a vision of a paradise on the other. The card itself shines and glimmers in a mesmerizing way.*\n\n"
+                "\"The Chance. Often regarded as a symbol of wealth, it's true meaning relates to fortune and destiny. Most people would look at what happens in your life and call you lucky, but it'd be more accurate to say that things just tend to happen to you. Be careful, for good and bad are relative concepts -- you may find chance to be your downfall, not your uprising.\"\n\n"
+            )
+            best_attr = Attribute.Luck
+        if attrs.memory == max_val:
+            description += (
+                "*She flips over the next card: It's an image of a winding forest path leading forward into golden light which you can't see past. The trees bend into arches like a tunnel around the grass and dirt, strangely comforting and mysterious. An obscured figure with their back towards you walks down the path towards the light.*\n\n"
+                "\"The Voyager. Very rarely in my long life have I ever seen this card pulled. You want to do it all and explore the potential within, but you don't neglect understanding what it means. Without that, you'll find your experiences superficial and ultimately meaningless.\"\n\n"
+            )
+            best_attr = Attribute.Memory
+        if attrs.strength == max_val:
+            description += (
+                "*She flips over the next card: It's an image of a beautiful, brown horse galloping over a vast field. Its rippling muscles are clearly visible -- painted with careful detail -- and it seems to be in peak fitness.*\n\n"
+                "\"The Stallion. Your strength is your greatest attribute, both in body and willpower. I wouldn't doubt you train often and endeavor to become a powerful guardian. Be warned, however: Without the right tools by your side, all that brawn will fail you.\"\n\n"
+            )
+            best_attr = Attribute.Strength
+
+        possibilities = []
+        for i in range(5):
+            if best_attr == Attribute.Intelligence and i == 1:
+                continue
+            if best_attr == Attribute.Luck and i == 2:
+                continue
+            if best_attr == Attribute.Strength and i == 3:
+                continue
+            if best_attr == Attribute.Constitution and i == 4:
+                continue
+            possibilities.append(i)
+        final_result = choice(possibilities)
+
+        if final_result == 0:
+            description += (
+                "*She flips over the final card: It's an image of a person whose right hand is falling apart, as though being turned into sand and dust. Their left hand, however, is sprouting vines and flowers, turning green up the arm. The background appears to be a desert in midday, the sand around them identical to that which they're slowing becoming.*\n\n"
+                "\"Death. It is an inevitable thing. But fear not, for this doesn't mean all roads lead towards destruction. Death can mean a new beginning, a chance to try something different. Endings surround us and though we often fight against them, some carry powerful meanings and lessons worth listening to.\"\n\n"
+            )
+        if final_result == 1:
+            description += (
+                "*She flips over the final card: It's an image of a vast body of blue water with the sun setting on the horizon. You can see the end of a shimmering, white sand beach in the foreground with footsteps leading towards the water, but no sign of the figure who made them.*\n\n"
+                "\"The Endless. There are many possible futures that await you, and this card is merely a suggestion: There is much to learn out there in the world, including great powers which could aid your journey. Mana, in particular, is something worth exploring and understanding deeply.\"\n\n"
+            )
+        if final_result == 2:
+            description += (
+                "*She flips over the final card: It's an image of a golden coin flipping through the air, a visage of chaos on one side and a vision of a paradise on the other. The card itself shines and glimmers in a mesmerizing way.*\n\n"
+                "\"The Chance. Often regarded as a symbol of wealth, it's true meaning relates to fortune and destiny. Consider looking out for what could improve your opportunities in life and invest in what will guarantee you a better future.\n\n\""
+            )
+        if final_result == 3:
+            description += (
+                "*She flips over the final card: It's an image of a beautiful, brown horse galloping over a vast field. Its rippling muscles are clearly visible -- painted with careful detail -- and it seems to be in peak fitness.*\n\n"
+                "\"The Stallion. You may consider improving your strength in the future and becoming a powerful guardian. Don't underestimate a strong hand in combat and how a well-placed blow could change the course of a fight.\"\n\n"
+            )
+        if final_result == 4:
+            description += (
+                "*She flips over the final card: It's an image of an old man sitting in front of a bonfire, surrounded by mushrooms of various types and colors. The background seems to be a deep forest in the middle of the night -- the main source of light seems to be the flames before him.*\n\n"
+                "\"The Sage. For the many options that you may yet choose, there is a benefit to remembering where you've been and studying the wisdom of those who have ventured out into the world before you. This is often regarded as the card of the alchemists, though I'm perhaps a bit biased to suggest you learn some alchemy yourself.\"\n\n"
+            )
+
+        description += "\"Remember that the choices are yours to make. What I have shown you here is merely a look into the past, present, and one possible future.\"\n\n*Your attribute points have been reset and you can now spend them again.*"
+
+        if self._get_player().get_inventory().get_coins() >= self._TAROT_COST:
+            self._get_player().get_expertise().reset_points()
+            self._get_player().get_inventory().remove_coins(self._TAROT_COST)
+
+        return Embed(
+            title="Tarot Reading",
+            description=description
+        )
 
     def enter_tarot(self):
         self.clear_items()
         self._intent = Intent.Tarot
-        self.add_item(ConfirmButton(0))
+        if self._get_player().get_inventory().get_coins() >= self._TAROT_COST:
+            self.add_item(ConfirmButton(0))
+        self.add_item(ExitButton(0))
         return self.get_embed_for_intent()
 
     def confirm_using_intent(self):

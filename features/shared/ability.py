@@ -2167,7 +2167,7 @@ class SecondWindI(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        heal_amount = ceil(caster.get_expertise().max_hp * 0.25)
+        heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.25)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -2201,7 +2201,7 @@ class SecondWindII(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        heal_amount = ceil(caster.get_expertise().max_hp * 0.5)
+        heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.5)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -2235,7 +2235,7 @@ class SecondWindIII(Ability):
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        heal_amount = ceil(caster.get_expertise().max_hp * 0.75)
+        heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.75)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))

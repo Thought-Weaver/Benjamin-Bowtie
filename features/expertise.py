@@ -179,6 +179,15 @@ class Expertise():
         # Leveling Up
         self.points_to_spend = 0
 
+    def reset_points(self):
+        self.points_to_spend = self.constitution + self.strength + self.dexterity + self.intelligence + self.luck + self.memory
+        self.constitution = 0
+        self.strength = 0
+        self.dexterity = 0
+        self.intelligence = 0
+        self.luck = 0
+        self.memory = 0
+
     def add_xp_to_class(self, xp: int, expertise_class: ExpertiseClass):
         levels_gained: int = 0
         if expertise_class == ExpertiseClass.Fisher:
