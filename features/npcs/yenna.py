@@ -5,7 +5,9 @@ import re
 
 from discord import Embed
 from discord.ext import tasks
-from features.expertise import Attribute, ExpertiseClass
+from features.dueling import Dueling
+from features.equipment import Equipment
+from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.npcs.npc import NPC, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, SilkspeakingI, VitalityTransferIII
 from features.shared.item import LOADED_ITEMS, ClassTag, Item, ItemKey
@@ -824,3 +826,9 @@ class Yenna(NPC):
 
         self._num_fish_maybe_identified += 1
         return result
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
