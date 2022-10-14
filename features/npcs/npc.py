@@ -12,6 +12,7 @@ from strenum import StrEnum
 # -----------------------------------------------------------------------------
 
 class NPCRoles(StrEnum):
+    Unknown = "Unknown"
     FortuneTeller = "FortuneTeller"
     Blacksmith = "Blacksmith"
 
@@ -52,6 +53,8 @@ class NPC():
         return self.__dict__
 
     def __setstate__(self, state: dict):
+        self._name = state.get("_name", "")
+        self._role = state.get("_role", NPCRoles.Unknown)
         self._inventory = state.get("_inventory", Inventory())
         self._expertise = state.get("_expertise", Expertise())
         self._equipment = state.get("_equipment", Equipment())

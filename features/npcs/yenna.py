@@ -831,4 +831,58 @@ class Yenna(NPC):
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        self.__init__() # type: ignore
+        # TODO: Make each of these setup portions a private function in the class so I don't have
+        # to duplicate everything between init and setstate. 
+        self._name = state.get("_name", "Yenna")
+        self._role = state.get("_role", NPCRoles.FortuneTeller)
+        
+        self._inventory: Inventory | None = state.get("_inventory")
+        if self._inventory is None:
+            self._inventory = Inventory()
+
+            self._restock_items = []
+            self._restock_coins = 5000
+
+            self._inventory.add_coins(self._restock_coins)
+            for item in self._restock_items:
+                self._inventory.add_item(item)
+
+        self._equipment: Inventory | None = state.get("_equipment")
+        if self._equipment is None:
+            self._equipment = Equipment()
+
+        self._expertise: Expertise | None = state.get("_expertise")
+        if self._expertise is None:
+            self._expertise = Expertise()
+
+            self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant) # Level 20
+            self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian) # Level 5
+            
+            self._expertise.points_to_spend = 0
+            
+            self._expertise.constitution = 10
+            self._expertise.intelligence = 30
+            self._expertise.dexterity = 10
+            self._expertise.strength = 3
+            self._expertise.luck = 10
+            self._expertise.memory = 12
+
+            self._expertise.update_stats(self._equipment.get_total_buffs())
+
+        self._dueling: Dueling | None = state.get("_dueling")
+        if self._dueling is None:
+            self._dueling = Dueling()
+
+            self._dueling.abilities = [
+                BoundToGetLuckyIII(), SecondWindI(), SilkspeakingI(),
+                ParalyzingFumesI(), RegenerationIII(), QuickAccessI(),
+                PreparePotionsIII(), VitalityTransferIII(), EmpowermentI(),
+                IncenseIII(), ContractManaToBloodIII(), ContractWealthForPowerIII()
+            ]
+
+        self._scroll_text = "You walk on chains with your eyes. Push the fingers through the surface into the void. The trees are talking now. Through a maze you are rewarded in chaos. They are in the dreaming, in the wanting, in the knowing. Beware the red hexagons. It is the world in the mirror of ocean's make. How do you walk? Repeat it. The name of the sound. We build it until nothing remains. Don't you want these waves to drag you away? Come hither to us, Fisher King. You can almost hear us now. Your throne is waiting."
+        self._words_identified = state.get("_words_identified", [])
+        self._last_to_identify_scroll = state.get("_last_to_identify_scroll", "")
+        self._num_fish_maybe_identified = state.get("_num_fish_maybe_identified", 0)
+        self._NUM_FISH_PER_RESULT = 5 # Theoretically this could scale with the number of active players
+
