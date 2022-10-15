@@ -792,7 +792,7 @@ class Yenna(NPC):
                         "*At first, nothing happens. There's stillness, but for a moment you could swear you saw one of the fish... move. Wriggle. Then stillness again. Then out of the corner of your eye: A mouth gaping? Closing and opening? It couldn't be alive.*\n\n"
                         "*Yenna takes a separated, green and yellow liquid that looks like golden oil atop a shallow sea from her bag, then adds it to the bath.*\n\n"
                         "\"What-- get back!\"\n\n"
-                        "*Her exclamation rings out as the tub suddenly explodes with blood and a black liquid that overflows and covers the table. It drips to the floor, thick and oozing more and more from the tub. Yenna raises her hands and a web of light descends on the tub. With some resistance, it slows and begins to die down.*\n\n"
+                        "*Her exclamation rings out as the tub suddenly explodes with blood and a black liquid that overflows and covers the table. It drips to the floor, thick and oozing more and more from the tub. Yenna raises her hands and a web of light descends on it. With some resistance, the terrifying effect slows and begins to die down.*\n\n"
                         "\"This is no fish. And certainly no power of mana. Bring me more of them and we'll try a different approach.\""
                     )
                 )
