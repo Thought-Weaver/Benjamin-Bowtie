@@ -17,6 +17,7 @@ from features.expertise import ExpertiseClass, ExpertiseView
 from features.inventory import InventoryView
 from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
+from features.npcs.mrbones import Difficulty, MrBones
 from features.npcs.npc import NPCRoles
 from features.npcs.yenna import Yenna
 from features.player import Player
@@ -34,6 +35,7 @@ if TYPE_CHECKING:
     from features.dueling import Dueling
     from features.expertise import Expertise
     from features.inventory import Inventory
+    from features.npcs.npc import NPC
     from features.stats import Stats
 
 
@@ -246,7 +248,7 @@ class Adventures(commands.Cog):
         await context.send(embed=embed)
 
     @commands.command(name="knucklebones", help="Face another player in a game of knucklebones")
-    async def knucklebones_handler(self, context: commands.Context, user: User=None, amount: int=0):
+    async def knucklebones_handler(self, context: commands.Context, user: User | str | None=None, amount: int=0):
         if user is None:
             await context.send("You need to @ a member to use b!knucklebones.")
             return
@@ -255,12 +257,13 @@ class Adventures(commands.Cog):
             await context.send("You can't challenge yourself to a game of knucklebones.")
             return
             
-        if user.bot:
+        if isinstance(user, User) and user.bot:
             await context.send("You can't challenge a bot to knucklebones (but Benjamin Bowtie might learn how to play one day!)")
             return
             
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
-        self._check_member_and_guild_existence(context.guild.id, user.id)
+        if isinstance(user, User):
+            self._check_member_and_guild_existence(context.guild.id, user.id)
 
         if amount < 0:
             await context.send(f"You have to bet a non-negative number of coins!")
@@ -277,31 +280,84 @@ class Adventures(commands.Cog):
             await context.send(f"You're in a duel and can't play knucklebones.")
             return
 
-        challenged_player: Player = self._get_player(context.guild.id, user.id)
-        challenged_player_dueling: Dueling = challenged_player.get_dueling()
-        if challenged_player_dueling.is_in_combat:
-            await context.send(f"That person is in a duel and can't play knucklebones.")
-            return
+        challenged_player: Player | NPC = MrBones()
+        challenged_player_name = "Someone"
+        use_luck = True
+        description = (
+            "Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\n"
+            "If the opponent has dice of the same value in that same column, those dice are removed from their board.\n\n"
+            "Two of the same die in a single column double their value. Three of the same die triple their value.\n\n"
+            "When one player fills their board with dice, the game is over. The player with the most points wins."
+        )
+        # By default, this is the author to account for when they play against a bot
+        accepting_id: int = context.author.id
+        difficulty: Difficulty | None = None
+        
+        if isinstance(user, User):
+            challenged_player = self._get_player(context.guild.id, user.id)
+            challenged_player_dueling: Dueling = challenged_player.get_dueling()
+            if challenged_player_dueling.is_in_combat:
+                await context.send(f"That person is in a duel and can't play knucklebones.")
+                return
+
+            if challenged_player.get_inventory().get_coins() < amount:
+                await context.send(f"That person doesn't have enough coins ({challenged_player.get_inventory().get_coins()}) to bet that much!")
+                return
+
+            description += "\n\nThe game will begin when the other player accepts the invitation to play."
+            accepting_id = user.id
+
+        if isinstance(user, str):
+            user_lower = user.lower()
+            if isinstance(user, str) and (user_lower != "mrbones" or user_lower != "easy" or user_lower != "medium" or user_lower != "hard"):
+                await context.send("You have to choose Easy, Medium, or Hard.")
+                return
+            
+            if amount != 0:
+                await context.send("You can't bet coins when playing against an NPC.")
+                return
+
+            # This is being done to give players who want to face a bot a chance to re-read the rules
+            description += "\n\nThe game will begin when you confirm your intent to play."
+
+            if user_lower == "mrbones":
+                challenged_player_name = "Mr. Bones"
+                difficulty = Difficulty.Hard
+                description += (
+                    "\n\n──────────\n\n*You enter the back room of the Crown & Anchor Tavern and the light fades to a dim glow. There, waiting in the darkness, is a figure dressed richly in a vest and suit that gleam almost tyrian. Winding shapes that branch and twist up the undershirt in black seem to be moving of their own accord.*\n\n"
+                    "*In a raspy voice, it utters, \"I... am... Mr... Bones...\" and a hand that looks startlingly skeletal beckons you to play. You could swear there's a smile hidden in those shadows.*"
+                )
+            elif user_lower == "easy":
+                challenged_player_name = "Tavern Tim (Easy)"
+                difficulty = Difficulty.Easy
+                use_luck = False
+                description += (
+                    "\n\n──────────\n\n*The Crown & Anchor Tavern is bustling this evening and, as always, good ol' \"Tavern\" Tim sits at the bar playing Knucklebones with his friends. You suspect, based on his reputation, that he's losing, but he certainly doesn't seem to mind.*\n\n"
+                    "\"Awright, how urr ye? Wanna speil a gam or twa haha!\""
+                )
+            elif user_lower == "medium":
+                challenged_player_name = "Alleus (Medium)"
+                difficulty = Difficulty.Medium
+                use_luck = False
+                description += (
+                    "\n\n──────────\n\n*It's an average night in the tavern, with people drinking, eating, and celebrating the end of a hard day's labors. Talking with Quinan at a table is her father, Alleus, who you know to be a now-retired spice trader who previously travelled the world.*\n\n"
+                    "\"A challenger approaches! And I'm never one to turn down a good game. Let's play.\""
+                )
+            elif user_lower == "hard":
+                challenged_player_name = "Yenna (Hard)"
+                difficulty = Difficulty.Hard
+                use_luck = False
+                description += (
+                    "\n\n──────────\n\n*It's a quieter night than most in the tavern this evening. Waiting at a table in the corner of the bar, you can see Yenna. She doesn't have a drink, but is enjoying a nice meal -- something special based on the look of it prepared by Quinan. She makes eye contact with you as you enter and holds up a set of dice made of bone.*"
+                )
 
         if author_player.get_inventory().get_coins() < amount:
             await context.send(f"You don't have enough coins ({author_player.get_inventory().get_coins()}) to bet that much!")
             return
-        if challenged_player.get_inventory().get_coins() < amount:
-            await context.send(f"That person doesn't have enough coins ({challenged_player.get_inventory().get_coins()}) to bet that much!")
-            return
 
-        embed = Embed(
-            title="Welcome to Knucklebones!",
-            description=(
-                "Players will take alternating turns rolling dice. They will then choose a column in which to place the die result.\n\n"
-                "If the opponent has dice of the same value in that same column, those dice are removed from their board.\n\n"
-                "Two of the same die in a single column double their value. Three of the same die triple their value.\n\n"
-                "When one player fills their board with dice, the game is over. The player with the most points wins.\n\n"
-                "The game will begin when the other player accepts the invitation to play."
-            )
-        )
+        embed = Embed(title="Welcome to Knucklebones!", description=description)
 
-        await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, context.author, user, amount))
+        await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, author_player, challenged_player, context.author.display_name, challenged_player_name, accepting_id, amount, use_luck, difficulty))
 
     @commands.command(name="mail", help="Send another player a gift")
     async def mail_handler(self, context: commands.Context, giftee: User=None):

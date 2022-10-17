@@ -15,6 +15,7 @@ class NPCRoles(StrEnum):
     Unknown = "Unknown"
     FortuneTeller = "FortuneTeller"
     Blacksmith = "Blacksmith"
+    KnucklebonesPatron = "KnucklebonesPatron"
 
 # -----------------------------------------------------------------------------
 # CLASSES

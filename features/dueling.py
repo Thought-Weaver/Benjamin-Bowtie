@@ -517,10 +517,18 @@ class DuelView(discord.ui.View):
 
         return duel_result
 
+    def _is_ally(self, player: Player):
+        cur_turn_player = self._turn_order[self._turn_index]
+        if cur_turn_player in self._allies:
+            return player in self._allies
+        else:
+            return player in self._enemies
+
     def get_duel_info_str(self):
         info_str = "──────────\n"
         for i, entity in enumerate(self._turn_order):
-            info_str += f"({i + 1}) **{self.get_name(entity)}**\n\n{entity.get_expertise().get_health_and_mana_string()}"
+            group_icon = ":handshake:" if self._is_ally(entity) else ":imp:"
+            info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon}\n\n{entity.get_expertise().get_health_and_mana_string()}"
             if len(entity.get_dueling().status_effects) > 0:
                 info_str += f"\n\n{entity.get_dueling().get_statuses_string()}"
             info_str += "\n──────────\n"

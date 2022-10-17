@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import discord
 
-from random import choice, choices
+from random import choice, choices, randint
 from discord.embeds import Embed
 from discord.ext import commands
 
 from typing import Dict, List, TYPE_CHECKING
+
+from features.npcs.mrbones import Difficulty
+
+
 if TYPE_CHECKING:
+    from features.npcs.mrbones import MrBones
     from features.player import Player
 
 class AcceptButton(discord.ui.Button):
@@ -20,7 +25,7 @@ class AcceptButton(discord.ui.Button):
         
         view: Knucklebones = self.view
 
-        if interaction.user != view.get_player_2():
+        if interaction.user.id != view.get_accepting_id():
             await interaction.response.edit_message(
                 content="Error: You can't accept this request!",
                 view=view
@@ -46,7 +51,7 @@ class DeclineButton(discord.ui.Button):
         
         view: Knucklebones = self.view
 
-        if interaction.user != view.get_player_2():
+        if interaction.user.id != view.get_accepting_id():
             await interaction.response.edit_message(
                 content="Error: You can't decline this request!",
                 view=view
@@ -94,16 +99,21 @@ class KnucklebonesButton(discord.ui.Button):
 
 
 class Knucklebones(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, player_1: discord.User, player_2: discord.User, bet: int):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, player_1: Player, player_2: Player | MrBones, player_1_display_name: str, player_2_display_name: str, accepting_id: int, bet: int, use_luck: bool, difficulty: Difficulty):
         super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
         self._guild_id = guild_id
         self._player_1 = player_1
+        self._player_1_display_name = player_1_display_name
         self._player_2 = player_2
+        self._player_2_display_name = player_2_display_name
         self._current_roll = 0
         self._bet = bet
+        self._use_luck = use_luck
+        self._accepting_id = accepting_id
+        self._difficulty = difficulty
 
         self._turn = choice([self._player_1, self._player_2])
 
@@ -146,7 +156,7 @@ class Knucklebones(discord.ui.View):
         return sum([num * count * count for num, count in counts.items()])
 
     def _get_game_state_string(self):
-        content = f"**{self._player_1.display_name}**\n\n"
+        content = f"**{self._player_1_display_name}**\n\n"
         for i in range(3):
             for j in range(3):
                 value: int = self._player_1_board[i][j]
@@ -159,7 +169,7 @@ class Knucklebones(discord.ui.View):
             content += f"{str(col_val)} "
         content += f"= {p1_total}"
 
-        content += f"\n\n**{self._player_2.display_name}**\n\n"
+        content += f"\n\n**{self._player_2_display_name}**\n\n"
         for i in range(3):
             for j in range(3):
                 value: int = self._player_2_board[i][j]
@@ -175,7 +185,12 @@ class Knucklebones(discord.ui.View):
         return content
 
     def _get_current_turn_string(self):
-        return f"It's {self._turn.display_name}'s turn! They rolled a {str(self._current_roll)}. Choose a column to place it in:"
+        cur_display_name = self._player_1_display_name if self._turn == self._player_1 else self._player_2_display_name
+        base_result = f"It's {cur_display_name}'s turn! They rolled a {str(self._current_roll)}."
+        if isinstance(Player, self._turn):
+            return f"{base_result} Choose a column to place it in:"
+        else:
+            return f"{base_result} {cur_display_name} is thinking...\n\n"
 
     def _check_game_complete(self):
         p1_all_nonzero = True
@@ -201,33 +216,36 @@ class Knucklebones(discord.ui.View):
         return None
 
     def _roll(self):
-        cur_turn_player: Player = self._get_player(self._turn.id)
-        player_luck: int = cur_turn_player.get_expertise().luck
-        equipment_luck: int = cur_turn_player.get_equipment().get_total_buffs().lck_buff
-        total_luck: int = player_luck + equipment_luck
-        self._current_roll = choices(
-            [1, 2, 3, 4, 5, 6], k=1, 
-            weights=[
-                1/6 - 0.001 * total_luck,
-                1/6 - 0.001 * total_luck,
-                1/6 - 0.001 * total_luck,
-                1/6 + 0.001 * total_luck,
-                1/6 + 0.001 * total_luck,
-                1/6 + 0.001 * total_luck
-            ]
-        )[0]
+        if self._use_luck:
+            player_luck: int = self._turn.get_expertise().luck
+            equipment_luck: int = self._turn.get_equipment().get_total_buffs().lck_buff
+            total_luck: int = player_luck + equipment_luck
+            self._current_roll = choices(
+                [1, 2, 3, 4, 5, 6], k=1, 
+                weights=[
+                    1/6 - 0.001 * total_luck,
+                    1/6 - 0.001 * total_luck,
+                    1/6 - 0.001 * total_luck,
+                    1/6 + 0.001 * total_luck,
+                    1/6 + 0.001 * total_luck,
+                    1/6 + 0.001 * total_luck
+                ]
+            )[0]
+        else:
+            self._current_roll = randint(1, 6)
 
     def setup_game(self):
         self.clear_items()
-        for pos in range(3):
-            self.add_item(KnucklebonesButton(pos))
+        if isinstance(Player, self._turn):
+            for pos in range(3):
+                self.add_item(KnucklebonesButton(pos))
         
         self._roll()
         return self._get_game_state_string() + "\n\n" + self._get_current_turn_string()
 
-    def _update_stats(self, winner: Player, player_1: Player, player_2: Player, amount_won=0, is_tied=False):
-        player_1_stats = player_1.get_stats()
-        player_2_stats = player_2.get_stats()
+    def _update_stats(self, winner: Player, amount_won=0, is_tied=False):
+        player_1_stats = self._player_1.get_stats()
+        player_2_stats = self._player_2.get_stats()
         winner_stats = winner.get_stats()
 
         player_1_stats.knucklebones.games_played += 1
@@ -265,10 +283,11 @@ class Knucklebones(discord.ui.View):
         
         if not can_place:
             return None
-        
+
         if self._check_game_complete():
             self.clear_items()
             winner = self._get_winner()
+            winner_display_name = self._player_1_display_name if winner == self._player_1 else self._player_2_display_name
             if winner is not None:
                 winner_player: Player = self._get_player(winner.id)
                 player_1: Player = self._get_player(self._player_1.id)
@@ -289,21 +308,30 @@ class Knucklebones(discord.ui.View):
                         player_1_inv.remove_coins(amount_won)
                         player_2_inv.add_coins(amount_won)
                     
-                    self._update_stats(winner_player, player_1, player_2, amount_won)
-                    return self._get_game_state_string() + f"\n\n{winner.display_name} has won the game and {amount_won} coins!"
+                    self._update_stats(winner_player, amount_won)
+                    return self._get_game_state_string() + f"\n\n{winner_display_name} has won the game and {amount_won} coins!"
                 else:
-                    self._update_stats(winner_player, player_1, player_2)
-                    return self._get_game_state_string() + f"\n\n{winner.display_name} has won the game!"
+                    self._update_stats(winner_player)
+                    return self._get_game_state_string() + f"\n\n{winner_display_name} has won the game!"
 
-            self._update_stats(winner_player, player_1, player_2, is_tied=True)
+            self._update_stats(winner_player, is_tied=True)
             return self._get_game_state_string() + "\n\nIt's a tie! No one wins any coins."
 
         self._roll()
         self._turn = self._player_1 if self._turn == self._player_2 else self._player_2
-        return self._get_game_state_string() + "\n\n" + self._get_current_turn_string()
 
-    def get_player_2(self):
-        return self._player_2
+        npc_move_turn_str = ""
+        pre_npc_move_board = ""
+        if isinstance(MrBones, self._turn):
+            pre_npc_move_board = self._get_game_state_string() + "\n\n" + self._get_current_turn_string() + "\n────────────────────\n\n"
+            npc_move_turn_str = self._turn.make_move(self._player_1_board, self._player_2_board, self._difficulty, self._compute_points_in_col, self._current_roll, self._player_2_display_name) + "\n\n"
+            self._roll()
+            self._turn = self._player_1 if self._turn == self._player_2 else self._player_2
+
+        return pre_npc_move_board + self._get_game_state_string() + "\n\n" + npc_move_turn_str + self._get_current_turn_string()
 
     def get_current_turn_player(self):
         return self._turn
+        
+    def get_accepting_id(self):
+        return self._accepting_id
