@@ -106,6 +106,7 @@ class EffectTag(StrEnum):
     PercentDamageBonusOnLegendaries = "PercentDamageBonusOnLegendaries"
     LoweredCooldowns = "LoweredCooldowns"
     ResurrectOnce = "ResurrectOnce"
+    DexBonusDamage = "DexBonusDamage"
 
 
 class ItemKey(StrEnum):
@@ -312,9 +313,9 @@ class WeaponStats():
     def get_range_str(self):
         return f"{self._min_damage}-{self._max_damage} damage"
 
-    def get_random_damage(self, class_tags: List[ClassTag], attacker_attrs: Attributes):
+    def get_random_damage(self, effect_tags: List[EffectTag], attacker_attrs: Attributes):
         damage = randint(self._min_damage, self._max_damage)
-        if ClassTag.Weapon.Dagger in class_tags:
+        if EffectTag.DexBonusDamage in effect_tags:
             damage += min(int(damage * DEX_DMG_SCALE * max(attacker_attrs.dexterity, 0)), damage)
         return randint(self._min_damage, self._max_damage)
 

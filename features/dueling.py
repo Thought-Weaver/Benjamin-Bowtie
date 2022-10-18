@@ -745,7 +745,7 @@ class DuelView(discord.ui.View):
             if critical_hit_boost > 1:
                 attacker.get_stats().dueling.critical_hit_successes += 1
 
-            base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), attacker_attrs)
+            base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), attacker_attrs)
             damage = int(base_damage * critical_hit_boost)
             damage += min(int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), damage)
  

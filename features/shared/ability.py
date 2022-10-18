@@ -2049,7 +2049,7 @@ class WhirlwindI(Ability):
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = ceil(base_damage * 0.5)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2090,7 +2090,7 @@ class WhirlwindII(Ability):
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = ceil(base_damage * 0.6)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2131,7 +2131,7 @@ class WhirlwindIII(Ability):
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = ceil(base_damage * 0.7)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2563,7 +2563,7 @@ class CounterstrikeI(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = int(0.75 * base_damage + 0.1 * (caster_expertise.max_hp - caster_expertise.hp))
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2604,7 +2604,7 @@ class CounterstrikeII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = int(0.8 * base_damage + 0.2 * (caster_expertise.max_hp - caster_expertise.hp))
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2645,7 +2645,7 @@ class CounterstrikeIII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = int(0.85 * base_damage + 0.3 * (caster_expertise.max_hp - caster_expertise.hp))
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2729,7 +2729,7 @@ class PiercingStrikeI(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = int(1.1 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2782,7 +2782,7 @@ class PiercingStrikeII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = int(1.2 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2835,7 +2835,7 @@ class PiercingStrikeIII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = int(1.3 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -3041,7 +3041,7 @@ class HeavySlamI(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = int((0.4 + 0.05 * caster_attrs.constitution) * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -3081,7 +3081,7 @@ class HeavySlamII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = int((0.6 + 0.05 * caster_attrs.constitution) * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -3121,7 +3121,7 @@ class HeavySlamIII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), caster_attrs)
         damage = int((0.8 + 0.05 * caster_attrs.constitution) * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 

@@ -7,6 +7,7 @@
     "description": "Deals additional damage based on your Dexterity stat.",
     "flavor_text": "",
     "class_tags": ["Equipment", "Weapon", "Dagger"],
+    "effect_tags": ["DexBonusDamage"],
     "state_tags": [],
     "count": 1,
     "level_requirement": 2,
