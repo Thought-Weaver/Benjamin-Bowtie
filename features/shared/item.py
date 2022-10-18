@@ -9,6 +9,8 @@ from strenum import StrEnum
 from types import MappingProxyType
 from typing import List
 
+from features.expertise import DEX_DMG_SCALE, Attributes
+
 # -----------------------------------------------------------------------------
 # ENUMS
 # -----------------------------------------------------------------------------
@@ -98,6 +100,14 @@ class StateTag(Enum):
     pass
 
 
+class EffectTag(StrEnum):
+    PercentDamageReflection = "PercentDamageReflection"
+    PercentDamageResistance = "PercentDamageResistance"
+    PercentDamageBonusOnLegendaries = "PercentDamageBonusOnLegendaries"
+    LoweredCooldowns = "LoweredCooldowns"
+    ResurrectOnce = "ResurrectOnce"
+
+
 class ItemKey(StrEnum):
     # Fishing Results
     AncientVase = "items/valuable/ancient_vase"
@@ -176,21 +186,32 @@ class ItemKey(StrEnum):
     Witherheart = "items/ingredient/herbs/witherheart"
     Wrathbark = "items/ingredient/herbs/wrathbark"
 
+    # Weapons
+    BasicDagger = "items/weapon/dagger/basic_dagger"
+    BasicSword = "items/weapon/dagger/basic_sword"
+
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"
+    GoldenKnucklebone = "items/equipment/offhand/golden_knucklebone"
+    PurifiedHeart = "items/equipment/offhand/purified_heart"
 
 # -----------------------------------------------------------------------------
 # CLASSES
 # -----------------------------------------------------------------------------
 
 class Buffs():
-    def __init__(self, con_buff=0, str_buff=0, dex_buff=0, int_buff=0, lck_buff=0, mem_buff=0):
+    def __init__(self, con_buff=0, str_buff=0, dex_buff=0, int_buff=0, lck_buff=0, mem_buff=0, percent_dmg_reflect=0.0, percent_dmg_resist=0.0, percent_dmg_bonus_on_legends=0.0, lowered_cds=0):
         self.con_buff = con_buff
         self.str_buff = str_buff
         self.dex_buff = dex_buff
         self.int_buff = int_buff
         self.lck_buff = lck_buff
         self.mem_buff = mem_buff
+
+        self.percent_dmg_reflect = percent_dmg_reflect
+        self.percent_dmg_resist = percent_dmg_resist
+        self.percent_dmg_bonus_on_legends = percent_dmg_bonus_on_legends
+        self.lowered_cds = lowered_cds
 
     def __add__(self, other: Buffs):
         return Buffs(
@@ -199,11 +220,16 @@ class Buffs():
             self.dex_buff + other.dex_buff,
             self.int_buff + other.int_buff,
             self.lck_buff + other.lck_buff,
-            self.mem_buff + other.mem_buff
+            self.mem_buff + other.mem_buff,
+            max(self.percent_dmg_reflect + other.percent_dmg_reflect, 0.75),
+            max(self.percent_dmg_resist + other.percent_dmg_resist, 0.75),
+            max(self.percent_dmg_bonus_on_legends + other.percent_dmg_bonus_on_legends, 1.0),
+            max(self.lowered_cds, other.lowered_cds)
         )
 
     def __str__(self):
         display_string = ""
+
         if self.con_buff != 0:
             if self.con_buff > 0:
                 display_string += "+"
@@ -228,6 +254,23 @@ class Buffs():
             if self.mem_buff > 0:
                 display_string += "+"
             display_string += f"{self.mem_buff} Memory\n"
+
+        if self.percent_dmg_reflect != 0:
+            display_string += f"{self.percent_dmg_reflect}% Damage Reflected\n"
+        
+        if self.percent_dmg_resist != 0:
+            display_string += f"{self.percent_dmg_reflect}% Damage Resist\n"
+        
+        if self.percent_dmg_bonus_on_legends != 0:
+            if self.percent_dmg_bonus_on_legends > 0:
+                display_string += "+"
+            display_string += f"{self.percent_dmg_bonus_on_legends}% Damage on Legendaries\n"
+        
+        if self.lowered_cds != 0:
+            if self.lowered_cds > 0:
+                display_string += "+"
+            display_string += f"{self.lowered_cds} Turns on Cooldowns\n"
+
         return display_string
 
     def __getstate__(self):
@@ -240,6 +283,11 @@ class Buffs():
         self.int_buff = state.get("int_buff", 0)
         self.lck_buff = state.get("lck_buff", 0)
         self.mem_buff = state.get("mem_buff", 0)
+
+        self.percent_dmg_reflect = state.get("percent_dmg_reflect", 0)
+        self.percent_dmg_resist = state.get("percent_dmg_resist", 0)
+        self.percent_dmg_bonus_on_legends = state.get("percent_dmg_bonus_on_legends", 0)
+        self.lowered_cds = state.get("lowered_cds", 0)
 
 
 class ArmorStats():
@@ -264,7 +312,10 @@ class WeaponStats():
     def get_range_str(self):
         return f"{self._min_damage}-{self._max_damage} damage"
 
-    def get_random_damage(self):
+    def get_random_damage(self, class_tags: List[ClassTag], attacker_attrs: Attributes):
+        damage = randint(self._min_damage, self._max_damage)
+        if ClassTag.Weapon.Dagger in class_tags:
+            damage += min(int(damage * DEX_DMG_SCALE * max(attacker_attrs.dexterity, 0)), damage)
         return randint(self._min_damage, self._max_damage)
 
     def __getstate__(self):
@@ -295,7 +346,7 @@ class ConsumableStats():
 
 
 class Item():
-    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[str], state_tags: List[str]=[], count=1, level_requirement=0, buffs: Buffs=None, armor_stats: ArmorStats=None, weapon_stats: WeaponStats=None, consumable_stats: ConsumableStats=None):
+    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[str], effect_tags: List[str]=[], state_tags: List[str]=[], count=1, level_requirement=0, buffs: Buffs=None, armor_stats: ArmorStats=None, weapon_stats: WeaponStats=None, consumable_stats: ConsumableStats=None):
         self._key = key
         self._icon = icon
         self._name = name
@@ -304,6 +355,7 @@ class Item():
         self._description = description
         self._flavor_text = flavor_text
         self._class_tags = class_tags
+        self._effect_tags = effect_tags
         self._state_tags = state_tags
         self._count = count
         self._level_requirement = level_requirement
@@ -348,6 +400,7 @@ class Item():
             item_data.get("description", ""),
             item_data.get("flavor_text", ""),
             item_data.get("class_tags", []),
+            item_data.get("effect_tags", []),
             item_data.get("state_tags", []),
             item_data.get("count", 1),
             item_data.get("level_requirement", 0),
@@ -368,6 +421,7 @@ class Item():
                 self._description,
                 self._flavor_text,
                 self._class_tags,
+                self._effect_tags,
                 self._state_tags,
                 amount,
                 self._level_requirement,
@@ -423,6 +477,9 @@ class Item():
 
     def get_class_tags(self) -> List[str]:
         return self._class_tags
+
+    def get_effect_tags(self) -> List[str]:
+        return self._effect_tags
 
     def get_state_tags(self) -> List[str]:
         return self._state_tags
@@ -532,6 +589,7 @@ class Item():
         self._flavor_text = base_data.get("flavor_text", "")
         self._level_requirement = base_data.get("level_requirement", 0)
         self._class_tags = base_data.get("class_tags", [])
+        self._effect_tags = base_data.get("effect_tags", [])
 
         armor_data = base_data.get("armor_stats")
         if armor_data is not None:

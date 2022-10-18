@@ -7,8 +7,10 @@ from discord.embeds import Embed
 from discord.ext import commands
 
 from typing import Dict, List, TYPE_CHECKING
+from features.equipment import Equipment
 
 from features.npcs.mrbones import Difficulty
+from features.shared.item import ClassTag, ItemKey
 
 
 if TYPE_CHECKING:
@@ -210,9 +212,9 @@ class Knucklebones(discord.ui.View):
             player_1_total += self._compute_points_in_col(self._player_1_board, j)
             player_2_total += self._compute_points_in_col(self._player_2_board, j)
         if player_1_total > player_2_total:
-            return self._player_1
+            return (self._player_1, player_1_total)
         if player_2_total > player_1_total:
-            return self._player_2
+            return (self._player_2, player_2_total)
         return None
 
     def _roll(self):
@@ -286,13 +288,17 @@ class Knucklebones(discord.ui.View):
 
         if self._check_game_complete():
             self.clear_items()
-            winner = self._get_winner()
+            winner, winner_board_total = self._get_winner()
             winner_display_name = self._player_1_display_name if winner == self._player_1 else self._player_2_display_name
             if winner is not None:
-                winner_player: Player = self._get_player(winner.id)
+                if isinstance(winner, MrBones):
+                    return self._get_game_state_string() + f"\n\n{winner_display_name} has won the game!"
+
+                winner_player = self._get_player(winner.id)
                 player_1: Player = self._get_player(self._player_1.id)
                 player_2: Player = self._get_player(self._player_2.id)
                 
+                coins_won_str: str = ""
                 if self._bet > 0:
                     amount_won = 0
                     player_1_inv = player_1.get_inventory()
@@ -309,13 +315,19 @@ class Knucklebones(discord.ui.View):
                         player_2_inv.add_coins(amount_won)
                     
                     self._update_stats(winner_player, amount_won)
-                    return self._get_game_state_string() + f"\n\n{winner_display_name} has won the game and {amount_won} coins!"
-                else:
-                    self._update_stats(winner_player)
-                    return self._get_game_state_string() + f"\n\n{winner_display_name} has won the game!"
+                    coins_won_str = f" and {amount_won} coins"
+
+                off_hand_item = winner.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
+                if off_hand_item is not None and off_hand_item.get_key() == ItemKey.GoldenKnucklebone:
+                    extra_coins_won = int(winner_board_total / 10)
+                    winner_player.get_inventory().add_coins(extra_coins_won)
+                    coins_won_str += f" (+{extra_coins_won} coins from the Golden Knucklebone)"
+
+                self._update_stats(winner_player)
+                return f"{self._get_game_state_string()}\n\n{winner_display_name} has won the game{coins_won_str}!"
 
             self._update_stats(winner_player, is_tied=True)
-            return self._get_game_state_string() + "\n\nIt's a tie! No one wins any coins."
+            return f"{self._get_game_state_string()}\n\nIt's a tie! No one wins any coins."
 
         self._roll()
         self._turn = self._player_1 if self._turn == self._player_2 else self._player_2

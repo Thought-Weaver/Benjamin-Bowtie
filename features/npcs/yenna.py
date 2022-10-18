@@ -13,7 +13,7 @@ from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, 
 from features.shared.item import LOADED_ITEMS, ClassTag, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
-from random import choice, randint, random
+from random import choice
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, List
@@ -603,6 +603,8 @@ class YennaView(discord.ui.View):
 
         if self._intent == Intent.Wares:
             self._get_wares_page_buttons()
+        if self._intent == Intent.Identify:
+            self._get_identify_page_buttons()
 
         self._selected_item = None
         self._selected_item_index = -1
@@ -614,6 +616,8 @@ class YennaView(discord.ui.View):
 
         if self._intent == Intent.Wares:
             self._get_wares_page_buttons()
+        if self._intent == Intent.Identify:
+            self._get_identify_page_buttons()
 
         self._selected_item = None
         self._selected_item_index = -1
@@ -802,7 +806,7 @@ class Yenna(NPC):
                         "\"Thus far we have tried alchemy in its many forms, but for a deeper look at what these creatures are, I'll need to channel mana.\"\n\n"
                         "*With a snap of her fingers, she starts a fire under some kind of alembic. She waves a hand over the fish and, with delicate precision, she plucks off a scale from the fish binding it with some unseen power, then another, then another --*\n\n"
                         "*And it shrieks, a shattering noise inside your very mind, not of pain but something else. How could it feel any pain? It's been dead since you caught it. From her sudden withdrawal, you can tell Yenna felt the same outburst.*\n\n"
-                        "*There's silence. For now, Yenna stops. Carefully, she beings to approach and places it into a jar to keep it contained.*\n\n"
+                        "*There's silence. For now, Yenna stops. Carefully, she begins to approach and places it into a jar to keep it contained.*\n\n"
                         "\"There is one last thing I can do. I dread to, for what it might mean, but bring me a fresh set of these creatures and we will settle this matter.\""
                     )
                 )

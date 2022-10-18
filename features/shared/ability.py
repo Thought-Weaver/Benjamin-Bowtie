@@ -112,12 +112,12 @@ class Ability():
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(dmg_range.start, dmg_range.stop) * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -141,7 +141,7 @@ class Ability():
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -176,7 +176,7 @@ class Ability():
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -216,7 +216,7 @@ class Ability():
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(f"You took {damage} damage to cast this from Contract: Mana to Blood")
         self._cur_cooldown = self._cooldown
 
@@ -253,7 +253,7 @@ class Ability():
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(f"You took {damage} damage to cast this from Contract: Mana to Blood")
         self._cur_cooldown = self._cooldown
 
@@ -792,12 +792,12 @@ class WrathOfTheWavesI(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(5, 10) * bonus_dmg_boost * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -821,7 +821,7 @@ class WrathOfTheWavesI(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -878,12 +878,12 @@ class WrathOfTheWavesII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(8, 12) * bonus_dmg_boost * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -907,7 +907,7 @@ class WrathOfTheWavesII(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -964,12 +964,12 @@ class WrathOfTheWavesIII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(10, 15) * bonus_dmg_boost * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -993,7 +993,7 @@ class WrathOfTheWavesIII(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -1169,13 +1169,13 @@ class ThunderingTorrentI(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(10, 15) * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1205,7 +1205,7 @@ class ThunderingTorrentI(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -1261,13 +1261,13 @@ class ThunderingTorrentII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(12, 18) * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1297,7 +1297,7 @@ class ThunderingTorrentII(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -1353,13 +1353,13 @@ class ThunderingTorrentIII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(15, 20) * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1389,7 +1389,7 @@ class ThunderingTorrentIII(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -1446,9 +1446,9 @@ class DrownInTheDeepI(Ability):
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
             damage = int((1.5 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
-            actual_damage_dealt = target_expertise.damage(damage, 0, 0)
+            actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1467,7 +1467,7 @@ class DrownInTheDeepI(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -1521,9 +1521,9 @@ class DrownInTheDeepII(Ability):
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
             damage = int((2 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
-            actual_damage_dealt = target_expertise.damage(damage, 0, 0)
+            actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1542,7 +1542,7 @@ class DrownInTheDeepII(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -1596,9 +1596,9 @@ class DrownInTheDeepIII(Ability):
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
             damage = int((2.5 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
-            actual_damage_dealt = target_expertise.damage(damage, 0, 0)
+            actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1617,7 +1617,7 @@ class DrownInTheDeepIII(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -1676,7 +1676,7 @@ class WhirlpoolI(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(10, 20) * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
@@ -1685,7 +1685,7 @@ class WhirlpoolI(Ability):
 
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1709,7 +1709,7 @@ class WhirlpoolI(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -1765,7 +1765,7 @@ class WhirlpoolII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(15, 25) * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
@@ -1774,7 +1774,7 @@ class WhirlpoolII(Ability):
 
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1798,7 +1798,7 @@ class WhirlpoolII(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -1854,7 +1854,7 @@ class WhirlpoolIII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = int(randint(20, 30) * critical_hit_boost)
-            damage += int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
@@ -1863,7 +1863,7 @@ class WhirlpoolIII(Ability):
 
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1887,7 +1887,7 @@ class WhirlpoolIII(Ability):
         else:
             damage = int(mana_to_blood_percent * self.get_mana_cost())
             if damage > 0:
-                caster_expertise.damage(damage, 0, 0)
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
                 results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
         self._cur_cooldown = self._cooldown
 
@@ -2049,8 +2049,9 @@ class WhirlwindI(Ability):
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = ceil(weapon_stats.get_random_damage() * 0.5)
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = ceil(base_damage * 0.5)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2089,8 +2090,9 @@ class WhirlwindII(Ability):
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = ceil(weapon_stats.get_random_damage() * 0.6)
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = ceil(base_damage * 0.6)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2129,8 +2131,9 @@ class WhirlwindIII(Ability):
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = weapon_stats.get_random_damage() * 0.7
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = ceil(base_damage * 0.7)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2560,8 +2563,9 @@ class CounterstrikeI(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = int(0.75 * weapon_stats.get_random_damage() + 0.1 * (caster_expertise.max_hp - caster_expertise.hp))
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = int(0.75 * base_damage + 0.1 * (caster_expertise.max_hp - caster_expertise.hp))
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2600,8 +2604,9 @@ class CounterstrikeII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = int(0.8 * weapon_stats.get_random_damage() + 0.2 * (caster_expertise.max_hp - caster_expertise.hp))
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = int(0.8 * base_damage + 0.2 * (caster_expertise.max_hp - caster_expertise.hp))
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2640,8 +2645,9 @@ class CounterstrikeIII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = int(0.85 * weapon_stats.get_random_damage() + 0.3 * (caster_expertise.max_hp - caster_expertise.hp))
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = int(0.85 * base_damage + 0.3 * (caster_expertise.max_hp - caster_expertise.hp))
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2723,8 +2729,9 @@ class PiercingStrikeI(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = int(1.1 * weapon_stats.get_random_damage())
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = int(1.1 * base_damage)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2775,8 +2782,9 @@ class PiercingStrikeII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = int(1.2 * weapon_stats.get_random_damage())
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = int(1.2 * base_damage)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2827,8 +2835,9 @@ class PiercingStrikeIII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = int(1.3 * weapon_stats.get_random_damage())
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = int(1.3 * base_damage)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3032,8 +3041,9 @@ class HeavySlamI(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = int((0.4 + 0.05 * caster_attrs.constitution) * weapon_stats.get_random_damage())
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = int((0.4 + 0.05 * caster_attrs.constitution) * base_damage)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3071,8 +3081,9 @@ class HeavySlamII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = int((0.6 + 0.05 * caster_attrs.constitution) * weapon_stats.get_random_damage())
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = int((0.6 + 0.05 * caster_attrs.constitution) * base_damage)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3110,8 +3121,9 @@ class HeavySlamIII(Ability):
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
 
-        damage = int((0.8 + 0.05 * caster_attrs.constitution) * weapon_stats.get_random_damage())
-        damage += int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0))
+        base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), caster_attrs)
+        damage = int((0.8 + 0.05 * caster_attrs.constitution) * base_damage)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4418,7 +4430,7 @@ class VitalityTransferI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         damage_amount = ceil(caster.get_expertise().max_hp * 0.15)
-        caster.get_expertise().damage(damage_amount)
+        caster.get_expertise().damage(damage_amount, 0, 0, caster.get_equipment())
 
         heal_amount = ceil(targets[0].get_expertise().max_hp * 0.15)
 
@@ -4455,7 +4467,7 @@ class VitalityTransferII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         damage_amount = ceil(caster.get_expertise().max_hp * 0.25)
-        caster.get_expertise().damage(damage_amount)
+        caster.get_expertise().damage(damage_amount, 0, 0, caster.get_equipment())
 
         heal_amount = ceil(targets[0].get_expertise().max_hp * 0.25)
 
@@ -4492,7 +4504,7 @@ class VitalityTransferIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         damage_amount = ceil(caster.get_expertise().max_hp * 0.35)
-        caster.get_expertise().damage(damage_amount)
+        caster.get_expertise().damage(damage_amount, 0, 0, caster.get_equipment())
 
         heal_amount = ceil(targets[0].get_expertise().max_hp * 0.35)
 

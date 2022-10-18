@@ -17,6 +17,7 @@ from features.expertise import ExpertiseClass, ExpertiseView
 from features.inventory import InventoryView
 from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
+from features.npcs.abarra import Blacksmith
 from features.npcs.mrbones import Difficulty, MrBones
 from features.npcs.npc import NPCRoles
 from features.npcs.yenna import Yenna
@@ -45,8 +46,29 @@ class Adventures(commands.Cog):
         
         file_data = open("./adventuresdb.json", "r").read()
         self._database: dict = jsonpickle.decode(file_data) if os.path.isfile("./adventuresdb.json") else {}
-        
+
+        self._database_npc_and_story_setup()
         self.save_database.start()
+
+    def _database_npc_and_story_setup(self):
+        for guild_id_str in self._database.keys():
+            if self._database[guild_id_str].get("stories") is None:
+                self._database[guild_id_str]["stories"] = {}
+            if self._database[guild_id_str]["stories"].get(Story.Forest) is None:
+                self._database[guild_id_str]["stories"][Story.Forest] = ForestStory()
+            if self._database[guild_id_str]["stories"].get(Story.Ocean) is None:
+                self._database[guild_id_str]["stories"][Story.Ocean] = OceanStory()
+            if self._database[guild_id_str]["stories"].get(Story.Underworld) is None:
+                self._database[guild_id_str]["stories"][Story.Underworld] = UnderworldStory()
+
+            if self._database[guild_id_str].get("npcs") is None:
+                self._database[guild_id_str]["npcs"] = {}
+            if self._database[guild_id_str]["npcs"].get(NPCRoles.FortuneTeller) is None:
+                self._database[guild_id_str]["npcs"][NPCRoles.FortuneTeller] = Yenna()
+            if self._database[guild_id_str]["npcs"].get(NPCRoles.Blacksmith) is None:
+                self._database[guild_id_str]["npcs"][NPCRoles.Blacksmith] = Blacksmith()
+            if self._database[guild_id_str]["npcs"].get(NPCRoles.KnucklebonesPatron) is None:
+                self._database[guild_id_str]["npcs"][NPCRoles.KnucklebonesPatron] = MrBones()
 
     def _check_member_and_guild_existence(self, guild_id: int, user_id: int):
         guild_id_str: str = str(guild_id)
@@ -55,16 +77,6 @@ class Adventures(commands.Cog):
         if self._database.get(guild_id_str) is None:
             self._database[guild_id_str] = {}
             self._database[guild_id_str]["members"] = {}
-
-        if self._database[guild_id_str].get("stories") is None:
-            self._database[guild_id_str]["stories"] = {}
-            self._database[guild_id_str]["stories"][Story.Forest] = ForestStory()
-            self._database[guild_id_str]["stories"][Story.Ocean] = OceanStory()
-            self._database[guild_id_str]["stories"][Story.Underworld] = UnderworldStory()
-
-        if self._database[guild_id_str].get("npcs") is None:
-            self._database[guild_id_str]["npcs"] = {}
-            self._database[guild_id_str]["npcs"][NPCRoles.FortuneTeller] = Yenna()
         
         if self._database[guild_id_str]["members"].get(user_id_str) is None:
             self._database[guild_id_str]["members"][user_id_str] = Player()

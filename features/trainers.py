@@ -262,6 +262,23 @@ class TrainerView(discord.ui.View):
         self.add_item(AlchemistTrainerButton(3))
         self.add_item(EnterEquipAbilitiesButton(4))
 
+    def _get_next_level(self):
+        abilities_to_search = []
+        if self._current_class == ExpertiseClass.Fisher:
+            abilities_to_search = self._fisher_abilities
+        if self._current_class == ExpertiseClass.Guardian:
+            abilities_to_search = self._guardian_abilities
+        if self._current_class == ExpertiseClass.Merchant:
+            abilities_to_search = self._merchant_abilities
+        if self._current_class == ExpertiseClass.Alchemist:
+            abilities_to_search = self._alchemist_abilities
+
+        for ability_group in abilities_to_search:
+            index = ability_group.index(self._current_ability)
+            if index < len(ability_group) - 1:
+                return f"\n*Can be upgraded to {ability_group[index + 1].get_icon_and_name()}!*"
+        return ""
+
     def _get_page_info(self, purchased_ability: Ability | None=None):
         player: Player = self._get_player()
 
@@ -270,7 +287,7 @@ class TrainerView(discord.ui.View):
             description = f"Acquired {purchased_ability.get_icon_and_name()}! You can equip it from the main menu."
         else:
             if self._current_ability is not None:
-                description = f"──────────\n{self._current_ability}\nCost to Buy: {self._current_ability.get_purchase_cost()}\n──────────\n\n"
+                description = f"──────────\n{self._current_ability}\n\n**Price: {self._current_ability.get_purchase_cost()}**{self._get_next_level()}\n──────────\n\n"
             description += f"You have {player.get_inventory().get_coins_str()}.\n\nChoose an ability to learn more."
 
         if self._current_class == ExpertiseClass.Fisher:

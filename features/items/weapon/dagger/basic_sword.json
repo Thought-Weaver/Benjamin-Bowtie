@@ -1,0 +1,17 @@
+{
+    "key": "items/weapon/dagger/basic_sword",
+    "icon": "\u2694\uFE0F",
+    "name": "Basic Sword",
+    "value": 40,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Sword"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 5,
+    "weapon_stats": {
+        "min_damage": 4,
+        "max_damage": 5
+    }
+}

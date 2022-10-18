@@ -5,7 +5,7 @@ from discord.embeds import Embed
 from math import ceil
 from strenum import StrEnum
 
-from features.shared.item import Buffs
+from features.shared.item import Buffs, EffectTag
 
 import discord
 
@@ -34,6 +34,7 @@ INT_MANA_REGEN_SCALE = 0.01
 INT_DMG_SCALE = 0.02
 LUCK_CRIT_SCALE = 0.005
 LUCK_CRIT_DMG_BOOST = 1.5
+DEX_DMG_SCALE = 0.05
 
 # -----------------------------------------------------------------------------
 # ENUMS
@@ -217,7 +218,14 @@ class Expertise():
     def heal(self, heal_amount: int):
         self.hp = min(self.max_hp, self.hp + heal_amount)
 
-    def damage(self, damage: int, armor: int, percent_reduct: float):
+    def damage(self, damage: int, armor: int, percent_reduct: float, equipment: Equipment):
+        # TODO: This doesn't actually give any indication that you were resurrected since
+        # I can't return a string this way. Should it be moved out despite the duplicated
+        # code?
+        if any(EffectTag.ResurrectOnce in item.get_effect_tags() for item in equipment.get_all_equipped_items()):
+            self.hp = self.max_hp
+            return 0
+
         actual_damage = max(0, damage - armor)
         actual_damage -= int(actual_damage * percent_reduct)
         self.hp = max(0, self.hp - actual_damage)

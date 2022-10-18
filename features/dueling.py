@@ -745,8 +745,9 @@ class DuelView(discord.ui.View):
             if critical_hit_boost > 1:
                 attacker.get_stats().dueling.critical_hit_successes += 1
 
-            damage = int(weapon_stats.get_random_damage() * critical_hit_boost)
-            damage += int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0))
+            base_damage = weapon_stats.get_random_damage(main_hand_item.get_class_tags(), attacker_attrs)
+            damage = int(base_damage * critical_hit_boost)
+            damage += min(int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), damage)
  
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()

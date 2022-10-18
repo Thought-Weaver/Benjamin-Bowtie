@@ -1,0 +1,17 @@
+{
+    "key": "items/weapon/dagger/basic_dagger",
+    "icon": "\uD83D\uDDE1\uFE0F",
+    "name": "Basic Dagger",
+    "value": 25,
+    "rarity": "Common",
+    "description": "Deals additional damage based on your Dexterity stat.",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Dagger"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 2,
+    "weapon_stats": {
+        "min_damage": 2,
+        "max_damage": 3
+    }
+}
