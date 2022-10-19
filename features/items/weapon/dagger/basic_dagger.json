@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "Deals additional damage based on your Dexterity stat.",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Dagger"],
+    "class_tags": ["Equipment", "Weapon", "Dagger", "Main_Hand"],
     "effect_tags": ["DexBonusDamage"],
     "state_tags": [],
     "count": 1,

@@ -2,7 +2,7 @@
     "key": "items/equipment/offhand/golden_knucklebone",
     "icon": "\uD83E\uDEA8",
     "name": "Golden Knucklebone",
-    "value": 1,
+    "value": 1000,
     "rarity": "Artifact",
     "description": "When you win a game of knucklebones, receive 1/10th your final board total in coins.",
     "flavor_text": "",

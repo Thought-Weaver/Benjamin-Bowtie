@@ -10,6 +10,8 @@ from features.shared.ability import ATidySumIII, BoundToGetLuckyIII, ContractBlo
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Callable, List
+
+from features.stats import Stats
 if TYPE_CHECKING:
     from features.inventory import Inventory
 
@@ -21,6 +23,7 @@ class Difficulty(StrEnum):
     Easy = "Easy"
     Medium = "Medium"
     Hard = "Hard"
+    MrBones = "MrBones"
 
 # -----------------------------------------------------------------------------
 # NPC CLASS
@@ -93,39 +96,38 @@ class MrBones(NPC):
         # that board value.
         best_greedy_choice: int = 0
         best_greedy_choice_diff: int = -163
-        best_placed_location: int = 0
+        best_placed_row: int = 0
         
         for pos in range(3):
             cur_player_board: List[List[int]] = deepcopy(player_board)
             cur_npc_board: List[List[int]] = deepcopy(npc_board)
 
-            placed_location = -1
+            placed_row = -1
             for i in range(3):
                 if cur_npc_board[i][pos] == 0:
                     cur_npc_board[i][pos] = current_roll
-                    placed_location = i
+                    placed_row = i
                     for j in range(3):
                         if cur_player_board[j][pos] == current_roll:
                             cur_player_board[j][pos] = 0
                     break
 
-            if placed_location == -1:
+            if placed_row == -1:
                 continue
             else:
-                if cur_player_board[placed_location][pos] == 0:
-                    cur_player_board[placed_location][pos] = current_roll
+                if cur_player_board[placed_row][pos] == 0:
+                    cur_player_board[placed_row][pos] = current_roll
                     for j in range(3):
                         if cur_npc_board[j][pos] == current_roll:
                             cur_npc_board[j][pos] = 0
-                    break
             
             total = compute_points_in_col(cur_npc_board, pos) - compute_points_in_col(cur_player_board, pos)
             if total > best_greedy_choice_diff:
                 best_greedy_choice = pos
                 best_greedy_choice_diff = total
-                best_placed_location = placed_location
+                best_placed_row = placed_row
 
-        npc_board[best_placed_location][best_greedy_choice] = current_roll
+        npc_board[best_placed_row][best_greedy_choice] = current_roll
         for j in range(3):
             if player_board[j][best_greedy_choice] == current_roll:
                 player_board[j][best_greedy_choice] = 0
@@ -142,11 +144,11 @@ class MrBones(NPC):
                     best_greedy_choice = i
                     best_greedy_choice_diff = result
             
-            if random() <= 0.5:
+            if random() <= 0.75:
                 best_greedy_choice = randint(1, 3)
             
             self._try_move(player_board, npc_board, best_greedy_choice, current_roll, compute_points_in_col, True)
-            return f"{npc_name} has placed their {current_roll} in column {best_greedy_choice}!"
+            return f"{npc_name} has placed their {current_roll} in column {best_greedy_choice + 1}!"
         elif difficulty == Difficulty.Medium:
             best_greedy_choice = 0
             best_greedy_choice_diff = -163
@@ -157,10 +159,10 @@ class MrBones(NPC):
                     best_greedy_choice_diff = result
             
             self._try_move(player_board, npc_board, best_greedy_choice, current_roll, compute_points_in_col, True)
-            return f"{npc_name} has placed their {current_roll} in column {best_greedy_choice}!"
+            return f"{npc_name} has placed their {current_roll} in column {best_greedy_choice + 1}!"
         elif difficulty == Difficulty.Hard:
             best_greedy_choice = self._try_move_with_lookahead(player_board, npc_board, current_roll, compute_points_in_col)
-            return f"{npc_name} has placed their {current_roll} in column {best_greedy_choice}!"
+            return f"{npc_name} has placed their {current_roll} in column {best_greedy_choice + 1}!"
 
         return f"{npc_name} has skipped their turn."
 
@@ -216,3 +218,7 @@ class MrBones(NPC):
                 UnseenRichesIII(), ContractBloodForBloodIII(), DeepPocketsIII(),
                 ContractManaToBloodIII()
             ]
+
+        self._stats: Stats | None = state.get("_stats")
+        if self._stats is None:
+            self._stats = Stats()

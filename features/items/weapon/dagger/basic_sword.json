@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Sword"],
+    "class_tags": ["Equipment", "Weapon", "Sword", "Main_Hand"],
     "state_tags": [],
     "count": 1,
     "level_requirement": 5,

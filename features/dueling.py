@@ -8,7 +8,8 @@ import discord
 from dataclasses import dataclass
 from discord.embeds import Embed
 from discord.ext import commands
-from features.expertise import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE, ExpertiseClass
+from features.expertise import ExpertiseClass
+from features.shared.constants import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
 from features.shared.consumables import DUELING_CONSUMABLE_ITEM_EFFECTS
 from features.shared.item import Buffs, ClassTag, WeaponStats
 from features.shared.statuseffect import StatusEffectKey
@@ -493,7 +494,7 @@ class DuelView(discord.ui.View):
                 max_should_skip_chance = max(se.value, max_should_skip_chance)
         
         # Fixed damage is taken directly, no reduction
-        entity.get_expertise().damage(start_damage, 0, 0)
+        entity.get_expertise().damage(start_damage, 0, 0, entity.get_equipment())
         if start_damage > 0:
             self._additional_info_string_data += f"{self.get_name(entity)} took {start_damage} damage! "
 
@@ -724,6 +725,7 @@ class DuelView(discord.ui.View):
         main_hand_item = attacker_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         # Base possible damage is [1, 2], basically fist fighting
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         result_strs = []
         for target in self._selected_targets:
@@ -745,14 +747,14 @@ class DuelView(discord.ui.View):
             if critical_hit_boost > 1:
                 attacker.get_stats().dueling.critical_hit_successes += 1
 
-            base_damage = weapon_stats.get_random_damage(main_hand_item.get_effect_tags(), attacker_attrs)
+            base_damage = weapon_stats.get_random_damage(effect_tags, attacker_attrs)
             damage = int(base_damage * critical_hit_boost)
             damage += min(int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), damage)
  
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
 
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct)
+            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, target_equipment)
 
             attacker.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -783,14 +785,14 @@ class DuelView(discord.ui.View):
         if cursed_coins_damage != 0:
             if attacker in self._enemies:
                 for other in self._allies:
-                    other.get_expertise().damage(cursed_coins_damage, 0, 0)
+                    other.get_expertise().damage(cursed_coins_damage, 0, 0, other.get_equipment())
                     attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
                 
                 names_str = ", ".join([self.get_name(other) in self._allies])
                 result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} damage to {names_str}")
             elif attacker in self._allies:
                 for other in self._enemies:
-                    other.get_expertise().damage(cursed_coins_damage, 0, 0)
+                    other.get_expertise().damage(cursed_coins_damage, 0, 0, other.get_equipment())
                     attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
                 
                 names_str = ", ".join([self.get_name(other) in self._enemies])

@@ -121,9 +121,9 @@ class BlacksmithView(discord.ui.View):
         return Embed(
             title="Abarra's Smithy",
             description=(
-                "Nearby the village market stands an unassuming hut, the home of one Abarra, the local blacksmith. Outside at his forge, you can hear him hammering away at the metal, honing his practiced craft.\n\n"
-                "The heat increases drastically as you approach him, and all around you can see scattered the various pieces (plenty of horseshoes you note) he's been making.\n\n"
-                "He looks up from his work for a moment to look at you, \"Hm? Hm.\" Then nods with his head towards a small selection of inventory items that he's been crafting for hopeful adventurers such as yourself."
+                "Nearby the village market stands an unassuming hut, the home of one Abarra, the local blacksmith. Outside at his forge, you can hear him hammering away at the metal, honing his craft.\n\n"
+                "The heat increases drastically as you approach, and all around you can see scattered the various pieces (plenty of horseshoes you note) he's been making.\n\n"
+                "He pauses his work for a moment to look at you, \"Hm? Hm.\" Then he nods with his head towards a small selection of inventory items that he's been crafting for hopeful adventurers such as yourself."
             )
         )
 

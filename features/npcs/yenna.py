@@ -17,6 +17,8 @@ from random import choice
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, List
+
+from features.stats import Stats
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
@@ -883,6 +885,10 @@ class Yenna(NPC):
                 PreparePotionsIII(), VitalityTransferIII(), EmpowermentI(),
                 IncenseIII(), ContractManaToBloodIII(), ContractWealthForPowerIII()
             ]
+
+        self._stats: Stats | None = state.get("_stats")
+        if self._stats is None:
+            self._stats = Stats()
 
         self._scroll_text = "You walk on chains with your eyes. Push the fingers through the surface into the void. The trees are talking now. Through a maze you are rewarded in chaos. They are in the dreaming, in the wanting, in the knowing. Beware the red hexagons. It is the world in the mirror of ocean's make. How do you walk? Repeat it. The name of the sound. We build it until nothing remains. Don't you want these waves to drag you away? Come hither to us, Fisher King. You can almost hear us now. Your throne is waiting."
         self._words_identified = state.get("_words_identified", [])

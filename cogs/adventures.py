@@ -31,7 +31,7 @@ from features.stories.underworld import UnderworldStory
 from features.trainers import TrainerView
 from games.knucklebones import Knucklebones
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Union
 if TYPE_CHECKING:
     from features.dueling import Dueling
     from features.expertise import Expertise
@@ -260,7 +260,7 @@ class Adventures(commands.Cog):
         await context.send(embed=embed)
 
     @commands.command(name="knucklebones", help="Face another player in a game of knucklebones")
-    async def knucklebones_handler(self, context: commands.Context, user: User | str | None=None, amount: int=0):
+    async def knucklebones_handler(self, context: commands.Context, user: Union[User, str, None]=None, amount: int=0):
         if user is None:
             await context.send("You need to @ a member to use b!knucklebones.")
             return
@@ -303,6 +303,7 @@ class Adventures(commands.Cog):
         )
         # By default, this is the author to account for when they play against a bot
         accepting_id: int = context.author.id
+        other_id: int = -1
         difficulty: Difficulty | None = None
         
         if isinstance(user, User):
@@ -318,10 +319,11 @@ class Adventures(commands.Cog):
 
             description += "\n\nThe game will begin when the other player accepts the invitation to play."
             accepting_id = user.id
+            other_id = context.author.id
 
         if isinstance(user, str):
             user_lower = user.lower()
-            if isinstance(user, str) and (user_lower != "mrbones" or user_lower != "easy" or user_lower != "medium" or user_lower != "hard"):
+            if isinstance(user, str) and user_lower != "mrbones" and user_lower != "easy" and user_lower != "medium" and user_lower != "hard":
                 await context.send("You have to choose Easy, Medium, or Hard.")
                 return
             
@@ -334,7 +336,7 @@ class Adventures(commands.Cog):
 
             if user_lower == "mrbones":
                 challenged_player_name = "Mr. Bones"
-                difficulty = Difficulty.Hard
+                difficulty = Difficulty.MrBones
                 description += (
                     "\n\n──────────\n\n*You enter the back room of the Crown & Anchor Tavern and the light fades to a dim glow. There, waiting in the darkness, is a figure dressed richly in a vest and suit that gleam almost tyrian. Winding shapes that branch and twist up the undershirt in black seem to be moving of their own accord.*\n\n"
                     "*In a raspy voice, it utters, \"I... am... Mr... Bones...\" and a hand that looks startlingly skeletal beckons you to play. You could swear there's a smile hidden in those shadows.*"
@@ -352,7 +354,7 @@ class Adventures(commands.Cog):
                 difficulty = Difficulty.Medium
                 use_luck = False
                 description += (
-                    "\n\n──────────\n\n*It's an average night in the tavern, with people drinking, eating, and celebrating the end of a hard day's labors. Talking with Quinan at a table is her father, Alleus, who you know to be a now-retired spice trader who previously travelled the world.*\n\n"
+                    "\n\n──────────\n\n*It's an average night in the tavern, with people drinking, eating, and celebrating the end of a hard day's labors. Talking with Quinan at a table is her father, Alleus, who you know to be a retired spice trader renowned for travelling the world.*\n\n"
                     "\"A challenger approaches! And I'm never one to turn down a good game. Let's play.\""
                 )
             elif user_lower == "hard":
@@ -369,7 +371,7 @@ class Adventures(commands.Cog):
 
         embed = Embed(title="Welcome to Knucklebones!", description=description)
 
-        await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, author_player, challenged_player, context.author.display_name, challenged_player_name, accepting_id, amount, use_luck, difficulty))
+        await context.send(embed=embed, view=Knucklebones(self._bot, self._database, context.guild.id, author_player, challenged_player, context.author.display_name, challenged_player_name, accepting_id, other_id, amount, use_luck, difficulty))
 
     @commands.command(name="mail", help="Send another player a gift")
     async def mail_handler(self, context: commands.Context, giftee: User=None):

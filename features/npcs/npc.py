@@ -50,6 +50,9 @@ class NPC():
     def get_dueling(self):
         return self._dueling
 
+    def get_stats(self):
+        return self._stats
+
     def __getstate__(self):
         return self.__dict__
 
@@ -60,3 +63,4 @@ class NPC():
         self._expertise = state.get("_expertise", Expertise())
         self._equipment = state.get("_equipment", Equipment())
         self._dueling = state.get("_dueling", Dueling())
+        self._stats = state.get("_stats", Stats())

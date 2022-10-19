@@ -274,9 +274,12 @@ class TrainerView(discord.ui.View):
             abilities_to_search = self._alchemist_abilities
 
         for ability_group in abilities_to_search:
-            index = ability_group.index(self._current_ability)
-            if index < len(ability_group) - 1:
-                return f"\n*Can be upgraded to {ability_group[index + 1].get_icon_and_name()}!*"
+            try:
+                index = ability_group.index(self._current_ability.__class__)
+                if index < len(ability_group) - 1:
+                    return f"\nCan be upgraded to {ability_group[index + 1]().get_icon_and_name()}"
+            except ValueError:
+                continue
         return ""
 
     def _get_page_info(self, purchased_ability: Ability | None=None):
@@ -579,7 +582,7 @@ class EquipAbilitiesView(discord.ui.View):
         self.clear_items()
 
         player: Player = self._get_player()
-        all_slots = [ability for ability in player.get_dueling().available_abilities if ability not in player.get_dueling().abilities]
+        all_slots = [ability for ability in player.get_dueling().available_abilities if not any(isinstance(equipped_ability, ability.__class__) for equipped_ability in player.get_dueling().abilities)]
 
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, ability in enumerate(page_slots):
@@ -659,8 +662,9 @@ class EquipAbilitiesView(discord.ui.View):
 
         if len(player.get_dueling().abilities) < available_memory:
             self._additional_info_str = ""
-            player.get_dueling().abilities.append(ability)
-            return self._get_equip_page_buttons(ability)
+            ability_copy: Ability = ability.__class__()
+            player.get_dueling().abilities.append(ability_copy)
+            return self._get_equip_page_buttons(ability_copy)
         
         self._additional_info_str = "*You don't have enough memory to equip this!*"
         return self._get_equip_page_buttons()

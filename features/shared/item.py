@@ -9,7 +9,11 @@ from strenum import StrEnum
 from types import MappingProxyType
 from typing import List
 
-from features.expertise import DEX_DMG_SCALE, Attributes
+from features.shared.constants import DEX_DMG_SCALE
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from features.expertise import Attributes
 
 # -----------------------------------------------------------------------------
 # ENUMS
