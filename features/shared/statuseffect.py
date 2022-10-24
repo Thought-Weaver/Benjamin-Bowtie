@@ -92,7 +92,7 @@ class StatusEffect():
         if self.turns_remaining == 1:
             return "1 turn"
         if self.turns_remaining == -1:
-            return "until the end of the duel"
+            return "the end of the duel"
         return f"{self.turns_remaining} turns"
 
     def __str__(self):

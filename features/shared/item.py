@@ -315,7 +315,7 @@ class WeaponStats():
         self._max_damage = max_damage
     
     def get_range_str(self):
-        return f"{self._min_damage}-{self._max_damage} damage"
+        return f"{self._min_damage}-{self._max_damage} base damage"
 
     def get_random_damage(self, effect_tags: List[EffectTag], attacker_attrs: Attributes):
         damage = randint(self._min_damage, self._max_damage)

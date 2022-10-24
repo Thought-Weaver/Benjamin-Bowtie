@@ -18,8 +18,6 @@ from strenum import StrEnum
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.expertise import Expertise
-    from features.npcs.npc import NPC
-    from features.player import Player
     from features.shared.ability import Ability
     from features.shared.item import Item
     from features.shared.statuseffect import StatusEffect
@@ -124,6 +122,9 @@ class Dueling():
 # -----------------------------------------------------------------------------
 # DUEL VIEW AND GUI
 # -----------------------------------------------------------------------------
+
+from features.npcs.npc import NPC
+from features.player import Player
 
 class Intent(StrEnum):
     Attack = "Attack"
@@ -687,7 +688,9 @@ class DuelView(discord.ui.View):
             ally_or_op_str = "ally" if target_own_group else "opponent"
             description += f"{selected_targets_str}Choose an {ally_or_op_str}. {self._targets_remaining} {target_str} remaining."
         
-        page_slots = targets[self._page * self._NUM_PER_PAGE:min(len(targets), (self._page + 1) * self._NUM_PER_PAGE)]
+        all_targets = targets[self._page * self._NUM_PER_PAGE:min(len(targets), (self._page + 1) * self._NUM_PER_PAGE)]
+        filtered_targets = list(filter(lambda target: target.get_expertise().hp > 0, all_targets)) if not self._target_own_group else all_targets
+        page_slots = sorted(filtered_targets, key=lambda target: self.get_turn_index(target))
         for i, target in enumerate(page_slots):
             turn_number: int = self.get_turn_index(target)
             if isinstance(target, NPC):
@@ -730,7 +733,7 @@ class DuelView(discord.ui.View):
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
-        result_strs = [f"{attacker_name} attacked using {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'}!"]
+        result_strs = [f"{attacker_name} attacked using {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'}!\n"]
         for target in self._selected_targets:
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
@@ -1231,7 +1234,7 @@ class PlayerVsPlayerDuelView(discord.ui.View):
 
 class StartButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.green, label="Accept")
+        super().__init__(style=discord.ButtonStyle.green, label="Start")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -1239,8 +1242,8 @@ class StartButton(discord.ui.Button):
         
         view: GroupPlayerVsPlayerDuelView = self.view
 
-        if interaction.user not in view.get_users():
-            await interaction.response.edit_message(embed=view.get_info_embed(), content="Error: You can't accept this request!", view=view)
+        if interaction.user.id != view.get_duel_starter().id:
+            await interaction.response.edit_message(embed=view.get_info_embed(), content="Error: You can't start this duel!", view=view)
             return
         
         if not view.all_accepted():
@@ -1302,6 +1305,7 @@ class GroupPlayerVsPlayerDuelView(discord.ui.View):
         self._database = database
         self._guild_id = guild_id
         self._users = users
+        self._duel_starter = users[0]
 
         self._team_1: List[discord.User] = []
         self._team_2: List[discord.User] = []
@@ -1314,13 +1318,13 @@ class GroupPlayerVsPlayerDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_info_embed(self):
-        team_1_names = "Team 1:\n\n".join(list(map(lambda x: x.display_name, self._team_1)))
-        team_2_names = "Team 2:\n\n".join(list(map(lambda x: x.display_name, self._team_1)))
-        return Embed(title="PvP Duel", description=(
+        team_1_names = "\n".join(list(map(lambda x: x.display_name, self._team_1)))
+        team_2_names = "\n".join(list(map(lambda x: x.display_name, self._team_2)))
+        return Embed(title="Group PvP Duel", description=(
             "Players will enter combat in turn order according to their Dexterity attribute. Each turn, you will choose an action to take: "
             "Attacking using their main hand weapon, using an ability, or using an item.\n\n"
             "The duel ends when all opponents have been reduced to 0 HP. Following the duel, all players will be restored to full HP and mana.\n\n"
-            f"The game will begin when all players have selected a team and at least 1 person is on each team.\n──────────\n{team_1_names}\n──────────\n{team_2_names}\n──────────"
+            f"The game will begin when all players have selected a team and at least 1 person is on each team.\n\n──────────\n**Team 1:**\n\n{team_1_names}\n──────────\n**Team 2:**\n\n{team_2_names}\n──────────"
         ))
 
     def add_to_team_1(self, user: discord.User):
@@ -1331,6 +1335,8 @@ class GroupPlayerVsPlayerDuelView(discord.ui.View):
                 description=f"{user.display_name} is already in a duel and can't accept this one!"
             )
 
+        if user in self._team_2:
+            self._team_2.remove(user)
         if user not in self._team_1:
             self._team_1.append(user)
         
@@ -1344,6 +1350,8 @@ class GroupPlayerVsPlayerDuelView(discord.ui.View):
                 description=f"{user.display_name} is already in a duel and can't accept this one!"
             )
 
+        if user in self._team_1:
+            self._team_1.remove(user)
         if user not in self._team_2:
             self._team_2.append(user)
         
@@ -1378,3 +1386,6 @@ class GroupPlayerVsPlayerDuelView(discord.ui.View):
 
     def get_users(self):
         return self._users
+
+    def get_duel_starter(self):
+        return self._duel_starter

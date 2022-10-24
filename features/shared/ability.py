@@ -97,7 +97,7 @@ class Ability():
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
@@ -129,7 +129,7 @@ class Ability():
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
