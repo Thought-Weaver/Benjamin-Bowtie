@@ -11,7 +11,7 @@ from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
-from features.dueling import PlayerVsPlayerDuelView
+from features.dueling import GroupPlayerVsPlayerDuelView, PlayerVsPlayerDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
 from features.inventory import InventoryView
@@ -595,7 +595,11 @@ class Adventures(commands.Cog):
         if any(user.bot for user in users):
             await context.send("You can't challenge a bot to a duel.")
             return
-            
+
+        if len(users) != len(set(users)):
+            await context.send("You can't challenge a player more than once in a single duel.")
+            return
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         for user in users:
             self._check_member_and_guild_existence(context.guild.id, user.id)
@@ -643,7 +647,7 @@ class Adventures(commands.Cog):
             "**Unlucky:** Luck is reduced\n\n"
             "**Protected:** +x% damage reduction (up to 75%)\n"
             "**Vulnerable:** +x% additional damage taken (up to 25%)\n\n"
-            "**Faltering:** % chance to skip your turn\n"
+            "**Faltering:** x% chance to skip your turn\n"
             "**Enraged:** Gain additional attributes whenever you take damage\n"
             "**Taunted:** Forced to attack the caster\n"
             "**Convinced:** Can't attack the caster\n"
@@ -658,7 +662,7 @@ class Adventures(commands.Cog):
             "**HP:** Your health points; when these reach 0, you die\n"
             "**Mana:** A resource used for casting certain abilities during duels\n"
             "**Armor:** Items with Armor reduce the amount of damage you take during duels by that amount\n"
-            "**Overleveled:** Armor and weapons that have a level requirement higher than your level are 15% less effective per level missing\n"
+            "**Overleveled:** Armor and weapons that have a level requirement higher than your level are 15% less effective per level difference\n"
             "**Critical Hit:** A critical hit (crit) randomly occurs based on your Luck and deals 150% weapon or ability damage\n"
             "**Cooldown:** A cooldown (CD) is how many turns until you can use the ability again during a duel"
         )
@@ -679,6 +683,65 @@ class Adventures(commands.Cog):
         equipment_view = TrainerView(self._bot, self._database, context.guild.id, context.author)
         embed = equipment_view.get_initial_info()
         await context.send(embed=embed, view=equipment_view)
+
+    @commands.command(name="groupduel", help="Gather players to choose teams for a duel")
+    async def group_duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+        if users is None:
+            await context.send("You need to @ a member to use b!groupduel.")
+            return
+
+        if len(set(users)) != len(users):
+            await context.send("You can't @ another player multiple times in a single duel.")
+            return
+
+        if context.author in users:
+            await context.send("You can't challenge yourself to a duel.")
+            return
+            
+        if any(user.bot for user in users):
+            await context.send("You can't challenge a bot to a duel.")
+            return
+        
+        if len(users) != len(set(users)):
+            await context.send("You can't challenge a player more than once in a single duel.")
+            return
+            
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        for user in users:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't start another.")
+            return
+
+        challenged_players: List[Player] = [self._get_player(context.guild.id, user.id) for user in users]
+        if any(player.get_dueling().is_in_combat for player in challenged_players):
+            await context.send(f"At least one of those players is already in a duel.")
+            return
+
+        pvp_duel = GroupPlayerVsPlayerDuelView(self._bot, self._database, context.guild.id, [context.author, *users])
+
+        await context.send(embed=pvp_duel.get_info_embed(), view=pvp_duel)
+
+    @commands.command(name="tutorial", help="Explains the basics of how to get started!")
+    async def tutorial_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+
+        description = (
+            "Benjamin Bowtie is a collaborative text-based RPG game bot that you can play alongside your friends in any server. You are a hopeful adventurer in a small village, performing various tasks to make yourself some money and explore what secrets the village has to offer. Beware, for some things are better left unknown...\n\n"
+            "You can send the bot commands which will do various different things by sending b![some command here]. Here are some and how they tie together:\n\n"
+            "In order to make coins (the in-game currency), you can b!fish to get a random fish/item that gets added to your b!inventory. You can visit the b!market to sell the fish/items and make coins -- or keep them to craft and cook other items later!\n\n"
+            "As you b!fish and participate in other activities, you'll earn XP for the game's different classes (Fisher, Merchant, Guardian, and Alchemist) depending on the nature of the activity. XP contributes to your level in each of these classes. You can check your progress using b!xp.\n\n"
+            "Whenever you level up, you gain attribute points. These can be spent on Constitution, Strength, Intelligence, Dexterity, Luck, or Memory. For more on what each attribute does, check out b!glossary. In addition, as you level up classes, you can exchange coins for new abilities using b!train.\n\n"
+            "These abilities and certain items can be used in combat between players and against NPCs. If you want to challenge another player to a duel, use b!duel @user1 @user2 ... or b!groupduel @user1 @user2 ...\n\n"
+            "Last, but most certainly not least, you can challenge other players to a friendly game of knucklebones with b!knucklebones @otherplayer. Optionally, you can add a bet on who will win by doing b!knucklebones @otherplayer [insert amount of coins to bet here].\n\n"
+            "There's much more to do and even more yet to come! So have fun, join the adventure, and explore this little evolving world together."
+        ) 
+
+        embed = Embed(title="Welcome, Adventurer!", description=description)
+        await context.send(embed=embed)
 
 
 async def setup(bot: BenjaminBowtieBot):

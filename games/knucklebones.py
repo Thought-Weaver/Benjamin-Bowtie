@@ -311,9 +311,11 @@ class Knucklebones(discord.ui.View):
                 self._update_stats(winner, amount_won)
                 coins_won_str = f" and {amount_won} coins"
 
+            # E(X) = (3.5 [roll] * 3 [stacked] * 3 [num in col] * 3 [num cols filled]) / 5 = 18.9 per win on average
+            # 18.9 -> 18 * 60 = 1080 coins per hour assuming 1 win per minute
             off_hand_item = winner.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
             if off_hand_item is not None and off_hand_item.get_key() == ItemKey.GoldenKnucklebone:
-                extra_coins_won = int(winner_board_total / 10)
+                extra_coins_won = int(winner_board_total / 5)
                 winner.get_inventory().add_coins(extra_coins_won)
                 coins_won_str += f" (+{extra_coins_won} coins from the Golden Knucklebone)"
 

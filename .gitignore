@@ -2,6 +2,7 @@
 .env
 *.log
 *.pyc
+*.csv
 
 # Folders
 patchnotes/
@@ -20,3 +21,4 @@ adventuresdbbackup.json
 
 # Experimentation
 experiments.py
+combat_analysis.py

@@ -325,7 +325,7 @@ class SeaSprayI(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray I",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 2-4 damage to an enemy.",
+            description="Summon a rush of water that deals 1-3 damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -337,7 +337,7 @@ class SeaSprayI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 4))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(1, 3))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -359,7 +359,7 @@ class SeaSprayII(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray II",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 3-6 damage to an enemy.",
+            description="Summon a rush of water that deals 2-5 damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -371,7 +371,7 @@ class SeaSprayII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(3, 6))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 5))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -391,7 +391,7 @@ class SeaSprayIII(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray III",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 4-8 damage to an enemy.",
+            description="Summon a rush of water that deals 3-6 damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -403,7 +403,7 @@ class SeaSprayIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(4, 8))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(3, 6))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -423,7 +423,7 @@ class SeaSprayIV(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray IV",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 5-10 damage to an enemy.",
+            description="Summon a rush of water that deals 4-7 damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -435,7 +435,7 @@ class SeaSprayIV(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(5, 10))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(4, 7))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -455,7 +455,7 @@ class SeaSprayV(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray V",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 6-12 damage to an enemy.",
+            description="Summon a rush of water that deals 5-8 damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -467,7 +467,7 @@ class SeaSprayV(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(6, 12))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(5, 8))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -681,7 +681,7 @@ class HookII(Ability):
             icon="\uD83E\uDE9D",
             name="Hook II",
             class_key=ExpertiseClass.Fisher,
-            description="Hook an enemy on the line, dealing 6-12 damage and causing them to lose -3 Dexterity for 2 turns.",
+            description="Hook an enemy on the line, dealing 6-12 damage and causing them to lose -6 Dexterity for 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=1,
@@ -694,7 +694,7 @@ class HookII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
             turns_remaining=2,
-            value=-3,
+            value=-6,
             source_ability_str=self.get_icon_and_name()
         )
 
@@ -719,7 +719,7 @@ class HookIII(Ability):
             icon="\uD83E\uDE9D",
             name="Hook III",
             class_key=ExpertiseClass.Fisher,
-            description="Hook an enemy on the line, dealing 8-16 damage and causing them to lose -3 Dexterity for 2 turns.",
+            description="Hook an enemy on the line, dealing 8-16 damage and causing them to lose -10 Dexterity for 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=1,
@@ -732,7 +732,7 @@ class HookIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
             turns_remaining=2,
-            value=-3,
+            value=-10,
             source_ability_str=self.get_icon_and_name()
         )
 
@@ -1417,7 +1417,7 @@ class DrownInTheDeepI(Ability):
             icon="\u2693",
             name="Drown in the Deep I",
             class_key=ExpertiseClass.Fisher,
-            description="Drag up to 3 enemies into the depths, dealing each (1.5 * # of status effects reducing their Dexterity)% of their max health as damage.",
+            description="Drag up to 3 enemies into the depths, dealing each (1 * # of status effects reducing their Dexterity)% of their max health as damage.",
             flavor_text="",
             mana_cost=70,
             cooldown=3,
@@ -1425,6 +1425,81 @@ class DrownInTheDeepI(Ability):
             level_requirement=18,
             target_own_group=False,
             purchase_cost=1200
+        )
+
+    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+        results: List[NegativeAbilityResult] = []
+        
+        caster_expertise = caster.get_expertise()
+        caster_attrs = caster.get_combined_attributes()
+
+        for target in targets:
+            target_expertise = target.get_expertise()
+            target_dueling = target.get_dueling()
+
+            target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
+            if target_dodged:
+                target.get_stats().dueling.abilities_dodged += 1
+                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                continue
+
+            target_max_hp = target_expertise.max_hp
+            num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
+
+            damage = int((1 * num_dex_reduce_effects) / 100 * target_max_hp)
+            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+
+            actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
+
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
+            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
+        
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+        
+        if mana_to_blood_percent == 0:
+            caster_expertise.remove_mana(self.get_mana_cost())
+        else:
+            damage = int(mana_to_blood_percent * self.get_mana_cost())
+            if damage > 0:
+                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
+                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
+        self._cur_cooldown = self._cooldown
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class DrownInTheDeepII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2693",
+            name="Drown in the Deep II",
+            class_key=ExpertiseClass.Fisher,
+            description="Drag up to 3 enemies into the depths, dealing each (1.5 * # of status effects reducing their Dexterity)% of their max health as damage.",
+            flavor_text="",
+            mana_cost=70,
+            cooldown=3,
+            num_targets=3,
+            level_requirement=22,
+            target_own_group=False,
+            purchase_cost=2400
         )
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
@@ -1486,88 +1561,13 @@ class DrownInTheDeepI(Ability):
         self.__init__() # type: ignore
 
 
-class DrownInTheDeepII(Ability):
-    def __init__(self):
-        super().__init__(
-            icon="\u2693",
-            name="Drown in the Deep II",
-            class_key=ExpertiseClass.Fisher,
-            description="Drag up to 3 enemies into the depths, dealing each (2 * # of status effects reducing their Dexterity)% of their max health as damage.",
-            flavor_text="",
-            mana_cost=70,
-            cooldown=3,
-            num_targets=3,
-            level_requirement=22,
-            target_own_group=False,
-            purchase_cost=2400
-        )
-
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        results: List[NegativeAbilityResult] = []
-        
-        caster_expertise = caster.get_expertise()
-        caster_attrs = caster.get_combined_attributes()
-
-        for target in targets:
-            target_expertise = target.get_expertise()
-            target_dueling = target.get_dueling()
-
-            target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
-            if target_dodged:
-                target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
-                continue
-
-            target_max_hp = target_expertise.max_hp
-            num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
-
-            damage = int((2 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
-
-            actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
-
-            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
-            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
-
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
-        
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
-
-        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().dueling.fisher_abilities_used += 1
-
-        return result_str
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, state: dict):
-        self.__init__() # type: ignore
-
-
 class DrownInTheDeepIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u2693",
             name="Drown in the Deep III",
             class_key=ExpertiseClass.Fisher,
-            description="Drag up to 3 enemies into the depths, dealing each (2.5 * # of status effects reducing their Dexterity)% of their max health as damage.",
+            description="Drag up to 3 enemies into the depths, dealing each (2 * # of status effects reducing their Dexterity)% of their max health as damage.",
             flavor_text="",
             mana_cost=70,
             cooldown=3,
@@ -1596,7 +1596,7 @@ class DrownInTheDeepIII(Ability):
             target_max_hp = target_expertise.max_hp
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
-            damage = int((2.5 * num_dex_reduce_effects) / 100 * target_max_hp)
+            damage = int((2 * num_dex_reduce_effects) / 100 * target_max_hp)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
@@ -1676,16 +1676,14 @@ class WhirlpoolI(Ability):
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
+            target_dueling = target.get_dueling()
+            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
+
             damage = int(randint(10, 20) * critical_hit_boost)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
-            target_dueling = target.get_dueling()
-
-            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
-
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
-            
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
@@ -1765,16 +1763,14 @@ class WhirlpoolII(Ability):
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
+            target_dueling = target.get_dueling()
+            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
+
             damage = int(randint(15, 25) * critical_hit_boost)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
-            target_dueling = target.get_dueling()
-
-            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
-
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
-            
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
@@ -1854,16 +1850,14 @@ class WhirlpoolIII(Ability):
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
+            target_dueling = target.get_dueling()
+            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
+
             damage = int(randint(20, 30) * critical_hit_boost)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
-            target_dueling = target.get_dueling()
-
-            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
-
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
-            
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
@@ -3547,7 +3541,7 @@ class ATidySumI(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum I",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coins, awarding you 5 coins per attack hit.",
+            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coins, awarding you 5 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -3586,7 +3580,7 @@ class ATidySumII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum II",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coins, awarding you 10 coins per attack hit.",
+            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coins, awarding you 10 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -3625,7 +3619,7 @@ class ATidySumIII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum III",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coin, awarding you 15 coins per attack hit.",
+            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coin, awarding you 15 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -3784,7 +3778,7 @@ class UnseenRichesI(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches I",
             class_key=ExpertiseClass.Merchant,
-            description="Gain coins equal to 0.5 times your current Luck.",
+            description="Gain coins equal to 0.25 times your current Luck.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -3796,7 +3790,7 @@ class UnseenRichesI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
-        caster.get_inventory().add_coins(int(0.5 * coins_to_add))
+        caster.get_inventory().add_coins(int(0.25 * coins_to_add))
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
 
         caster.get_stats().dueling.merchant_abilities_used += 1
@@ -3816,7 +3810,7 @@ class UnseenRichesII(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches II",
             class_key=ExpertiseClass.Merchant,
-            description="Gain coins equal to 1 times your current Luck.",
+            description="Gain coins equal to 0.5 times your current Luck.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -3828,7 +3822,7 @@ class UnseenRichesII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
-        caster.get_inventory().add_coins(coins_to_add)
+        caster.get_inventory().add_coins(int(0.5 * coins_to_add))
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
 
         caster.get_stats().dueling.merchant_abilities_used += 1
@@ -3848,7 +3842,7 @@ class UnseenRichesIII(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches III",
             class_key=ExpertiseClass.Merchant,
-            description="Gain coins equal to 1.5 times your current Luck.",
+            description="Gain coins equal to 0.75 times your current Luck.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -3860,7 +3854,7 @@ class UnseenRichesIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
-        caster.get_inventory().add_coins(int(1.5 * coins_to_add))
+        caster.get_inventory().add_coins(int(0.75 * coins_to_add))
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
 
         caster.get_stats().dueling.merchant_abilities_used += 1
