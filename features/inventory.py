@@ -3,7 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
-from features.shared.item import LOADED_ITEMS, Item
+from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -61,6 +61,12 @@ class Inventory():
     def search_by_name(self, name: str):
         for i, item in enumerate(self._inventory_slots):
             if item.get_name() == name:
+                return i
+        return -1
+
+    def search_by_key(self, key: ItemKey):
+        for i, item in enumerate(self._inventory_slots):
+            if item.get_key() == key:
                 return i
         return -1
 

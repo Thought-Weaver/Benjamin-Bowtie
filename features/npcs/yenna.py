@@ -707,7 +707,7 @@ class Yenna(NPC):
         words_remaining = word_set - found_words
         
         if len(words_remaining) == 0:
-            inventory.add_coins(60)
+            inventory.add_coins(40)
             inventory.remove_item(selected_item_index)
             return Embed(
                 title="A Mysterious Scroll",
@@ -715,7 +715,7 @@ class Yenna(NPC):
                     "\"Ah, another one of these scrolls. It looks like there's nothing more I can glean from the text. The final message is:\"\n\n"
                     f"{self._scroll_text}\n\n"
                     "\"However, allow me to offer compensation at least for trusting the scroll to me.\"\n\n"
-                    "*You received 60 coins.*"
+                    "*You pay nothing for this identification and instead receive 40 coins.*"
                 )
             )
         
@@ -766,8 +766,8 @@ class Yenna(NPC):
             inventory.add_coins(identify_cost + 25)
             return Embed(title="A Fish?",
                 description=(
-                    "\"Thank you for bringing another of these to me. I'll destroy it safely. Have these in return.\"\n\n"
-                    "*You received 25 coins.*"
+                    "\"Thank you for bringing another of these to me. I'll take care of it. Please, take these in return.\"\n\n"
+                    "*You pay nothing for this identification and instead receive 25 coins.*"
                 )
             )
 
@@ -819,7 +819,7 @@ class Yenna(NPC):
                         "*She begins to move her hands over the fish in the beginnings of a powerful ritual. The candlelight flickers in and out, shadows growing longer, shapes and figures seeming to dance in the fading glow.*\n\n"
                         "*Yenna dashes a flash of powder into a pot containing the last of the flames, only for it to erupt brightly with an overpowering scent of starpepper and charred wood.*\n\n"
                         "*In that moment, the light reduced to a mere ember, you can glimpse something. Almost in the reflection of its scales. Eyes. Far too many eyes. And something else… Like the fish was stitched together on the inside. Like tendrils should be wriggling out from every part of its body. Like there's another version of this thing, something hidden away, beneath.*\n\n"
-                        "\"There are things in this world that we all agreed would be better kept secret. Dealt with on our own, so that no one would spend every waking moment in fear. I believe now that some such force is at play here, in the depths, though it's unlike any I've encountered before. To uncover it, you'll need to brave the ocean and find the source. We'll speak on this more later.\""
+                        "\"There are things in this world that we all agreed would be better kept secret. Dealt with on our own, so that no one would spend every waking moment in fear. I believe now that some such force is at play here, in the depths, though it's unlike any I've encountered before. Descend. Descend into the dark ocean and find the source. This is what you must do if we're to cease the machinations of this eldritch thing. We'll speak on this more later.\""
                     )
                 )
         else:           

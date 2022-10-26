@@ -3,6 +3,7 @@ from __future__ import annotations
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
+from features.house.house import House
 from features.stats import Stats
 from features.inventory import Inventory
 
@@ -19,6 +20,7 @@ class Player():
         self._expertise: Expertise = Expertise()
         self._equipment: Equipment = Equipment()
         self._dueling: Dueling = Dueling()
+        self._house: House = House()
 
     def get_combined_attributes(self):
         return self._expertise.get_all_attributes() + (self._equipment.get_total_buffs() + self._dueling.get_combined_attribute_mods())
@@ -41,6 +43,9 @@ class Player():
     def get_dueling(self):
         return self._dueling
 
+    def get_house(self):
+        return self._house
+
     def __getstate__(self):
         return self.__dict__
 
@@ -51,3 +56,4 @@ class Player():
         self._expertise = state.get("_expertise", Expertise())
         self._equipment = state.get("_equipment", Equipment())
         self._dueling = state.get("_dueling", Dueling())
+        self._house_rooms = state.get("_house_rooms", [])

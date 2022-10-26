@@ -111,6 +111,8 @@ class EffectTag(StrEnum):
     LoweredCooldowns = "LoweredCooldowns"
     ResurrectOnce = "ResurrectOnce"
     DexBonusDamage = "DexBonusDamage"
+    PercentChancePoisoned = "PercentChancePoisoned"
+    PercentChanceBleeding = "PercentChanceBleeding"
 
 
 class ItemKey(StrEnum):
@@ -205,7 +207,7 @@ class ItemKey(StrEnum):
 # -----------------------------------------------------------------------------
 
 class Buffs():
-    def __init__(self, con_buff=0, str_buff=0, dex_buff=0, int_buff=0, lck_buff=0, mem_buff=0, percent_dmg_reflect=0.0, percent_dmg_resist=0.0, percent_dmg_bonus_on_legends=0.0, lowered_cds=0):
+    def __init__(self, con_buff=0, str_buff=0, dex_buff=0, int_buff=0, lck_buff=0, mem_buff=0, percent_dmg_reflect=0.0, percent_dmg_resist=0.0, percent_dmg_bonus_on_legends=0.0, lowered_cds=0, percent_poisoned=0.0, percent_bleeding=0.0):
         self.con_buff = con_buff
         self.str_buff = str_buff
         self.dex_buff = dex_buff
@@ -217,6 +219,8 @@ class Buffs():
         self.percent_dmg_resist = percent_dmg_resist
         self.percent_dmg_bonus_on_legends = percent_dmg_bonus_on_legends
         self.lowered_cds = lowered_cds
+        self.percent_poisoned = percent_poisoned
+        self.percent_bleeding = percent_bleeding
 
     def __add__(self, other: Buffs):
         return Buffs(
@@ -229,7 +233,9 @@ class Buffs():
             max(self.percent_dmg_reflect + other.percent_dmg_reflect, 0.75),
             max(self.percent_dmg_resist + other.percent_dmg_resist, 0.75),
             max(self.percent_dmg_bonus_on_legends + other.percent_dmg_bonus_on_legends, 1.0),
-            max(self.lowered_cds, other.lowered_cds)
+            max(self.lowered_cds, other.lowered_cds),
+            self.percent_poisoned + other.percent_poisoned,
+            self.percent_bleeding + other.percent_bleeding
         )
 
     def __str__(self):
@@ -276,6 +282,12 @@ class Buffs():
                 display_string += "+"
             display_string += f"{self.lowered_cds} Turns on Cooldowns\n"
 
+        if self.percent_poisoned != 0:
+            display_string += f"{self.percent_poisoned}% Chance to Cause Poisoned\n"
+
+        if self.percent_bleeding != 0:
+            display_string += f"{self.percent_bleeding}% Chance to Cause Bleeding\n"
+
         return display_string
 
     def __getstate__(self):
@@ -293,6 +305,8 @@ class Buffs():
         self.percent_dmg_resist = state.get("percent_dmg_resist", 0)
         self.percent_dmg_bonus_on_legends = state.get("percent_dmg_bonus_on_legends", 0)
         self.lowered_cds = state.get("lowered_cds", 0)
+        self.percent_poisoned = state.get("percent_poisoned", 0)
+        self.percent_bleeding = state.get("percent_bleeding", 0)
 
 
 class ArmorStats():
@@ -351,8 +365,8 @@ class ConsumableStats():
 
 
 class Item():
-    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[str], effect_tags: List[str]=[], state_tags: List[str]=[], count=1, level_requirement=0, buffs: Buffs=None, armor_stats: ArmorStats=None, weapon_stats: WeaponStats=None, consumable_stats: ConsumableStats=None):
-        self._key = key
+    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], effect_tags: List[EffectTag]=[], state_tags: List[StateTag]=[], count=1, level_requirement=0, buffs: Buffs | None=None, armor_stats: ArmorStats | None=None, weapon_stats: WeaponStats | None=None, consumable_stats: ConsumableStats | None=None):
+        self._key: ItemKey = key
         self._icon = icon
         self._name = name
         self._value = value
@@ -480,19 +494,19 @@ class Item():
     def get_flavor_text(self) -> str:
         return self._flavor_text
 
-    def get_class_tags(self) -> List[str]:
+    def get_class_tags(self) -> List[ClassTag]:
         return self._class_tags
 
-    def get_effect_tags(self) -> List[str]:
+    def get_effect_tags(self) -> List[EffectTag]:
         return self._effect_tags
 
-    def get_state_tags(self) -> List[str]:
+    def get_state_tags(self) -> List[StateTag]:
         return self._state_tags
 
     def set_state_tags(self, new_tags: List[StateTag]) -> None:
         self._state_tags += new_tags
 
-    def get_key(self) -> str:
+    def get_key(self) -> ItemKey:
         return self._key
 
     def get_level_requirement(self) -> int:

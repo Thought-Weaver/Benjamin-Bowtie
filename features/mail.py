@@ -228,7 +228,7 @@ class MailModal(discord.ui.Modal):
             if sent_item is not None:
                 await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} and {sent_coins} {coin_str} to {self._giftee.display_name}!")
             else:
-                await interaction.response.send_message(f"You {sent_coins} {coin_str} to {self._giftee.display_name}!")
+                await interaction.response.send_message(f"You mailed {sent_coins} {coin_str} to {self._giftee.display_name}!")
         else:
             if sent_item is not None:
                 await interaction.response.send_message(f"You mailed {num_items_to_send} {sent_item.get_full_name()} to {self._giftee.display_name}!")

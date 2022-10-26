@@ -2041,8 +2041,10 @@ class WhirlwindI(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_equipment: Equipment = caster.get_equipment()
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -2083,8 +2085,10 @@ class WhirlwindII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_equipment: Equipment = caster.get_equipment()
         caster_attrs = caster.get_combined_attributes()
+        
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -2125,8 +2129,10 @@ class WhirlwindIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_equipment: Equipment = caster.get_equipment()
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -2558,8 +2564,10 @@ class CounterstrikeI(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -2600,8 +2608,10 @@ class CounterstrikeII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -2642,8 +2652,10 @@ class CounterstrikeIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -2727,8 +2739,10 @@ class PiercingStrikeI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -2781,8 +2795,10 @@ class PiercingStrikeII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -2835,8 +2851,10 @@ class PiercingStrikeIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -3042,8 +3060,10 @@ class HeavySlamI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -3083,8 +3103,10 @@ class HeavySlamII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
@@ -3124,8 +3146,10 @@ class HeavySlamIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
+
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        main_hand_weapon_stats = main_hand_item.get_weapon_stats() if main_hand_item is not None else None
+        weapon_stats = WeaponStats(1, 2) if main_hand_weapon_stats is None else main_hand_weapon_stats
         effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
 
         base_damage = weapon_stats.get_random_damage(effect_tags, caster_attrs)
