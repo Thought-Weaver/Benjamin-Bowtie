@@ -14,6 +14,7 @@ from bot import BenjaminBowtieBot
 from features.dueling import GroupPlayerVsPlayerDuelView, PlayerVsPlayerDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
+from features.house.house import HouseView
 from features.inventory import InventoryView
 from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
@@ -742,6 +743,19 @@ class Adventures(commands.Cog):
 
         embed = Embed(title="Welcome, Adventurer!", description=description)
         await context.send(embed=embed)
+
+    @commands.command(name="house", help="Visit your house in the village", aliases=["home"])
+    async def house_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit your house.")
+            return
+        
+        house_view: HouseView = HouseView(self._bot, self._database, context.guild.id, context.author, context)
+        await context.send(embed=house_view.get_initial_embed(), view=house_view)
 
 
 async def setup(bot: BenjaminBowtieBot):

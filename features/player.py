@@ -56,4 +56,4 @@ class Player():
         self._expertise = state.get("_expertise", Expertise())
         self._equipment = state.get("_equipment", Equipment())
         self._dueling = state.get("_dueling", Dueling())
-        self._house_rooms = state.get("_house_rooms", [])
+        self._house = state.get("_house", House())

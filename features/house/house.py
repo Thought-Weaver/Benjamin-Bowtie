@@ -4,11 +4,9 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
-from features.house.kitchen import KitchenView
 from features.house.recipe import Recipe
 from features.inventory import Inventory
 from features.mail import MailboxView
-from features.shared.item import Item
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
@@ -61,6 +59,8 @@ class House():
 # HOUSE VIEW
 # -----------------------------------------------------------------------------
 
+from features.house.kitchen import KitchenView
+
 class KitchenButton(discord.ui.Button):
     def __init__(self, row):
         super().__init__(style=discord.ButtonStyle.secondary, label="Kitchen", row=row)
@@ -71,8 +71,8 @@ class KitchenButton(discord.ui.Button):
         
         view: HouseView = self.view
         if interaction.user == view.get_user():
-            new_view: KitchenView = KitchenView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user(), house_view=view)
-            embed = new_view.get_initial_embed()
+            new_view: KitchenView = KitchenView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user(), view)
+            embed = new_view.get_embed_for_intent()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -87,7 +87,7 @@ class GardenButton(discord.ui.Button):
         view: HouseView = self.view
         if interaction.user == view.get_user():
             new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
-            embed = new_view.get_initial_embed()
+            embed = Embed()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -102,7 +102,7 @@ class StorageButton(discord.ui.Button):
         view: HouseView = self.view
         if interaction.user == view.get_user():
             new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
-            embed = new_view.get_initial_embed()
+            embed = Embed()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -117,7 +117,7 @@ class WorkshopButton(discord.ui.Button):
         view: HouseView = self.view
         if interaction.user == view.get_user():
             new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
-            embed = new_view.get_initial_embed()
+            embed = Embed()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -132,7 +132,7 @@ class StudyButton(discord.ui.Button):
         view: HouseView = self.view
         if interaction.user == view.get_user():
             new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
-            embed = new_view.get_initial_embed()
+            embed = Embed()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -174,9 +174,12 @@ class HouseView(discord.ui.View):
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(YennaButton(0))
-        self.add_item(BlacksmithButton(1))
-        self.add_item(MarketSellButton(2))
+        self.add_item(KitchenButton(0))
+        self.add_item(GardenButton(0))
+        self.add_item(StorageButton(1))
+        self.add_item(WorkshopButton(1))
+        self.add_item(StudyButton(2))
+        self.add_item(MailboxButton(2))
 
     def get_bot(self):
         return self._bot

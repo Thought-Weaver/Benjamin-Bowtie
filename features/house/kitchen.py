@@ -3,10 +3,9 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
-from discord.ext import commands
+from features.house.house import HouseRoom
 from features.house.recipe import LOADED_RECIPES, Recipe
-from features.inventory import Inventory
-from features.shared.item import LOADED_ITEMS, ClassTag, Item, ItemKey
+from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
@@ -16,7 +15,9 @@ from features.shared.prevbutton import PrevButton
 
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
-    from features.house.house import HouseView
+    from features.house.house import House, HouseView
+    from features.inventory import Inventory
+    from features.shared.item import Item
     from features.player import Player
 
 # -----------------------------------------------------------------------------
@@ -196,11 +197,8 @@ class SelectCupboardItemButton(discord.ui.Button):
 
 
 class RetrieveItemButton(discord.ui.Button):
-    def __init__(self, item_index: int, item: Item, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
-        
-        self._item_index = item_index
-        self._item = item
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Retrieve", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -213,11 +211,8 @@ class RetrieveItemButton(discord.ui.Button):
 
 
 class RetrieveAllItemButton(discord.ui.Button):
-    def __init__(self, item_index: int, item: Item, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
-        
-        self._item_index = item_index
-        self._item = item
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Retrieve All", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -229,13 +224,38 @@ class RetrieveAllItemButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
-class AddItemButton(discord.ui.Button):
-    def __init__(self, item_index: int, item: Item, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
-        
-        self._item_index = item_index
-        self._item = item
+class StoreItemButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Store", row=row)
 
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: KitchenView = self.view
+        if interaction.user == view.get_user():
+            response = view.store()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class StoreAllItemButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Store All", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: KitchenView = self.view
+        if interaction.user == view.get_user():
+            response = view.store_all()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class AddItemButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"Add", row=row)
+        
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
@@ -247,11 +267,8 @@ class AddItemButton(discord.ui.Button):
 
 
 class RemoveItemButton(discord.ui.Button):
-    def __init__(self, item_index: int, item: Item, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
-        
-        self._item_index = item_index
-        self._item = item
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"Remove", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -308,11 +325,23 @@ class ConfirmCookingButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
+class PurchaseKitchenButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.green, label=f"Buy (5000)", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: KitchenView = self.view
+        if interaction.user == view.get_user():
+            response = view.purchase_kitchen()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class KitchenView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView):
         super().__init__(timeout=900)
-
-        # TODO: Pass in the parent view instance so I can have an exit button?
 
         self._bot = bot
         self._database = database
@@ -329,15 +358,13 @@ class KitchenView(discord.ui.View):
 
         self._page = 0
         self._NUM_PER_PAGE = 4
+
+        self._PURCHASE_COST = 5000
         
         self._display_initial_buttons()
 
     def _get_player(self) -> Player:
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
-
-    def get_initial_embed(self):
-        # TODO: Handle the case where the kitchen hasn't been purchased yet.
-        return Embed(title="Kitchen", description="")
 
     def get_embed_for_intent(self, error: str=""):
         if self._intent == Intent.CookOptions:
@@ -349,19 +376,40 @@ class KitchenView(discord.ui.View):
         if self._intent == Intent.Retrieve:
             return Embed(title="Cupboard (Retrieving)", description="Choose an item to retrieve in the cupboard.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Cook:
-            return Embed(title="Cook", description="Mix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons." + error)
+            current_cooking_str = self.get_current_cooking_str()
+            current_cooking_display = f"──────────\n{current_cooking_str}\n──────────\n\n" if current_cooking_str != "" else ""
+            return Embed(title="Cook", description=f"{current_cooking_display}Mix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Recipes:
             return Embed(title="Recipes", description="Choose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons." + error)
-        return Embed(title="Kitchen", description=error)
+        return Embed(title="Kitchen", description="You enter the kitchen space, where you can cook food and store ingredients." + error)
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(EnterCookOptionsButton(0))
-        self.add_item(EnterCupboardButton(1))
-        self.add_item(ExitToHouseButton(2))
+
+        if HouseRoom.Kitchen in self._get_player().get_house().house_rooms:
+            self.add_item(EnterCookOptionsButton(0))
+            self.add_item(EnterCupboardButton(1))
+            self.add_item(ExitToHouseButton(2))
+        else:
+            self.add_item(PurchaseKitchenButton(0))
+            self.add_item(ExitToHouseButton(0))
 
         self._intent = None
 
+    def purchase_kitchen(self):
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        house: House = player.get_house()
+        
+        if inventory.get_coins() < self._PURCHASE_COST:
+            return Embed(title="Kitchen", description="*Error: You don't have enough coins to purchase the kitchen.*")
+
+        inventory.remove_coins(self._PURCHASE_COST)
+        house.house_rooms.append(HouseRoom.Kitchen)
+        self._display_initial_buttons()
+
+        return Embed(title="Kitchen", description="Kitchen purchased! You can now cook and store ingredients.")
+ 
     def enter_cook_options(self):
         self.clear_items()
         self.add_item(EnterRecipesButton(0))
@@ -407,6 +455,9 @@ class KitchenView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
+        if self._selected_item_index != -1 and self._selected_item is not None:
+            self.add_item(StoreItemButton(min(4, len(page_slots))))
+            self.add_item(StoreAllItemButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
 
     def enter_cupboard_retrieve(self):
@@ -431,14 +482,14 @@ class KitchenView(discord.ui.View):
         if len(inventory_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
         if self._selected_item_index != -1 and self._selected_item is not None:
-            self.add_item(RetrieveItemButton(self._selected_item_index, self._selected_item, min(4, len(page_slots))))
-            self.add_item(RetrieveAllItemButton(self._selected_item_index, self._selected_item, min(4, len(page_slots))))
+            self.add_item(RetrieveItemButton(min(4, len(page_slots))))
+            self.add_item(RetrieveAllItemButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
 
     def _get_cook_buttons(self):
         self.clear_items()
         player: Player = self._get_player()
-        inventory: Inventory = player.get_house().kitchen_cupboard
+        inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
         filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.Ingredient])
@@ -454,9 +505,9 @@ class KitchenView(discord.ui.View):
             self.add_item(NextButton(min(4, len(page_slots))))
         if self._selected_item_index != -1 and self._selected_item is not None:
             if self._current_cooking.get(self._selected_item.get_key(), 0) < inventory_slots[self._selected_item_index].get_count():
-                self.add_item(AddItemButton(self._selected_item_index, self._selected_item, min(4, len(page_slots))))
+                self.add_item(AddItemButton(min(4, len(page_slots))))
             if self._current_cooking.get(self._selected_item.get_key(), 0) > 0:
-                self.add_item(RemoveItemButton(self._selected_item_index, self._selected_item, min(4, len(page_slots))))
+                self.add_item(RemoveItemButton(min(4, len(page_slots))))
         self.add_item(ConfirmCookingButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
 
@@ -495,6 +546,9 @@ class KitchenView(discord.ui.View):
 
     def next_page(self):
         self._page += 1
+        self._selected_item = None
+        self._selected_item_index = -1
+        self._selected_recipe = None
 
         if self._intent == Intent.Store:
             self._get_store_cupboard_buttons()
@@ -509,15 +563,18 @@ class KitchenView(discord.ui.View):
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
+        self._selected_item = None
+        self._selected_item_index = -1
+        self._selected_recipe = None
 
         if self._intent == Intent.Store:
             self._get_store_cupboard_buttons()
         if self._intent == Intent.Retrieve:
             self._get_retrieve_cupboard_buttons()
         if self._intent == Intent.Cook:
-            pass
+            self._get_cook_buttons()
         if self._intent == Intent.Recipes:
-            pass
+            self._get_recipe_buttons()
 
         return self.get_embed_for_intent()
 
@@ -565,6 +622,7 @@ class KitchenView(discord.ui.View):
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
         player.get_inventory().add_item(removed_item)
+        self._get_retrieve_cupboard_buttons()
 
         return Embed(title="Cupboard (Retrieving)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Retrieved 1 {removed_item.get_full_name()} and added it to your inventory.*")
 
@@ -580,8 +638,41 @@ class KitchenView(discord.ui.View):
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
         player.get_inventory().add_item(removed_item)
+        self._get_retrieve_cupboard_buttons()
 
         return Embed(title="Cupboard (Retrieving)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Retrieved {removed_item.get_count()} {removed_item.get_full_name()} and added to your inventory.*")
+
+    def store(self):
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        cupboard: Inventory = player.get_house().kitchen_cupboard
+        if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
+            return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
+
+        removed_item = inventory.remove_item(self._selected_item_index, 1)
+        if removed_item is None:
+            return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
+
+        cupboard.add_item(removed_item)
+        self._get_store_cupboard_buttons()
+
+        return Embed(title="Cupboard (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored 1 {removed_item.get_full_name()} and added it to the cupboard.*")
+
+    def store_all(self):
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        cupboard: Inventory = player.get_house().kitchen_cupboard
+        if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
+            return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
+
+        removed_item = inventory.remove_item(self._selected_item_index, self._selected_item.get_count())
+        if removed_item is None:
+            return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
+
+        cupboard.add_item(removed_item)
+        self._get_store_cupboard_buttons()
+
+        return Embed(title="Cupboard (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored {removed_item.get_count()} {removed_item.get_full_name()} and added to the cupboard.*")
 
     def get_current_cooking_str(self):
         input_strs = []
@@ -601,7 +692,8 @@ class KitchenView(discord.ui.View):
         self._current_cooking[item_key] = self._current_cooking.get(item_key, 0) + 1
 
         current_cooking_str = self.get_current_cooking_str()
-        return Embed(title="Cook", description=f"──────────\n{current_cooking_str}\n──────────\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons.")
+        current_cooking_display = f"──────────\n{current_cooking_str}\n──────────\n\n" if current_cooking_str != "" else ""
+        return Embed(title="Cook", description=f"{current_cooking_display}Mix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def remove_cooking_item(self):
         player: Player = self._get_player()
@@ -613,7 +705,8 @@ class KitchenView(discord.ui.View):
         self._current_cooking[item_key] = max(self._current_cooking.get(item_key, 0) - 1, 0)
 
         current_cooking_str = self.get_current_cooking_str()
-        return Embed(title="Cook", description=f"──────────\n{current_cooking_str}\n──────────\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons.")
+        current_cooking_display = f"──────────\n{current_cooking_str}\n──────────\n\n" if current_cooking_str != "" else ""
+        return Embed(title="Cook", description=f"{current_cooking_display}Mix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_cooking_ingredient(self, index: int, item: Item):
         self._selected_item = item
@@ -627,7 +720,8 @@ class KitchenView(discord.ui.View):
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
         current_cooking_str = self.get_current_cooking_str()
-        return Embed(title="Cook", description=f"──────────\n{current_cooking_str}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        current_cooking_display = f"──────────\n{current_cooking_str}\n──────────\n\n" if current_cooking_str != "" else ""
+        return Embed(title="Cook", description=f"{current_cooking_display}Mix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def use_recipe(self):
         if self._selected_recipe is None:
@@ -710,7 +804,7 @@ class KitchenView(discord.ui.View):
                 break
 
         if found_recipe is None:
-            return Embed(title="Cook", description=f"You attempt to mix these ingredients together, but nothing happens.\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
+            return Embed(title="Cook", description=f"You attempt to mix these ingredients together, but nothing happens.\n\n──────────\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through your recipes using the Prev and Next buttons.")
             
         new_recipe_str = f"You acquired the {found_recipe.get_name_and_icon()} recipe!\n\n" if new_recipe else ""
 
