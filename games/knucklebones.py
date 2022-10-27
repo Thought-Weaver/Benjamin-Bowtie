@@ -213,7 +213,7 @@ class Knucklebones(discord.ui.View):
             return (self._player_1, player_1_total)
         if player_2_total > player_1_total:
             return (self._player_2, player_2_total)
-        return None
+        return (None, 0)
 
     def _roll(self):
         if self._use_luck:
@@ -322,7 +322,8 @@ class Knucklebones(discord.ui.View):
             self._update_stats(winner)
             return f"{self._get_game_state_string()}\n\n{winner_display_name} has won the game{coins_won_str}!"
 
-        self._update_stats(winner, is_tied=True)
+        if winner is not None:
+            self._update_stats(winner, is_tied=True)
         return f"{self._get_game_state_string()}\n\nIt's a tie! No one wins any coins."
 
     def place_roll(self, pos: int):
