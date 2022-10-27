@@ -374,7 +374,7 @@ class DuelView(discord.ui.View):
         game_won: bool
         winners: List[Player | NPC] | None
 
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, users: List[discord.User], allies: List[Player], enemies: List[Player | NPC]):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, users: List[discord.User], allies: List[Player | NPC], enemies: List[Player | NPC]):
         super().__init__(timeout=None)
 
         self._bot = bot
@@ -394,7 +394,7 @@ class DuelView(discord.ui.View):
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1
         self._target_own_group: bool = False
-        self._current_target: Player | NPC = None # For passing along to the confirmation
+        self._current_target: Player | NPC | None = None # For passing along to the confirmation
         self._current_target_index: int = -1
         self._selecting_targets = False # For next/prev buttons
 
@@ -420,14 +420,16 @@ class DuelView(discord.ui.View):
         return None
 
     def get_user_for_current_turn(self):
-        if isinstance(self._turn_order[self._turn_index], Player):
-            return self.get_user_from_player(self._turn_order[self._turn_index])
+        cur_turn_entity = self._turn_order[self._turn_index]
+        if isinstance(cur_turn_entity, Player):
+            return self.get_user_from_player(cur_turn_entity)
         return None
 
     def get_name(self, entity: Player | NPC):
         if isinstance(entity, NPC):
             return entity.get_name()
-        return self.get_user_from_player(entity).display_name
+        user = self.get_user_from_player(entity)
+        return user.display_name if user is not None else "Player Name"
 
     def get_turn_index(self, entity: Player | NPC):
         for i, other_entity in enumerate(self._turn_order):
@@ -518,12 +520,12 @@ class DuelView(discord.ui.View):
 
         return duel_result
 
-    def _is_ally(self, player: Player):
+    def _is_ally(self, entity: Player | NPC):
         cur_turn_player = self._turn_order[self._turn_index]
         if cur_turn_player in self._allies:
-            return player in self._allies
+            return entity in self._allies
         else:
-            return player in self._enemies
+            return entity in self._enemies
 
     def get_duel_info_str(self):
         info_str = "──────────\n"

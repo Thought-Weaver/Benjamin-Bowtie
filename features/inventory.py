@@ -3,7 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
-from features.shared.item import LOADED_ITEMS, Item, ItemKey
+from features.shared.item import LOADED_ITEMS, ClassTag, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -70,7 +70,7 @@ class Inventory():
                 return i
         return -1
 
-    def add_item(self, item: Item):
+    def add_item(self, item: Item | None):
         if item is None:
             self._organize_inventory_slots()
             return
@@ -99,10 +99,10 @@ class Inventory():
     def get_inventory_slots(self):
         return self._inventory_slots
     
-    def filter_inventory_slots(self, tags: List[str]):
+    def filter_inventory_slots(self, tags: List[ClassTag]):
         item_indices: List[int] = []
         for i, item in enumerate(self._inventory_slots):
-            item_class_tags: List[str] = item.get_class_tags()
+            item_class_tags: List[ClassTag] = item.get_class_tags()
             if all(tag in item_class_tags for tag in tags):
                 item_indices.append(i)
         return item_indices

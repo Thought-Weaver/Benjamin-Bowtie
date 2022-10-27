@@ -8,7 +8,7 @@ from features.shared.item import Buffs, ClassTag, Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
@@ -27,17 +27,17 @@ ARMOR_OVERLEVELED_DEBUFF = 0.15
 
 class Equipment():
     def __init__(self):
-        self._helmet: Item = None
-        self._amulet: Item = None
-        self._chest_armor: Item = None
-        self._gloves: Item = None
-        self._ring: Item = None
-        self._leggings: Item = None
-        self._boots: Item = None
-        self._main_hand: Item = None
-        self._off_hand: Item = None
+        self._helmet: Item | None = None
+        self._amulet: Item | None = None
+        self._chest_armor: Item | None = None
+        self._gloves: Item | None = None
+        self._ring: Item | None = None
+        self._leggings: Item | None = None
+        self._boots: Item | None = None
+        self._main_hand: Item | None = None
+        self._off_hand: Item | None = None
 
-    def get_all_equipped_items(self):
+    def get_all_equipped_items(self) -> List[Item]:
         equipment = [
             self._helmet,
             self._amulet,

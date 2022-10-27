@@ -146,7 +146,7 @@ class TrainerView(discord.ui.View):
 
         self._NUM_PER_PAGE = 4
 
-        self._fisher_abilities: List[List[Ability]] = [
+        self._fisher_abilities: List[List[type]] = [
             [SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV],
             [CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII],
             [HookI, HookII, HookIII],
@@ -158,7 +158,7 @@ class TrainerView(discord.ui.View):
             [ShatteringStormI, ShatteringStormII, ShatteringStormIII],
         ]
 
-        self._guardian_abilities: List[List[Ability]] = [
+        self._guardian_abilities: List[List[type]] = [
             [WhirlwindI, WhirlwindII, WhirlwindIII],
             [SecondWindI, SecondWindII, SecondWindIII],
             [ScarArmorI, ScarArmorII],
@@ -172,7 +172,7 @@ class TrainerView(discord.ui.View):
             [HeavySlamI, HeavySlamII, HeavySlamIII]
         ]
 
-        self._merchant_abilities: List[List[Ability]] = [
+        self._merchant_abilities: List[List[type]] = [
             [ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII],
             [BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII],
             [SilkspeakingI],
@@ -184,7 +184,7 @@ class TrainerView(discord.ui.View):
             [DeepPocketsI, DeepPocketsII, DeepPocketsIII]
         ]
 
-        self._alchemist_abilities: List[List[Ability]] = [
+        self._alchemist_abilities: List[List[type]] = [
             [IncenseI, IncenseII, IncenseIII],
             [PreparePotionsI, PreparePotionsII, PreparePotionsIII],
             [VitalityTransferI, VitalityTransferII, VitalityTransferIII],
@@ -236,7 +236,7 @@ class TrainerView(discord.ui.View):
             ))
         return Embed(title="Where are you?", description="In the midst of knowing where you were, suddenly now there is a bleak unknown, a pale that sparks fear and awe.")
 
-    def get_available_abilities(self, player: Player, all_abilities: List[List[Ability]]):
+    def get_available_abilities(self, player: Player, all_abilities: List[List[type]]):
         player_abilities: List[Ability] = player.get_dueling().available_abilities
         available_abilities: List[Ability] = []
         # TODO: Could optimize this significantly?
@@ -381,7 +381,7 @@ class TrainerView(discord.ui.View):
         self._get_current_page_buttons()
         return self._get_page_info()
 
-    def remove_lower_level_abilities(self, player: Player, purchased_ability: Ability, all_abilities: List[List[Ability]]):
+    def remove_lower_level_abilities(self, player: Player, purchased_ability: Ability, all_abilities: List[List[type]]):
         player_abilities: List[Ability] = player.get_dueling().abilities
         available_abilities: List[Ability] = player.get_dueling().available_abilities
 

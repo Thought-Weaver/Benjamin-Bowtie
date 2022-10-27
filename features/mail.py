@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class Mail():
-    def __init__(self, sender_name: str, item: Item, coins: int, message: str, send_date: str, sender_id: int):
+    def __init__(self, sender_name: str, item: Item | None, coins: int, message: str, send_date: str, sender_id: int):
         self._sender_name = sender_name
         self._item = item
         self._message = message
@@ -319,7 +319,7 @@ class MailboxView(discord.ui.View):
         
         self._get_current_page_buttons()
 
-    def get_player(self, user_id: int=None) -> Player:
+    def get_player(self, user_id: int | None=None) -> Player:
         if user_id is None:
             return self._database[str(self._guild_id)]["members"][str(self._user.id)]
         return self._database[str(self._guild_id)]["members"][str(user_id)]
