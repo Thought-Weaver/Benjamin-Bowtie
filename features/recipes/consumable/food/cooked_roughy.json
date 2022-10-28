@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_roughy",
+    "icon": "\uD83D\uDC20",
+    "name": "Cooked Roughy",
+    "value": 10,
+    "inputs": {
+        "items/creature/fish/roughy": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_roughy": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 8
+    }
+}

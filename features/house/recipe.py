@@ -14,20 +14,21 @@ from typing import Dict, List
 # -----------------------------------------------------------------------------
 
 class RecipeKey(StrEnum):
-    pass
+    CookedRoughy = "recipes/consumable/food/cooked_roughy"
 
 # -----------------------------------------------------------------------------
 # RECIPE CLASS
 # -----------------------------------------------------------------------------
 
 class Recipe():
-    def __init__(self, key: str, icon: str, name: str, inputs: Dict[ItemKey, int], outputs: Dict[ItemKey, int], xp_reward_for_use: Dict[ExpertiseClass, int]):
+    def __init__(self, key: str, icon: str, name: str, value: int, inputs: Dict[ItemKey, int], outputs: Dict[ItemKey, int], xp_reward_for_use: Dict[ExpertiseClass, int]):
         # Figuring out whether the recipe should be displayed can be evaluated
         # based on the class tags of the outputs. The only problem with this is
         # that it makes filtering slower.
         self.key = key
         self.icon = icon
         self.name = name
+        self.value = value
         self.inputs = inputs
         self.outputs = outputs
         self.xp_reward_for_use = xp_reward_for_use
@@ -49,6 +50,7 @@ class Recipe():
             recipe_data.get("key", ""),
             recipe_data.get("icon", ""),
             recipe_data.get("name", ""),
+            recipe_data.get("value", 0),
             recipe_data.get("inputs", {}),
             recipe_data.get("outputs", {}),
             recipe_data.get("xp_reward_for_use", {})
@@ -71,7 +73,7 @@ class Recipe():
             input_strs.append(f"{item_data['icon']} {item_data['name']} (x{quantity})\n")
         input_display = '\n'.join(input_strs)
 
-        display_string += f"{input_display}\n\n====>\n\n"
+        display_string += f"{input_display}\n==>\n\n"
         output_strs = []
         for item_key, quantity in self.outputs.items():
             item_data = LOADED_ITEMS.get_item_state(item_key)
@@ -93,6 +95,7 @@ class Recipe():
         self.key = base_data.get("key", "")
         self.icon = base_data.get("icon", "")
         self.name = base_data.get("name", "")
+        self.value = base_data.get("value", 0)
         self.inputs = base_data.get("inputs", {})
         self.outputs = base_data.get("outputs", {})
         self.xp_reward_for_use = base_data.get("xp_reward_for_use", {})

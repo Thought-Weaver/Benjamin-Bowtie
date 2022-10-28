@@ -197,6 +197,9 @@ class ItemKey(StrEnum):
     BasicDagger = "items/weapon/dagger/basic_dagger"
     BasicSword = "items/weapon/dagger/basic_sword"
 
+    # Cooked Food
+    CookedRoughy = "items/consumable/food/cooked_roughy"
+
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"
     GoldenKnucklebone = "items/equipment/offhand/golden_knucklebone"

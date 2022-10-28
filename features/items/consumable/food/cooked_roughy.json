@@ -1,0 +1,12 @@
+{
+    "key": "items/consumable/food/cooked_roughy",
+    "icon": "\uD83D\uDC20",
+    "name": "Cooked Roughy",
+    "value": 10,
+    "rarity": "Common",
+    "description": "Restores 5% of your max health when consumed.",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Consumable", "Food", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}
