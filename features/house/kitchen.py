@@ -311,8 +311,8 @@ class ConfirmCookingButton(discord.ui.Button):
 
 
 class PurchaseKitchenButton(discord.ui.Button):
-    def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.green, label=f"Buy (5000)", row=row)
+    def __init__(self, cost: int, row: int):
+        super().__init__(style=discord.ButtonStyle.green, label=f"Buy ({cost})", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -375,7 +375,7 @@ class KitchenView(discord.ui.View):
             self.add_item(EnterCupboardButton(2))
             self.add_item(ExitToHouseButton(3))
         else:
-            self.add_item(PurchaseKitchenButton(0))
+            self.add_item(PurchaseKitchenButton(self._PURCHASE_COST, 0))
             self.add_item(ExitToHouseButton(0))
 
         self._intent = None

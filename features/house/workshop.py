@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from features.player import Player
 
 # -----------------------------------------------------------------------------
-# KITCHEN VIEW
+# WORKSHOP VIEW
 # -----------------------------------------------------------------------------
 
 class Intent(StrEnum):
@@ -41,7 +41,7 @@ class EnterCraftButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.enter_craft()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -55,7 +55,7 @@ class EnterPatternsButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.enter_patterns()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -69,9 +69,23 @@ class EnterStorageButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.enter_storage()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class DeconstructButton(discord.ui.Button):
+    def __init__(self, row):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Deconstruct", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: WorkshopView = self.view
+        if interaction.user == view.get_user():
+            response = view.enter_deconstruct()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -83,7 +97,7 @@ class ExitToHouseButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             house_view: HouseView = view.get_house_view()
             embed = house_view.get_initial_embed()
@@ -98,7 +112,7 @@ class ExitWithIntentButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             embed = view.exit_with_intent()
             await interaction.response.edit_message(content=None, embed=embed, view=view)
@@ -112,7 +126,7 @@ class StoreButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             embed = view.enter_cupboard_store()
             await interaction.response.edit_message(content=None, embed=embed, view=view)
@@ -126,7 +140,7 @@ class RetrieveButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             embed = view.enter_cupboard_retrieve()
             await interaction.response.edit_message(content=None, embed=embed, view=view)
@@ -143,7 +157,7 @@ class SelectInventoryItemButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.select_inventory_item(self._item_index, self._item)
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -159,7 +173,7 @@ class SelectPatternButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.select_recipe(self._recipe)
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -176,7 +190,7 @@ class SelectStorageItemButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.select_cupboard_item(self._item_index, self._item)
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -190,7 +204,7 @@ class RetrieveItemButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.retrieve()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -204,7 +218,7 @@ class RetrieveAllItemButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.retrieve_all()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -218,7 +232,7 @@ class StoreItemButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.store()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -232,7 +246,7 @@ class StoreAllItemButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.store_all()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -246,7 +260,7 @@ class AddItemButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.add_crafting_item()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -260,7 +274,7 @@ class RemoveItemButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.remove_crafting_item()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -277,7 +291,7 @@ class SelectMaterialButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.select_material(self._item_index, self._item)
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -291,7 +305,7 @@ class ConfirmPatternButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.use_pattern()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -305,27 +319,27 @@ class ConfirmCraftingButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.try_crafting()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
-class PurchaseKitchenButton(discord.ui.Button):
-    def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.green, label=f"Buy (5000)", row=row)
+class PurchaseWorkshopButton(discord.ui.Button):
+    def __init__(self, cost: int, row: int):
+        super().__init__(style=discord.ButtonStyle.green, label=f"Buy ({cost})", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
         
-        view: KitchenView = self.view
+        view: WorkshopView = self.view
         if interaction.user == view.get_user():
-            response = view.purchase_kitchen()
+            response = view.purchase_workshop()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
-class KitchenView(discord.ui.View):
+class WorkshopView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView):
         super().__init__(timeout=900)
 
@@ -370,27 +384,28 @@ class KitchenView(discord.ui.View):
     def _display_initial_buttons(self):
         self.clear_items()
 
-        if HouseRoom.Kitchen in self._get_player().get_house().house_rooms:
+        if HouseRoom.Workshop in self._get_player().get_house().house_rooms:
             self.add_item(EnterPatternsButton(0))
             self.add_item(EnterCraftButton(1))
-            self.add_item(EnterStorageButton(2))
-            self.add_item(ExitToHouseButton(3))
+            self.add_item(DeconstructButton(2))
+            self.add_item(EnterStorageButton(3))
+            self.add_item(ExitToHouseButton(4))
         else:
-            self.add_item(PurchaseKitchenButton(0))
+            self.add_item(PurchaseWorkshopButton(self._PURCHASE_COST, 0))
             self.add_item(ExitToHouseButton(0))
 
         self._intent = None
 
-    def purchase_kitchen(self):
+    def purchase_workshop(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
         house: House = player.get_house()
         
         if inventory.get_coins() < self._PURCHASE_COST:
-            return self.get_embed_for_intent(error="*Error: You don't have enough coins to purchase the kitchen.*")
+            return self.get_embed_for_intent(error="*Error: You don't have enough coins to purchase the workshop.*")
 
         inventory.remove_coins(self._PURCHASE_COST)
-        house.house_rooms.append(HouseRoom.Kitchen)
+        house.house_rooms.append(HouseRoom.Workshop)
         self._display_initial_buttons()
 
         return self.get_embed_for_intent(error="Workshop purchased! You can now craft, deconstruct items, and store materials.")
@@ -446,7 +461,7 @@ class KitchenView(discord.ui.View):
     def _get_retrieve_storage_buttons(self):
         self.clear_items()
         player: Player = self._get_player()
-        inventory: Inventory = player.get_house().kitchen_cupboard
+        inventory: Inventory = player.get_house().workshop_storage
         inventory_slots = inventory.get_inventory_slots()
 
         page_slots = inventory_slots[self._page * self._NUM_PER_PAGE:min(len(inventory_slots), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -583,14 +598,14 @@ class KitchenView(discord.ui.View):
         self._get_retrieve_storage_buttons()
 
         player: Player = self._get_player()
-        cupboard_slots: List[Item] = player.get_house().kitchen_cupboard.get_inventory_slots()
+        cupboard_slots: List[Item] = player.get_house().workshop_storage.get_inventory_slots()
         if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
         return Embed(title="Storage (Retrieving)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
 
     def retrieve(self):
         player: Player = self._get_player()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        cupboard: Inventory = player.get_house().workshop_storage
         cupboard_slots: List[Item] = cupboard.get_inventory_slots()
         if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
@@ -606,7 +621,7 @@ class KitchenView(discord.ui.View):
 
     def retrieve_all(self):
         player: Player = self._get_player()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        cupboard: Inventory = player.get_house().workshop_storage
         cupboard_slots: List[Item] = cupboard.get_inventory_slots()
         if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
@@ -623,7 +638,7 @@ class KitchenView(discord.ui.View):
     def store(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        cupboard: Inventory = player.get_house().workshop_storage
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
@@ -639,7 +654,7 @@ class KitchenView(discord.ui.View):
     def store_all(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        cupboard: Inventory = player.get_house().workshop_storage
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
