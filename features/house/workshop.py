@@ -128,7 +128,7 @@ class StoreButton(discord.ui.Button):
         
         view: WorkshopView = self.view
         if interaction.user == view.get_user():
-            embed = view.enter_cupboard_store()
+            embed = view.enter_storage_store()
             await interaction.response.edit_message(content=None, embed=embed, view=view)
 
 
@@ -142,7 +142,7 @@ class RetrieveButton(discord.ui.Button):
         
         view: WorkshopView = self.view
         if interaction.user == view.get_user():
-            embed = view.enter_cupboard_retrieve()
+            embed = view.enter_storage_retrieve()
             await interaction.response.edit_message(content=None, embed=embed, view=view)
 
 
@@ -192,7 +192,7 @@ class SelectStorageItemButton(discord.ui.Button):
         
         view: WorkshopView = self.view
         if interaction.user == view.get_user():
-            response = view.select_cupboard_item(self._item_index, self._item)
+            response = view.select_storage_item(self._item_index, self._item)
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -339,6 +339,37 @@ class PurchaseWorkshopButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
+class SelectDeconstructItemButton(discord.ui.Button):
+    def __init__(self, item_index: int, item: Item, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
+        
+        self._item_index = item_index
+        self._item = item
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: WorkshopView = self.view
+        if interaction.user == view.get_user():
+            response = view.select_deconstruct_item(self._item_index, self._item)
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class ConfirmDeconstructButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.green, label=f"Confirm", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: WorkshopView = self.view
+        if interaction.user == view.get_user():
+            response = view.deconstruct()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class WorkshopView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView):
         super().__init__(timeout=900)
@@ -370,7 +401,7 @@ class WorkshopView(discord.ui.View):
         if self._intent == Intent.Storage:
             return Embed(title="Storage", description="Store materials or retrieve them from your workshop storage." + error)
         if self._intent == Intent.Store:
-            return Embed(title="Storage (Storing)", description="Choose an item to store in the cupboard.\n\nNavigate through the items using the Prev and Next buttons." + error)
+            return Embed(title="Storage (Storing)", description="Choose an item to store in the workshop storage.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Retrieve:
             return Embed(title="Storage (Retrieving)", description="Choose an item to retrieve from storage.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Craft:
@@ -420,7 +451,7 @@ class WorkshopView(discord.ui.View):
 
         return self.get_embed_for_intent()
 
-    def enter_cupboard_store(self):
+    def enter_storage_store(self):
         self.clear_items()
         self._get_store_storage_buttons()
 
@@ -450,7 +481,7 @@ class WorkshopView(discord.ui.View):
             self.add_item(StoreAllItemButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
 
-    def enter_cupboard_retrieve(self):
+    def enter_storage_retrieve(self):
         self.clear_items()
         self._get_retrieve_storage_buttons()
 
@@ -509,14 +540,6 @@ class WorkshopView(discord.ui.View):
 
         return self.get_embed_for_intent()
 
-    def enter_patterns(self):
-        self.clear_items()
-        self._get_pattern_buttons()
-
-        self._intent = Intent.Patterns
-
-        return self.get_embed_for_intent()
-
     def _get_pattern_buttons(self):
         self.clear_items()
         player: Player = self._get_player()
@@ -533,6 +556,43 @@ class WorkshopView(discord.ui.View):
         if self._selected_recipe is not None:
             self.add_item(ConfirmPatternButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
+
+    def enter_patterns(self):
+        self.clear_items()
+        self._get_pattern_buttons()
+
+        self._intent = Intent.Patterns
+
+        return self.get_embed_for_intent()
+
+    def _get_deconstruct_buttons(self):
+        self.clear_items()
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        inventory_slots = inventory.get_inventory_slots()
+
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Equipment.Equipment])
+        filtered_items = [inventory_slots[i] for i in filtered_indices]
+
+        page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
+        for i, item in enumerate(page_slots):
+            exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
+            self.add_item(SelectDeconstructItemButton(exact_item_index, item, i))
+        if self._page != 0:
+            self.add_item(PrevButton(min(4, len(page_slots))))
+        if len(inventory_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
+            self.add_item(NextButton(min(4, len(page_slots))))
+        if self._selected_item_index != -1 and self._selected_item is not None:
+            self.add_item(ConfirmDeconstructButton(min(4, len(page_slots))))
+        self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
+
+    def enter_deconstruct(self):
+        self.clear_items()
+        self._get_deconstruct_buttons()
+
+        self._intent = Intent.Deconstruct
+
+        return self.get_embed_for_intent()
 
     def next_page(self):
         self._page += 1
@@ -591,26 +651,26 @@ class WorkshopView(discord.ui.View):
 
         return Embed(title="Patterns", description=f"──────────\n{self._selected_recipe}\nYou have enough materials to make {num_can_be_created}.\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
 
-    def select_cupboard_item(self, index: int, item: Item):
+    def select_storage_item(self, index: int, item: Item):
         self._selected_item = item
         self._selected_item_index = index
 
         self._get_retrieve_storage_buttons()
 
         player: Player = self._get_player()
-        cupboard_slots: List[Item] = player.get_house().workshop_storage.get_inventory_slots()
-        if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
+        storage_slots: List[Item] = player.get_house().workshop_storage.get_inventory_slots()
+        if self._selected_item is None or storage_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
         return Embed(title="Storage (Retrieving)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
 
     def retrieve(self):
         player: Player = self._get_player()
-        cupboard: Inventory = player.get_house().workshop_storage
-        cupboard_slots: List[Item] = cupboard.get_inventory_slots()
-        if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
+        storage: Inventory = player.get_house().workshop_storage
+        storage_slots: List[Item] = storage.get_inventory_slots()
+        if self._selected_item is None or storage_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
-        removed_item = cupboard.remove_item(self._selected_item_index, 1)
+        removed_item = storage.remove_item(self._selected_item_index, 1)
         if removed_item is None:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
@@ -621,12 +681,12 @@ class WorkshopView(discord.ui.View):
 
     def retrieve_all(self):
         player: Player = self._get_player()
-        cupboard: Inventory = player.get_house().workshop_storage
-        cupboard_slots: List[Item] = cupboard.get_inventory_slots()
-        if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
+        storage: Inventory = player.get_house().workshop_storage
+        storage_slots: List[Item] = storage.get_inventory_slots()
+        if self._selected_item is None or storage_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
-        removed_item = cupboard.remove_item(self._selected_item_index, self._selected_item.get_count())
+        removed_item = storage.remove_item(self._selected_item_index, self._selected_item.get_count())
         if removed_item is None:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
@@ -638,7 +698,7 @@ class WorkshopView(discord.ui.View):
     def store(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        cupboard: Inventory = player.get_house().workshop_storage
+        storage: Inventory = player.get_house().workshop_storage
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
@@ -646,15 +706,15 @@ class WorkshopView(discord.ui.View):
         if removed_item is None:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
-        cupboard.add_item(removed_item)
+        storage.add_item(removed_item)
         self._get_store_storage_buttons()
 
-        return Embed(title="Storage (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored 1 {removed_item.get_full_name()} and added it to the cupboard.*")
+        return Embed(title="Storage (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored 1 {removed_item.get_full_name()} and added it to storage.*")
 
     def store_all(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        cupboard: Inventory = player.get_house().workshop_storage
+        storage: Inventory = player.get_house().workshop_storage
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
@@ -662,10 +722,10 @@ class WorkshopView(discord.ui.View):
         if removed_item is None:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
-        cupboard.add_item(removed_item)
+        storage.add_item(removed_item)
         self._get_store_storage_buttons()
 
-        return Embed(title="Storage (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored {removed_item.get_count()} {removed_item.get_full_name()} and added to the cupboard.*")
+        return Embed(title="Storage (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored {removed_item.get_count()} {removed_item.get_full_name()} and added to storage.*")
 
     def get_current_crafting_str(self):
         input_strs = []
@@ -819,6 +879,53 @@ class WorkshopView(discord.ui.View):
         output_display = '\n'.join(output_strs)
 
         return Embed(title="Craft", description=f"Crafting successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n──────────\n\nChoose a pattern you've acquired or discovered to craft.\n\nNavigate through your patterns using the Prev and Next buttons.")
+
+    def select_deconstruct_item(self, index: int, item: Item):
+        self._selected_item = item
+        self._selected_item_index = index
+
+        self._get_deconstruct_buttons()
+
+        player: Player = self._get_player()
+        inventory_slots: List[Item] = player.get_inventory().get_inventory_slots()
+        if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
+            return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
+        return Embed(title="Deconstruct", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+
+    def deconstruct(self):
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        inventory_slots: List[Item] = inventory.get_inventory_slots()
+        if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
+            return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
+
+        # TODO: By doing this reverse lookup, I've defined crafting/deconstructing as a reversible process. Namely, there must exist a recipe
+        # to deconstruct something, therefore anything that is deconstructible must also be craftable. It's not necessarily ideal -- at least
+        # I suspect there are things I'd want not to be crafted that I would be fine with being deconstructed at some point. I'll figure out
+        # some way to address that in the future.
+
+        found = False
+        result_strs = []
+        for recipe_key in LOADED_RECIPES.get_all_keys():
+            recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
+            if len(recipe.outputs.items()) == 1 and list(recipe.outputs.values())[0] == 1:
+                if list(recipe.outputs.keys())[0] == self._selected_item.get_key():
+                    inventory.remove_item(self._selected_item_index, 1)
+                    for input_key, quantity in recipe.inputs.items():
+                        item = LOADED_ITEMS.get_new_item(input_key)
+                        # Get rid of the base amount and replace it with half the amount it takes to craft.
+                        item.remove_amount(1)
+                        item.add_amount(int(quantity / 2))
+                        inventory.add_item(item)
+
+                        result_strs.append(f"{item.get_full_name()} (x{int(quantity / 2)})")
+                        found = True
+        result_str = "\n".join(result_strs)
+
+        if not found:
+            return self.get_embed_for_intent(error="\n\n*You cannot deconstruct that item.*")
+
+        return Embed(title="Deconstruct", description=f"You successfully deconstructed {self._selected_item.get_full_name()} into:\n\n──────────\n{result_str}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
 
     def exit_with_intent(self):
         self._selected_item = None
