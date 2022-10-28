@@ -4,7 +4,7 @@ import discord
 
 from discord.embeds import Embed
 from features.house.house import HouseRoom
-from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
+from features.house.recipe import LOADED_RECIPES, Recipe
 from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey
 from strenum import StrEnum
 
@@ -353,11 +353,11 @@ class KitchenView(discord.ui.View):
 
     def get_embed_for_intent(self, error: str=""):
         if self._intent == Intent.Cupboard:
-            return Embed(title="Cupboard", description="Store ingredients in your cupboard or retrieve them." + error)
+            return Embed(title="Cupboard", description="Store ingredients or retrieve them from your cupboard." + error)
         if self._intent == Intent.Store:
             return Embed(title="Cupboard (Storing)", description="Choose an item to store in the cupboard.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Retrieve:
-            return Embed(title="Cupboard (Retrieving)", description="Choose an item to retrieve in the cupboard.\n\nNavigate through the items using the Prev and Next buttons." + error)
+            return Embed(title="Cupboard (Retrieving)", description="Choose an item to retrieve from the cupboard.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Cook:
             current_cooking_str = self.get_current_cooking_str()
             current_cooking_display = f"──────────\n{current_cooking_str}──────────\n\n" if current_cooking_str != "" else ""
@@ -497,7 +497,7 @@ class KitchenView(discord.ui.View):
         self.clear_items()
         self._get_recipe_buttons()
 
-        self._intent = Intent.Cook
+        self._intent = Intent.Recipes
 
         return self.get_embed_for_intent()
 
@@ -570,7 +570,10 @@ class KitchenView(discord.ui.View):
         self._get_recipe_buttons()
         if self._selected_recipe is None:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that recipe changed or it's no longer available.*")
-        return Embed(title="Recipes", description=f"──────────\n{self._selected_recipe}──────────\n\nNavigate through the items using the Prev and Next buttons.")
+
+        num_can_be_created = self._selected_recipe.num_can_be_made(self._get_player().get_inventory())
+
+        return Embed(title="Recipes", description=f"──────────\n{self._selected_recipe}\nYou have enough ingredients to make {num_can_be_created}.\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_cupboard_item(self, index: int, item: Item):
         self._selected_item = item

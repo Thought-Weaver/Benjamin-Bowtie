@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from features.expertise import ExpertiseClass
+from features.inventory import Inventory
 
 from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey
 from strenum import StrEnum
@@ -58,6 +59,15 @@ class Recipe():
 
     def get_name_and_icon(self):
         return f"{self.icon} {self.name}"
+
+    def num_can_be_made(self, inventory: Inventory):
+        num = 0
+        for output_key, quantity in self.outputs.items():
+            item = inventory.get_inventory_slots()[inventory.search_by_key(output_key)]
+            
+            if quantity > 0 and item is not None:
+                num = min(int(item.get_count() / quantity), num)
+        return num
 
     def __eq__(self, obj) -> bool:
         if not isinstance(obj, Recipe):
