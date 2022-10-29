@@ -410,6 +410,8 @@ class WorkshopView(discord.ui.View):
             return Embed(title="Craft", description=f"{current_crafting_display}Use materials from your inventory and attempt to craft something.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Patterns:
             return Embed(title="Patterns", description="Choose a pattern you've acquired or discovered to craft.\n\nNavigate through your patterns using the Prev and Next buttons." + error)
+        if self._intent == Intent.Deconstruct:
+            return Embed(title="Deconstruct", description="Choose an item to deconstruct into some materials.\n\nNavigate through the items using the Prev and Next buttons." + error)
         return Embed(title="Workshop", description="You enter the workshop, where you can use an existing pattern to craft weapons and armor, try making something from any materials you have in your inventory, or store materials for later use." + error)
 
     def _display_initial_buttons(self):
@@ -890,7 +892,7 @@ class WorkshopView(discord.ui.View):
         inventory_slots: List[Item] = player.get_inventory().get_inventory_slots()
         if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Deconstruct", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Deconstruct", description=f"──────────\n{self._selected_item}\n──────────\n\nChoose an item to deconstruct into some materials.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def deconstruct(self):
         player: Player = self._get_player()
@@ -925,7 +927,7 @@ class WorkshopView(discord.ui.View):
         if not found:
             return self.get_embed_for_intent(error="\n\n*You cannot deconstruct that item.*")
 
-        return Embed(title="Deconstruct", description=f"You successfully deconstructed {self._selected_item.get_full_name()} into:\n\n──────────\n{result_str}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Deconstruct", description=f"You successfully deconstructed {self._selected_item.get_full_name()} into:\n\n──────────\n{result_str}\n──────────\n\nChoose an item to deconstruct into some materials.\n\nChoose an item to deconstruct into some materials.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def exit_with_intent(self):
         self._selected_item = None
@@ -934,7 +936,7 @@ class WorkshopView(discord.ui.View):
         self._page = 0
         self._current_crafting = {}
 
-        if self._intent == Intent.Craft or self._intent == Intent.Patterns or self._intent == Intent.Storage:
+        if self._intent == Intent.Craft or self._intent == Intent.Patterns or self._intent == Intent.Storage or self._intent == Intent.Deconstruct:
             self._intent = None
             self._display_initial_buttons()
             return self.get_embed_for_intent()

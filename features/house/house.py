@@ -151,6 +151,20 @@ class MailboxButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
+class RestButton(discord.ui.Button):
+    def __init__(self, row):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Rest", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: HouseView = self.view
+        if interaction.user == view.get_user():
+            response = view.rest()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class HouseView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, context: commands.Context):
         super().__init__(timeout=900)
@@ -174,12 +188,17 @@ class HouseView(discord.ui.View):
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(KitchenButton(0))
-        self.add_item(GardenButton(0))
-        self.add_item(StorageButton(1))
-        self.add_item(WorkshopButton(1))
-        self.add_item(StudyButton(2))
+        self.add_item(StudyButton(0))
+        self.add_item(WorkshopButton(0))
+        self.add_item(GardenButton(1))
+        self.add_item(KitchenButton(1))
         self.add_item(MailboxButton(2))
+        self.add_item(StorageButton(2))
+        self.add_item(RestButton(3))
+
+    def rest(self):
+        # TODO: Implement resting mechanic and out-of-combat status effects
+        pass
 
     def get_bot(self):
         return self._bot

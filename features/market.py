@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 # -----------------------------------------------------------------------------
 
 class SellModal(discord.ui.Modal):
-    def __init__(self, database: dict, guild_id: int, user: discord.User, item_index: int, item: Item,view: MarketView, message_id: int):
+    def __init__(self, database: dict, guild_id: int, user: discord.User, item_index: int, item: Item, view: MarketView, message_id: int):
         super().__init__(title=f"Sell {item.get_full_name_and_count()}")
 
         self._database = database

@@ -4,7 +4,7 @@
     "name": "Golden Knucklebone",
     "value": 1000,
     "rarity": "Artifact",
-    "description": "When you win a game of knucklebones, receive 1/5th your final board total in coins.",
+    "description": "When you win a game of knucklebones, receive 1/4th your final board total in coins.",
     "flavor_text": "",
     "class_tags": ["Equipment", "Off_Hand"],
     "state_tags": [],
