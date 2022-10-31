@@ -4,6 +4,7 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
+from features.house.alchemy import AlchemyChamberView
 from features.house.recipe import Recipe
 from features.inventory import Inventory
 from features.mail import MailboxView
@@ -21,12 +22,12 @@ if TYPE_CHECKING:
 
 class HouseRoom(StrEnum):
     Unknown = "Unknown"
+    Study = "Study"
+    Alchemy = "Alchemy"
+    Workshop = "Workshop"
     Kitchen = "Kitchen"
     Garden = "Garden"
     Storage = "Storage"
-    Workshop = "Workshop"
-    Study = "Study"
-    Alchemy = "Alchemy"
 
 # -----------------------------------------------------------------------------
 # HOUSE CLASS
@@ -137,6 +138,21 @@ class StudyButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
+class AlchemyChamberButton(discord.ui.Button):
+    def __init__(self, row):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Alchemy Chamber", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: HouseView = self.view
+        if interaction.user == view.get_user():
+            new_view: AlchemyChamberView = AlchemyChamberView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user(), view)
+            embed = Embed()
+            await interaction.response.edit_message(content=None, embed=embed, view=new_view)
+
+
 class MailboxButton(discord.ui.Button):
     def __init__(self, row):
         super().__init__(style=discord.ButtonStyle.secondary, label="Mailbox", row=row)
@@ -190,6 +206,7 @@ class HouseView(discord.ui.View):
     def _display_initial_buttons(self):
         self.clear_items()
         self.add_item(StudyButton(0))
+        self.add_item(AlchemyChamberButton(0))
         self.add_item(WorkshopButton(0))
         self.add_item(GardenButton(1))
         self.add_item(KitchenButton(1))

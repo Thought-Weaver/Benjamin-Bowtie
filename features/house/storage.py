@@ -35,7 +35,9 @@ class RenameModal(discord.ui.Modal):
 
         self._name_input: discord.ui.TextInput = discord.ui.TextInput(
             label="Name",
-            required=True
+            required=True,
+            max_length=25,
+            min_length=1
         )
         self.add_item(self._name_input)
 

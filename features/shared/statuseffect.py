@@ -368,12 +368,11 @@ class CannotTarget(StatusEffect):
 
 
 class Generating(StatusEffect):
-    def __init__(self, turns_remaining: int, targets_that_generate_on_hit: List[Player | NPC], value: int, source_ability_str: str | None=None, trigger_first_turn: bool=True):
+    def __init__(self, turns_remaining: int, value: int, source_ability_str: str | None=None, trigger_first_turn: bool=True):
         super().__init__(turns_remaining, value, "Generating", StatusEffectKey.Generating, source_ability_str, trigger_first_turn)
-        self.targets_that_generate_on_hit = targets_that_generate_on_hit
 
     def __str__(self):
-        display_str = f"{self.name}: The chosen targets generate coins when hit for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Whenever you successfully attack a target, coins are generated for the next {self.get_turns_remaining_str()}"
         
         if self.source_ability_str is not None:
             display_str += f" (from {self.source_ability_str})"

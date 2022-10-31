@@ -3565,11 +3565,11 @@ class ATidySumI(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum I",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coins, awarding you 5 coins per successful attack.",
+            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into coins, awarding you 5 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
-            num_targets=1,
+            num_targets=0,
             level_requirement=8,
             target_own_group=True,
             purchase_cost=300
@@ -3577,9 +3577,8 @@ class ATidySumI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         generating = Generating(
-            turns_remaining=2,
+            turns_remaining=3,
             value=5,
-            targets_that_generate_on_hit=targets,
             source_ability_str=self.get_icon_and_name()
         )
 
@@ -3604,7 +3603,7 @@ class ATidySumII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum II",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coins, awarding you 10 coins per successful attack.",
+            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into coins, awarding you 10 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -3616,9 +3615,8 @@ class ATidySumII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         generating = Generating(
-            turns_remaining=2,
+            turns_remaining=3,
             value=10,
-            targets_that_generate_on_hit=targets,
             source_ability_str=self.get_icon_and_name()
         )
 
@@ -3643,7 +3641,7 @@ class ATidySumIII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum III",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 2 turns, part of the enemy struck turns into coin, awarding you 15 coins per successful attack.",
+            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into coin, awarding you 15 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -3655,9 +3653,8 @@ class ATidySumIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         generating = Generating(
-            turns_remaining=2,
+            turns_remaining=3,
             value=15,
-            targets_that_generate_on_hit=targets,
             source_ability_str=self.get_icon_and_name()
         )
 
@@ -4449,7 +4446,7 @@ class VitalityTransferI(Ability):
             icon="\uD83D\uDC9E",
             name="Vitality Transfer I",
             class_key=ExpertiseClass.Alchemist,
-            description="Take 15% of your max health as damage and restore 15% of an ally's max health.",
+            description="Take 15% of your max health as damage and restore that much of an ally's health.",
             flavor_text="",
             mana_cost=10,
             cooldown=3,
@@ -4463,7 +4460,7 @@ class VitalityTransferI(Ability):
         damage_amount = ceil(caster.get_expertise().max_hp * 0.15)
         caster.get_expertise().damage(damage_amount, 0, 0, caster.get_equipment())
 
-        heal_amount = ceil(targets[0].get_expertise().max_hp * 0.15)
+        heal_amount = damage_amount
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -4486,7 +4483,7 @@ class VitalityTransferII(Ability):
             icon="\uD83D\uDC9E",
             name="Vitality Transfer II",
             class_key=ExpertiseClass.Alchemist,
-            description="Take 25% of your max health as damage and restore 25% of an ally's max health.",
+            description="Take 25% of your max health as damage and restore that much of an ally's health.",
             flavor_text="",
             mana_cost=10,
             cooldown=3,
@@ -4500,7 +4497,7 @@ class VitalityTransferII(Ability):
         damage_amount = ceil(caster.get_expertise().max_hp * 0.25)
         caster.get_expertise().damage(damage_amount, 0, 0, caster.get_equipment())
 
-        heal_amount = ceil(targets[0].get_expertise().max_hp * 0.25)
+        heal_amount = damage_amount
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -4523,7 +4520,7 @@ class VitalityTransferIII(Ability):
             icon="\uD83D\uDC9E",
             name="Vitality Transfer III",
             class_key=ExpertiseClass.Alchemist,
-            description="Take 35% of your max health as damage and restore 35% of an ally's max health.",
+            description="Take 35% of your max health as damage and restore that much of an ally's health.",
             flavor_text="",
             mana_cost=10,
             cooldown=3,
@@ -4537,7 +4534,7 @@ class VitalityTransferIII(Ability):
         damage_amount = ceil(caster.get_expertise().max_hp * 0.35)
         caster.get_expertise().damage(damage_amount, 0, 0, caster.get_equipment())
 
-        heal_amount = ceil(targets[0].get_expertise().max_hp * 0.35)
+        heal_amount = damage_amount
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
