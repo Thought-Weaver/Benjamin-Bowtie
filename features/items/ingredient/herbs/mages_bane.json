@@ -6,7 +6,7 @@
     "rarity": "Epic",
     "description": "",
     "flavor_text": "As its name suggests, this herb can act as a powerful suppressant against channeling mana when prepared properly. For good reason, most practitioners of the arcane tend to check their food carefully.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

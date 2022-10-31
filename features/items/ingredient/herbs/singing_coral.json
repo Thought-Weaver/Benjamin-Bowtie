@@ -6,7 +6,7 @@
     "rarity": "Rare",
     "description": "",
     "flavor_text": "Underwater, this coral echoes with a soft humming that seems to attract certain species of fish.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

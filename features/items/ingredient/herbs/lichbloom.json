@@ -6,7 +6,7 @@
     "rarity": "Legendary",
     "description": "",
     "flavor_text": "Never shall we die.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

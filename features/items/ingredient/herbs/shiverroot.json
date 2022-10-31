@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "",
     "flavor_text": "Typically found in cold climates, it's easily noted by its slight quavering back and forth even without the influence of wind.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "",
     "flavor_text": "A large, leafy plant that notably provides protection from the rain for small rodents. Certain birds also use it to make nests.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

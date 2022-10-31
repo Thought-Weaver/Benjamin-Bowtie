@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "",
     "flavor_text": "Catch a glance on a field as its petals drift off, snow in the wind.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

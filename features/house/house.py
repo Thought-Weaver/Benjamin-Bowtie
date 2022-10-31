@@ -26,6 +26,7 @@ class HouseRoom(StrEnum):
     Storage = "Storage"
     Workshop = "Workshop"
     Study = "Study"
+    Alchemy = "Alchemy"
 
 # -----------------------------------------------------------------------------
 # HOUSE CLASS

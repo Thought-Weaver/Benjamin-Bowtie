@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "",
     "flavor_text": "Antler? I hardly know 'er!",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

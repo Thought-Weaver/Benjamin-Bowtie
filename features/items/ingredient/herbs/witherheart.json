@@ -6,7 +6,7 @@
     "rarity": "Epic",
     "description": "",
     "flavor_text": "Love is a bargain. Death is a promise.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

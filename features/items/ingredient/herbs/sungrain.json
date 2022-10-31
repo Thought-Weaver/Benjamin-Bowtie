@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "",
     "flavor_text": "Often grown for food, it also has applications in alchemy when refined.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

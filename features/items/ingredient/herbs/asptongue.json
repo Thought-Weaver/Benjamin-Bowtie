@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "",
     "flavor_text": "A common, poisonous plant that becomes significantly more potent when combined with other herbs.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

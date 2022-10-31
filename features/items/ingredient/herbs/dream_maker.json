@@ -6,7 +6,7 @@
     "rarity": "Epic",
     "description": "",
     "flavor_text": "\"You ever seen a high squirrel before? Lemme tell ya, it's damn funny.\"",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

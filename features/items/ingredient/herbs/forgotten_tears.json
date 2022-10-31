@@ -6,7 +6,7 @@
     "rarity": "Legendary",
     "description": "",
     "flavor_text": "An exceedingly rare herb found growing only in misty caverns where moonlight can reach through the cracks and provide it a place to grow.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

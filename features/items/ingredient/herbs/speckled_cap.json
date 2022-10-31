@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "",
     "flavor_text": "Looks like one of those mushrooms you really shouldn't put into a stew, but is actually fine.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

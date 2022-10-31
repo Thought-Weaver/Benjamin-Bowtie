@@ -76,6 +76,7 @@ class ClassTag(Enum):
         Herb = "Herb"
         RawFish = "Raw_Fish" # Might be good to separate fish from other foods
         RawFood = "Raw_Food" # Like uncooked potatoes, meat, etc.
+        PotionIngredient = "Potion_Ingredient"
 
     @skip
     class Creature(StrEnum):

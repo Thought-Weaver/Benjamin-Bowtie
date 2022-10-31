@@ -6,12 +6,11 @@ from discord.embeds import Embed
 from discord.ext import commands
 from features.house.house import HouseRoom
 from features.shared.item import ClassTag
+from features.shared.nextbutton import NextButton
+from features.shared.prevbutton import PrevButton
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, List
-from features.shared.nextbutton import NextButton
-from features.shared.prevbutton import PrevButton
-
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.house.house import House, HouseView
@@ -328,8 +327,7 @@ class StorageView(discord.ui.View):
         self.clear_items()
 
         if HouseRoom.Storage in self._get_player().get_house().house_rooms:
-            # TODO: Show storage bins and exit button
-            pass
+            self._get_storage_buttons()
         else:
             self.add_item(PurchaseStorageButton(self._PURCHASE_COST, 0))
             self.add_item(ExitToHouseButton(0))

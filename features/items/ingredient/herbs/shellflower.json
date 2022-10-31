@@ -6,7 +6,7 @@
     "rarity": "Rare",
     "description": "",
     "flavor_text": "You can almost imagine field mice using their tough petals as shields in a tiny war.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

@@ -6,7 +6,7 @@
     "rarity": "Rare",
     "description": "",
     "flavor_text": "One of very few plants identified that use mana and whose properties can enhance the abilities of arcane practitioners.",
-    "class_tags": ["Ingredient", "Herb"],
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }
