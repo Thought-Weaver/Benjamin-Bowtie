@@ -104,7 +104,7 @@ class Ability():
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -154,17 +154,17 @@ class Ability():
 
         caster_expertise = caster.get_expertise()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
             target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_buffs())
 
-            results.append(NegativeAbilityResult("{1}" + f" is now {status_effects_str}", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" is now {status_effects_str}", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -201,10 +201,10 @@ class Ability():
 
         caster_expertise = caster.get_expertise()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
             target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_buffs())
-            results.append("{1}" + f" is now {status_effects_str}")
+            results.append("{" + f"{i + 1}" + "}" + f" is now {status_effects_str}")
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -229,7 +229,7 @@ class Ability():
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -241,7 +241,7 @@ class Ability():
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
 
-            results.append("{1}" + f" was healed for {heal_amount}{critical_hit_str} HP")
+            results.append("{" + f"{i + 1}" + "}" + f" was healed for {heal_amount}{critical_hit_str} HP")
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -776,14 +776,14 @@ class WrathOfTheWavesI(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability.", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -809,7 +809,7 @@ class WrathOfTheWavesI(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -862,14 +862,14 @@ class WrathOfTheWavesII(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability.", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -895,7 +895,7 @@ class WrathOfTheWavesII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -948,14 +948,14 @@ class WrathOfTheWavesIII(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability.", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -981,7 +981,7 @@ class WrathOfTheWavesIII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -1154,14 +1154,14 @@ class ThunderingTorrentI(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -1193,7 +1193,7 @@ class ThunderingTorrentI(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -1246,14 +1246,14 @@ class ThunderingTorrentII(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -1285,7 +1285,7 @@ class ThunderingTorrentII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -1338,14 +1338,14 @@ class ThunderingTorrentIII(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -1377,7 +1377,7 @@ class ThunderingTorrentIII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -1433,14 +1433,14 @@ class DrownInTheDeepI(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_dueling = target.get_dueling()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             target_max_hp = target_expertise.max_hp
@@ -1455,7 +1455,7 @@ class DrownInTheDeepI(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -1508,14 +1508,14 @@ class DrownInTheDeepII(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_dueling = target.get_dueling()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             target_max_hp = target_expertise.max_hp
@@ -1530,7 +1530,7 @@ class DrownInTheDeepII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -1583,14 +1583,14 @@ class DrownInTheDeepIII(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_dueling = target.get_dueling()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             target_max_hp = target_expertise.max_hp
@@ -1605,7 +1605,7 @@ class DrownInTheDeepIII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -1661,14 +1661,14 @@ class WhirlpoolI(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -1695,7 +1695,7 @@ class WhirlpoolI(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -1748,14 +1748,14 @@ class WhirlpoolII(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -1782,7 +1782,7 @@ class WhirlpoolII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -1835,14 +1835,14 @@ class WhirlpoolIII(Ability):
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
-        for target in targets:
+        for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{1} dodged the ability", True))
+                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
@@ -1869,7 +1869,7 @@ class WhirlpoolIII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
-            results.append(NegativeAbilityResult("{1}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_to_blood_percent = 0
         for se in caster.get_dueling().status_effects:
@@ -4574,10 +4574,10 @@ class CleanseI(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
         results: List[str] = []
-        for target in targets:
+        for i, target in enumerate(targets):
             target.get_dueling().status_effects = []
             target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_buffs())
-            results.append("{1}" + f" has had their status effects removed")
+            results.append("{" + f"{i + 1}" + "}" + f" has had their status effects removed")
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
@@ -4872,10 +4872,10 @@ class EmpowermentI(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
         results: List[str] = []
-        for target in targets:
+        for i, target in enumerate(targets):
             mana_to_restore: int = target.get_expertise().intelligence
             target.get_expertise().restore_mana(mana_to_restore)
-            results.append("{1}" + f" regained {mana_to_restore} mana")
+            results.append("{" + f"{i + 1}" + "}" + f" regained {mana_to_restore} mana")
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
