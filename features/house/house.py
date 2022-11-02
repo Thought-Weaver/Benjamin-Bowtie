@@ -4,16 +4,15 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
-from features.house.alchemy import AlchemyChamberView
-from features.house.recipe import Recipe
 from features.inventory import Inventory
-from features.mail import MailboxView
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
 
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
+    from features.house.garden import GardenPlot
+    from features.house.recipe import Recipe
     from features.player import Player
 
 # -----------------------------------------------------------------------------
@@ -42,8 +41,9 @@ class House():
         self.kitchen_cupboard: Inventory = Inventory()
         self.workshop_storage: Inventory = Inventory()
         self.study_storage: Inventory = Inventory()
+        self.alchemy_chamber_cupboard: Inventory = Inventory()
 
-        # TODO: Garden state will need to be kept here
+        self.garden_plots: List[GardenPlot] = []
 
     def __getstate__(self):
         return self.__dict__
@@ -53,15 +53,20 @@ class House():
         self.crafting_recipes = state.get("crafting_recipes", [])
 
         self.storage_bins = state.get("storage_bins", {})
-        self.kitchen_cupboard = state.get("kitchen_cupboard", [])
-        self.workshop_storage = state.get("workshop_storage", [])
-        self.study_storage = state.get("study_storage", [])
+        self.kitchen_cupboard = state.get("kitchen_cupboard", Inventory())
+        self.workshop_storage = state.get("workshop_storage", Inventory())
+        self.study_storage = state.get("study_storage", Inventory())
+        self.alchemy_chamber_cupboard = state.get("alchemy_chamber_cupboard", Inventory())
+
+        self.garden_plots = state.get("garden_plots", [])
 
 # -----------------------------------------------------------------------------
 # HOUSE VIEW
 # -----------------------------------------------------------------------------
 
+from features.house.alchemy import AlchemyChamberView
 from features.house.kitchen import KitchenView
+from features.mail import MailboxView
 
 class KitchenButton(discord.ui.Button):
     def __init__(self, row):

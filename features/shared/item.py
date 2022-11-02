@@ -95,6 +95,13 @@ class ClassTag(Enum):
         Scroll = "Scroll"
 
     @skip
+    class Gardening(StrEnum):
+        Gardening = "Gardening"
+        Seed = "Seed"
+        Soil = "Soil"
+        GrowthAssist = "Growth_Assist"
+
+    @skip
     class Misc(StrEnum):
         IsUnique = "Is_Unique"
         NeedsIdentification = "Needs_Identification"

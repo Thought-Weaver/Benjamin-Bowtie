@@ -643,7 +643,7 @@ class HookI(Ability):
             icon="\uD83E\uDE9D",
             name="Hook I",
             class_key=ExpertiseClass.Fisher,
-            description="Hook an enemy on the line, dealing 4-8 damage and causing them to lose -3 Dexterity for 2 turns.",
+            description="Hook an enemy on the line, dealing 3-5 damage and causing them to lose -5 Dexterity for 3 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=1,
@@ -655,13 +655,13 @@ class HookI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
-            turns_remaining=2,
-            value=-3,
+            turns_remaining=3,
+            value=-5,
             source_ability_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(4, 8), [dex_debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(3, 5), [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -681,7 +681,7 @@ class HookII(Ability):
             icon="\uD83E\uDE9D",
             name="Hook II",
             class_key=ExpertiseClass.Fisher,
-            description="Hook an enemy on the line, dealing 6-12 damage and causing them to lose -6 Dexterity for 2 turns.",
+            description="Hook an enemy on the line, dealing 4-7 damage and causing them to lose -10 Dexterity for 3 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=1,
@@ -693,13 +693,13 @@ class HookII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
-            turns_remaining=2,
-            value=-6,
+            turns_remaining=3,
+            value=-10,
             source_ability_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(6, 12), [dex_debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(4, 7), [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -719,7 +719,7 @@ class HookIII(Ability):
             icon="\uD83E\uDE9D",
             name="Hook III",
             class_key=ExpertiseClass.Fisher,
-            description="Hook an enemy on the line, dealing 8-16 damage and causing them to lose -10 Dexterity for 2 turns.",
+            description="Hook an enemy on the line, dealing 5-8 damage and causing them to lose -15 Dexterity for 3 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=1,
@@ -731,13 +731,13 @@ class HookIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
-            turns_remaining=2,
-            value=-10,
+            turns_remaining=3,
+            value=-15,
             source_ability_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(8, 16), [dex_debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(5, 8), [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1

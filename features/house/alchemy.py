@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from features.player import Player
 
 # -----------------------------------------------------------------------------
-# KITCHEN VIEW
+# ALCHEMY CHAMBER VIEW
 # -----------------------------------------------------------------------------
 
 class Intent(StrEnum):
@@ -320,7 +320,7 @@ class PurchaseAlchemyChamberButton(discord.ui.Button):
         
         view: AlchemyChamberView = self.view
         if interaction.user == view.get_user():
-            response = view.purchase_kitchen()
+            response = view.purchase_alchemy_chamber()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -344,7 +344,7 @@ class AlchemyChamberView(discord.ui.View):
         self._page = 0
         self._NUM_PER_PAGE = 4
 
-        self._PURCHASE_COST = 5000
+        self._PURCHASE_COST = 2500
         
         self._display_initial_buttons()
 
@@ -364,7 +364,7 @@ class AlchemyChamberView(discord.ui.View):
             return Embed(title="Alchemize", description=f"{current_alchemizeing_display}Mix together ingredients from your inventory and attempt to create a potion.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Recipes:
             return Embed(title="Recipes", description="Choose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons." + error)
-        return Embed(title="Alchemy Chamber", description="You enter the kitchen, where you can use an existing recipe to alchemize, try making something from any ingredients you have in your inventory, or store ingredients in the cupboard." + error)
+        return Embed(title="Alchemy Chamber", description="You enter the alchemy chamber, where you can use an existing recipe to alchemize, try making something from any ingredients you have in your inventory, or store ingredients in the cupboard." + error)
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -380,19 +380,19 @@ class AlchemyChamberView(discord.ui.View):
 
         self._intent = None
 
-    def purchase_kitchen(self):
+    def purchase_alchemy_chamber(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
         house: House = player.get_house()
         
         if inventory.get_coins() < self._PURCHASE_COST:
-            return self.get_embed_for_intent(error="*Error: You don't have enough coins to purchase the kitchen.*")
+            return self.get_embed_for_intent(error="\n\n*Error: You don't have enough coins to purchase the alchemy chamber.*")
 
         inventory.remove_coins(self._PURCHASE_COST)
-        house.house_rooms.append(HouseRoom.Kitchen)
+        house.house_rooms.append(HouseRoom.Alchemy)
         self._display_initial_buttons()
 
-        return self.get_embed_for_intent(error="Kitchen purchased! You can now alchemize and store ingredients.")
+        return self.get_embed_for_intent(error="\n\nAlchemy chamber purchased! You can now alchemize and store ingredients.")
 
     def enter_cupboard(self):
         self.clear_items()
@@ -445,7 +445,7 @@ class AlchemyChamberView(discord.ui.View):
     def _get_retrieve_cupboard_buttons(self):
         self.clear_items()
         player: Player = self._get_player()
-        inventory: Inventory = player.get_house().kitchen_cupboard
+        inventory: Inventory = player.get_house().alchemy_chamber_cupboard
         inventory_slots = inventory.get_inventory_slots()
 
         page_slots = inventory_slots[self._page * self._NUM_PER_PAGE:min(len(inventory_slots), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -582,14 +582,14 @@ class AlchemyChamberView(discord.ui.View):
         self._get_retrieve_cupboard_buttons()
 
         player: Player = self._get_player()
-        cupboard_slots: List[Item] = player.get_house().kitchen_cupboard.get_inventory_slots()
+        cupboard_slots: List[Item] = player.get_house().alchemy_chamber_cupboard.get_inventory_slots()
         if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
         return Embed(title="Cupboard (Retrieving)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
 
     def retrieve(self):
         player: Player = self._get_player()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        cupboard: Inventory = player.get_house().alchemy_chamber_cupboard
         cupboard_slots: List[Item] = cupboard.get_inventory_slots()
         if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
@@ -605,7 +605,7 @@ class AlchemyChamberView(discord.ui.View):
 
     def retrieve_all(self):
         player: Player = self._get_player()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        cupboard: Inventory = player.get_house().alchemy_chamber_cupboard
         cupboard_slots: List[Item] = cupboard.get_inventory_slots()
         if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
@@ -622,7 +622,7 @@ class AlchemyChamberView(discord.ui.View):
     def store(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        cupboard: Inventory = player.get_house().alchemy_chamber_cupboard
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
@@ -638,7 +638,7 @@ class AlchemyChamberView(discord.ui.View):
     def store_all(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        cupboard: Inventory = player.get_house().alchemy_chamber_cupboard
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 

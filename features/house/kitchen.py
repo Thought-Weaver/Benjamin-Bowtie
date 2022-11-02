@@ -344,7 +344,7 @@ class KitchenView(discord.ui.View):
         self._page = 0
         self._NUM_PER_PAGE = 4
 
-        self._PURCHASE_COST = 5000
+        self._PURCHASE_COST = 2500
         
         self._display_initial_buttons()
 

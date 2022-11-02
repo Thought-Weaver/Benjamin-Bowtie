@@ -342,7 +342,7 @@ class StorageView(discord.ui.View):
         house: House = player.get_house()
         
         if inventory.get_coins() < self._PURCHASE_COST:
-            return self.get_embed_for_intent(additional="*Error: You don't have enough coins to purchase the basement storage.*")
+            return self.get_embed_for_intent(additional="\n\n*Error: You don't have enough coins to purchase the basement storage.*")
 
         inventory.remove_coins(self._PURCHASE_COST)
         house.house_rooms.append(HouseRoom.Storage)
@@ -350,7 +350,7 @@ class StorageView(discord.ui.View):
         house.storage_bins["Storage Bin"] = Inventory()
         self._display_initial_buttons()
 
-        return self.get_embed_for_intent(additional="Basement storage purchased! You can now store items with named storage chests.")
+        return self.get_embed_for_intent(additional="\n\n*Basement storage purchased! You can now store items with named storage chests.*")
     
     def return_to_main_menu(self):
         self._display_initial_buttons()
@@ -544,7 +544,7 @@ class StorageView(discord.ui.View):
         house: House = player.get_house()
 
         if inventory.get_coins() < self._NEW_BIN_COST:
-            return self.get_embed_for_intent(additional="*Error: You don't have enough coins to purchase a new storage bin.*")
+            return self.get_embed_for_intent(additional="\n\n*Error: You don't have enough coins to purchase a new storage bin.*")
 
         inventory.remove_coins(self._NEW_BIN_COST)
 
@@ -557,13 +557,39 @@ class StorageView(discord.ui.View):
 
         self._get_storage_buttons()
 
-        return self.get_embed_for_intent(additional="*You have purchased a new storage chest!*")
+        return self.get_embed_for_intent(additional="\n\n*You have purchased a new storage chest!*")
 
     async def refresh(self, message_id: int, embed: Embed):
         self._selected_bin_key = ""
         self._get_storage_buttons()
         message: discord.Message = await self._context.fetch_message(message_id)
         await message.edit(view=self, embed=embed)
+
+    def next_page(self):
+        self._page += 1
+        self._selected_item = None
+        self._selected_item_index = -1
+        self._selected_recipe = None
+
+        if self._intent == Intent.Store:
+            self._get_store_storage_bin_buttons()
+        if self._intent == Intent.Retrieve:
+            self._get_retrieve_storage_bin_buttons()
+
+        return self.get_embed_for_intent()
+
+    def prev_page(self):
+        self._page = max(0, self._page - 1)
+        self._selected_item = None
+        self._selected_item_index = -1
+        self._selected_recipe = None
+
+        if self._intent == Intent.Store:
+            self._get_store_storage_bin_buttons()
+        if self._intent == Intent.Retrieve:
+            self._get_retrieve_storage_bin_buttons()
+
+        return self.get_embed_for_intent()
 
     def get_bot(self):
         return self._bot

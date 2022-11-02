@@ -390,7 +390,7 @@ class WorkshopView(discord.ui.View):
         self._page = 0
         self._NUM_PER_PAGE = 4
 
-        self._PURCHASE_COST = 5000
+        self._PURCHASE_COST = 2500
         
         self._display_initial_buttons()
 
@@ -435,13 +435,13 @@ class WorkshopView(discord.ui.View):
         house: House = player.get_house()
         
         if inventory.get_coins() < self._PURCHASE_COST:
-            return self.get_embed_for_intent(error="*Error: You don't have enough coins to purchase the workshop.*")
+            return self.get_embed_for_intent(error="\n\n*Error: You don't have enough coins to purchase the workshop.*")
 
         inventory.remove_coins(self._PURCHASE_COST)
         house.house_rooms.append(HouseRoom.Workshop)
         self._display_initial_buttons()
 
-        return self.get_embed_for_intent(error="Workshop purchased! You can now craft, deconstruct items, and store materials.")
+        return self.get_embed_for_intent(error="\n\nWorkshop purchased! You can now craft, deconstruct items, and store materials.")
 
     def enter_storage(self):
         self.clear_items()
