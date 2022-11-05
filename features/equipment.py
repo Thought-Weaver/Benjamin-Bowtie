@@ -338,7 +338,7 @@ class EquipmentView(discord.ui.View):
                 description=f"──────────\n{item}\n──────────\n\nEquipped! You can choose a different item from your inventory to equip or exit."
             )
 
-            expertise.update_stats(equipment.get_total_attribute_mods())
+            expertise.update_stats(player.get_combined_attributes())
         
         self._get_current_page_buttons()
         return embed
@@ -352,7 +352,7 @@ class EquipmentView(discord.ui.View):
         equipped_item: (Item | None) = equipment.unequip_item_from_slot(self._cur_equip_slot)
         inventory.add_item(equipped_item)
 
-        expertise.update_stats(equipment.get_total_attribute_mods())
+        expertise.update_stats(player.get_combined_attributes())
 
         self._get_current_page_buttons()
 

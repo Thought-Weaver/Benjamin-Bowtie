@@ -133,7 +133,7 @@ class Adventures(commands.Cog):
                 player_dueling.is_in_combat = False
                 player_dueling.reset_ability_cds()
 
-                player_expertise.update_stats(player.get_equipment().get_total_attribute_mods())
+                player_expertise.update_stats(player.get_combined_attributes())
                 player_expertise.hp = player_expertise.max_hp
                 player_expertise.mana = player_expertise.max_mana
                 
@@ -147,7 +147,7 @@ class Adventures(commands.Cog):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         rand_val = random.random()
         
-        fishing_result: Item = None
+        fishing_result: Item | None = None
         xp_to_add: int = 0
         xp_class: ExpertiseClass = ExpertiseClass.Fisher
 

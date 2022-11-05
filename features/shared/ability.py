@@ -162,7 +162,7 @@ class Ability():
                 continue
 
             target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
-            target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_attribute_mods())
+            target.get_expertise().update_stats(target.get_combined_attributes())
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" is now {status_effects_str}", False))
         
@@ -190,7 +190,7 @@ class Ability():
         for i in range(len(results)):
             if not results[i].dodged:
                 targets[i].get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(targets[i] != caster), status_effects))
-                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_attribute_mods())
+                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and is now {status_effects_str}"
         
         return results
@@ -203,7 +203,7 @@ class Ability():
 
         for i, target in enumerate(targets):
             target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
-            target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_attribute_mods())
+            target.get_expertise().update_stats(target.get_combined_attributes())
             results.append("{" + f"{i + 1}" + "}" + f" is now {status_effects_str}")
         
         mana_to_blood_percent = 0
@@ -2761,7 +2761,7 @@ class PiercingStrikeI(Ability):
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.2:
                 targets[i].get_dueling().status_effects.append(bleed)
-                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_attribute_mods())
+                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
             results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -2817,7 +2817,7 @@ class PiercingStrikeII(Ability):
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.25:
                 targets[i].get_dueling().status_effects.append(bleed)
-                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_attribute_mods())
+                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
             results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -2873,7 +2873,7 @@ class PiercingStrikeIII(Ability):
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.3:
                 targets[i].get_dueling().status_effects.append(bleed)
-                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_attribute_mods())
+                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
             results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -4576,7 +4576,7 @@ class CleanseI(Ability):
         results: List[str] = []
         for i, target in enumerate(targets):
             target.get_dueling().status_effects = []
-            target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_attribute_mods())
+            target.get_expertise().update_stats(target.get_combined_attributes())
             results.append("{" + f"{i + 1}" + "}" + f" has had their status effects removed")
         result_str += "\n".join(results)
 
@@ -4624,7 +4624,7 @@ class ToxicCloudI(Ability):
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.3:
                 targets[i].get_dueling().status_effects.append(poisoned)
-                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_attribute_mods())
+                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
             results[i].target_str += f" and is now {poisoned.name}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
@@ -4670,7 +4670,7 @@ class ToxicCloudII(Ability):
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.5:
                 targets[i].get_dueling().status_effects.append(poisoned)
-                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_attribute_mods())
+                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
             results[i].target_str += f" and is now {poisoned.name}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
@@ -4716,7 +4716,7 @@ class ToxicCloudIII(Ability):
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.7:
                 targets[i].get_dueling().status_effects.append(poisoned)
-                targets[i].get_expertise().update_stats(targets[i].get_dueling().get_combined_attribute_mods() + targets[i].get_equipment().get_total_attribute_mods())
+                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
             results[i].target_str += f" and is now {poisoned.name}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1

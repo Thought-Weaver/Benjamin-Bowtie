@@ -58,7 +58,7 @@ class MrBones(NPC):
         # TODO: Add items when they've been created
         # self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, None)
 
-        self._expertise.update_stats(self._equipment.get_total_attribute_mods())
+        self._expertise.update_stats(self.get_combined_attributes())
 
         # Dueling Setup
         self._dueling.abilities = [
@@ -206,7 +206,7 @@ class MrBones(NPC):
             self._expertise.luck = 40
             self._expertise.memory = 10
 
-            self._expertise.update_stats(self._equipment.get_total_attribute_mods())
+            self._expertise.update_stats(self.get_combined_attributes())
 
         self._dueling: Dueling | None = state.get("_dueling")
         if self._dueling is None:

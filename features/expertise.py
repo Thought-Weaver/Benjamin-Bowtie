@@ -1,18 +1,16 @@
 from __future__ import annotations
 
+import discord
+
 from abc import abstractmethod
 from discord.embeds import Embed
 from math import ceil
 from strenum import StrEnum
 
 from features.shared.constants import BASE_HP, BASE_MANA, CON_HEALTH_SCALE, INT_MANA_SCALE
-
-import discord
-
-from typing import TYPE_CHECKING
 from features.shared.effect import EffectType
 
-from features.shared.item import ItemEffects
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.equipment import Equipment
@@ -171,19 +169,17 @@ class Expertise():
         self.points_to_spend += levels_gained
         self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level()
 
-    def update_stats(self, additional_attributes: Attributes):
+    def update_stats(self, combined_attributes: Attributes):
         percent_health = self.hp / self.max_hp
         updated_max_hp: int = BASE_HP
-        # TODO: Also need to consider status effects? That should probably be merged into additional_attributes.
-        for _ in range(self.constitution + additional_attributes.constitution):
+        for _ in range(combined_attributes.constitution):
             updated_max_hp += ceil(updated_max_hp * CON_HEALTH_SCALE)
         self.max_hp = updated_max_hp
         self.hp = int(percent_health * self.max_hp)
 
         percent_mana = self.mana / self.max_mana
         updated_max_mana: int = BASE_MANA
-        # TODO: Also need to consider status effects? That should probably be merged into additional_attributes.
-        for _ in range(self.intelligence + additional_attributes.intelligence):
+        for _ in range(combined_attributes.intelligence):
             updated_max_mana += ceil(updated_max_mana * INT_MANA_SCALE)
         self.max_mana = updated_max_mana
         self.mana = int(percent_mana * self.max_mana)
@@ -352,7 +348,7 @@ class ExpertiseView(discord.ui.View):
         equipment: Equipment = self.get_player().get_equipment()
         
         expertise.level_up_check()
-        expertise.update_stats(equipment.get_total_attribute_mods())
+        expertise.update_stats(self.get_player().get_combined_attributes())
         armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level)
 
         # TODO: Also need to account for status effect attribute mods here and elsewhere in Expertise
@@ -366,7 +362,7 @@ class ExpertiseView(discord.ui.View):
         equipment: Equipment = player.get_equipment()
 
         expertise.level_up_check()
-        expertise.update_stats(equipment.get_total_attribute_mods())
+        expertise.update_stats(player.get_combined_attributes())
 
         if expertise.points_to_spend > 0:
             self.add_item(AttributeButton(Attribute.Constitution, 0))
@@ -383,14 +379,14 @@ class ExpertiseView(discord.ui.View):
 
         if attribute == Attribute.Constitution:
             expertise.constitution += 1
-            expertise.update_stats(equipment.get_total_attribute_mods())
+            expertise.update_stats(player.get_combined_attributes())
         if attribute == Attribute.Strength:
             expertise.strength += 1
         if attribute == Attribute.Dexterity:
             expertise.dexterity += 1
         if attribute == Attribute.Intelligence:
             expertise.intelligence += 1
-            expertise.update_stats(equipment.get_total_attribute_mods())
+            expertise.update_stats(player.get_combined_attributes())
         if attribute == Attribute.Luck:
             expertise.luck += 1
         if attribute == Attribute.Memory:

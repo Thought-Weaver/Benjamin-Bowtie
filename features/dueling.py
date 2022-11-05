@@ -406,7 +406,7 @@ class DuelView(discord.ui.View):
         for entity in allies + enemies:
             entity.get_dueling().is_in_combat = True
             # Make sure stats are correct.
-            entity.get_expertise().update_stats(entity.get_equipment().get_total_attribute_mods())
+            entity.get_expertise().update_stats(entity.get_combined_attributes())
 
         cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
         if isinstance(cur_entity, Player):
@@ -560,7 +560,7 @@ class DuelView(discord.ui.View):
                 entity.get_dueling().is_in_combat = False
                 entity.get_dueling().reset_ability_cds()
 
-                entity.get_expertise().update_stats(entity.get_equipment().get_total_attribute_mods())
+                entity.get_expertise().update_stats(entity.get_combined_attributes())
                 entity.get_expertise().hp = entity.get_expertise().max_hp
                 entity.get_expertise().mana = entity.get_expertise().max_mana
                 
@@ -597,7 +597,7 @@ class DuelView(discord.ui.View):
                 winner_dueling.status_effects = []
                 winner_dueling.is_in_combat = False
 
-                winner_expertise.update_stats(winner.get_equipment().get_total_attribute_mods())
+                winner_expertise.update_stats(winner.get_combined_attributes())
                 winner_expertise.hp = winner_expertise.max_hp
                 winner_expertise.mana = winner_expertise.max_mana
 
@@ -617,7 +617,7 @@ class DuelView(discord.ui.View):
                 loser_dueling.status_effects = []
                 loser_dueling.is_in_combat = False
 
-                loser_expertise.update_stats(loser.get_equipment().get_total_attribute_mods())
+                loser_expertise.update_stats(loser.get_combined_attributes())
                 loser_expertise.hp = loser_expertise.max_hp
                 loser_expertise.mana = loser_expertise.max_mana
 
@@ -775,7 +775,7 @@ class DuelView(discord.ui.View):
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != attacker), se.on_being_hit_buffs))
                     result_strs.append(f"{target_name} gained {se.get_buffs_str()}")
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-            target.get_expertise().update_stats(target_dueling.get_combined_attribute_mods() + target_equipment.get_total_attribute_mods())
+            target.get_expertise().update_stats(target.get_combined_attributes())
 
             generating_string = ""
             if generating_value != 0:
@@ -1084,7 +1084,7 @@ class DuelView(discord.ui.View):
             # so they actually last a turn
             dueling.decrement_all_ability_cds()
             dueling.decrement_statuses_time_remaining()
-            cur_entity.get_expertise().update_stats(cur_entity.get_dueling().get_combined_attribute_mods() + cur_entity.get_equipment().get_total_attribute_mods())
+            cur_entity.get_expertise().update_stats(cur_entity.get_combined_attributes())
             duel_result = self.set_next_turn()
             if duel_result.game_won:
                 return self.get_victory_screen(duel_result)
