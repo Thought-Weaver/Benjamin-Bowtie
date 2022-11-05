@@ -673,7 +673,8 @@ class DuelView(discord.ui.View):
 
         # In the special case of attacking with a weapon, display information about the weapon so the user is informed.
         main_hand_item = cur_turn_entity.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        unarmed_strength_bonus = int(cur_turn_entity.get_combined_attributes().strength / 2)
+        weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         description = "" if self._intent != Intent.Attack else f"{self.get_name(cur_turn_entity)} is attacking with {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'} for {weapon_stats.get_range_str()}.\n\n"
 
         if self._current_target is not None:
@@ -732,7 +733,8 @@ class DuelView(discord.ui.View):
 
         main_hand_item = attacker_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         # Base possible damage is [1, 2], basically fist fighting
-        weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        unarmed_strength_bonus = int(attacker_attrs.strength / 2)
+        weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         result_strs = [f"{attacker_name} attacked using {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'}!\n"]
