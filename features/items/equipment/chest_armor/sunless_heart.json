@@ -10,8 +10,16 @@
     "state_tags": [],
     "count": 1,
     "level_requirement": 50,
-    "buffs": {
-        "con_buff": 2
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ConMod",
+                "effect_value": 2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
     },
     "armor_stats": {
         "armor_amount": 20

@@ -321,7 +321,7 @@ class Blacksmith(NPC):
         # TODO: Add items when they've been created
         # self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, None)
 
-        self._expertise.update_stats(self._equipment.get_total_buffs())
+        self._expertise.update_stats(self._equipment.get_total_attribute_mods())
 
         # Dueling Setup
         self._dueling.abilities = [
@@ -350,7 +350,7 @@ class Blacksmith(NPC):
             for item in self._restock_items:
                 self._inventory.add_item(item)
 
-        self._equipment: Inventory | None = state.get("_equipment")
+        self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
 
@@ -371,7 +371,7 @@ class Blacksmith(NPC):
             self._expertise.luck = 0
             self._expertise.memory = 9
 
-            self._expertise.update_stats(self._equipment.get_total_buffs())
+            self._expertise.update_stats(self._equipment.get_total_attribute_mods())
 
         self._dueling: Dueling | None = state.get("_dueling")
         if self._dueling is None:

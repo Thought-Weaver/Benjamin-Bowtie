@@ -8,10 +8,10 @@ import discord
 from dataclasses import dataclass
 from discord.embeds import Embed
 from discord.ext import commands
-from features.expertise import ExpertiseClass
+from features.expertise import Attributes, ExpertiseClass
 from features.shared.constants import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
 from features.shared.consumables import DUELING_CONSUMABLE_ITEM_EFFECTS
-from features.shared.item import Buffs, ClassTag, WeaponStats
+from features.shared.item import ClassTag, WeaponStats
 from features.shared.statuseffect import StatusEffectKey
 from strenum import StrEnum
 
@@ -89,19 +89,19 @@ class Dueling():
                 return i
         return -1
 
-    def get_combined_attribute_mods(self) -> Buffs:
-        result = Buffs()
+    def get_combined_attribute_mods(self) -> Attributes:
+        result = Attributes(0, 0, 0, 0, 0, 0)
         for status_effect in self.status_effects:
             if status_effect.key == StatusEffectKey.ConBuff or status_effect.key == StatusEffectKey.ConDebuff:
-                result.con_buff += status_effect.value
+                result.constitution += int(status_effect.value)
             if status_effect.key == StatusEffectKey.StrBuff or status_effect.key == StatusEffectKey.StrDebuff:
-                result.str_buff += status_effect.value
+                result.strength += int(status_effect.value)
             if status_effect.key == StatusEffectKey.DexBuff or status_effect.key == StatusEffectKey.DexDebuff:
-                result.dex_buff += status_effect.value
+                result.dexterity += int(status_effect.value)
             if status_effect.key == StatusEffectKey.IntBuff or status_effect.key == StatusEffectKey.IntDebuff:
-                result.int_buff += status_effect.value
+                result.intelligence += int(status_effect.value)
             if status_effect.key == StatusEffectKey.LckBuff or status_effect.key == StatusEffectKey.LckDebuff:
-                result.lck_buff += status_effect.value
+                result.luck += int(status_effect.value)
         return result
 
     def get_statuses_string(self) -> str:
@@ -406,7 +406,7 @@ class DuelView(discord.ui.View):
         for entity in allies + enemies:
             entity.get_dueling().is_in_combat = True
             # Make sure stats are correct.
-            entity.get_expertise().update_stats(entity.get_equipment().get_total_buffs())
+            entity.get_expertise().update_stats(entity.get_equipment().get_total_attribute_mods())
 
         cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
         if isinstance(cur_entity, Player):
@@ -560,7 +560,7 @@ class DuelView(discord.ui.View):
                 entity.get_dueling().is_in_combat = False
                 entity.get_dueling().reset_ability_cds()
 
-                entity.get_expertise().update_stats(entity.get_equipment().get_total_buffs())
+                entity.get_expertise().update_stats(entity.get_equipment().get_total_attribute_mods())
                 entity.get_expertise().hp = entity.get_expertise().max_hp
                 entity.get_expertise().mana = entity.get_expertise().max_mana
                 
@@ -597,7 +597,7 @@ class DuelView(discord.ui.View):
                 winner_dueling.status_effects = []
                 winner_dueling.is_in_combat = False
 
-                winner_expertise.update_stats(winner.get_equipment().get_total_buffs())
+                winner_expertise.update_stats(winner.get_equipment().get_total_attribute_mods())
                 winner_expertise.hp = winner_expertise.max_hp
                 winner_expertise.mana = winner_expertise.max_mana
 
@@ -617,7 +617,7 @@ class DuelView(discord.ui.View):
                 loser_dueling.status_effects = []
                 loser_dueling.is_in_combat = False
 
-                loser_expertise.update_stats(loser.get_equipment().get_total_buffs())
+                loser_expertise.update_stats(loser.get_equipment().get_total_attribute_mods())
                 loser_expertise.hp = loser_expertise.max_hp
                 loser_expertise.mana = loser_expertise.max_mana
 
@@ -654,7 +654,7 @@ class DuelView(discord.ui.View):
         self._selecting_targets = True
 
         cur_turn_entity: Player = self._turn_order[self._turn_index]
-        taunt_target: Player | NPC = None
+        taunt_target: Player | NPC | None = None
         for se in cur_turn_entity.get_dueling().status_effects:
             if se.key == StatusEffectKey.Taunted:
                 taunt_target = se.value
@@ -733,7 +733,7 @@ class DuelView(discord.ui.View):
         main_hand_item = attacker_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
         # Base possible damage is [1, 2], basically fist fighting
         weapon_stats = WeaponStats(1, 2) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        effect_tags = main_hand_item.get_effect_tags() if main_hand_item is not None else []
+        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         result_strs = [f"{attacker_name} attacked using {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'}!\n"]
         for target in self._selected_targets:
@@ -755,7 +755,7 @@ class DuelView(discord.ui.View):
             if critical_hit_boost > 1:
                 attacker.get_stats().dueling.critical_hit_successes += 1
 
-            base_damage = weapon_stats.get_random_damage(effect_tags, attacker_attrs)
+            base_damage = weapon_stats.get_random_damage(attacker_attrs, item_effects)
             damage = int(base_damage * critical_hit_boost)
             damage += min(int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), damage)
  
@@ -773,7 +773,7 @@ class DuelView(discord.ui.View):
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != attacker), se.on_being_hit_buffs))
                     result_strs.append(f"{target_name} gained {se.get_buffs_str()}")
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-            target.get_expertise().update_stats(target.get_dueling().get_combined_attribute_mods() + target.get_equipment().get_total_buffs())
+            target.get_expertise().update_stats(target_dueling.get_combined_attribute_mods() + target_equipment.get_total_attribute_mods())
 
             generating_string = ""
             if generating_value != 0:
@@ -1017,7 +1017,7 @@ class DuelView(discord.ui.View):
     def confirm_item(self):
         entity: Player | NPC = self._turn_order[self._turn_index]
         found_index = entity.get_inventory().item_exists(self._selected_item)
-        if found_index == self._selected_item_index:
+        if self._selected_item is not None and found_index == self._selected_item_index:
             self._targets_remaining = self._selected_item.get_consumable_stats().get_num_targets()
             target_own_group = self._selected_item.get_consumable_stats().get_target_own_group()
 
@@ -1082,7 +1082,7 @@ class DuelView(discord.ui.View):
             # so they actually last a turn
             dueling.decrement_all_ability_cds()
             dueling.decrement_statuses_time_remaining()
-            cur_entity.get_expertise().update_stats(cur_entity.get_dueling().get_combined_attribute_mods() + cur_entity.get_equipment().get_total_buffs())
+            cur_entity.get_expertise().update_stats(cur_entity.get_dueling().get_combined_attribute_mods() + cur_entity.get_equipment().get_total_attribute_mods())
             duel_result = self.set_next_turn()
             if duel_result.game_won:
                 return self.get_victory_screen(duel_result)

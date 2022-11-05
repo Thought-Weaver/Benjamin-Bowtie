@@ -45,6 +45,15 @@ class House():
 
         self.garden_plots: List[GardenPlot] = []
 
+    def tick_garden(self):
+        # TODO: Finish implementing this when I figure out probabilities
+        # for cross breeding.
+        for plot in self.garden_plots:
+            plot.tick()
+
+    def tick(self):
+        self.tick_garden()
+
     def __getstate__(self):
         return self.__dict__
 

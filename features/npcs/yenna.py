@@ -673,7 +673,7 @@ class Yenna(NPC):
         # TODO: Add items when they've been created
         # self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, None)
 
-        self._expertise.update_stats(self._equipment.get_total_buffs())
+        self._expertise.update_stats(self._equipment.get_total_attribute_mods())
 
         # Dueling Setup
         # TODO: Also add fate-bending abilities
@@ -853,7 +853,7 @@ class Yenna(NPC):
             for item in self._restock_items:
                 self._inventory.add_item(item)
 
-        self._equipment: Inventory | None = state.get("_equipment")
+        self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
 
@@ -873,7 +873,7 @@ class Yenna(NPC):
             self._expertise.luck = 10
             self._expertise.memory = 12
 
-            self._expertise.update_stats(self._equipment.get_total_buffs())
+            self._expertise.update_stats(self._equipment.get_total_attribute_mods())
 
         self._dueling: Dueling | None = state.get("_dueling")
         if self._dueling is None:

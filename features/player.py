@@ -23,7 +23,7 @@ class Player():
         self._house: House = House()
 
     def get_combined_attributes(self):
-        return self._expertise.get_all_attributes() + (self._equipment.get_total_buffs() + self._dueling.get_combined_attribute_mods())
+        return self._expertise.get_all_attributes() + self._equipment.get_total_attribute_mods() + self._dueling.get_combined_attribute_mods()
 
     def get_inventory(self):
         return self._inventory

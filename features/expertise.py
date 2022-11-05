@@ -6,11 +6,13 @@ from math import ceil
 from strenum import StrEnum
 
 from features.shared.constants import BASE_HP, BASE_MANA, CON_HEALTH_SCALE, INT_MANA_SCALE
-from features.shared.item import EffectTag, Buffs
 
 import discord
 
 from typing import TYPE_CHECKING
+from features.shared.effect import EffectType
+
+from features.shared.item import ItemEffects
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.equipment import Equipment
@@ -50,26 +52,15 @@ class Attributes():
         self.luck: int = luck
         self.memory: int = memory
 
-    def __add__(self, other: Attributes | Buffs):
-        if isinstance(other, Attributes):
-            return Attributes(
-                self.constitution + other.constitution,
-                self.strength + other.strength,
-                self.dexterity + other.dexterity,
-                self.intelligence + other.intelligence,
-                self.luck + other.luck,
-                self.memory + other.memory
-            )
-        
-        if isinstance(other, Buffs):
-            return Attributes(
-                self.constitution + other.con_buff,
-                self.strength + other.str_buff,
-                self.dexterity + other.dex_buff,
-                self.intelligence + other.int_buff,
-                self.luck + other.lck_buff,
-                self.memory + other.mem_buff
-            )
+    def __add__(self, other: Attributes):
+        return Attributes(
+            self.constitution + other.constitution,
+            self.strength + other.strength,
+            self.dexterity + other.dexterity,
+            self.intelligence + other.intelligence,
+            self.luck + other.luck,
+            self.memory + other.memory
+        )
 
 # Expertise is similar to a class system in RPG games, such as being able to
 # level Illusion magic in Skyrim or level cooking in WoW. While somewhat related
@@ -180,17 +171,19 @@ class Expertise():
         self.points_to_spend += levels_gained
         self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level()
 
-    def update_stats(self, equipment_buffs: Buffs):
+    def update_stats(self, additional_attributes: Attributes):
         percent_health = self.hp / self.max_hp
         updated_max_hp: int = BASE_HP
-        for _ in range(self.constitution + equipment_buffs.con_buff):
+        # TODO: Also need to consider status effects? That should probably be merged into additional_attributes.
+        for _ in range(self.constitution + additional_attributes.constitution):
             updated_max_hp += ceil(updated_max_hp * CON_HEALTH_SCALE)
         self.max_hp = updated_max_hp
         self.hp = int(percent_health * self.max_hp)
 
         percent_mana = self.mana / self.max_mana
         updated_max_mana: int = BASE_MANA
-        for _ in range(self.intelligence + equipment_buffs.int_buff):
+        # TODO: Also need to consider status effects? That should probably be merged into additional_attributes.
+        for _ in range(self.intelligence + additional_attributes.intelligence):
             updated_max_mana += ceil(updated_max_mana * INT_MANA_SCALE)
         self.max_mana = updated_max_mana
         self.mana = int(percent_mana * self.max_mana)
@@ -201,8 +194,8 @@ class Expertise():
     def damage(self, damage: int, armor: int, percent_reduct: float, equipment: Equipment):
         # TODO: This doesn't actually give any indication that you were resurrected since
         # I can't return a string this way. Should it be moved out despite the duplicated
-        # code?
-        if any(EffectTag.ResurrectOnce in item.get_effect_tags() for item in equipment.get_all_equipped_items()):
+        # code? Also, at the moment, it doesn't destroy the item afterwards.
+        if any(item.get_item_effects().has_item_effect(EffectType.ResurrectOnce) for item in equipment.get_all_equipped_items()):
             self.hp = self.max_hp
             return 0
 
@@ -249,7 +242,7 @@ class Expertise():
         self.points_to_spend += fisher_level_diff + merchant_level_diff + guardian_level_diff
         self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level()
 
-    def get_info_string(self, buffs: Buffs, armor_str: str):
+    def get_info_string(self, attribute_mods: Attributes, armor_str: str):
         self.level_up_check()
 
         fisher_level: int = self._fisher.get_level()
@@ -273,12 +266,12 @@ class Expertise():
             f"Guardian: Lvl. {guardian_level} *({self._guardian.get_xp_to_level(guardian_level + 1) - self._guardian.get_xp()} xp to next)*\n"
             f"Merchant: Lvl. {merchant_level} *({self._merchant.get_xp_to_level(merchant_level + 1) - self._merchant.get_xp()} xp to next)*\n\n"
             f"**Attributes**\n\n"
-            f"Constitution: {self.constitution} {format_buff_modifier(buffs.con_buff)}\n"
-            f"Strength: {self.strength} {format_buff_modifier(buffs.str_buff)}\n"
-            f"Dexterity: {self.dexterity} {format_buff_modifier(buffs.dex_buff)}\n"
-            f"Intelligence: {self.intelligence} {format_buff_modifier(buffs.int_buff)}\n"
-            f"Luck: {self.luck} {format_buff_modifier(buffs.lck_buff)}\n"
-            f"Memory: {self.memory} {format_buff_modifier(buffs.mem_buff)}"
+            f"Constitution: {self.constitution} {format_buff_modifier(attribute_mods.constitution)}\n"
+            f"Strength: {self.strength} {format_buff_modifier(attribute_mods.strength)}\n"
+            f"Dexterity: {self.dexterity} {format_buff_modifier(attribute_mods.dexterity)}\n"
+            f"Intelligence: {self.intelligence} {format_buff_modifier(attribute_mods.intelligence)}\n"
+            f"Luck: {self.luck} {format_buff_modifier(attribute_mods.luck)}\n"
+            f"Memory: {self.memory} {format_buff_modifier(attribute_mods.memory)}"
         )
 
         if self.points_to_spend > 0:
@@ -359,10 +352,11 @@ class ExpertiseView(discord.ui.View):
         equipment: Equipment = self.get_player().get_equipment()
         
         expertise.level_up_check()
-        expertise.update_stats(equipment.get_total_buffs())
+        expertise.update_stats(equipment.get_total_attribute_mods())
         armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level)
 
-        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs(), armor_str))
+        # TODO: Also need to account for status effect attribute mods here and elsewhere in Expertise
+        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_attribute_mods(), armor_str))
 
     def _get_current_buttons(self):
         self.clear_items()
@@ -372,7 +366,7 @@ class ExpertiseView(discord.ui.View):
         equipment: Equipment = player.get_equipment()
 
         expertise.level_up_check()
-        expertise.update_stats(equipment.get_total_buffs())
+        expertise.update_stats(equipment.get_total_attribute_mods())
 
         if expertise.points_to_spend > 0:
             self.add_item(AttributeButton(Attribute.Constitution, 0))
@@ -389,14 +383,14 @@ class ExpertiseView(discord.ui.View):
 
         if attribute == Attribute.Constitution:
             expertise.constitution += 1
-            expertise.update_stats(equipment.get_total_buffs())
+            expertise.update_stats(equipment.get_total_attribute_mods())
         if attribute == Attribute.Strength:
             expertise.strength += 1
         if attribute == Attribute.Dexterity:
             expertise.dexterity += 1
         if attribute == Attribute.Intelligence:
             expertise.intelligence += 1
-            expertise.update_stats(equipment.get_total_buffs())
+            expertise.update_stats(equipment.get_total_attribute_mods())
         if attribute == Attribute.Luck:
             expertise.luck += 1
         if attribute == Attribute.Memory:
@@ -408,7 +402,7 @@ class ExpertiseView(discord.ui.View):
 
         armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level)
 
-        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_buffs(), armor_str))
+        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_attribute_mods(), armor_str))
 
     def get_user(self):
         return self._user

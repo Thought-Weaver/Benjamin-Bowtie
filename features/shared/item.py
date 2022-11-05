@@ -6,14 +6,15 @@ from aenum import Enum, skip
 from random import randint
 from strenum import StrEnum
 
-from types import MappingProxyType
-from typing import List
-
 from features.shared.constants import DEX_DMG_SCALE
 
-from typing import TYPE_CHECKING
+from types import MappingProxyType
+from typing import TYPE_CHECKING, List
+
+from features.shared.effect import EFFECT_PRIORITY, EffectType
 if TYPE_CHECKING:
     from features.expertise import Attributes
+    from features.shared.effect import Effect
 
 # -----------------------------------------------------------------------------
 # ENUMS
@@ -112,17 +113,6 @@ class StateTag(Enum):
     pass
 
 
-class EffectTag(StrEnum):
-    PercentDamageReflection = "PercentDamageReflection"
-    PercentDamageResistance = "PercentDamageResistance"
-    PercentDamageBonusOnLegendaries = "PercentDamageBonusOnLegendaries"
-    LoweredCooldowns = "LoweredCooldowns"
-    ResurrectOnce = "ResurrectOnce"
-    DexBonusDamage = "DexBonusDamage"
-    PercentChancePoisoned = "PercentChancePoisoned"
-    PercentChanceBleeding = "PercentChanceBleeding"
-
-
 class ItemKey(StrEnum):
     # Fishing Results
     AncientVase = "items/valuable/ancient_vase"
@@ -217,87 +207,94 @@ class ItemKey(StrEnum):
 # CLASSES
 # -----------------------------------------------------------------------------
 
-class Buffs():
-    def __init__(self, con_buff=0, str_buff=0, dex_buff=0, int_buff=0, lck_buff=0, mem_buff=0, percent_dmg_reflect=0.0, percent_dmg_resist=0.0, percent_dmg_bonus_on_legends=0.0, lowered_cds=0, percent_poisoned=0.0, percent_bleeding=0.0):
-        self.con_buff = con_buff
-        self.str_buff = str_buff
-        self.dex_buff = dex_buff
-        self.int_buff = int_buff
-        self.lck_buff = lck_buff
-        self.mem_buff = mem_buff
+class ItemEffects():
+    def __init__(self, permanent: List[Effect]=[], on_turn_start: List[Effect]=[], on_turn_end: List[Effect]=[], on_damaged: List[Effect]=[], on_successful_ability_used: List[Effect]=[], on_successful_attack: List[Effect]=[], on_attacked: List[Effect]=[], on_ability_used_against: List[Effect]=[]):
+        # Permanent is a special case since it doesn't ever trigger like the others and therefore encapsulates
+        # the concept of inherent item mods which are going to be referenced in a bunch of places.
+        self.permanent: List[Effect] = permanent
+        
+        self.on_turn_start: List[Effect] = on_turn_start
+        self.on_turn_end: List[Effect] = on_turn_end
+        self.on_damaged: List[Effect] = on_damaged
+        self.on_successful_ability_used: List[Effect] = on_successful_ability_used
+        self.on_successful_attack: List[Effect] = on_successful_attack
+        self.on_attacked: List[Effect] = on_attacked
+        self.on_ability_used_against: List[Effect] = on_ability_used_against
 
-        self.percent_dmg_reflect = percent_dmg_reflect
-        self.percent_dmg_resist = percent_dmg_resist
-        self.percent_dmg_bonus_on_legends = percent_dmg_bonus_on_legends
-        self.lowered_cds = lowered_cds
-        self.percent_poisoned = percent_poisoned
-        self.percent_bleeding = percent_bleeding
+    def get_permanent_attribute_mods(self) -> Attributes:
+        attr_mods = Attributes(0, 0, 0, 0, 0, 0)
+        for effect in self.permanent:
+            if effect.effect_type == EffectType.ConMod:
+                attr_mods.constitution += int(effect.effect_value)
+            if effect.effect_type == EffectType.StrMod:
+                attr_mods.strength += int(effect.effect_value)
+            if effect.effect_type == EffectType.DexMod:
+                attr_mods.dexterity += int(effect.effect_value)
+            if effect.effect_type == EffectType.IntMod:
+                attr_mods.intelligence += int(effect.effect_value)
+            if effect.effect_type == EffectType.LckMod:
+                attr_mods.luck += int(effect.effect_value)
+            if effect.effect_type == EffectType.MemMod:
+                attr_mods.memory += int(effect.effect_value)
+        return attr_mods
 
-    def __add__(self, other: Buffs):
-        return Buffs(
-            self.con_buff + other.con_buff,
-            self.str_buff + other.str_buff,
-            self.dex_buff + other.dex_buff,
-            self.int_buff + other.int_buff,
-            self.lck_buff + other.lck_buff,
-            self.mem_buff + other.mem_buff,
-            max(self.percent_dmg_reflect + other.percent_dmg_reflect, 0.75),
-            max(self.percent_dmg_resist + other.percent_dmg_resist, 0.75),
-            max(self.percent_dmg_bonus_on_legends + other.percent_dmg_bonus_on_legends, 1.0),
-            max(self.lowered_cds, other.lowered_cds),
-            self.percent_poisoned + other.percent_poisoned,
-            self.percent_bleeding + other.percent_bleeding
+    def has_item_effect(self, effect_type: EffectType):
+        all_effects: List[List[Effect]] = [
+            self.permanent,
+            self.on_turn_start,
+            self.on_turn_end,
+            self.on_damaged,
+            self.on_successful_ability_used,
+            self.on_successful_attack,
+            self.on_attacked,
+            self.on_ability_used_against
+        ]
+        return any(any(effect.effect_type == effect_type for effect in effect_group) for effect_group in all_effects)
+
+    def sort_by_priority(self, effects: List[Effect]):
+        return sorted(effects, key=lambda effect: EFFECT_PRIORITY[effect.effect_type])
+
+    def __add__(self, other: ItemEffects):
+        return ItemEffects(
+            self.sort_by_priority(self.permanent + other.permanent),
+            self.sort_by_priority(self.on_turn_start + other.on_turn_start),
+            self.sort_by_priority(self.on_turn_end + other.on_turn_end),
+            self.sort_by_priority(self.on_damaged + other.on_damaged),
+            self.sort_by_priority(self.on_successful_ability_used + other.on_successful_ability_used),
+            self.sort_by_priority(self.on_successful_attack + other.on_successful_attack),
+            self.sort_by_priority(self.on_attacked + other.on_attacked),
+            self.sort_by_priority(self.on_ability_used_against + other.on_ability_used_against)
         )
 
     def __str__(self):
         display_string = ""
 
-        if self.con_buff != 0:
-            if self.con_buff > 0:
-                display_string += "+"
-            display_string += f"{self.con_buff} Constitution\n"
-        if self.str_buff != 0:
-            if self.str_buff > 0:
-                display_string += "+"
-            display_string += f"{self.str_buff} Strength\n"
-        if self.dex_buff != 0:
-            if self.dex_buff > 0:
-                display_string += "+"
-            display_string += f"{self.dex_buff} Dexterity\n"
-        if self.int_buff != 0:
-            if self.int_buff > 0:
-                display_string += "+"
-            display_string += f"{self.int_buff} Intelligence\n"
-        if self.lck_buff != 0:
-            if self.lck_buff > 0:
-                display_string += "+"
-            display_string += f"{self.lck_buff} Luck\n"
-        if self.mem_buff != 0:
-            if self.mem_buff > 0:
-                display_string += "+"
-            display_string += f"{self.mem_buff} Memory\n"
+        permanent_effect_str = "\n".join([str(effect) for effect in self.permanent])
+        display_string += permanent_effect_str
 
-        if self.percent_dmg_reflect != 0:
-            display_string += f"{self.percent_dmg_reflect}% Damage Reflected\n"
+        on_turn_start_str = "\n".join([str(effect) for effect in self.on_turn_start])
+        if on_turn_start_str != "":
+            display_string += "\n\nAt the start of your turn:\n\n" + on_turn_start_str
         
-        if self.percent_dmg_resist != 0:
-            display_string += f"{self.percent_dmg_reflect}% Damage Resist\n"
+        on_turn_end_str = "\n".join([str(effect) for effect in self.on_turn_end])
+        if on_turn_end_str != "":
+            display_string += "\n\nAt the end of your turn:\n\n" + on_turn_end_str
         
-        if self.percent_dmg_bonus_on_legends != 0:
-            if self.percent_dmg_bonus_on_legends > 0:
-                display_string += "+"
-            display_string += f"{self.percent_dmg_bonus_on_legends}% Damage on Legendaries\n"
+        on_successful_ability_used_str = "\n".join([str(effect) for effect in self.on_successful_ability_used])
+        if on_successful_ability_used_str != "":
+            display_string += "\n\nWhen you successfully use an ability:\n\n" + on_successful_ability_used_str
         
-        if self.lowered_cds != 0:
-            if self.lowered_cds > 0:
-                display_string += "+"
-            display_string += f"{self.lowered_cds} Turns on Cooldowns\n"
+        on_successful_attack_str = "\n".join([str(effect) for effect in self.on_successful_attack])
+        if on_successful_attack_str != "":
+            display_string += "\n\nWhen you successfully attack:\n\n" + on_successful_attack_str
+        
+        on_attacked_str = "\n".join([str(effect) for effect in self.on_attacked])
+        if on_attacked_str != "":
+            display_string += "\n\nWhen you're attacked:\n\n" + on_attacked_str
 
-        if self.percent_poisoned != 0:
-            display_string += f"{self.percent_poisoned}% Chance to Cause Poisoned\n"
-
-        if self.percent_bleeding != 0:
-            display_string += f"{self.percent_bleeding}% Chance to Cause Bleeding\n"
+        on_ability_used_against_str = "\n".join([str(effect) for effect in self.on_ability_used_against])
+        if on_ability_used_against_str != "":
+            display_string += "\n\nWhen an ability is used on you:\n\n" + on_ability_used_against_str
 
         return display_string
 
@@ -305,19 +302,14 @@ class Buffs():
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        self.con_buff = state.get("con_buff", 0)
-        self.str_buff = state.get("str_buff", 0)
-        self.dex_buff = state.get("dex_buff", 0)
-        self.int_buff = state.get("int_buff", 0)
-        self.lck_buff = state.get("lck_buff", 0)
-        self.mem_buff = state.get("mem_buff", 0)
-
-        self.percent_dmg_reflect = state.get("percent_dmg_reflect", 0)
-        self.percent_dmg_resist = state.get("percent_dmg_resist", 0)
-        self.percent_dmg_bonus_on_legends = state.get("percent_dmg_bonus_on_legends", 0)
-        self.lowered_cds = state.get("lowered_cds", 0)
-        self.percent_poisoned = state.get("percent_poisoned", 0)
-        self.percent_bleeding = state.get("percent_bleeding", 0)
+        self.permanent = state.get("permanent", [])
+        self.on_turn_start = state.get("on_turn_start", [])
+        self.on_turn_end = state.get("on_turn_end", [])
+        self.on_damaged = state.get("on_damaged", [])
+        self.on_successful_ability_used = state.get("on_successful_ability_used", [])
+        self.on_successful_attack = state.get("on_successful_attack", [])
+        self.on_attacked = state.get("on_attacked", [])
+        self.on_ability_used_against = state.get("on_ability_used_against", [])
 
 
 class ArmorStats():
@@ -342,9 +334,11 @@ class WeaponStats():
     def get_range_str(self):
         return f"{self._min_damage}-{self._max_damage} base damage"
 
-    def get_random_damage(self, effect_tags: List[EffectTag], attacker_attrs: Attributes):
+    def get_random_damage(self, attacker_attrs: Attributes, item_effects: ItemEffects | None):
         damage = randint(self._min_damage, self._max_damage)
-        if EffectTag.DexBonusDamage in effect_tags:
+        # TODO: How should these stack? Should this logic be here now? Should I just allow items to specify how much they scale
+        # from Dex since that's possible now?
+        if item_effects is not None and any(effect.effect_type == EffectType.DmgBuffFromDex for effect in item_effects.permanent):
             damage += min(int(damage * DEX_DMG_SCALE * max(attacker_attrs.dexterity, 0)), damage)
         return randint(self._min_damage, self._max_damage)
 
@@ -376,7 +370,7 @@ class ConsumableStats():
 
 
 class Item():
-    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], effect_tags: List[EffectTag]=[], state_tags: List[StateTag]=[], count=1, level_requirement=0, buffs: Buffs | None=None, armor_stats: ArmorStats | None=None, weapon_stats: WeaponStats | None=None, consumable_stats: ConsumableStats | None=None):
+    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], state_tags: List[StateTag]=[], count=1, level_requirement=0, item_effects: ItemEffects | None=None, altering_item_keys: List[ItemKey]=[], armor_stats: ArmorStats | None=None, weapon_stats: WeaponStats | None=None, consumable_stats: ConsumableStats | None=None):
         self._key: ItemKey = key
         self._icon = icon
         self._name = name
@@ -385,11 +379,11 @@ class Item():
         self._description = description
         self._flavor_text = flavor_text
         self._class_tags = class_tags
-        self._effect_tags = effect_tags
         self._state_tags = state_tags
         self._count = count
         self._level_requirement = level_requirement
-        self._buffs = buffs
+        self._item_effects = item_effects
+        self._altering_item_keys = altering_item_keys
 
         self._armor_stats = armor_stats
         self._weapon_stats = weapon_stats
@@ -415,11 +409,11 @@ class Item():
             consumable_stats = ConsumableStats()
             consumable_stats.__setstate__(consumable_data)
 
-        buffs_data = item_data.get("buffs")
-        buffs = None
-        if buffs_data is not None:
-            buffs = Buffs()
-            buffs.__setstate__(buffs_data)
+        item_effects_data = item_data.get("effects")
+        item_effects = None
+        if item_effects_data is not None:
+            item_effects = ItemEffects()
+            item_effects.__setstate__(item_effects_data)
         
         return Item(
             item_data.get("key", ""),
@@ -430,11 +424,11 @@ class Item():
             item_data.get("description", ""),
             item_data.get("flavor_text", ""),
             item_data.get("class_tags", []),
-            item_data.get("effect_tags", []),
             item_data.get("state_tags", []),
             item_data.get("count", 1),
             item_data.get("level_requirement", 0),
-            buffs,
+            item_effects,
+            item_data.get("altering_item_keys", []),
             armor_stats,
             weapon_stats,
             consumable_stats
@@ -451,11 +445,11 @@ class Item():
                 self._description,
                 self._flavor_text,
                 self._class_tags,
-                self._effect_tags,
                 self._state_tags,
                 amount,
                 self._level_requirement,
-                self._buffs,
+                self._item_effects,
+                self._altering_item_keys,
                 self._armor_stats,
                 self._weapon_stats,
                 self._consumable_stats)
@@ -508,9 +502,6 @@ class Item():
     def get_class_tags(self) -> List[ClassTag]:
         return self._class_tags
 
-    def get_effect_tags(self) -> List[EffectTag]:
-        return self._effect_tags
-
     def get_state_tags(self) -> List[StateTag]:
         return self._state_tags
 
@@ -523,8 +514,28 @@ class Item():
     def get_level_requirement(self) -> int:
         return self._level_requirement
 
-    def get_buffs(self) -> (Buffs | None):
-        return self._buffs
+    def get_item_effects(self) -> (ItemEffects | None):
+        if self._item_effects is None:
+            return None
+
+        # Start with this item's base effects
+        combined_effects = self._item_effects
+
+        # Add in everything from items that are altering it
+        for item_key in self._altering_item_keys:
+            item_effects_data = LOADED_ITEMS.get_item_state(item_key).get("effects")
+            item_effects = None
+            if item_effects_data is not None:
+                item_effects = ItemEffects()
+                item_effects.__setstate__(item_effects_data)
+            
+            if item_effects is not None:
+                combined_effects += item_effects
+
+        return combined_effects
+
+    def get_altering_item_keys(self) -> List[ItemKey]:
+        return self._altering_item_keys
 
     def get_armor_stats(self) -> (ArmorStats | None):
         return self._armor_stats
@@ -561,9 +572,9 @@ class Item():
                 target_str = f"1-{self._consumable_stats._num_targets} Targets\n"
             display_string += target_str
 
-        if self._buffs is not None:
+        if self._item_effects is not None:
             has_any_stats = True
-            display_string += f"{self._buffs}"
+            display_string += f"{self._item_effects}"
 
         if has_any_stats:
             display_string += "\n"
@@ -592,8 +603,9 @@ class Item():
             ClassTag.Misc.IsUnique in obj.get_state_tags()):
             return False
 
-        return (self._key == obj.get_key() and
-               self._state_tags == obj.get_state_tags())
+        return (self._key == obj.get_key() and 
+                self._state_tags == obj.get_state_tags() and
+                self._altering_item_keys == obj.get_altering_item_keys())
 
     def __getstate__(self):
         return self.__dict__
@@ -619,7 +631,6 @@ class Item():
         self._flavor_text = base_data.get("flavor_text", "")
         self._level_requirement = base_data.get("level_requirement", 0)
         self._class_tags = base_data.get("class_tags", [])
-        self._effect_tags = base_data.get("effect_tags", [])
 
         armor_data = base_data.get("armor_stats")
         if armor_data is not None:
@@ -642,16 +653,17 @@ class Item():
         else:
             self._consumable_stats = None
 
-        buffs_data = base_data.get("buffs")
-        if buffs_data is not None:
-            self._buffs = Buffs()
-            self._buffs.__setstate__(buffs_data)
+        item_effects_data = base_data.get("item_effects")
+        if item_effects_data is not None:
+            self._item_effects = ItemEffects()
+            self._item_effects.__setstate__(item_effects_data)
         else:
-            self._buffs = None
+            self._item_effects = None
 
         # These are stateful values and we use what's loaded from the database.
         self._state_tags = state.get("_state_tags", [])
         self._count = state.get("_count", 1)
+        self._altering_item_keys = state.get("_altering_item_keys", [])
 
 # I'm doing it this way because having a dict[ItemKey, Item] would
 # mean that using the items in the dict would all point to the same

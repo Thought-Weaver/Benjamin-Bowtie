@@ -471,10 +471,6 @@ class GardenView(discord.ui.View):
             return self.get_embed_for_intent(additional="\n\n*Error: Something about that item changed or it's no longer available.*")
         return Embed(title="Plant Seed", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
 
-    def tick(self):
-        # TODO: Implement this once I've added the tick loop to adventures.
-        pass
-
     def confirm_plant_seed(self):
         if self._selected_plot is None:
             return self.get_embed_for_intent(additional="\n\n*That plot doesn't exist!*")

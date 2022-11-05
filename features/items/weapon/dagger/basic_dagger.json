@@ -4,15 +4,25 @@
     "name": "Basic Dagger",
     "value": 25,
     "rarity": "Common",
-    "description": "Deals additional damage based on your Dexterity stat.",
+    "description": "",
     "flavor_text": "",
     "class_tags": ["Equipment", "Weapon", "Dagger", "Main_Hand"],
-    "effect_tags": ["DexBonusDamage"],
     "state_tags": [],
     "count": 1,
     "level_requirement": 2,
     "weapon_stats": {
         "min_damage": 2,
         "max_damage": 3
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromDex",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
     }
 }

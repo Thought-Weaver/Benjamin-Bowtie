@@ -3,8 +3,8 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
-from features.expertise import Expertise
-from features.shared.item import Buffs, ClassTag, Item
+from features.expertise import Attributes, Expertise
+from features.shared.item import ClassTag, Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -51,7 +51,7 @@ class Equipment():
         ]
         return list(filter(lambda item: item is not None, equipment))
 
-    def get_item_in_slot(self, slot: ClassTag.Equipment):
+    def get_item_in_slot(self, slot: ClassTag.Equipment | None):
         if slot == ClassTag.Equipment.Helmet:
             return self._helmet
         if slot == ClassTag.Equipment.Amulet:
@@ -72,7 +72,7 @@ class Equipment():
             return self._off_hand
         return None
 
-    def unequip_item_from_slot(self, slot: ClassTag.Equipment):
+    def unequip_item_from_slot(self, slot: ClassTag.Equipment | None):
         if slot == ClassTag.Equipment.Helmet:
             item = self._helmet
             self._helmet = None
@@ -111,7 +111,7 @@ class Equipment():
             return item
         return None
 
-    def equip_item_to_slot(self, slot: ClassTag.Equipment, item: (Item | None)):
+    def equip_item_to_slot(self, slot: ClassTag.Equipment | None, item: (Item | None)):
         prev_item = None
         if slot == ClassTag.Equipment.Helmet:
             prev_item = self._helmet
@@ -142,23 +142,18 @@ class Equipment():
             self._off_hand = item
         return prev_item
 
-    def get_total_buffs(self):
-        buffs = Buffs()
+    def get_total_attribute_mods(self) -> Attributes:
+        mods: Attributes = Attributes(0, 0, 0, 0, 0, 0)
         for item in self.get_all_equipped_items():
-            item_buffs = item.get_buffs()
-            if item_buffs is not None:
-                buffs.con_buff += item_buffs.con_buff
-                buffs.str_buff += item_buffs.str_buff
-                buffs.dex_buff += item_buffs.dex_buff
-                buffs.int_buff += item_buffs.int_buff
-                buffs.lck_buff += item_buffs.lck_buff
-                buffs.mem_buff += item_buffs.mem_buff
-        return buffs
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                mods += item_effects.get_permanent_attribute_mods()
+        return mods
 
     def _get_total_armor(self):
         armor: int = 0
         for item in self.get_all_equipped_items():
-            armor_stats: ArmorStats = item.get_armor_stats()
+            armor_stats: ArmorStats | None = item.get_armor_stats()
             if armor_stats is not None:
                 armor += armor_stats.get_armor_amount()
         return armor
@@ -166,7 +161,7 @@ class Equipment():
     def get_total_reduced_armor(self, level: int):
         armor: int = 0
         for item in self.get_all_equipped_items():
-            armor_stats: ArmorStats = item.get_armor_stats()
+            armor_stats: ArmorStats | None = item.get_armor_stats()
             if armor_stats is not None:
                 reduce_to: float = max(0, 1.0 - (ARMOR_OVERLEVELED_DEBUFF * max(0, item.get_level_requirement() - level)))
                 armor += int(armor_stats.get_armor_amount() * reduce_to)
@@ -290,14 +285,14 @@ class EquipmentView(discord.ui.View):
     def get_player(self) -> Player:
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
 
-    def get_str_for_slot(self, slot: ClassTag.Equipment):
+    def get_str_for_slot(self, slot: ClassTag.Equipment | None):
         if slot == ClassTag.Equipment.ChestArmor:
             return "Chest Armor"
         if slot == ClassTag.Equipment.MainHand:
             return "Main Hand"
         if slot == ClassTag.Equipment.OffHand:
             return "Off Hand"
-        return slot
+        return slot or "Unknown"
 
     def enter_equip_for_slot(self):
         self._get_current_page_buttons()
@@ -343,7 +338,7 @@ class EquipmentView(discord.ui.View):
                 description=f"──────────\n{item}\n──────────\n\nEquipped! You can choose a different item from your inventory to equip or exit."
             )
 
-            expertise.update_stats(equipment.get_total_buffs())
+            expertise.update_stats(equipment.get_total_attribute_mods())
         
         self._get_current_page_buttons()
         return embed
@@ -357,7 +352,7 @@ class EquipmentView(discord.ui.View):
         equipped_item: (Item | None) = equipment.unequip_item_from_slot(self._cur_equip_slot)
         inventory.add_item(equipped_item)
 
-        expertise.update_stats(equipment.get_total_buffs())
+        expertise.update_stats(equipment.get_total_attribute_mods())
 
         self._get_current_page_buttons()
 
@@ -409,16 +404,26 @@ class EquipmentView(discord.ui.View):
         player_equipment: Equipment = self.get_player().get_equipment()
         base_none_equipped_str: str = "──────────\nNone Equipped\n──────────"
 
+        helmet = player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet)
+        gloves = player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves)
+        amulet = player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet)
+        ring = player_equipment.get_item_in_slot(ClassTag.Equipment.Ring)
+        chest_armor = player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor)
+        main_hand = player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
+        off_hand = player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand)
+        leggings = player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings)
+        boots = player_equipment.get_item_in_slot(ClassTag.Equipment.Boots)
+
         equipment_strs = [
-            f"**Helmet:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet) is not None else "**Helmet:**\n" + base_none_equipped_str,
-            f"**Gloves:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves) is not None else "**Gloves:**\n" + base_none_equipped_str,
-            f"**Amulet:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Amulet) is not None else "**Amulet:**\n" + base_none_equipped_str,
-            f"**Ring:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Ring))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Ring) is not None else "**Ring:**\n" + base_none_equipped_str,
-            f"**Chest Armor:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.ChestArmor) is not None else "**Chest Armor:**\n" + base_none_equipped_str,
-            f"**Main Hand:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.MainHand) is not None else "**Main Hand:**\n" + base_none_equipped_str,
-            f"**Off Hand:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.OffHand) is not None else "**Off Hand:**\n" + base_none_equipped_str,
-            f"**Leggings:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Leggings) is not None else "**Leggings:**\n" + base_none_equipped_str,
-            f"**Boots:**\n──────────\n{str(player_equipment.get_item_in_slot(ClassTag.Equipment.Boots))}\n──────────" if player_equipment.get_item_in_slot(ClassTag.Equipment.Boots) is not None else "**Boots:**\n" + base_none_equipped_str
+            f"**Helmet:**\n──────────\n{str(helmet)}\n──────────" if helmet is not None else "**Helmet:**\n" + base_none_equipped_str,
+            f"**Gloves:**\n──────────\n{str(gloves)}\n──────────" if gloves is not None else "**Gloves:**\n" + base_none_equipped_str,
+            f"**Amulet:**\n──────────\n{str(amulet)}\n──────────" if amulet is not None else "**Amulet:**\n" + base_none_equipped_str,
+            f"**Ring:**\n──────────\n{str(ring)}\n──────────" if ring is not None else "**Ring:**\n" + base_none_equipped_str,
+            f"**Chest Armor:**\n──────────\n{str(chest_armor)}\n──────────" if chest_armor is not None else "**Chest Armor:**\n" + base_none_equipped_str,
+            f"**Main Hand:**\n──────────\n{str(main_hand)}\n──────────" if main_hand is not None else "**Main Hand:**\n" + base_none_equipped_str,
+            f"**Off Hand:**\n──────────\n{str(off_hand)}\n──────────" if off_hand is not None else "**Off Hand:**\n" + base_none_equipped_str,
+            f"**Leggings:**\n──────────\n{str(leggings)}\n──────────" if leggings is not None else "**Leggings:**\n" + base_none_equipped_str,
+            f"**Boots:**\n──────────\n{str(boots)}\n──────────" if boots is not None else "**Boots:**\n" + base_none_equipped_str
         ]
 
         return "\n\n".join(equipment_strs)

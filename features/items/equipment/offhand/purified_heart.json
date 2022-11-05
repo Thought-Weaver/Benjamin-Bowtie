@@ -9,5 +9,15 @@
     "class_tags": ["Equipment", "Off_Hand"],
     "state_tags": [],
     "count": 1,
-    "effect_tags": ["ResurrectOnce"]
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResurrectOnce",
+                "effect_value": 0,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
 }

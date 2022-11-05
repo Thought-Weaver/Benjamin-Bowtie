@@ -89,6 +89,15 @@ class Adventures(commands.Cog):
         return self._database[str(guild_id)]["stories"][story_key]
 
     @tasks.loop(hours=1)
+    async def tick(self):
+        for guild_id in self._database.keys():
+            guild_id_str = str(guild_id)
+            for user_id in self._database[guild_id_str].get("members", {}).keys():
+                player: Player = self._get_player(guild_id, user_id)
+                player.get_house().tick()
+
+        await self.save_database()
+
     async def save_database(self):
         if os.path.isfile("./adventuresdb.json"):
             shutil.copy("adventuresdb.json", "adventuresdbbackup.json")
@@ -124,7 +133,7 @@ class Adventures(commands.Cog):
                 player_dueling.is_in_combat = False
                 player_dueling.reset_ability_cds()
 
-                player_expertise.update_stats(player.get_equipment().get_total_buffs())
+                player_expertise.update_stats(player.get_equipment().get_total_attribute_mods())
                 player_expertise.hp = player_expertise.max_hp
                 player_expertise.mana = player_expertise.max_mana
                 
@@ -167,7 +176,7 @@ class Adventures(commands.Cog):
 
         LUCK_MOD = 0.005 # Luck adjusts total bias by 0.5% per point
         player_luck: int = author_player.get_expertise().luck
-        equipment_luck: int = author_player.get_equipment().get_total_buffs().lck_buff
+        equipment_luck: int = author_player.get_equipment().get_total_attribute_mods().luck
         total_luck: int = player_luck + equipment_luck
         rand_val = random.choices(
             [0, 1, 2, 3, 4, 5], k=1,
@@ -479,7 +488,7 @@ class Adventures(commands.Cog):
 
         LUCK_MOD = 0.001 # Luck adjusts total bias by 0.1% per point
         author_luck: int = author_player.get_expertise().luck
-        equipment_luck: int = author_player.get_equipment().get_total_buffs().lck_buff
+        equipment_luck: int = author_player.get_equipment().get_total_attribute_mods().luck
         total_luck: int = author_luck + equipment_luck
         rand_val = random.choices(
             [0, 1, 2, 3], k=1,

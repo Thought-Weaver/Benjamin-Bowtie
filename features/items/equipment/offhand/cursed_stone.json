@@ -9,7 +9,15 @@
     "class_tags": ["Equipment", "Off_Hand"],
     "state_tags": [],
     "count": 1,
-    "buffs": {
-        "lck_buff": -1
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "LckMod",
+                "effect_value": -1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
     }
 }
