@@ -145,7 +145,7 @@ class MrBones(NPC):
                     best_greedy_choice_diff = result
             
             if random() <= 0.75:
-                best_greedy_choice = randint(1, 3)
+                best_greedy_choice = randint(0, 2)
             
             self._try_move(player_board, npc_board, best_greedy_choice, current_roll, compute_points_in_col, True)
             return f"{npc_name} has placed their {current_roll} in column {best_greedy_choice + 1}!"
