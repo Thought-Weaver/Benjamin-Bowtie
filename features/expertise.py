@@ -124,12 +124,18 @@ class GuardianExpertise(BaseExpertise):
         return ceil(30 + 30 * level * (level - 1) + 20 * (2 ** ((level - 1) / 7.0) - 1) / (1 - 2 ** (-1 / 7.0)))
 
 
+class AlchemistExpertise(BaseExpertise):
+    def get_xp_to_level(self, level: int) -> int:
+        return ceil(20 + 20 * level * (level - 1) + 30 * (2 ** ((level - 1) / 8.0) - 1) / (1 - 2 ** (-1 / 8.0)))
+
+
 class Expertise():
     def __init__(self):
         # Expertise classes
         self._fisher = FisherExpertise()
         self._merchant = MerchantExpertise()
         self._guardian = GuardianExpertise()
+        self._alchemist = AlchemistExpertise()
 
         # Base stats
         self.level = 0
@@ -166,6 +172,8 @@ class Expertise():
             levels_gained = self._merchant.add_xp(xp)
         elif expertise_class == ExpertiseClass.Guardian:
             levels_gained = self._guardian.add_xp(xp)
+        elif expertise_class == ExpertiseClass.Alchemist:
+            levels_gained = self._alchemist.add_xp(xp)
         self.points_to_spend += levels_gained
         self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level()
 
@@ -191,7 +199,7 @@ class Expertise():
         # TODO: This doesn't actually give any indication that you were resurrected since
         # I can't return a string this way. Should it be moved out despite the duplicated
         # code? Also, at the moment, it doesn't destroy the item afterwards.
-        if any(item.get_item_effects().has_item_effect(EffectType.ResurrectOnce) for item in equipment.get_all_equipped_items()):
+        if any(item.get_item_effects() is not None and item.get_item_effects().has_item_effect(EffectType.ResurrectOnce) for item in equipment.get_all_equipped_items()):
             self.hp = self.max_hp
             return 0
 
@@ -244,6 +252,7 @@ class Expertise():
         fisher_level: int = self._fisher.get_level()
         merchant_level: int = self._merchant.get_level()
         guardian_level: int = self._guardian.get_level()
+        alchemist_level: int = self._alchemist.get_level()
 
         def format_buff_modifier(value: int):
             if value == 0:
@@ -257,7 +266,7 @@ class Expertise():
             f"**Base Stats**\n\n"
             f"{self.get_health_and_mana_string()}\nEquipment: {armor_str}\n\n"
             f"**Classes**\n\n"
-            f"Alchemist: ???\n"
+            f"Alchemist: Lvl. {alchemist_level} *({self._alchemist.get_xp_to_level(alchemist_level + 1) - self._alchemist.get_xp()} xp to next)*\n"
             f"Fisher: Lvl. {fisher_level} *({self._fisher.get_xp_to_level(fisher_level + 1) - self._fisher.get_xp()} xp to next)*\n"
             f"Guardian: Lvl. {guardian_level} *({self._guardian.get_xp_to_level(guardian_level + 1) - self._guardian.get_xp()} xp to next)*\n"
             f"Merchant: Lvl. {merchant_level} *({self._merchant.get_xp_to_level(merchant_level + 1) - self._merchant.get_xp()} xp to next)*\n\n"
@@ -286,6 +295,8 @@ class Expertise():
             return self._guardian.get_level()
         if expertise_class == ExpertiseClass.Merchant:
             return self._merchant.get_level()
+        if expertise_class == ExpertiseClass.Alchemist:
+            return self._alchemist.get_level()
         return -1
 
     def __getstate__(self):
@@ -295,6 +306,7 @@ class Expertise():
         self._fisher = state.get("_fisher", FisherExpertise())
         self._merchant = state.get("_merchant", MerchantExpertise())
         self._guardian = state.get("_guardian", GuardianExpertise())
+        self._alchemist = state.get("_alchemist", AlchemistExpertise())
 
         self.level = state.get("level", 0)
         self.max_hp = state.get("max_hp", BASE_HP)
@@ -359,7 +371,6 @@ class ExpertiseView(discord.ui.View):
 
         player: Player = self.get_player()
         expertise: Expertise = player.get_expertise()
-        equipment: Equipment = player.get_equipment()
 
         expertise.level_up_check()
         expertise.update_stats(player.get_combined_attributes())
