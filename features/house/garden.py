@@ -7,19 +7,21 @@ from discord.embeds import Embed
 from features.expertise import ExpertiseClass
 from features.house.house import HouseRoom
 from features.shared.constants import MAX_GARDEN_SIZE
-from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey
+from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey, Rarity
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from strenum import StrEnum
 from types import MappingProxyType
 
 from typing import TYPE_CHECKING, List, Tuple
+
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.house.house import House, HouseView
     from features.inventory import Inventory
     from features.shared.item import Item
     from features.player import Player
+    from features.stats import Stats
 
 # -----------------------------------------------------------------------------
 # SEED DATA
@@ -528,12 +530,35 @@ class GardenView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory.add_item(harvest_result)
 
+        stats: Stats = player.get_stats()
+        if harvest_result.get_rarity() == Rarity.Common:
+            stats.garden.common_plants_harvested += 1
+        if harvest_result.get_rarity() == Rarity.Uncommon:
+            stats.garden.uncommon_plants_harvested += 1
+        if harvest_result.get_rarity() == Rarity.Rare:
+            stats.garden.rare_plants_harvested += 1
+        if harvest_result.get_rarity() == Rarity.Epic:
+            stats.garden.epic_plants_harvested += 1
+        if harvest_result.get_rarity() == Rarity.Legendary:
+            stats.garden.legendary_plants_harvested += 1
+
         num_seeds_to_add = 0
         for _ in range(seed_data.max_seeds_can_drop):
             if random.random() < seed_data.chance_to_drop_seed:
                 num_seeds_to_add += 1
                 inventory.add_item(LOADED_ITEMS.get_new_item(seed_key))
         seeds_added_str = f" and {num_seeds_to_add} seeds" if num_seeds_to_add > 0 else ""
+
+        if harvest_result.get_rarity() == Rarity.Common:
+            stats.garden.common_seeds_dropped += num_seeds_to_add
+        if harvest_result.get_rarity() == Rarity.Uncommon:
+            stats.garden.uncommon_seeds_dropped += num_seeds_to_add
+        if harvest_result.get_rarity() == Rarity.Rare:
+            stats.garden.rare_seeds_dropped += num_seeds_to_add
+        if harvest_result.get_rarity() == Rarity.Epic:
+            stats.garden.epic_seeds_dropped += num_seeds_to_add
+        if harvest_result.get_rarity() == Rarity.Legendary:
+            stats.garden.legendary_seeds_dropped += num_seeds_to_add
 
         player.get_expertise().add_xp_to_class(seed_data.xp_to_gain, ExpertiseClass.Alchemist)
 

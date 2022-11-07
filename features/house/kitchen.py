@@ -5,20 +5,19 @@ import discord
 from discord.embeds import Embed
 from features.house.house import HouseRoom
 from features.house.recipe import LOADED_RECIPES, Recipe
-from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey
+from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey, Rarity
+from features.shared.nextbutton import NextButton
+from features.shared.prevbutton import PrevButton
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
-from features.shared.nextbutton import NextButton
-
-from features.shared.prevbutton import PrevButton
-
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.house.house import House, HouseView
     from features.inventory import Inventory
     from features.shared.item import Item
     from features.player import Player
+    from features.stats import Stats
 
 # -----------------------------------------------------------------------------
 # KITCHEN VIEW
@@ -731,6 +730,8 @@ class KitchenView(discord.ui.View):
             player.get_expertise().add_xp_to_class(xp, xp_class)
         xp_display = '\n'.join(xp_strs)
 
+        stats: Stats = player.get_stats()
+
         output_strs = []
         for output_key, quantity in self._selected_recipe.outputs.items():
             new_item = LOADED_ITEMS.get_new_item(output_key)
@@ -738,6 +739,19 @@ class KitchenView(discord.ui.View):
             new_item.add_amount(quantity - 1)
             inventory.add_item(new_item)
             output_strs.append(f"{new_item.get_full_name()} (x{quantity})\n")
+
+            if new_item.get_rarity() == Rarity.Common:
+                stats.crafting.common_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Uncommon:
+                stats.crafting.uncommon_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Rare:
+                stats.crafting.rare_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Epic:
+                stats.crafting.epic_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Legendary:
+                stats.crafting.legendary_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Artifact:
+                stats.crafting.artifact_items_cooked += 1
         output_display = '\n'.join(output_strs)
 
         for xp_class, xp in self._selected_recipe.xp_reward_for_use.items():
@@ -793,6 +807,8 @@ class KitchenView(discord.ui.View):
         if len(xp_strs) > 0:
             xp_display += "\n"
 
+        stats: Stats = player.get_stats()
+
         output_strs = []
         for output_key, quantity in found_recipe.outputs.items():
             new_item = LOADED_ITEMS.get_new_item(output_key)
@@ -800,7 +816,22 @@ class KitchenView(discord.ui.View):
             new_item.add_amount(quantity - 1)
             inventory.add_item(new_item)
             output_strs.append(f"{new_item.get_full_name()} (x{quantity})\n")
+            
+            if new_item.get_rarity() == Rarity.Common:
+                stats.crafting.common_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Uncommon:
+                stats.crafting.uncommon_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Rare:
+                stats.crafting.rare_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Epic:
+                stats.crafting.epic_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Legendary:
+                stats.crafting.legendary_items_cooked += 1
+            if new_item.get_rarity() == Rarity.Artifact:
+                stats.crafting.artifact_items_cooked += 1
         output_display = '\n'.join(output_strs)
+
+        stats.crafting.cooking_recipes_discovered += 1
 
         return Embed(title="Cook", description=f"Cooking successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n──────────\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
 

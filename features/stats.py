@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import discord
 
 from discord.embeds import Embed
@@ -14,6 +16,8 @@ class StatCategory(LowercaseStrEnum):
     Knucklebones = "knucklebones"
     WishingWell = "wishingwell"
     Dueling = "dueling"
+    Garden = "garden"
+    Crafting = "crafting"
 
 # Based on the command names; the user will do b!stats [name] or omit the name
 # and get all of them at once. I'm using a class to help with deserializing the
@@ -253,6 +257,138 @@ class Stats():
             self.guardian_abilities_used = state.get("guardian_abilities_used", 0)
             self.merchant_abilities_used = state.get("merchant_abilities_used", 0)
 
+    class GardenStats():
+        def __init__(self):
+            self.common_plants_harvested: int = 0
+            self.uncommon_plants_harvested: int = 0
+            self.rare_plants_harvested: int = 0
+            self.epic_plants_harvested: int = 0
+            self.legendary_plants_harvested: int = 0
+
+            self.common_seeds_dropped: int = 0
+            self.uncommon_seeds_dropped: int = 0
+            self.rare_seeds_dropped: int = 0
+            self.epic_seeds_dropped: int = 0
+            self.legendary_seeds_dropped: int = 0
+
+        def get_name(self):
+            return "Garden Stats"
+
+        def get_stats_str(self):
+            return (
+                f"Common Plants Harvested: *{self.common_plants_harvested}*\n"
+                f"Uncommon Plants Harvested: *{self.uncommon_plants_harvested}*\n"
+                f"Rare Plants Harvested: *{self.rare_plants_harvested}*\n"
+                f"Epic Plants Harvested: *{self.epic_plants_harvested}*\n"
+                f"Legendary Plants Harvested: *{self.legendary_plants_harvested}*\n\n"
+
+                f"Common Seeds Dropped: *{self.common_seeds_dropped}*\n"
+                f"Uncommon Seeds Harvested: *{self.uncommon_seeds_dropped}*\n"
+                f"Rare Seeds Harvested: *{self.rare_seeds_dropped}*\n"
+                f"Epic Seeds Harvested: *{self.epic_seeds_dropped}*\n"
+                f"Legendary Seeds Harvested: *{self.legendary_seeds_dropped}*\n\n"
+            )
+
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.common_plants_harvested = state.get("common_plants_harvested", 0)
+            self.uncommon_plants_harvested = state.get("uncommon_plants_harvested", 0)
+            self.rare_plants_harvested = state.get("rare_plants_harvested", 0)
+            self.epic_plants_harvested = state.get("epic_plants_harvested", 0)
+            self.legendary_plants_harvested = state.get("legendary_plants_harvested", 0)
+
+            self.common_seeds_dropped = state.get("common_seeds_dropped", 0)
+            self.uncommon_seeds_dropped = state.get("uncommon_seeds_dropped", 0)
+            self.rare_seeds_dropped = state.get("rare_seeds_dropped", 0)
+            self.epic_seeds_dropped = state.get("epic_seeds_dropped", 0)
+            self.legendary_seeds_dropped = state.get("legendary_seeds_dropped", 0)
+
+    class CraftingStats():
+        def __init__(self):
+            self.patterns_discovered: int = 0
+            self.common_items_crafted: int = 0
+            self.uncommon_items_crafted: int = 0
+            self.rare_items_crafted: int = 0
+            self.epic_items_crafted: int = 0
+            self.legendary_items_crafted: int = 0
+            self.artifact_items_crafted: int = 0
+
+            self.alchemy_recipes_discovered: int = 0
+            self.common_items_alchemized: int = 0
+            self.uncommon_items_alchemized: int = 0
+            self.rare_items_alchemized: int = 0
+            self.epic_items_alchemized: int = 0
+            self.legendary_items_alchemized: int = 0
+            self.artifact_items_alchemized: int = 0
+
+            self.cooking_recipes_discovered: int = 0
+            self.common_items_cooked: int = 0
+            self.uncommon_items_cooked: int = 0
+            self.rare_items_cooked: int = 0
+            self.epic_items_cooked: int = 0
+            self.legendary_items_cooked: int = 0
+            self.artifact_items_cooked: int = 0
+
+        def get_name(self):
+            return "Crafting Stats"
+
+        def get_stats_str(self):
+            return (
+                f"Patterns Discovered: *{self.patterns_discovered}*\n"
+                f"Common Items Crafted: *{self.common_items_crafted}*\n"
+                f"Uncommon Items Crafted: *{self.uncommon_items_crafted}*\n"
+                f"Rare Items Crafted: *{self.rare_items_crafted}*\n"
+                f"Epic Items Crafted: *{self.epic_items_crafted}*\n"
+                f"Legendary Items Crafted: *{self.legendary_items_crafted}*\n"
+                f"Artifact Items Crafted: *{self.artifact_items_crafted}*\n\n"
+
+                f"Alchemy Recipes Discovered: *{self.alchemy_recipes_discovered}*\n"
+                f"Common Items Alchemized: *{self.common_items_alchemized}*\n"
+                f"Uncommon Items Alchemized: *{self.uncommon_items_alchemized}*\n"
+                f"Rare Items Alchemized: *{self.rare_items_alchemized}*\n"
+                f"Epic Items Alchemized: *{self.epic_items_alchemized}*\n"
+                f"Legendary Items Alchemized: *{self.legendary_items_alchemized}*\n"
+                f"Artifact Items Alchemized: *{self.artifact_items_alchemized}*\n\n"
+
+                f"Cooking Recipes Discovered: *{self.cooking_recipes_discovered}*\n"
+                f"Common Items Cooked: *{self.common_items_cooked}*\n"
+                f"Uncommon Items Cooked: *{self.uncommon_items_cooked}*\n"
+                f"Rare Items Cooked: *{self.rare_items_cooked}*\n"
+                f"Epic Items Cooked: *{self.epic_items_cooked}*\n"
+                f"Legendary Items Cooked: *{self.legendary_items_cooked}*\n"
+                f"Artifact Items Cooked: *{self.artifact_items_cooked}*\n"
+            )
+
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.patterns_discovered = state.get("patterns_discovered", 0)
+            self.common_items_crafted = state.get("common_items_crafted", 0)
+            self.uncommon_items_crafted = state.get("uncommon_items_crafted", 0)
+            self.rare_items_crafted = state.get("rare_items_crafted", 0)
+            self.epic_items_crafted = state.get("epic_items_crafted", 0)
+            self.legendary_items_crafted = state.get("legendary_items_crafted", 0)
+            self.artifact_items_crafted = state.get("artifact_items_crafted", 0)
+
+            self.alchemy_recipes_discovered = state.get("alchemy_recipes_discovered", 0)
+            self.common_items_alchemized = state.get("common_items_alchemized", 0)
+            self.uncommon_items_alchemized = state.get("uncommon_items_alchemized", 0)
+            self.rare_items_alchemized = state.get("rare_items_alchemized", 0)
+            self.epic_items_alchemized = state.get("epic_items_alchemized", 0)
+            self.legendary_items_alchemized = state.get("legendary_items_alchemized", 0)
+            self.artifact_items_alchemized = state.get("artifact_items_alchemized", 0)
+
+            self.cooking_recipes_discovered = state.get("cooking_recipes_discovered", 0)
+            self.common_items_cooked = state.get("common_items_cooked", 0)
+            self.uncommon_items_cooked = state.get("uncommon_items_cooked", 0)
+            self.rare_items_cooked = state.get("rare_items_cooked", 0)
+            self.epic_items_cooked = state.get("epic_items_cooked", 0)
+            self.legendary_items_cooked = state.get("legendary_items_cooked", 0)
+            self.artifact_items_cooked = state.get("artifact_items_cooked", 0)
+
     def __init__(self):
         self.fish = self.FishStats()
         self.mail = self.MailStats()
@@ -260,6 +396,8 @@ class Stats():
         self.knucklebones = self.KnucklebonesStats()
         self.wishingwell = self.WishingWellStats()
         self.dueling = self.DuelingStats()
+        self.garden = self.GardenStats()
+        self.crafting = self.CraftingStats()
 
     def category_to_class(self, category: StatCategory):
         if category == category.Fish:
@@ -274,11 +412,15 @@ class Stats():
             return self.wishingwell
         if category == category.Dueling:
             return self.dueling
+        if category == category.Garden:
+            return self.garden
+        if category == category.Crafting:
+            return self.crafting
 
     def list(self):
         # Can simply change the order of this list if I want the pages
         # to be organized differently.
-        return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell, self.dueling]
+        return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell, self.dueling, self.garden, self.crafting]
 
     def __getstate__(self):
         return self.__dict__
@@ -290,10 +432,12 @@ class Stats():
         self.knucklebones = state.get("knucklebones", self.KnucklebonesStats())
         self.wishingwell = state.get("wishingwell", self.WishingWellStats())
         self.dueling = state.get("dueling", self.DuelingStats())
+        self.garden = state.get("garden", self.GardenStats())
+        self.crafting = state.get("crafting", self.CraftingStats())
 
 
 class StatView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: discord.User, stat_category: StatCategory=None):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: discord.User, stat_category: StatCategory | None=None):
         super().__init__(timeout=900)
 
         self._bot = bot
