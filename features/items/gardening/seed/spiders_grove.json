@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/spiders_grove_spores",
+    "icon": "\uD83D\uDD78\uFE0F",
+    "name": "Spider's Grove Spores",
+    "value": 40,
+    "rarity": "Epic",
+    "description": "When planted, grows a spider's grove plant.",
+    "flavor_text": "Easily mistaken for a spider's web, this herb grows on bark and hangs in strands between the trees.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

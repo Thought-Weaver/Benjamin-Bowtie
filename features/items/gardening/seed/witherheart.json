@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/witherheart_seed",
+    "icon": "\uD83E\uDD40",
+    "name": "Witherheart Seed",
+    "value": 66,
+    "rarity": "Epic",
+    "description": "When planted, grows a witherheart flower.",
+    "flavor_text": "Love is a bargain. Death is a promise.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/snowdew_seed",
+    "icon": "\uD83C\uDF3C",
+    "name": "Snowdew Seed",
+    "value": 2,
+    "rarity": "Common",
+    "description": "When planted, grows a snowdew flower.",
+    "flavor_text": "Catch a glance on a field as its petals drift off, snow in the wind.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

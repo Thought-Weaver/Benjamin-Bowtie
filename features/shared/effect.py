@@ -88,7 +88,7 @@ class ConditionType(StrEnum):
 # -----------------------------------------------------------------------------
 
 # TODO: Finish this and figure out the ordering
-EFFECT_PRIORITY: MappingProxyType[str, int] = MappingProxyType({
+EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
     EffectType.ConMod: 0,
     EffectType.StrMod: 1,
     EffectType.DexMod: 2,

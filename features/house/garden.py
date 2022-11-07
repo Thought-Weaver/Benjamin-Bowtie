@@ -1,21 +1,115 @@
 from __future__ import annotations
 
 import discord
+import random
 
 from discord.embeds import Embed
+from features.expertise import ExpertiseClass
 from features.house.house import HouseRoom
+from features.shared.constants import MAX_GARDEN_SIZE
 from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from strenum import StrEnum
+from types import MappingProxyType
 
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING, List, Tuple
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.house.house import House, HouseView
     from features.inventory import Inventory
     from features.shared.item import Item
     from features.player import Player
+
+# -----------------------------------------------------------------------------
+# SEED DATA
+# -----------------------------------------------------------------------------
+
+class SeedData():
+    def __init__(self, ticks_until_sprout: int, ticks_until_mature: int, ticks_until_death: int, result: ItemKey, chance_to_drop_seed: float, max_seeds_can_drop: int, sprout_icon: str, xp_to_gain: int):
+        self.ticks_until_sprout: int = ticks_until_sprout
+        self.ticks_until_mature: int = ticks_until_mature
+        self.ticks_until_death: int = ticks_until_death
+
+        self.result: ItemKey = result
+        self.chance_to_drop_seed: float = chance_to_drop_seed
+        self.max_seeds_can_drop: int = max_seeds_can_drop
+
+        self.sprout_icon: str = sprout_icon
+        self.mature_icon: str = LOADED_ITEMS.get_item_state(result)["icon"]
+
+        self.xp_to_gain: int = xp_to_gain
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.ticks_until_sprout = state.get("ticks_until_sprout", 0)
+        self.ticks_until_mature = state.get("ticks_until_mature", 0)
+        self.ticks_until_death = state.get("ticks_until_death", 0)
+        
+        self.result = state.get("result", "")
+        self.chance_to_drop_seed = state.get("chance_to_drop_seed", 0)
+        self.max_seeds_can_drop = state.get("max_seeds_can_drop", 1)
+
+        self.sprout_icon = state.get("sprout_icon", "")
+        self.mature_icon = state.get("mature_icon", "")
+
+        self.xp_to_gain = state.get("xp_to_gain", 0)
+
+
+SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
+    ItemKey.AsptongueSeed: SeedData(2, 4, 20, ItemKey.Asptongue, 0.75, 1, "\uD83C\uDF31", 16),
+    ItemKey.BlazeClusterSpores: SeedData(5, 5, 12, ItemKey.BlazeCluster, 0.15, 4, "\uD83C\uDF31", 25),
+    ItemKey.BloodcrownSpores: SeedData(2, 2, 8, ItemKey.Bloodcrown, 0.85, 3, "\uD83C\uDF31", 4),
+    ItemKey.BramblefrondSeed: SeedData(1, 2, 7, ItemKey.Bramblefrond, 0.8, 1, "\uD83C\uDF31", 4),
+    ItemKey.DawnsGlorySeed: SeedData(2, 4, 8, ItemKey.DawnsGlory, 0.65, 1, "\uD83C\uDF31", 16),
+    ItemKey.DragonsTeethSeed: SeedData(10, 25, 30, ItemKey.DragonsTeeth, 0.02, 1, "\uD83C\uDF31", 625),
+    ItemKey.DreamMakerSeed: SeedData(3, 6, 16, ItemKey.DreamMaker, 0.4, 1, "\uD83C\uDF31", 36),
+    ItemKey.FissureleafSeed: SeedData(1, 3, 12, ItemKey.Fissureleaf, 0.75, 2, "\uD83C\uDF31", 9),
+    ItemKey.FoolsDelightSpores: SeedData(5, 5, 20, ItemKey.FoolsDelight, 0.95, 2, "\uD83C\uDF31", 25),
+    ItemKey.ForgottenTearsSeed: SeedData(8, 15, 50, ItemKey.ForgottenTears, 0.05, 1, "\uD83C\uDF31", 225),
+    ItemKey.FrostwortSeed: SeedData(2, 3, 10, ItemKey.Frostwort, 0.6, 4, "\uD83C\uDF31", 9),
+    ItemKey.GoldenCloverSeed: SeedData(1, 3, 5, ItemKey.GoldenClover, 0.1, 1, "\uD83C\uDF31", 9),
+    ItemKey.GraspleafSeed: SeedData(1, 3, 18, ItemKey.Graspleaf, 0.85, 2, "\uD83C\uDF31", 9),
+    ItemKey.GraveMossSpores: SeedData(4, 4, 12, ItemKey.GraveMoss, 0.6, 3, "\uD83C\uDF31", 16),
+    ItemKey.HushvineSeed: SeedData(5, 10, 20, ItemKey.Hushvine, 0.5, 2, "\uD83C\uDF31", 100),
+    ItemKey.LichbloomSeed: SeedData(24, 64, 2400, ItemKey.Lichbloom, 0.01, 1, "\uD83C\uDF31", 4096),
+    ItemKey.MagesBaneSeed: SeedData(5, 12, 16, ItemKey.MagesBane, 0.2, 2, "\uD83C\uDF31", 144),
+    ItemKey.ManabloomSeed: SeedData(3, 5, 15, ItemKey.Riverblossom, 0.3, 2, "\uD83C\uDF31", 25),
+    ItemKey.MeddlespreadSpores: SeedData(1, 1, 30, ItemKey.Meddlespread, 0.9, 6, "\uD83C\uDF31", 1),
+    ItemKey.RazorgrassSeed: SeedData(1, 2, 14, ItemKey.Razorgrass, 0.8, 2, "\uD83C\uDF31", 4),
+    ItemKey.RiverblossomSeed: SeedData(1, 3, 10, ItemKey.Riverblossom, 0.8, 1, "\uD83C\uDF31", 9),
+    ItemKey.RotstalkSeed: SeedData(3, 10, 40, ItemKey.Rotstalk, 0.1, 1, "\uD83C\uDF31", 100),
+    ItemKey.SeacloverSeed: SeedData(1, 2, 10, ItemKey.Seaclover, 0.75, 5, "\uD83C\uDF31", 4),
+    ItemKey.ShellflowerSeed: SeedData(4, 6, 14, ItemKey.Shellflower, 0.5, 1, "\uD83C\uDF31", 36),
+    ItemKey.ShelterfoilSeed: SeedData(3, 4, 20, ItemKey.Shelterfoil, 0.9, 2, "\uD83C\uDF31", 16),
+    ItemKey.SirensKissSeed: SeedData(5, 10, 15, ItemKey.SirensKiss, 0.1, 2, "\uD83C\uDF31", 100),
+    ItemKey.SnowdewSeed: SeedData(1, 2, 6, ItemKey.Snowdew, 0.9, 1, "\uD83C\uDF31", 4),
+    ItemKey.SpeckledCapSpores: SeedData(2, 2, 6, ItemKey.SpeckledCap, 0.8, 3, "\uD83C\uDF31", 4),
+    ItemKey.SpidersGroveSpores: SeedData(7, 7, 24, ItemKey.SpidersGrove, 0.3, 5, "\uD83C\uDF31", 49),
+    ItemKey.SungrainSeed: SeedData(1, 2, 20, ItemKey.Sungrain, 0.7, 2, "\uD83C\uDF31", 4),
+    ItemKey.WanderweedSeed: SeedData(2, 6, 9, ItemKey.Wanderweed, 0.25, 3, "\uD83C\uDF31", 36),
+    ItemKey.WitherheartSeed: SeedData(12, 24, 26, ItemKey.Witherheart, 0.03, 1, "\uD83C\uDF31", 576)
+})
+
+
+# (First Plant, Second Plant): (Yields this Plant, With this probability)
+MUTATION_PROBS: MappingProxyType[Tuple[ItemKey, ItemKey], Tuple[ItemKey, float]] = MappingProxyType({
+    (ItemKey.DawnsGlory, ItemKey.Fissureleaf): (ItemKey.DragonsTeethSeed, 0.001),
+    (ItemKey.Seaclover, ItemKey.Sungrain): (ItemKey.GoldenCloverSeed, 0.0005),
+    (ItemKey.Asptongue, ItemKey.GraveMoss): (ItemKey.HushvineSeed, 0.03),
+    (ItemKey.Graspleaf, ItemKey.GraveMoss): (ItemKey.RotstalkSeed, 0.03),
+    (ItemKey.Meddlespread, ItemKey.Snowdew): (ItemKey.WanderweedSeed, 0.04),
+    (ItemKey.Riverblossom, ItemKey.Sungrain): (ItemKey.DawnsGlorySeed, 0.02),
+    (ItemKey.DragonsTeeth, ItemKey.Witherheart): (ItemKey.ForgottenTearsSeed, 0.0001),
+    (ItemKey.Manabloom, ItemKey.Rotstalk): (ItemKey.LichbloomSeed, 0.001),
+    (ItemKey.MagesBane, ItemKey.Riverblossom): (ItemKey.ManabloomSeed, 0.02),
+    (ItemKey.Bloodcrown, ItemKey.GraveMoss): (ItemKey.WitherheartSeed, 0.005),
+    (ItemKey.DawnsGlory, ItemKey.FoolsDelight): (ItemKey.BlazeClusterSpores, 0.05),
+    (ItemKey.Meddlespread, ItemKey.Meddlespread): (ItemKey.FoolsDelightSpores, 0.03),
+    (ItemKey.Bloodcrown, ItemKey.Hushvine): (ItemKey.SpidersGroveSpores, 0.02)
+})
 
 # -----------------------------------------------------------------------------
 # GARDEN PLOT
@@ -27,15 +121,8 @@ class GardenPlot():
         # Should be None until the growth ticks match those needed by the seed
         self.plant: Item | None = None
         self.soil: Item | None = None
-
-        # These will be looked up based on the seed item key
-        self.ticks_until_sprout: int = 0
-        self.ticks_until_mature: int = 0
-        self.ticks_until_death: int = 0
+        self.seed_data: SeedData | None = None
         self.growth_ticks: int = 0
-
-        self.sprout_icon: str = ""
-        self.mature_icon: str = ""
 
     def harvest(self):
         if self.seed is None:
@@ -49,35 +136,53 @@ class GardenPlot():
         return harvested_plant
 
     def tick(self):
+        if self.seed_data is None:
+            return
+
         self.growth_ticks += 1
         
-        if self.growth_ticks >= self.ticks_until_death:
+        if self.growth_ticks >= self.seed_data.ticks_until_death:
             self.reset(keep_soil=True)
 
     def reset(self, keep_soil=False):
         self.seed = None
         self.plant = None
         self.soil = None if not keep_soil else self.soil
-        
-        self.ticks_until_sprout = 0
-        self.ticks_until_mature = 0
-        self.ticks_until_death = 0
-        self.growth_ticks = 0
+        self.seed_data = None
+
+    def is_mature(self):
+        if self.seed_data is None:
+            return False
+
+        return self.growth_ticks >= self.seed_data.ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death
 
     def plant_seed(self, seed: Item):
-        # TODO: Implement this when I've figured out the lookup dicts
-        pass
+        seed_data = SEED_DATA.get(seed.get_key())
+
+        if seed_data is None:
+            return
+
+        self.seed = seed
+        self.seed_data = seed_data
 
     def use_item(self, item: Item):
-        # TODO: Implement this when I've figured out the lookup dicts
+        # TODO: Implement this when I've figured out the lookup dicts and also designed the various gardening items
         pass
 
     def get_icon(self):
-        if self.growth_ticks >= self.ticks_until_sprout and self.growth_ticks < self.ticks_until_mature:
-            return self.sprout_icon
+        if self.seed_data is None:
+            return ""
+
+        if self.growth_ticks < self.seed_data.ticks_until_sprout:
+            # Default sprout icon until then, maybe replaced with a different icon during the actual
+            # sprouting phase
+            return "\uD83D\uDFEB"
+
+        if self.growth_ticks >= self.seed_data.ticks_until_sprout and self.growth_ticks < self.seed_data.ticks_until_mature:
+            return self.seed_data.sprout_icon
         
-        if self.growth_ticks >= self.ticks_until_mature and self.growth_ticks < self.ticks_until_death:
-            return self.mature_icon
+        if self.growth_ticks >= self.seed_data.ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death:
+            return self.seed_data.mature_icon
 
         # Return a question mark
         return "\u2753"
@@ -86,19 +191,14 @@ class GardenPlot():
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        # TODO: Theoretically, only seed, soil, and growth_ticks should be loaded from state.
-        # Plant, the other tick values, and icons should be loaded from the lookup dict.
         self.seed = state.get("seed", None)
         self.plant = state.get("plant", None)
         self.soil = state.get("soil", None)
-
-        self.ticks_until_sprout = state.get("ticks_until_sprout", 0)
-        self.ticks_until_mature = state.get("ticks_until_mature", 0)
-        self.ticks_until_death = state.get("ticks_until_death", 0)
         self.growth_ticks = state.get("growth_ticks", 0)
 
-        self.sprout_icon = state.get("sprout_icon", "")
-        self.mature_icon = state.get("mature_icon", "")
+        self.seed_data = None
+        if self.seed is not None:
+            self.seed_data = SEED_DATA.get(self.seed.get_key())
 
 # -----------------------------------------------------------------------------
 # GARDEN VIEW
@@ -290,7 +390,6 @@ class GardenView(discord.ui.View):
         
         self._PLOT_COST = 500
         self._PURCHASE_COST = 2000
-        self._MAX_SIZE = 5
 
         self._display_initial_buttons()
 
@@ -302,7 +401,7 @@ class GardenView(discord.ui.View):
             return Embed(title="Plant Seed", description="Choose a seed to plant in this plot.\n\nNavigate through the items using the Prev and Next buttons." + additional)
         if self._intent == Intent.UseItem:
             return Embed(title="Use Item", description="Choose an item to use on this plot.\n\nNavigate through the items using the Prev and Next buttons." + additional)
-        return Embed(title="Garden", description="You enter the garden, where you can plant seeds and harvest crops." + additional)
+        return Embed(title="Garden", description="You enter the garden, where you can plant seeds and harvest crops. The garden plots update every hour." + additional)
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -322,7 +421,7 @@ class GardenView(discord.ui.View):
         house: House = player.get_house()
         
         num_per_row = 1
-        for i in range(1, self._MAX_SIZE + 1):
+        for i in range(1, MAX_GARDEN_SIZE + 1):
             if len(house.garden_plots) % i == 0:
                 num_per_row = i
 
@@ -333,7 +432,7 @@ class GardenView(discord.ui.View):
             self.add_item(HarvestButton(min(4, num_per_row)))
             self.add_item(PlantSeedButton(min(4, num_per_row)))
             self.add_item(UseItemButton(min(4, num_per_row)))
-        if len(player.get_house().garden_plots) % self._MAX_SIZE != 0:
+        if len(player.get_house().garden_plots) % MAX_GARDEN_SIZE != 0:
             self.add_item(ExpandButton(self._PLOT_COST, min(4, num_per_row)))
         self.add_item(ExitToHouseButton(min(4, num_per_row)))
 
@@ -412,10 +511,12 @@ class GardenView(discord.ui.View):
         return self.get_embed_for_intent()
 
     def harvest(self):
-        if self._selected_plot is None:
+        if self._selected_plot is None or self._selected_plot.seed is None or self._selected_plot.seed_data is None:
             self._get_garden_buttons()
-            return self.get_embed_for_intent(additional="\n\n*That plot doesn't exist and can't be harvested!*")
+            return self.get_embed_for_intent(additional="\n\n*A plot either isn't selected or lacks a seed!*")
 
+        seed_key = self._selected_plot.seed.get_key()
+        seed_data = self._selected_plot.seed_data
         harvest_result = self._selected_plot.harvest()
 
         self._get_garden_buttons()
@@ -427,14 +528,23 @@ class GardenView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory.add_item(harvest_result)
 
-        return self.get_embed_for_intent(additional=f"\n\n*You received {harvest_result.get_full_name()} (x{harvest_result.get_count()})*")
+        num_seeds_to_add = 0
+        for _ in range(seed_data.max_seeds_can_drop):
+            if random.random() < seed_data.chance_to_drop_seed:
+                num_seeds_to_add += 1
+                inventory.add_item(LOADED_ITEMS.get_new_item(seed_key))
+        seeds_added_str = f" and {num_seeds_to_add} seeds" if num_seeds_to_add > 0 else ""
+
+        player.get_expertise().add_xp_to_class(seed_data.xp_to_gain, ExpertiseClass.Alchemist)
+
+        return self.get_embed_for_intent(additional=f"\n\n*You received {harvest_result.get_full_name()}{seeds_added_str}*")
 
     def expand_garden(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
         house: House = player.get_house()
 
-        if len(house.garden_plots) % self._MAX_SIZE == 0:
+        if len(house.garden_plots) % MAX_GARDEN_SIZE == 0:
             self._get_garden_buttons()
             return self.get_embed_for_intent(additional="\n\n*You've reached the max size for the garden!*")
 
@@ -442,7 +552,7 @@ class GardenView(discord.ui.View):
             return self.get_embed_for_intent(additional=f"\n\n*You don't have enough coins ({self._PLOT_COST}) to expand the garden.*")
 
         cur_size = 1
-        for i in range(1, self._MAX_SIZE + 1):
+        for i in range(1, MAX_GARDEN_SIZE + 1):
             if len(house.garden_plots) % i == 0:
                 cur_size = i
 

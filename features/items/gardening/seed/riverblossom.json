@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/riverblossom_seed",
+    "icon": "\uD83E\uDEB7",
+    "name": "Riverblossom Seed",
+    "value": 5,
+    "rarity": "Common",
+    "description": "When planted, grows a riverblossom flower.",
+    "flavor_text": "Occasionally seen floating down rivers, they detach from underwater stalks to help populate it to the far reaches of the world.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

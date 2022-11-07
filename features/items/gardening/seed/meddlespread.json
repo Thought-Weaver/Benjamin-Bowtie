@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/meddlespread_spores",
+    "icon": "\uD83C\uDF44",
+    "name": "Meddlespread Spores",
+    "value": 1,
+    "rarity": "Common",
+    "description": "When planted, grows a meddlespread fungus.",
+    "flavor_text": "A gardener's worst enemy. Can be put into a stew, but isn't particularly tasty.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

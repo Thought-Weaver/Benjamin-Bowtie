@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/grave_moss_spores",
+    "icon": "\uD83E\uDEA8",
+    "name": "Grave Moss Spores",
+    "value": 4,
+    "rarity": "Common",
+    "description": "When planted, grows a grave moss plant.",
+    "flavor_text": "In the old tales, it was said that wherever this grew, someone would be fated to die.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

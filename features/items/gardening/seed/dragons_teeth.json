@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/dragons_teeth_seed",
+    "icon": "\uD83C\uDF41",
+    "name": "Dragon's Teeth Seed",
+    "value": 166,
+    "rarity": "Legendary",
+    "description": "When planted, grows a dragon's teeth plant.",
+    "flavor_text": "An exceedingly rare herb, found growing only in stygian, torrid regions of the world.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

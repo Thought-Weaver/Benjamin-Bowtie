@@ -239,7 +239,6 @@ class TrainerView(discord.ui.View):
     def get_available_abilities(self, player: Player, all_abilities: List[List[type]]):
         player_abilities: List[Ability] = player.get_dueling().available_abilities
         available_abilities: List[Ability] = []
-        # TODO: Could optimize this significantly?
         for ability_group in all_abilities:
             result: Ability | None = ability_group[0]()
             for i, ability_class in enumerate(ability_group):

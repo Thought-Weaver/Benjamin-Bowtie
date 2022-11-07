@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/rotstalk_seed",
+    "icon": "\uD83E\uDD40",
+    "name": "Rotstalk Seed",
+    "value": 50,
+    "rarity": "Epic",
+    "description": "When planted, grows a rotstalk plant.",
+    "flavor_text": "Its unpleasant scent is often masked due to its environment: fields of corpses.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

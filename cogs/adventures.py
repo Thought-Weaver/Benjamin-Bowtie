@@ -88,6 +88,8 @@ class Adventures(commands.Cog):
     def _get_story(self, guild_id: int, story_key: Story):
         return self._database[str(guild_id)]["stories"][story_key]
 
+    # TODO: Can I somehow guarantee this every hour on the hour without starting
+    # the bot exactly at that time?
     @tasks.loop(hours=1)
     async def tick(self):
         for guild_id in self._database.keys():

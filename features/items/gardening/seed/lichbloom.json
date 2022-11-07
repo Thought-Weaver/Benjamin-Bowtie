@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/lichbloom_seed",
+    "icon": "\uD83C\uDF39",
+    "name": "Lichbloom Seed",
+    "value": 233,
+    "rarity": "Legendary",
+    "description": "When planted, grows a lichbloom flower.",
+    "flavor_text": "Never shall we die.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

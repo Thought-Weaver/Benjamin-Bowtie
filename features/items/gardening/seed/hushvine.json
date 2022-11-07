@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/hushvine_seed",
+    "icon": "\uD83C\uDF31",
+    "name": "Hushvine Seed",
+    "value": 26,
+    "rarity": "Rare",
+    "description": "When planted, grows a hushvine plant.",
+    "flavor_text": "Difficult to acquire -- mostly because it has a propensity for eating people.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

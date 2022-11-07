@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/sirens_kiss_seed",
+    "icon": "\uD83E\uDEB7",
+    "name": "Siren's Kiss Seed",
+    "value": 40,
+    "rarity": "Epic",
+    "description": "When planted, grows a siren's kiss flower.",
+    "flavor_text": "Where do they come from, rising from the deep? Oddly beautiful and anatomically distinct from almost all known flowers.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

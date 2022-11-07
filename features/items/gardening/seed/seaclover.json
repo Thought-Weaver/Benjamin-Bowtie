@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/seaclover_seed",
+    "icon": "\u2618\uFE0F",
+    "name": "Seaclover Seed",
+    "value": 1,
+    "rarity": "Common",
+    "description": "When planted, grows a seaclover plant.",
+    "flavor_text": "Unlike terrestrial clovers, these tend to grow in clumps on rocks in the ocean. They make marvelous shelters for smaller fish (and tiny crabs).",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/dawns_glory_seed",
+    "icon": "\uD83C\uDFF5\uFE0F",
+    "name": "Dawn's Glory Seed",
+    "value": 20,
+    "rarity": "Rare",
+    "description": "When planted, grows a dawn's glory flower.",
+    "flavor_text": "Only when the sun rises highest in the sky will it bloom.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

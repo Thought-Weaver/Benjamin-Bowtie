@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/dream_maker_seed",
+    "icon": "\uD83C\uDF38",
+    "name": "Dream Maker Seed",
+    "value": 33,
+    "rarity": "Epic",
+    "description": "When planted, grows a dream maker flower.",
+    "flavor_text": "\"You ever seen a high squirrel before? Lemme tell ya, it's damn funny.\"",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

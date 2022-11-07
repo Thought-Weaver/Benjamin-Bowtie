@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/wanderweed_seed",
+    "icon": "\uD83C\uDF43",
+    "name": "Wanderweed Seed",
+    "value": 21,
+    "rarity": "Rare",
+    "description": "When planted, grows a wanderweed plant.",
+    "flavor_text": "A migratory plant often seen lifting from the ground and travelling vast distances across the plains to resettle.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

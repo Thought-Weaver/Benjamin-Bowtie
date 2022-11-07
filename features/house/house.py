@@ -1,13 +1,18 @@
 from __future__ import annotations
+import random
 
 import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
+from features.house.garden import MUTATION_PROBS
 from features.inventory import Inventory
 from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
+
+from features.shared.constants import MAX_GARDEN_SIZE
+from features.shared.item import LOADED_ITEMS
 
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
@@ -46,8 +51,55 @@ class House():
         self.garden_plots: List[GardenPlot] = []
 
     def tick_garden(self):
-        # TODO: Finish implementing this when I figure out probabilities
-        # for cross breeding.
+        if HouseRoom.Garden not in self.house_rooms:
+            return
+
+        size = 1
+        for i in range(1, MAX_GARDEN_SIZE + 1):
+            if len(self.garden_plots) % i == 0:
+                size = i
+
+        # Do mutations first rather than as the plots tick to avoid plant death
+        # and confusing results for the player.
+        if size > 1:
+            for i, plot in enumerate(self.garden_plots):
+                if plot.seed is not None:
+                    continue
+
+                neighbors: List[GardenPlot] = []
+                if i - size >= 0:
+                    neighbors.append(self.garden_plots[i - size])
+                if i % size != 0:
+                    neighbors.append(self.garden_plots[i - 1])
+                if (i + 1) % size != 0:
+                    neighbors.append(self.garden_plots[i + 1])
+                if i + size < size:
+                    neighbors.append(self.garden_plots[i + size])
+                if i - size - 1 >= 0 and i % size != 0:
+                    neighbors.append(self.garden_plots[i - size - 1])
+                if i - size + 1 >= 0 and (i + 1) % size != 0:
+                    neighbors.append(self.garden_plots[i - size + 1])
+                if i + size - 1 < size and i % size != 0:
+                    neighbors.append(self.garden_plots[i + size - 1])
+                if i + size + 1 < size and (i + 1) % size != 0:
+                    neighbors.append(self.garden_plots[i + size + 1])
+        
+                plant_keys = [neighbor_plot.seed_data.result if (neighbor_plot.seed_data is not None and neighbor_plot.is_mature()) else "" for neighbor_plot in neighbors]
+
+                min_prob = 1
+                min_prob_result = None
+                for required_plants, possible_result in MUTATION_PROBS.items():
+                    if required_plants[0] in plant_keys and required_plants[1] in plant_keys:
+                        if random.random() < possible_result[1]:
+                            # Favor the result with the lowest probability if random chance has willed it.
+                            if possible_result[1] <= min_prob:
+                                min_prob = possible_result[1]
+                                min_prob_result = possible_result[0]
+                
+                if min_prob_result is not None:
+                    seed = LOADED_ITEMS.get_new_item(min_prob_result)
+                    self.garden_plots[i].plant_seed(seed)
+
         for plot in self.garden_plots:
             plot.tick()
 

@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/fools_delight_spores",
+    "icon": "\uD83C\uDF44",
+    "name": "Fool's Delight Spores",
+    "value": 6,
+    "rarity": "Rare",
+    "description": "When planted, grows a fool's delight mushroom.",
+    "flavor_text": "Looks like one of those mushrooms you really shouldn't put into a stew, but you'll never get the chance to try after touching it.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/frostwort_seed",
+    "icon": "\uD83C\uDF3C",
+    "name": "Frostwort Seed",
+    "value": 1,
+    "rarity": "Common",
+    "description": "When planted, grows a frostwort plant.",
+    "flavor_text": "Usually found in clusters in cold or wet terrestrial environments.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

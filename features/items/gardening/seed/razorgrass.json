@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/razorgrass_seed",
+    "icon": "\uD83C\uDF3E",
+    "name": "Razorgrass Seed",
+    "value": 3,
+    "rarity": "Common",
+    "description": "When planted, grows a razorgrass plant.",
+    "flavor_text": "While the barbed grass itself isn't of much use to alchemists, the pods that grow within the grass have a sap which makes a common base for a number of potions.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

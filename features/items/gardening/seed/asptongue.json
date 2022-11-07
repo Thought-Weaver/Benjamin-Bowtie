@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/asptongue_seed",
+    "icon": "\uD83C\uDF31",
+    "name": "Asptongue Seed",
+    "value": 3,
+    "rarity": "Common",
+    "description": "When planted, grows an asptongue plant.",
+    "flavor_text": "A common, poisonous plant that becomes significantly more potent when combined with other herbs.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

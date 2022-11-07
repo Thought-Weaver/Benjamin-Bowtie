@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/shellflower_seed",
+    "icon": "\uD83C\uDF37",
+    "name": "Shellflower Seed",
+    "value": 11,
+    "rarity": "Rare",
+    "description": "When planted, grows a shellflower plant.",
+    "flavor_text": "You can almost imagine field mice using their tough petals as shields in a tiny war.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

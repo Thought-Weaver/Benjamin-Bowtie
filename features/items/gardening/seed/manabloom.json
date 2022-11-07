@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/manabloom_seed",
+    "icon": "\uD83C\uDF3A",
+    "name": "Manabloom Seed",
+    "value": 6,
+    "rarity": "Rare",
+    "description": "When planted, grows a manabloom seed.",
+    "flavor_text": "One of very few plants identified that use mana and whose properties can enhance the abilities of arcane practitioners.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

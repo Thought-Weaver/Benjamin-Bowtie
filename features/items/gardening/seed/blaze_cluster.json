@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/blaze_cluster_spores",
+    "icon": "\uD83C\uDF44",
+    "name": "Blaze Cluster Spores",
+    "value": 13,
+    "rarity": "Rare",
+    "description": "When planted, grows a blaze cluster.",
+    "flavor_text": "Can be used in a stew (and confers quite a spicy flavor), but make sure to use gloves when handling because let me tell you, that rash isn't pleasant.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

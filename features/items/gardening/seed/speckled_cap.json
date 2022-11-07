@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/speckled_cap_spores",
+    "icon": "\uD83C\uDF44",
+    "name": "Speckled Cap Spores",
+    "value": 2,
+    "rarity": "Common",
+    "description": "When planted, grows a speckled cap mushroom.",
+    "flavor_text": "Looks like one of those mushrooms you really shouldn't put into a stew, but is actually fine.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}
