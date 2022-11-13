@@ -5,6 +5,7 @@ import re
 
 from discord import Embed
 from discord.ext import tasks
+from enum import StrEnum
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Attribute, Expertise, ExpertiseClass
@@ -14,7 +15,6 @@ from features.shared.item import LOADED_ITEMS, ClassTag, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from random import choice
-from strenum import StrEnum
 
 from typing import TYPE_CHECKING, List
 

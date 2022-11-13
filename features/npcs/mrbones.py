@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from enum import StrEnum
 from random import randint, random
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.npcs.npc import NPC, NPCRoles
 from features.shared.ability import ATidySumIII, BoundToGetLuckyIII, ContractBloodForBloodIII, ContractManaToBloodIII, ContractWealthForPowerIII, CursedCoinsIII, DeepPocketsIII, SecondWindIII, SilkspeakingI, UnseenRichesIII
-from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Callable, List
 

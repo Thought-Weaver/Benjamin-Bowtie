@@ -189,6 +189,19 @@ class Equipment():
         ]
         return len(list(filter(lambda item: item is None, equipment)))
 
+    def get_combined_item_effects(self):
+        equipped_items = self.get_all_equipped_items()
+        result = None
+        for item in equipped_items:
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                if result is None:
+                    result = item_effects
+                else:
+                    result += item_effects
+
+        return result
+
     def __getstate__(self):
         return self.__dict__
 

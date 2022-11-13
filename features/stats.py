@@ -4,12 +4,12 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
-from strenum import LowercaseStrEnum
+from enum import StrEnum
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
 
-class StatCategory(LowercaseStrEnum):
+class StatCategory(StrEnum):
     Fish = "fish"
     Mail = "mail"
     Market = "market"

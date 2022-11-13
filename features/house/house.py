@@ -5,9 +5,9 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
+from enum import StrEnum
 from features.house.garden import MUTATION_PROBS
 from features.inventory import Inventory
-from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
 

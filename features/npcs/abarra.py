@@ -3,6 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord import Embed
+from enum import StrEnum
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
@@ -11,7 +12,6 @@ from features.shared.ability import BoundToGetLuckyIII, CounterstrikeIII, EvadeI
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
-from strenum import StrEnum
 
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:

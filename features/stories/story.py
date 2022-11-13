@@ -1,6 +1,6 @@
-from strenum import LowercaseStrEnum
+from enum import StrEnum
 
-class Story(LowercaseStrEnum):
+class Story(StrEnum):
     Underworld = "underworld"
     Ocean = "ocean"
     Forest = "forest"

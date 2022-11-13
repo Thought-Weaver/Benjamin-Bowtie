@@ -11,8 +11,9 @@ from features.equipment import Equipment
 
 from features.expertise import ExpertiseClass
 from features.shared.constants import DEX_DODGE_SCALE, INT_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
+from features.shared.effect import EffectType
 from features.shared.item import ClassTag, WeaponStats
-from features.shared.statuseffect import BLEED_PERCENT_HP, POISONED_PERCENT_HP, AttrBuffOnDamage, Bleeding, CannotTarget, ConBuff, ConDebuff, DexBuff, DexDebuff, DmgReduction, FixedDmgTick, Generating, IntBuff, IntDebuff, LckBuff, ManaToHP, PoisonHeals, Poisoned, PotionBuff, RegenerateHP, RestrictedToItems, StatusEffect, StatusEffectKey, StrBuff, StrDebuff, Tarnished, Taunted, TurnSkipChance
+from features.shared.statuseffect import *
 
 if TYPE_CHECKING:
     from features.npcs.npc import NPC
@@ -91,10 +92,42 @@ class Ability():
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         pass
 
+    def remove_mana_and_set_cd(self, caster: Player | NPC):
+        mana_to_blood_percent = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.ManaToHP:
+                mana_to_blood_percent = se.value
+                break
+
+        mana_cost_adjustment = 0
+        cd_adjustment = 0
+        for item in caster.get_equipment().get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for effect in item_effects.permanent:
+                    if effect.effect_type == EffectType.AdjustedManaCosts:
+                        mana_cost_adjustment = max(mana_cost_adjustment + effect.effect_value, -1)
+                    if effect.effect_type == EffectType.AdjustedCDs:
+                        cd_adjustment += int(effect.effect_value)
+        
+        final_mana_cost = self.get_mana_cost() + int(self.get_mana_cost() * mana_cost_adjustment)
+        if mana_to_blood_percent == 0:
+            caster.get_expertise().remove_mana(final_mana_cost)
+        else:
+            damage = int(mana_to_blood_percent * final_mana_cost)
+            if damage > 0:
+                caster.get_expertise().damage(damage, 0, 0, caster.get_equipment())
+                return f"You took {damage} damage to cast this from Contract: Mana to Blood"
+            
+        if self._cooldown >= 0:
+            self._cur_cooldown = max(self._cooldown + cd_adjustment, 0)
+        else:
+            # Can't adjust -1 time cooldowns
+            self._cur_cooldown = self._cooldown
+
     def _use_damage_ability(self, caster: Player, targets: List[Player | NPC], dmg_range: range) -> List[NegativeAbilityResult]:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
         for i, target in enumerate(targets):
@@ -130,29 +163,16 @@ class Ability():
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+
+        result_str = self.remove_mana_and_set_cd(caster)
+        if result_str is not None:
+            results.append(NegativeAbilityResult(result_str, False))
 
         return results
 
     def _use_negative_status_effect_ability(self, caster: Player, targets: List[Player | NPC], status_effects: List[StatusEffect]) -> List[NegativeAbilityResult]:
         results: List[NegativeAbilityResult] = []
         status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
-
-        caster_expertise = caster.get_expertise()
 
         for i, target in enumerate(targets):
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
@@ -166,20 +186,9 @@ class Ability():
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" is now {status_effects_str}", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        result_str = self.remove_mana_and_set_cd(caster)
+        if result_str is not None:
+            results.append(NegativeAbilityResult(result_str, False))
 
         return results
 
@@ -199,35 +208,29 @@ class Ability():
         results: List[str] = []
         status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
 
-        caster_expertise = caster.get_expertise()
-
         for i, target in enumerate(targets):
             target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
             target.get_expertise().update_stats(target.get_combined_attributes())
             results.append("{" + f"{i + 1}" + "}" + f" is now {status_effects_str}")
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(f"You took {damage} damage to cast this from Contract: Mana to Blood")
-        self._cur_cooldown = self._cooldown
+        result_str = self.remove_mana_and_set_cd(caster)
+        if result_str is not None:
+            results.append(result_str)
 
         return results
 
     def _use_heal_ability(self, caster: Player, targets: List[Player | NPC], heal_range: range) -> List[str]:
         results: List[str] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+
+        healing_adjustment = 0
+        for item in caster.get_equipment().get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for effect in item_effects.permanent:
+                    if effect.effect_type == EffectType.HealingAbilityBuff:
+                        healing_adjustment = max(healing_adjustment + effect.effect_value, -1)
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
@@ -236,6 +239,7 @@ class Ability():
 
             heal_amount = int(randint(heal_range.start, heal_range.stop) * critical_hit_boost)
             heal_amount += int(heal_amount * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
+            heal_amount += int(heal_amount * healing_adjustment)
 
             target_expertise.heal(heal_amount)
 
@@ -243,20 +247,9 @@ class Ability():
 
             results.append("{" + f"{i + 1}" + "}" + f" was healed for {heal_amount}{critical_hit_str} HP")
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(f"You took {damage} damage to cast this from Contract: Mana to Blood")
-        self._cur_cooldown = self._cooldown
+        result_str = self.remove_mana_and_set_cd(caster)
+        if result_str is not None:
+            results.append(result_str)
 
         return results
 
@@ -504,19 +497,19 @@ class CurseOfTheSeaI(Ability):
         con_debuff = ConDebuff(
             turns_remaining=2,
             value=-1,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         str_debuff = StrDebuff(
             turns_remaining=2,
             value=-1,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         dex_debuff = DexDebuff(
             turns_remaining=2,
             value=-1,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -554,19 +547,19 @@ class CurseOfTheSeaII(Ability):
         con_debuff = ConDebuff(
             turns_remaining=2,
             value=-2,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         str_debuff = StrDebuff(
             turns_remaining=2,
             value=-2,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         dex_debuff = DexDebuff(
             turns_remaining=2,
             value=-2,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -604,19 +597,19 @@ class CurseOfTheSeaIII(Ability):
         con_debuff = ConDebuff(
             turns_remaining=2,
             value=-3,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         str_debuff = StrDebuff(
             turns_remaining=2,
             value=-3,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         dex_debuff = DexDebuff(
             turns_remaining=2,
             value=-3,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -657,7 +650,7 @@ class HookI(Ability):
         dex_debuff = DexDebuff(
             turns_remaining=3,
             value=-5,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -695,7 +688,7 @@ class HookII(Ability):
         dex_debuff = DexDebuff(
             turns_remaining=3,
             value=-10,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -733,7 +726,7 @@ class HookIII(Ability):
         dex_debuff = DexDebuff(
             turns_remaining=3,
             value=-15,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -811,20 +804,9 @@ class WrathOfTheWavesI(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -897,20 +879,9 @@ class WrathOfTheWavesII(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -983,20 +954,9 @@ class WrathOfTheWavesIII(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1035,7 +995,7 @@ class HighTideI(Ability):
         dmg_reduction = DmgReduction(
             turns_remaining=1,
             value=0.25,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1073,7 +1033,7 @@ class HighTideII(Ability):
         dmg_reduction = DmgReduction(
             turns_remaining=1,
             value=0.35,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1111,7 +1071,7 @@ class HighTideIII(Ability):
         dmg_reduction = DmgReduction(
             turns_remaining=1,
             value=0.45,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1187,7 +1147,7 @@ class ThunderingTorrentI(Ability):
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
                 value=int(actual_damage_dealt / 2),
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             ))
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -1195,20 +1155,9 @@ class ThunderingTorrentI(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1279,7 +1228,7 @@ class ThunderingTorrentII(Ability):
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
                 value=int(actual_damage_dealt / 2),
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             ))
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -1287,20 +1236,9 @@ class ThunderingTorrentII(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1371,7 +1309,7 @@ class ThunderingTorrentIII(Ability):
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
                 value=int(actual_damage_dealt / 2),
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             ))
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -1379,20 +1317,9 @@ class ThunderingTorrentIII(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1457,20 +1384,9 @@ class DrownInTheDeepI(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1532,20 +1448,9 @@ class DrownInTheDeepII(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1607,20 +1512,9 @@ class DrownInTheDeepIII(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1697,20 +1591,9 @@ class WhirlpoolI(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1784,20 +1667,9 @@ class WhirlpoolII(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1871,20 +1743,9 @@ class WhirlpoolIII(Ability):
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
-        mana_to_blood_percent = 0
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.ManaToHP:
-                mana_to_blood_percent = se.value
-                break
-        
-        if mana_to_blood_percent == 0:
-            caster_expertise.remove_mana(self.get_mana_cost())
-        else:
-            damage = int(mana_to_blood_percent * self.get_mana_cost())
-            if damage > 0:
-                caster_expertise.damage(damage, 0, 0, caster.get_equipment())
-                results.append(NegativeAbilityResult(f"You took {damage} damage to cast this from Contract: Mana to Blood", False))
-        self._cur_cooldown = self._cooldown
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, False))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -1923,7 +1784,7 @@ class ShatteringStormI(Ability):
         skip_debuff = TurnSkipChance(
             turns_remaining=1,
             value=0.15,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1961,7 +1822,7 @@ class ShatteringStormII(Ability):
         skip_debuff = TurnSkipChance(
             turns_remaining=1,
             value=0.25,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -1999,7 +1860,7 @@ class ShatteringStormIII(Ability):
         skip_debuff = TurnSkipChance(
             turns_remaining=1,
             value=0.35,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -2282,7 +2143,7 @@ class BidedAttackI(Ability):
         str_buff = StrBuff(
             turns_remaining=1,
             value=3,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2320,7 +2181,7 @@ class BidedAttackII(Ability):
         str_buff = StrBuff(
             turns_remaining=1,
             value=4,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2358,7 +2219,7 @@ class BidedAttackIII(Ability):
         str_buff = StrBuff(
             turns_remaining=1,
             value=4,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2401,9 +2262,9 @@ class ScarArmorI(Ability):
             on_being_hit_buffs=[ConBuff(
                 turns_remaining=-1,
                 value=1,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )],
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2443,9 +2304,9 @@ class ScarArmorII(Ability):
             on_being_hit_buffs=[ConBuff(
                 turns_remaining=-1,
                 value=1,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )],
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2486,7 +2347,7 @@ class UnbreakingI(Ability):
         con_buff = ConBuff(
             turns_remaining=-1,
             value=caster.get_equipment().get_num_slots_unequipped(),
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2524,7 +2385,7 @@ class UnbreakingII(Ability):
         con_buff = ConBuff(
             turns_remaining=-1,
             value=2 * caster.get_equipment().get_num_slots_unequipped(),
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2700,7 +2561,7 @@ class TauntI(Ability):
         taunt = Taunted(
             turns_remaining=1,
             forced_to_attack=caster,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2755,7 +2616,7 @@ class PiercingStrikeI(Ability):
         bleed = Bleeding(
             turns_remaining=3,
             value=BLEED_PERCENT_HP,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         for i in range(len(results)):
@@ -2811,7 +2672,7 @@ class PiercingStrikeII(Ability):
         bleed = Bleeding(
             turns_remaining=3,
             value=BLEED_PERCENT_HP,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         for i in range(len(results)):
@@ -2867,7 +2728,7 @@ class PiercingStrikeIII(Ability):
         bleed = Bleeding(
             turns_remaining=3,
             value=BLEED_PERCENT_HP,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         for i in range(len(results)):
@@ -2945,7 +2806,7 @@ class EvadeI(Ability):
         dex_buff = DexBuff(
             turns_remaining=1,
             value=200,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2983,7 +2844,7 @@ class EvadeII(Ability):
         dex_buff = DexBuff(
             turns_remaining=1,
             value=300,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3021,7 +2882,7 @@ class EvadeIII(Ability):
         dex_buff = DexBuff(
             turns_remaining=1,
             value=400,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3199,19 +3060,19 @@ class ContractWealthForPowerI(Ability):
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-1,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             str_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-1,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             dex_debuff = DexDebuff(
                 turns_remaining=-1,
                 value=-1,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
@@ -3222,19 +3083,19 @@ class ContractWealthForPowerI(Ability):
             int_buff = IntBuff(
                 turns_remaining=-1,
                 value=1,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             str_buff = StrBuff(
                 turns_remaining=-1,
                 value=1,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             dex_buff = DexBuff(
                 turns_remaining=-1,
                 value=1,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             result_str += "\n".join(self._use_positive_status_effect_ability(caster, targets, [int_buff, str_buff, dex_buff]))
@@ -3273,19 +3134,19 @@ class ContractWealthForPowerII(Ability):
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-3,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             str_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-3,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             dex_debuff = DexDebuff(
                 turns_remaining=-1,
                 value=-3,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
@@ -3296,19 +3157,19 @@ class ContractWealthForPowerII(Ability):
             int_buff = IntBuff(
                 turns_remaining=-1,
                 value=3,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             str_buff = StrBuff(
                 turns_remaining=-1,
                 value=3,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             dex_buff = DexBuff(
                 turns_remaining=-1,
                 value=3,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             result_str += "\n".join(self._use_positive_status_effect_ability(caster, targets, [int_buff, str_buff, dex_buff]))
@@ -3347,19 +3208,19 @@ class ContractWealthForPowerIII(Ability):
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-5,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             str_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-5,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             dex_debuff = DexDebuff(
                 turns_remaining=-1,
                 value=-5,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
@@ -3370,19 +3231,19 @@ class ContractWealthForPowerIII(Ability):
             int_buff = IntBuff(
                 turns_remaining=-1,
                 value=5,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             str_buff = StrBuff(
                 turns_remaining=-1,
                 value=5,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             dex_buff = DexBuff(
                 turns_remaining=-1,
                 value=5,
-                source_ability_str=self.get_icon_and_name()
+                source_str=self.get_icon_and_name()
             )
 
             result_str += "\n".join(self._use_positive_status_effect_ability(caster, targets, [int_buff, str_buff, dex_buff]))
@@ -3421,7 +3282,7 @@ class BoundToGetLuckyI(Ability):
         lck_buff = LckBuff(
             turns_remaining=2,
             value=10,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3459,7 +3320,7 @@ class BoundToGetLuckyII(Ability):
         lck_buff = LckBuff(
             turns_remaining=2,
             value=20,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3497,7 +3358,7 @@ class BoundToGetLuckyIII(Ability):
         lck_buff = LckBuff(
             turns_remaining=2,
             value=30,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3538,7 +3399,7 @@ class SilkspeakingI(Ability):
         cannot_target = CannotTarget(
             turns_remaining=1,
             cant_target=caster,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -3579,7 +3440,7 @@ class ATidySumI(Ability):
         generating = Generating(
             turns_remaining=3,
             value=5,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3617,7 +3478,7 @@ class ATidySumII(Ability):
         generating = Generating(
             turns_remaining=3,
             value=10,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3655,7 +3516,7 @@ class ATidySumIII(Ability):
         generating = Generating(
             turns_remaining=3,
             value=15,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3696,7 +3557,7 @@ class CursedCoinsI(Ability):
         tarnished = Tarnished(
             turns_remaining=3,
             value=0.25,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3734,7 +3595,7 @@ class CursedCoinsII(Ability):
         tarnished = Tarnished(
             turns_remaining=3,
             value=0.5,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3772,7 +3633,7 @@ class CursedCoinsIII(Ability):
         tarnished = Tarnished(
             turns_remaining=3,
             value=0.75,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3912,7 +3773,7 @@ class ContractManaToBloodI(Ability):
         mana_to_hp = ManaToHP(
             turns_remaining=1,
             value=0.7,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3950,7 +3811,7 @@ class ContractManaToBloodII(Ability):
         mana_to_hp = ManaToHP(
             turns_remaining=1,
             value=0.5,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3988,7 +3849,7 @@ class ContractManaToBloodIII(Ability):
         mana_to_hp = ManaToHP(
             turns_remaining=1,
             value=0.3,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4343,7 +4204,7 @@ class PreparePotionsI(Ability):
         prep_potions_buff = PotionBuff(
             turns_remaining=3,
             value=0.15,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4381,7 +4242,7 @@ class PreparePotionsII(Ability):
         prep_potions_buff = PotionBuff(
             turns_remaining=3,
             value=0.25,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4419,7 +4280,7 @@ class PreparePotionsIII(Ability):
         prep_potions_buff = PotionBuff(
             turns_remaining=3,
             value=0.25,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4618,7 +4479,7 @@ class ToxicCloudI(Ability):
         poisoned = Poisoned(
             turns_remaining=2,
             value=POISONED_PERCENT_HP,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         for i in range(len(results)):
@@ -4664,7 +4525,7 @@ class ToxicCloudII(Ability):
         poisoned = Poisoned(
             turns_remaining=2,
             value=POISONED_PERCENT_HP,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         for i in range(len(results)):
@@ -4710,7 +4571,7 @@ class ToxicCloudIII(Ability):
         poisoned = Poisoned(
             turns_remaining=2,
             value=POISONED_PERCENT_HP,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         for i in range(len(results)):
@@ -4755,7 +4616,7 @@ class SmokescreenI(Ability):
         dex_buff = DexBuff(
             turns_remaining=1,
             value=25,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4793,7 +4654,7 @@ class SmokescreenII(Ability):
         dex_buff = DexBuff(
             turns_remaining=1,
             value=50,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4831,7 +4692,7 @@ class SmokescreenIII(Ability):
         dex_buff = DexBuff(
             turns_remaining=1,
             value=75,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -5023,7 +4884,7 @@ class PoisonousSkinI(Ability):
         poison_heals_buff = PoisonHeals(
             turns_remaining=-1,
             value=1,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -5064,7 +4925,7 @@ class RegenerationI(Ability):
         regenerating = RegenerateHP(
             turns_remaining=2,
             value=0.05,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -5102,7 +4963,7 @@ class RegenerationII(Ability):
         regenerating = RegenerateHP(
             turns_remaining=2,
             value=0.08,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -5140,7 +5001,7 @@ class RegenerationIII(Ability):
         regenerating = RegenerateHP(
             turns_remaining=2,
             value=0.1,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -5181,7 +5042,7 @@ class ParalyzingFumesI(Ability):
         faltering = TurnSkipChance(
             turns_remaining=1,
             value=0.5,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -5226,7 +5087,7 @@ class QuickAccessI(Ability):
         restriction = RestrictedToItems(
             turns_remaining=3,
             value=0,
-            source_ability_str=self.get_icon_and_name()
+            source_str=self.get_icon_and_name()
         )
         self._use_positive_status_effect_ability(caster, targets, [restriction])
 

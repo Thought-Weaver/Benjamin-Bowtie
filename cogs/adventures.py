@@ -92,6 +92,7 @@ class Adventures(commands.Cog):
 
     @tasks.loop(time=[datetime.time(hour=i) for i in range(24)])
     async def tick(self):
+        # TODO: Also handle ticking down any status effects, if the player isn't in combat
         for guild_id in self._database.keys():
             guild_id_str = str(guild_id)
             for user_id in self._database[guild_id_str].get("members", {}).keys():
@@ -651,14 +652,18 @@ class Adventures(commands.Cog):
             "**Bolstered:** Gain additional Strength\n"
             "**Hastened:** Gain additional Dexterity\n"
             "**Insightful:** Gain additional Intelligence\n"
-            "**Lucky:** Gain additional Luck\n\n"
+            "**Lucky:** Gain additional Luck\n"
+            "**Retentive:** Gain additional Memory\n\n"
             "**Frail:** Constitution is reduced\n"
             "**Weakened:** Strength is reduced\n"
             "**Slowed:** Dexterity is reduced\n"
             "**Enfeebled:** Intelligence is reduced\n"
-            "**Unlucky:** Luck is reduced\n\n"
+            "**Unlucky:** Luck is reduced\n"
+            "**Forgetful:** Memory is reduced\n\n"
             "**Protected:** +x% damage reduction (up to 75%)\n"
-            "**Vulnerable:** +x% additional damage taken (up to 25%)\n\n"
+            "**Vulnerable:** +x% additional damage taken (up to 25%)\n"
+            "**Empowered:** Deal x% additional damage\n"
+            "**Diminished:** Deal x% less damage\n\n"
             "**Faltering:** x% chance to skip your turn\n"
             "**Enraged:** Gain additional attributes whenever you take damage\n"
             "**Taunted:** Forced to attack the caster\n"

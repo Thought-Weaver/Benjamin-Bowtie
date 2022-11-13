@@ -1,16 +1,19 @@
 from __future__ import annotations
 
+from features.shared.item import ClassTag
 from types import MappingProxyType
-from strenum import StrEnum
+from enum import StrEnum
 
-from typing import List
+from typing import List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from features.shared.item import Item
+    from features.npcs.npc import NPC
+    from features.player import Player
 
 # -----------------------------------------------------------------------------
 # ENUMS
 # -----------------------------------------------------------------------------
 
-# TODO: I actually need to implement all of these for each of the associated
-# cases in ItemEffects.
 class EffectType(StrEnum):
     Unknown = "Unknown"
 
@@ -35,20 +38,20 @@ class EffectType(StrEnum):
     DmgBuffFromDex = "DmgBuffFromDex"
 
     # Everything in this group is associated with percent effect values
-    ExtraArmor = "ExtraArmor"
-    RestoreArmor = "RestoreArmor"
+    ExtraArmor = "ExtraArmor" # TODO: Implement once armor changes are done
+    RestoreArmor = "RestoreArmor" # TODO: Implement once armor changes are done
 
-    # Everything in this group is associated with percent effect values
     PiercingDmg = "PiercingDmg"
     SplashDmg = "SplashDmg"
-    CritDmgBuff = "CritDmgBuff"
-    CritDmgResist = "CritDmgResist"
 
     # Everything in this group is associated with percent effect values
+    CritDmgBuff = "CritDmgBuff"
+    CritDmgReduction = "CritDmgReduction"
+
     HealthSteal = "HealthSteal"
     ManaSteal = "ManaSteal"
 
-    LoweredCDs = "LoweredCDs"
+    AdjustedCDs = "AdjustedCDs"
 
     # Everything in this group is associated with percent effect values
     ChancePoisoned = "ChancePoisoned"
@@ -57,6 +60,10 @@ class EffectType(StrEnum):
     ResistBleeding = "ResistBleeding"
     ChanceFaltering = "ChanceFaltering"
     ResistFaltering = "ResistFaltering"
+    ChanceTaunted = "ChanceTaunted"
+    ResistTaunted = "ResistTaunted"
+    ChanceConvinced = "ChanceConvinced"
+    ResistConvinced = "ResistConvinced"
 
     RestoreHealth = "RestoreHealth"
     RestorePercentHealth = "RestorePercentHealth"
@@ -64,9 +71,9 @@ class EffectType(StrEnum):
     RestorePercentMana = "RestorePercentMana"
 
     # Everything in this group is associated with percent effect values
-    ReducedManaCosts = "ReducedManaCosts"
+    AdjustedManaCosts = "AdjustedManaCosts"
     HealingAbilityBuff = "HealingAbilityBuff"
-    AdditionalXP = "AdditionalXP"
+    AdditionalXP = "AdditionalXP" # TODO: Implement this
 
     ResurrectOnce = "ResurrectOnce"
 
@@ -92,6 +99,56 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
     EffectType.ConMod: 0,
     EffectType.StrMod: 1,
     EffectType.DexMod: 2,
+    EffectType.IntMod: 3,
+    EffectType.LckMod: 4,
+    EffectType.MemMod: 5,
+
+    EffectType.DmgReflect: 6,
+    EffectType.DmgResist: 7,
+    EffectType.DmgBuff: 8,
+    EffectType.DmgBuffSelfMaxHealth: 9,
+    EffectType.DmgBuffSelfRemainingHealth: 10,
+    EffectType.DmgBuffOtherMaxHealth: 11,
+    EffectType.DmgBuffOtherRemainingHealth: 12,
+    EffectType.DmgBuffLegends: 13,
+    EffectType.DmgBuffPoisoned: 14,
+    EffectType.DmgBuffBleeding: 15,
+    EffectType.DmgBuffFromDex: 16,
+
+    EffectType.ExtraArmor: 17,
+    EffectType.RestoreArmor: 18,
+    
+    EffectType.PiercingDmg: 19,
+    EffectType.SplashDmg: 20,
+    EffectType.CritDmgBuff: 21,
+    EffectType.CritDmgReduction: 22,
+
+    EffectType.HealthSteal: 23,
+    EffectType.ManaSteal: 24,
+
+    EffectType.AdjustedCDs: 25,
+
+    EffectType.ChancePoisoned: 26,
+    EffectType.ResistPoisoned: 27,
+    EffectType.ChanceBleeding: 28,
+    EffectType.ResistBleeding: 29,
+    EffectType.ChanceFaltering: 30,
+    EffectType.ResistFaltering: 31,
+    EffectType.ChanceTaunted: 32,
+    EffectType.ResistTaunted: 33,
+    EffectType.ChanceConvinced: 34,
+    EffectType.ResistConvinced: 35,
+
+    EffectType.RestoreHealth: 36,
+    EffectType.RestorePercentHealth: 37,
+    EffectType.RestoreMana: 38,
+    EffectType.RestorePercentMana: 39,
+
+    EffectType.AdjustedManaCosts: 40,
+    EffectType.HealingAbilityBuff: 41,
+    EffectType.AdditionalXP: 42,
+
+    EffectType.ResurrectOnce: 43
 })
 
 # -----------------------------------------------------------------------------
@@ -105,6 +162,30 @@ class Effect():
         self.effect_time = effect_time
         self.conditions = conditions
         self.condition_values = condition_values
+
+    def meets_conditions(self, entity: Player | NPC, item: Item):
+        conditions_met = True
+        for i, condition in enumerate(self.conditions):
+            if condition == ConditionType.IsAbovePercentHealth:
+                conditions_met &= entity.get_expertise().hp / entity.get_expertise().max_hp > self.condition_values[i]
+            if condition == ConditionType.IsBelowPercentHealth:
+                conditions_met &= entity.get_expertise().hp / entity.get_expertise().max_hp < self.condition_values[i]
+            if condition == ConditionType.IsFullHealth:
+                conditions_met &= entity.get_expertise().hp == entity.get_expertise().max_hp
+            if condition == ConditionType.IsItemArmor:
+                class_tags = item.get_class_tags()
+                conditions_met &= (
+                    ClassTag.Equipment.Equipment in class_tags and 
+                    not ClassTag.Equipment.MainHand in class_tags and
+                    not ClassTag.Equipment.OffHand in class_tags
+                )
+            if condition == ConditionType.IsItemInHand:
+                class_tags = item.get_class_tags()
+                conditions_met &= (
+                    ClassTag.Equipment.MainHand in class_tags or
+                    ClassTag.Equipment.OffHand in class_tags
+                )
+        return conditions_met
 
     def __str__(self):
         display_string = ""
@@ -185,25 +266,27 @@ class Effect():
             display_string += f"{self.effect_value} Armor Restored"
 
         if self.effect_type == EffectType.PiercingDmg:
-            display_string += f"{self.effect_value * 100}% Damage Ignores Armor"
+            display_string += f"{self.effect_value} Piercing Damage"
         if self.effect_type == EffectType.SplashDmg:
-            display_string += f"{self.effect_value * 100}% Damage Splash"
+            display_string += f"{self.effect_value} Damage Splash"
         if self.effect_type == EffectType.CritDmgBuff:
             if self.effect_value > 0:
                 display_string += "+"
             display_string += f"{self.effect_value * 100}% Crit Damage"
-        if self.effect_type == EffectType.CritDmgResist:
+        if self.effect_type == EffectType.CritDmgReduction:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Crit Damage Resist"
+            display_string += f"{self.effect_value * 100}% Crit Damage Reduction"
 
         if self.effect_type == EffectType.HealthSteal:
-            display_string += f"{self.effect_value * 100}% Health Stolen"
+            display_string += f"{self.effect_value} Health Stolen"
         if self.effect_type == EffectType.ManaSteal:
-            display_string += f"{self.effect_value * 100}% Mana Stolen"
+            display_string += f"{self.effect_value} Mana Stolen"
         
-        if self.effect_type == EffectType.LoweredCDs:
+        if self.effect_type == EffectType.AdjustedCDs:
             turn_str = "Turn" if self.effect_value == 1 else "Turns"
+            if self.effect_value > 0:
+                display_string += "+"
             display_string += f"{self.effect_value} {turn_str} on Ability Cooldowns"
         
         if self.effect_type == EffectType.ChancePoisoned:
@@ -218,6 +301,14 @@ class Effect():
             display_string += f"{self.effect_value * 100}% Faltering Chance"
         if self.effect_type == EffectType.ResistFaltering:
             display_string += f"{self.effect_value * 100}% Resist Faltering Chance"
+        if self.effect_type == EffectType.ChanceTaunted:
+            display_string += f"{self.effect_value * 100}% Taunted Chance"
+        if self.effect_type == EffectType.ResistTaunted:
+            display_string += f"{self.effect_value * 100}% Resist Taunted Chance"
+        if self.effect_type == EffectType.ChanceConvinced:
+            display_string += f"{self.effect_value * 100}% Convinced Chance"
+        if self.effect_type == EffectType.ResistConvinced:
+            display_string += f"{self.effect_value * 100}% Resist Convinced Chance"
 
         if self.effect_type == EffectType.RestoreHealth:
             display_string += f"Restore {self.effect_value} Health"
@@ -228,7 +319,7 @@ class Effect():
         if self.effect_type == EffectType.RestorePercentMana:
             display_string += f"Restore {self.effect_value * 100}% Mana"
 
-        if self.effect_type == EffectType.ReducedManaCosts:
+        if self.effect_type == EffectType.AdjustedManaCosts:
             if self.effect_value > 0:
                 display_string += "+"
             display_string += f"{self.effect_value * 100}% Ability Mana Costs"

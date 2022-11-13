@@ -4,7 +4,7 @@ import json
 
 from aenum import Enum, skip
 from random import randint
-from strenum import StrEnum
+from enum import StrEnum
 
 from features.shared.constants import DEX_DMG_SCALE
 
@@ -77,7 +77,9 @@ class ClassTag(Enum):
         Herb = "Herb"
         RawFish = "Raw_Fish" # Might be good to separate fish from other foods
         RawFood = "Raw_Food" # Like uncooked potatoes, meat, etc.
+        Spice = "Spice" # Specifically for cooking
         PotionIngredient = "Potion_Ingredient"
+        CraftingMaterial = "CraftingMaterial"
 
     @skip
     class Creature(StrEnum):
@@ -249,10 +251,10 @@ class ItemEffects():
         
         self.on_turn_start: List[Effect] = on_turn_start
         self.on_turn_end: List[Effect] = on_turn_end
-        self.on_damaged: List[Effect] = on_damaged
+        self.on_damaged: List[Effect] = on_damaged # After taking damage from any source (post reduction and armor)
         self.on_successful_ability_used: List[Effect] = on_successful_ability_used
         self.on_successful_attack: List[Effect] = on_successful_attack
-        self.on_attacked: List[Effect] = on_attacked
+        self.on_attacked: List[Effect] = on_attacked # On being attacked (not dodged)
         self.on_ability_used_against: List[Effect] = on_ability_used_against
 
     def get_permanent_attribute_mods(self) -> Attributes:
@@ -283,7 +285,7 @@ class ItemEffects():
             self.on_attacked,
             self.on_ability_used_against
         ]
-        return any(any(effect.effect_type == effect_type for effect in effect_group) for effect_group in all_effects)
+        return any(any(effect.effect_type == effect_type for effect in effect_group) for effect_group in all_effects)        
 
     def sort_by_priority(self, effects: List[Effect]):
         return sorted(effects, key=lambda effect: EFFECT_PRIORITY[effect.effect_type])

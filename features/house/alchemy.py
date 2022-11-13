@@ -3,10 +3,10 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
+from enum import StrEnum
 from features.house.house import HouseRoom
 from features.house.recipe import LOADED_RECIPES, Recipe
 from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey, Rarity
-from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
 from features.shared.nextbutton import NextButton

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import json
+
+from enum import StrEnum
 from features.expertise import ExpertiseClass
 from features.inventory import Inventory
-
 from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey
-from strenum import StrEnum
 from types import MappingProxyType
 
 from typing import Dict, List

@@ -6,7 +6,7 @@ from discord.embeds import Embed
 from features.house.house import HouseRoom
 from features.house.recipe import LOADED_RECIPES, Recipe
 from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey, Rarity
-from strenum import StrEnum
+from enum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
 from features.shared.nextbutton import NextButton
@@ -468,7 +468,7 @@ class WorkshopView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.Ingredient])
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.CraftingMaterial])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -516,7 +516,7 @@ class WorkshopView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.Ingredient])
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.CraftingMaterial])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]

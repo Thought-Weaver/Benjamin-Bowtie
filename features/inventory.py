@@ -99,12 +99,15 @@ class Inventory():
     def get_inventory_slots(self):
         return self._inventory_slots
     
-    def filter_inventory_slots(self, tags: List[ClassTag]):
+    def filter_inventory_slots(self, tags: List[ClassTag], player_level: int | None=None, require_enchantable_equipment=False):
         item_indices: List[int] = []
         for i, item in enumerate(self._inventory_slots):
             item_class_tags: List[ClassTag] = item.get_class_tags()
             if all(tag in item_class_tags for tag in tags):
-                item_indices.append(i)
+                if player_level is None or player_level >= item.get_level_requirement():
+                    if require_enchantable_equipment and ClassTag.Equipment in item.get_class_tags() and len(item.get_altering_item_keys()) == 0:
+                        continue
+                    item_indices.append(i)
         return item_indices
 
     def get_coins(self):

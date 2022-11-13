@@ -3,12 +3,12 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
+from enum import StrEnum
 from features.house.house import HouseRoom
 from features.house.recipe import LOADED_RECIPES, Recipe
 from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey, Rarity
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
-from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:
@@ -417,7 +417,7 @@ class KitchenView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.Ingredient])
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFood, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.Spice])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -465,7 +465,7 @@ class KitchenView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.Ingredient])
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFood, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.Spice])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
