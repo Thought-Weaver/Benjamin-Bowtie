@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/strength_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Strength Potion",
+    "value": 200,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/antler_coral": 1,
+        "items/ingredient/herbs/wrathbark": 1
+    },
+    "outputs": {
+        "items/consumable/potions/strength_potion": 1
+    }
+}

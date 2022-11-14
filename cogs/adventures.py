@@ -25,7 +25,7 @@ from features.npcs.npc import NPCRoles
 from features.npcs.yenna import Yenna
 from features.player import Player
 from features.stats import StatCategory, StatView
-from features.shared.item import Item, LOADED_ITEMS, ItemKey
+from features.shared.item import ClassTag, Item, LOADED_ITEMS, ItemKey
 from features.stories.forest import ForestStory
 from features.stories.ocean import OceanStory
 from features.stories.story import Story
@@ -167,14 +167,11 @@ class Adventures(commands.Cog):
         # 0.2 * (3 + 4 + 3) / 3 +
         # 0.15 * (4 + 5) / 2 +
         # 0.095 * (10 + 8 + 8 + 10) / 3 +
-        # 0.0049 * (40 + 50 + 30) / 3 +
+        # 0.0049 * (40 + 30) / 2 +
         # 0.0001 * 1 =
         # 3.41 every 30 seconds -> 409.2 an hour
 
-        # Luck Effect
-        #   1  -> E(X) = 3.45 every 30 seconds -> 414 an hour
-        #   10 -> E(X) = 3.85 every 30 seconds -> 462 an hour
-        #   20 -> E(X) = 4.29 every 30 seconds -> 514.8 an hour
+        # TODO: Redo earnings analysis with luck later
 
         LUCK_MOD = 0.005 # Luck adjusts total bias by 0.5% per point
         player_luck: int = author_player.get_expertise().luck
@@ -238,7 +235,6 @@ class Adventures(commands.Cog):
         # 0.49% chance of getting a Rare non-fish reward
         if rand_val == 4:
             items = [
-                LOADED_ITEMS.get_new_item(ItemKey.Diamond),
                 LOADED_ITEMS.get_new_item(ItemKey.AncientVase),
                 LOADED_ITEMS.get_new_item(ItemKey.MysteriousScroll)
             ]
@@ -456,9 +452,15 @@ class Adventures(commands.Cog):
         await context.send(embed=embed, view=MailboxView(self._bot, self._database, context.guild.id, context.author))
 
     @commands.command(name="stats", help="See your stats")
-    async def stats_handler(self, context: commands.Context, stat_category_name:StatCategory=None):
+    async def stats_handler(self, context: commands.Context, user: User | None=None, stat_category_name:StatCategory | None=None):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
-        stat_view = StatView(self._bot, self._database, context.guild.id, context.author, stat_category_name)
+
+        display_user = context.author
+        if user is not None:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+            display_user = user
+
+        stat_view = StatView(self._bot, self._database, context.guild.id, context.author, display_user, stat_category_name)
         embed = stat_view.get_current_page_info()
         await context.send(embed=embed, view=stat_view)
 
@@ -482,6 +484,7 @@ class Adventures(commands.Cog):
         player_stats: Stats = author_player.get_stats()
         story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
 
+        # TODO: Need to redo this analysis with all the new gemstone possibilities
         # E(X) = 0.995 * -1 + 0.0021 * 150 = -0.68 every 5 seconds -> -489.6 per hour
         # Luck Effect:
         #   1  -> E(X) = 0.994 * -1 + 0.0021 * 150 -> -488.88 per hour
@@ -522,13 +525,13 @@ class Adventures(commands.Cog):
                 description="It plummets into the darkness below and you feel a sense of duplication. One becoming many."
             )
             await context.send(embed=embed)
-        # 0.28% base chance of getting a Legendary item
+        # 0.28% base chance of getting a gemstone or Artifact gear
         if rand_val == 2:
             result: Item = story.get_wishing_well_item()
 
             xp_to_add: int = 0
             expertise: Expertise = author_player.get_expertise()
-            if result.get_key() == ItemKey.Diamond:
+            if ClassTag.Valuable.Gemstone in result.get_class_tags():
                 xp_to_add = 8
                 xp_to_add = expertise.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant, author_player.get_equipment())
             else:
@@ -559,7 +562,7 @@ class Adventures(commands.Cog):
         player_stats.wishingwell.coins_tossed += 1
 
     @commands.command(name="expertise", help="See your level progress and attributes", aliases=["me", "xp"])
-    async def expertise_handler(self, context: commands.Context, user: User=None):
+    async def expertise_handler(self, context: commands.Context, user: User | None=None):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         display_user = context.author
@@ -575,7 +578,7 @@ class Adventures(commands.Cog):
         await context.send(embed=embed, view=xp_view)
 
     @commands.command(name="equipment", help="See your equipment and equip items", aliases=["equip"])
-    async def equipment_handler(self, context: commands.Context, user: User=None):
+    async def equipment_handler(self, context: commands.Context, user: User | None=None):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         display_user = context.author

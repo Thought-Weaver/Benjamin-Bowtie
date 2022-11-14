@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/intelligence_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Intelligence Potion",
+    "value": 150,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/frostwort": 1,
+        "items/ingredient/herbs/manabloom": 1
+    },
+    "outputs": {
+        "items/consumable/potions/intelligence_potion": 1
+    }
+}

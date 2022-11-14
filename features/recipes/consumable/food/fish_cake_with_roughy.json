@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/food/fish_cake_with_roughy",
+    "icon": "\uD83C\uDF65",
+    "name": "Fish Cake",
+    "value": 100,
+    "inputs": {
+        "items/consumable/food/bread": 1,
+        "items/ingredient/herbs/seaclover": 2,
+        "items/creature/fish/roughy": 2
+    },
+    "outputs": {
+        "items/consumable/food/fish_cake": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 16
+    }
+}

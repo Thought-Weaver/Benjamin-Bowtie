@@ -1,0 +1,23 @@
+{
+    "key": "items/valuable/gemstone/topaz",
+    "icon": "\uD83D\uDC8E",
+    "name": "Topaz",
+    "value": 1000,
+    "rarity": "Rare",
+    "description": "Can be socketed into armor or an item in your hand.",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Gemstone"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "AdjustedManaCosts",
+                "effect_value": -0.02,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

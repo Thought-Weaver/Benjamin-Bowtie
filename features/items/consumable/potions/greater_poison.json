@@ -1,0 +1,27 @@
+{
+    "key": "items/consumable/potions/greater_poison",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Poison",
+    "value": 250,
+    "rarity": "Rare",
+    "description": "Can be used while dueling or outside duels.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 1,
+        "target_own_group": false
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ChancePoisoned",
+                "effect_value": 1,
+                "effect_time": 6,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

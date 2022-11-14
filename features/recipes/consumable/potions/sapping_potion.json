@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/sapping_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Sapping Potion",
+    "value": 900,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/mages_bane": 2,
+        "items/ingredient/herbs/hushvine": 1
+    },
+    "outputs": {
+        "items/consumable/potions/sapping_potion": 1
+    }
+}

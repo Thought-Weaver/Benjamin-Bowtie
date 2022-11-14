@@ -1,0 +1,32 @@
+{
+    "key": "items/valuable/gemstone/cracked_sunstone",
+    "icon": "\uD83D\uDC8E",
+    "name": "Cracked Sunstone",
+    "value": 400,
+    "rarity": "Epic",
+    "description": "Can be socketed into armor or an item in your hand.",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Gemstone"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "on_successful_attack": [
+            {
+                "effect_type": "DmgBuffSelfMaxHealth",
+                "effect_value": 0.01,
+                "effect_time": -1,
+                "conditions": ["IsItemInHand", "IsAbovePercentHealth"],
+                "condition_values": [0, 0.75]
+            }
+        ],
+        "permanent": [
+            {
+                "effect_type": "DmgResist",
+                "effect_value": 0.01,
+                "effect_time": -1,
+                "conditions": ["IsItemArmor", "IsAbovePercentHealth"],
+                "condition_values": [0, 0.75]
+            }
+        ]
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "key": "items/valuable/gemstone/cracked_diamond",
+    "icon": "\uD83D\uDC8E",
+    "name": "Cracked Diamond",
+    "value": 75,
+    "rarity": "Rare",
+    "description": "Can be socketed into armor or an item in your hand.",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Gemstone"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuff",
+                "effect_value": 0.03,
+                "effect_time": -1,
+                "conditions": ["IsItemInHand"],
+                "condition_values": [0]
+            },
+            {
+                "effect_type": "DmgResist",
+                "effect_value": 0.005,
+                "effect_time": -1,
+                "conditions": ["IsItemArmor"],
+                "condition_values": [0]
+            }
+        ]
+    }
+}

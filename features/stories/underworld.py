@@ -68,7 +68,50 @@ class UnderworldStory():
 
             return LOADED_ITEMS.get_new_item(item_key)
         else:
-            return LOADED_ITEMS.get_new_item(ItemKey.Diamond)
+            rand_key = random.choices(
+                [
+                    ItemKey.CrackedAgate, ItemKey.CrackedAmethyst, ItemKey.CrackedBloodstone, ItemKey.CrackedDiamond,
+                    ItemKey.CrackedEmerald, ItemKey.CrackedJade, ItemKey.CrackedLapis, ItemKey.CrackedMalachite,
+                    ItemKey.CrackedMoonstone, ItemKey.CrackedOpal, ItemKey.CrackedOnyx, ItemKey.CrackedPeridot,
+                    ItemKey.CrackedQuartz, ItemKey.CrackedRuby, ItemKey.CrackedSapphire, ItemKey.CrackedTanzanite,
+                    ItemKey.CrackedTopaz, ItemKey.CrackedTurquoise, ItemKey.CrackedZircon,
+
+                    ItemKey.Agate, ItemKey.Amethyst, ItemKey.Bloodstone, ItemKey.Diamond,
+                    ItemKey.Emerald, ItemKey.Jade, ItemKey.Lapis, ItemKey.Malachite,
+                    ItemKey.Moonstone, ItemKey.Opal, ItemKey.Onyx, ItemKey.Peridot,
+                    ItemKey.Quartz, ItemKey.Ruby, ItemKey.Sapphire, ItemKey.Tanzanite,
+                    ItemKey.Topaz, ItemKey.Turquoise, ItemKey.Zircon,
+                    
+                    ItemKey.FlawlessAgate, ItemKey.FlawlessAmethyst, ItemKey.FlawlessBloodstone, ItemKey.FlawlessDiamond,
+                    ItemKey.FlawlessEmerald, ItemKey.FlawlessJade, ItemKey.FlawlessLapis, ItemKey.FlawlessMalachite,
+                    ItemKey.FlawlessMoonstone, ItemKey.FlawlessOpal, ItemKey.FlawlessOnyx, ItemKey.FlawlessPeridot,
+                    ItemKey.FlawlessQuartz, ItemKey.FlawlessRuby, ItemKey.FlawlessSapphire, ItemKey.FlawlessTanzanite,
+                    ItemKey.FlawlessTopaz, ItemKey.FlawlessTurquoise, ItemKey.FlawlessZircon
+                ], 
+                k=1,
+                # TODO: In the future, I should adjust these weights based on the rarity of the gemstone, rather than
+                # having it be uniform per type.
+                weights=[
+                    0.035, 0.035, 0.035, 0.035,
+                    0.035, 0.035, 0.035, 0.035,
+                    0.035, 0.035, 0.035, 0.035,
+                    0.035, 0.035, 0.035, 0.035,
+                    0.035, 0.035, 0.035, 0.035,
+
+                    0.01, 0.01, 0.01, 0.01,
+                    0.01, 0.01, 0.01, 0.01,
+                    0.01, 0.01, 0.01, 0.01,
+                    0.01, 0.01, 0.01, 0.01,
+                    0.01, 0.01, 0.01, 0.01,
+
+                    0.005, 0.005, 0.005, 0.005,
+                    0.005, 0.005, 0.005, 0.005,
+                    0.005, 0.005, 0.005, 0.005,
+                    0.005, 0.005, 0.005, 0.005,
+                    0.005, 0.005, 0.005, 0.005,
+                ]
+            )[0]
+            return LOADED_ITEMS.get_new_item(rand_key)
 
     def __getstate__(self):
         return self.__dict__

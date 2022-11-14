@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/potions/fortitude_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Fortitude Potion",
+    "value": 1000,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/banded_coral": 4,
+        "items/ingredient/herbs/bramblefrond": 4,
+        "items/ingredient/herbs/dawns_glory": 3
+    },
+    "outputs": {
+        "items/consumable/potions/fortitude_potion": 1
+    }
+}

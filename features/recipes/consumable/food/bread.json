@@ -1,0 +1,12 @@
+{
+    "key": "recipes/consumable/food/bread",
+    "icon": "\uD83C\uDF5E",
+    "name": "Bread",
+    "value": 40,
+    "inputs": {
+        "items/ingredient/herbs/sungrain": 3
+    },
+    "outputs": {
+        "items/consumable/food/bread": 1
+    }
+}

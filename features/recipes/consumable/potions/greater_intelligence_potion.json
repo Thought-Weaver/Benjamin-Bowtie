@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/greater_intelligence_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Intelligence Potion",
+    "value": 500,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/frostwort": 3,
+        "items/ingredient/herbs/manabloom": 3
+    },
+    "outputs": {
+        "items/consumable/potions/greater_intelligence_potion": 1
+    }
+}

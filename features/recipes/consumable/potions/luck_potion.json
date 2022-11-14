@@ -1,0 +1,13 @@
+{
+    "key": "recipes/consumable/potions/luck_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Luck Potion",
+    "value": 200,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/golden_clover": 1
+    },
+    "outputs": {
+        "items/consumable/potions/luck_potion": 1
+    }
+}

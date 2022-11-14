@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/greater_poison",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Poison",
+    "value": 550,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/asptongue": 5,
+        "items/ingredient/herbs/rotstalk": 1
+    },
+    "outputs": {
+        "items/consumable/potions/greater_poison": 1
+    }
+}

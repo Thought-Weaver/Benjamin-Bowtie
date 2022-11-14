@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/dexterity_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Dexterity Potion",
+    "value": 280,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/fissureleaf": 1,
+        "items/ingredient/herbs/lithewood": 1
+    },
+    "outputs": {
+        "items/consumable/potions/dexterity_potion": 1
+    }
+}

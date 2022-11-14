@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/greater_dexterity_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Dexterity Potion",
+    "value": 800,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/fissureleaf": 3,
+        "items/ingredient/herbs/lithewood": 3
+    },
+    "outputs": {
+        "items/consumable/potions/greater_dexterity_potion": 1
+    }
+}

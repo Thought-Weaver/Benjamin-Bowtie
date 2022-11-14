@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/vegetable_fritter",
+    "icon": "\uD83E\uDDC6",
+    "name": "Vegetable Fritter",
+    "value": 300,
+    "inputs": {
+        "items/ingredient/herbs/seaclover": 2,
+        "items/ingredient/herbs/wanderweed": 1,
+        "items/consumable/food/bread": 1
+    },
+    "outputs": {
+        "items/consumable/food/vegetable_fritter": 1
+    }
+}

@@ -437,14 +437,16 @@ class Stats():
 
 
 class StatView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: discord.User, stat_category: StatCategory | None=None):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: discord.User, display_user: discord.User, stat_category: StatCategory | None=None):
         super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
         self._guild_id = guild_id
         self._user = user
+        self._display_user = display_user
         self._stat_category = stat_category
+        
         self._page = 0
         self._stats_list = Stats().list() # Should be in sync with the player's Stats.list() always
 
@@ -453,7 +455,7 @@ class StatView(discord.ui.View):
             self.add_item(NextButton(0))
 
     def get_current_page_info(self):
-        player_stats: Stats = self._database[str(self._guild_id)]["members"][str(self._user.id)].get_stats()
+        player_stats: Stats = self._database[str(self._guild_id)]["members"][str(self._display_user.id)].get_stats()
 
         stat_class = None
         if self._stat_category is not None:
@@ -461,7 +463,7 @@ class StatView(discord.ui.View):
         else:
             stat_class = player_stats.list()[self._page]
 
-        title = f"{self._user.display_name}'s Stats"
+        title = f"{self._display_user.display_name}'s Stats"
         page_str = f"*({self._page + 1}/{len(self._stats_list)})*" if self._stat_category is None else ""
         description = f"**{stat_class.get_name()}**\n\n{stat_class.get_stats_str()}\n\n{page_str}"
         return Embed(title=title, description=description)

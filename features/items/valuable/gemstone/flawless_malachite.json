@@ -1,0 +1,32 @@
+{
+    "key": "items/valuable/gemstone/flawless_malachite",
+    "icon": "\uD83D\uDC8E",
+    "name": "Flawless Malachite",
+    "value": 60,
+    "rarity": "Uncommon",
+    "description": "Can be socketed into armor or an item in your hand.",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Gemstone"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "on_successful_attack": [
+            {
+                "effect_type": "ChancePoisoned",
+                "effect_value": 0.1,
+                "effect_time": -1,
+                "conditions": ["IsItemInHand"],
+                "condition_values": [0]
+            }
+        ],
+        "permanent": [
+            {
+                "effect_type": "ResistPoisoned",
+                "effect_value": 0.08,
+                "effect_time": -1,
+                "conditions": ["IsItemArmor"],
+                "condition_values": [0]
+            }
+        ]
+    }
+}

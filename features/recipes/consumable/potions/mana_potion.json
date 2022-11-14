@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/mana_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Mana Potion",
+    "value": 650,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/manabloom": 5,
+        "items/ingredient/herbs/singing_coral": 2
+    },
+    "outputs": {
+        "items/consumable/potions/mana_potion": 1
+    }
+}

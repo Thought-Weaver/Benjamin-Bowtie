@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/alchemy_supplies/crystal_vial",
+    "icon": "\uD83E\uDED9",
+    "name": "Crystal Vial",
+    "value": 10,
+    "rarity": "Common",
+    "description": "Used for crafting potions.",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

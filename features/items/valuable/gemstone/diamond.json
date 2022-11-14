@@ -2,11 +2,29 @@
     "key": "items/valuable/gemstone/diamond",
     "icon": "\uD83D\uDC8E",
     "name": "Diamond",
-    "value": 50,
+    "value": 150,
     "rarity": "Rare",
-    "description": "",
+    "description": "Can be socketed into armor or an item in your hand.",
     "flavor_text": "",
     "class_tags": ["Valuable", "Gemstone"],
     "state_tags": [],
-    "count": 1
+    "count": 1,
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuff",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": ["IsItemInHand"],
+                "condition_values": [0]
+            },
+            {
+                "effect_type": "DmgResist",
+                "effect_value": 0.01,
+                "effect_time": -1,
+                "conditions": ["IsItemArmor"],
+                "condition_values": [0]
+            }
+        ]
+    }
 }

@@ -42,7 +42,9 @@ class EffectType(StrEnum):
     RestoreArmor = "RestoreArmor" # TODO: Implement once armor changes are done
 
     PiercingDmg = "PiercingDmg"
+    PiercingPercentDmg = "PiercingPercentDmg" # TODO: Implement this
     SplashDmg = "SplashDmg"
+    SplashPercentMaxDmg = "SplashPercentMaxDmg" # TODO: Implement this
 
     # Everything in this group is associated with percent effect values
     CritDmgBuff = "CritDmgBuff"
@@ -74,6 +76,7 @@ class EffectType(StrEnum):
     AdjustedManaCosts = "AdjustedManaCosts"
     HealingAbilityBuff = "HealingAbilityBuff"
     AdditionalXP = "AdditionalXP" # TODO: Implement this
+    PotionMod = "PotionMod"
 
     ResurrectOnce = "ResurrectOnce"
 
@@ -119,36 +122,40 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
     EffectType.RestoreArmor: 18,
     
     EffectType.PiercingDmg: 19,
-    EffectType.SplashDmg: 20,
-    EffectType.CritDmgBuff: 21,
-    EffectType.CritDmgReduction: 22,
+    EffectType.PiercingPercentDmg: 20,
+    EffectType.SplashDmg: 21,
+    EffectType.SplashPercentMaxDmg: 22,
 
-    EffectType.HealthSteal: 23,
-    EffectType.ManaSteal: 24,
+    EffectType.CritDmgBuff: 23,
+    EffectType.CritDmgReduction: 24,
 
-    EffectType.AdjustedCDs: 25,
+    EffectType.HealthSteal: 25,
+    EffectType.ManaSteal: 26,
 
-    EffectType.ChancePoisoned: 26,
-    EffectType.ResistPoisoned: 27,
-    EffectType.ChanceBleeding: 28,
-    EffectType.ResistBleeding: 29,
-    EffectType.ChanceFaltering: 30,
-    EffectType.ResistFaltering: 31,
-    EffectType.ChanceTaunted: 32,
-    EffectType.ResistTaunted: 33,
-    EffectType.ChanceConvinced: 34,
-    EffectType.ResistConvinced: 35,
+    EffectType.AdjustedCDs: 27,
 
-    EffectType.RestoreHealth: 36,
-    EffectType.RestorePercentHealth: 37,
-    EffectType.RestoreMana: 38,
-    EffectType.RestorePercentMana: 39,
+    EffectType.ChancePoisoned: 28,
+    EffectType.ResistPoisoned: 29,
+    EffectType.ChanceBleeding: 30,
+    EffectType.ResistBleeding: 31,
+    EffectType.ChanceFaltering: 32,
+    EffectType.ResistFaltering: 33,
+    EffectType.ChanceTaunted: 34,
+    EffectType.ResistTaunted: 35,
+    EffectType.ChanceConvinced: 36,
+    EffectType.ResistConvinced: 37,
 
-    EffectType.AdjustedManaCosts: 40,
-    EffectType.HealingAbilityBuff: 41,
-    EffectType.AdditionalXP: 42,
+    EffectType.RestoreHealth: 38,
+    EffectType.RestorePercentHealth: 39,
+    EffectType.RestoreMana: 40,
+    EffectType.RestorePercentMana: 41,
 
-    EffectType.ResurrectOnce: 43
+    EffectType.AdjustedManaCosts: 42,
+    EffectType.HealingAbilityBuff: 43,
+    EffectType.AdditionalXP: 44,
+    EffectType.PotionMod: 45,
+
+    EffectType.ResurrectOnce: 46
 })
 
 # -----------------------------------------------------------------------------
@@ -349,7 +356,11 @@ class Effect():
             if condition == ConditionType.IsBelowPercentHealth:
                 conditions_strs.append(f"below {self.condition_values[i]}% health")
             if condition == ConditionType.IsFullHealth:
-                conditions_strs.append(f"at full health")
+                conditions_strs.append("at full health")
+            if condition == ConditionType.IsItemArmor:
+                conditions_strs.append("socketed in armor")
+            if condition == ConditionType.IsItemInHand:
+                conditions_strs.append("socketed in a main hand or off hand item")
             
             if i == len(self.conditions) - 1:
                 conditions_strs[-1] = "and " + conditions_strs[-1]

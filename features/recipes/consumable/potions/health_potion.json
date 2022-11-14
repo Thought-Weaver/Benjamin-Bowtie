@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/health_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Health Potion",
+    "value": 1100,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/shelterfoil": 5,
+        "items/ingredient/herbs/dawns_glory": 3
+    },
+    "outputs": {
+        "items/consumable/potions/health_potion": 1
+    }
+}

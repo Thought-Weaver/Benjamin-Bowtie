@@ -1,0 +1,32 @@
+{
+    "key": "items/valuable/gemstone/flawless_ruby",
+    "icon": "\uD83D\uDC8E",
+    "name": "Flawless Ruby",
+    "value": 320,
+    "rarity": "Epic",
+    "description": "Can be socketed into armor or an item in your hand.",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Gemstone"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "on_successful_attack": [
+            {
+                "effect_type": "RestorePercentHealth",
+                "effect_value": 0.03,
+                "effect_time": -1,
+                "conditions": ["IsItemInHand"],
+                "condition_values": [0]
+            }
+        ],
+        "on_turn_start": [
+            {
+                "effect_type": "RestoreHealth",
+                "effect_value": 6,
+                "effect_time": -1,
+                "conditions": ["IsItemArmor"],
+                "condition_values": [0]
+            }
+        ]
+    }
+}

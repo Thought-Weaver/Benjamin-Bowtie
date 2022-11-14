@@ -2,7 +2,7 @@
     "key": "recipes/consumable/food/cooked_roughy",
     "icon": "\uD83D\uDC20",
     "name": "Cooked Roughy",
-    "value": 10,
+    "value": 30,
     "inputs": {
         "items/creature/fish/roughy": 1
     },

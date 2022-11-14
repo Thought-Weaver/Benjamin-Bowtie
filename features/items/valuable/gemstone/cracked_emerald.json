@@ -1,0 +1,30 @@
+{
+    "key": "items/valuable/gemstone/cracked_emerald",
+    "icon": "\uD83D\uDC8E",
+    "name": "Cracked Emerald",
+    "value": 50,
+    "rarity": "Rare",
+    "description": "Can be socketed into armor or an item in your hand.",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Gemstone"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "CritDmgBuff",
+                "effect_value": 0.03,
+                "effect_time": -1,
+                "conditions": ["IsItemInHand"],
+                "condition_values": [0]
+            },
+            {
+                "effect_type": "CritDmgReduction",
+                "effect_value": 0.03,
+                "effect_time": -1,
+                "conditions": ["IsItemArmor"],
+                "condition_values": [0]
+            }
+        ]
+    }
+}

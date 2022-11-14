@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/potions/greater_mana_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Mana Potion",
+    "value": 4500,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/manabloom": 10,
+        "items/ingredient/herbs/singing_coral": 5,
+        "items/ingredient/herbs/lichbloom": 1
+    },
+    "outputs": {
+        "items/consumable/potions/greater_mana_potion": 1
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "key": "recipes/consumable/potions/lesser_dexterity_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Dexterity Potion",
+    "value": 100,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/fissureleaf": 1
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_dexterity_potion": 1
+    }
+}

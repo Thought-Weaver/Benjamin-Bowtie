@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/dumpling",
+    "icon": "\uD83E\uDD5F",
+    "name": "Dumpling",
+    "value": 500,
+    "inputs": {
+        "items/ingredient/herbs/graspleaf": 1,
+        "items/ingredient/herbs/fissureleaf": 1,
+        "items/ingredient/herbs/dawns_glory": 1,
+        "items/consumable/food/bread": 1
+    },
+    "outputs": {
+        "items/consumable/food/dumpling": 1
+    }
+}

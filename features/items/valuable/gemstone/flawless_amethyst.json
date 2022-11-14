@@ -1,0 +1,30 @@
+{
+    "key": "items/valuable/gemstone/flawless_amethyst",
+    "icon": "\uD83D\uDC8E",
+    "name": "Flawless Amethyst",
+    "value": 160,
+    "rarity": "Epic",
+    "description": "Can be socketed into armor or an item in your hand.",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Gemstone"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "PiercingPercentDmg",
+                "effect_value": 0.07,
+                "effect_time": -1,
+                "conditions": ["IsItemInHand"],
+                "condition_values": [0]
+            },
+            {
+                "effect_type": "ExtraArmor",
+                "effect_value": 0.06,
+                "effect_time": -1,
+                "conditions": ["IsItemArmor"],
+                "condition_values": [0]
+            }
+        ]
+    }
+}

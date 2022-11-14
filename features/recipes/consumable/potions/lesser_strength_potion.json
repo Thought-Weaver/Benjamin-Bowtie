@@ -1,0 +1,13 @@
+{
+    "key": "recipes/consumable/potions/lesser_strength_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Strength Potion",
+    "value": 75,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/antler_coral": 1
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_strength_potion": 1
+    }
+}

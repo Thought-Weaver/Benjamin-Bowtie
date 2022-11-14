@@ -1,0 +1,27 @@
+{
+    "key": "items/consumable/potions/sapping_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Sapping Potion",
+    "value": 400,
+    "rarity": "Epic",
+    "description": "Can be used while dueling or outside duels.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 1,
+        "target_own_group": false
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "RestoreMana",
+                "effect_value": -25,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

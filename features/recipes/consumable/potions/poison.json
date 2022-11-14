@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/poison",
+    "icon": "\u2697\uFE0F",
+    "name": "Poison",
+    "value": 120,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/asptongue": 2,
+        "items/ingredient/herbs/bloodcrown": 3
+    },
+    "outputs": {
+        "items/consumable/potions/poison": 1
+    }
+}

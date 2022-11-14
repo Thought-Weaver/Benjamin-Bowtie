@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/mushroom_stew",
+    "icon": "\uD83C\uDF72",
+    "name": "Mushroom Stew",
+    "value": 150,
+    "inputs": {
+        "items/ingredient/herbs/speckled_cap": 3,
+        "items/ingredient/herbs/fissureleaf": 1,
+        "items/ingredient/herbs/seaclover": 1
+    },
+    "outputs": {
+        "items/consumable/food/mushroom_stew": 1
+    }
+}

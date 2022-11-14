@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/food/fried_shrimp",
+    "icon": "\uD83C\uDF64",
+    "name": "Fried Shrimp",
+    "value": 65,
+    "inputs": {
+        "items/consumable/food/bread": 1,
+        "items/creature/fish/shrimp": 1
+    },
+    "outputs": {
+        "items/consumable/food/fried_shrimp": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 8
+    }
+}

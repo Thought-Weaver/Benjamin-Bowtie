@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/constitution_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Constitution Potion",
+    "value": 290,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/grave_moss": 1,
+        "items/ingredient/herbs/hushvine": 1
+    },
+    "outputs": {
+        "items/consumable/potions/constitution_potion": 1
+    }
+}

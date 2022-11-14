@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_minnow",
+    "icon": "\uD83D\uDC1F",
+    "name": "Cooked Minnow",
+    "value": 25,
+    "inputs": {
+        "items/creature/fish/minnow": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_minnow": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 8
+    }
+}

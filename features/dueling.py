@@ -289,13 +289,13 @@ class Dueling():
         # TODO: When armor changes are implemented, I'll want to implement the armor effects here
 
         if item_effect.effect_type == EffectType.HealthSteal:
-            health_steal = int(item_effect.effect_value)
+            health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
             other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
             return (damage_dealt, f"Stole {health_steal} health using {item.get_full_name()}")
 
         if item_effect.effect_type == EffectType.ManaSteal:
-            mana_steal = int(item_effect.effect_value)
+            mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
             self_entity.get_expertise().restore_mana(mana_steal)
             other_entity.get_expertise().remove_mana(mana_steal)
             return (damage_dealt, f"Stole {mana_steal} mana using {item.get_full_name()}")
@@ -333,12 +333,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = ConBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -348,12 +350,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = StrBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -363,12 +367,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = DexBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -378,12 +384,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = IntBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -393,12 +401,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = LckBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -408,12 +418,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = MemBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -421,7 +433,8 @@ class Dueling():
         if item_effect.effect_type == EffectType.DmgResist:
             status_effect = DmgReduction(
                 item_effect.effect_time,
-                item_effect.effect_value
+                item_effect.effect_value,
+                source_str=f"{item.get_full_name()}"
             )
             self.status_effects.append(status_effect)
             return "{0}" + f" is now {status_effect.name} from {item.get_full_name()}"
@@ -431,17 +444,31 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 status_effect = DmgBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 status_effect = DmgDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(status_effect)
             return "{0}" + f" is now {status_effect.name} from {item.get_full_name()}"
 
         # TODO: When armor changes are implemented, I'll want to implement the armor effects here
+
+        if item_effect.effect_type == EffectType.HealthSteal:
+            health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
+            self_entity.get_expertise().heal(health_steal)
+            other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
+            return f"Stole {health_steal} health using {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.ManaSteal:
+            mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
+            self_entity.get_expertise().restore_mana(mana_steal)
+            other_entity.get_expertise().remove_mana(mana_steal)
+            return f"Stole {mana_steal} mana using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestoreHealth:
             healing = int(item_effect.effect_value)
@@ -476,12 +503,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = ConBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -491,12 +520,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = StrBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -506,12 +537,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = DexBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -521,12 +554,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = IntBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -536,12 +571,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = LckBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -551,12 +588,14 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = MemBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
             return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -572,7 +611,8 @@ class Dueling():
         if item_effect.effect_type == EffectType.DmgResist:
             status_effect = DmgReduction(
                 item_effect.effect_time,
-                item_effect.effect_value
+                item_effect.effect_value,
+                source_str=f"{item.get_full_name()}"
             )
             self.status_effects.append(status_effect)
             return "{0}" + f" is now {status_effect.name} from {item.get_full_name()}"
@@ -582,17 +622,108 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 status_effect = DmgBuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             else:
                 status_effect = DmgDebuff(
                     item_effect.effect_time,
-                    item_effect.effect_value
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(status_effect)
             return "{0}" + f" is now {status_effect.name} from {item.get_full_name()}"
 
         # TODO: When armor changes are implemented, I'll want to implement the armor effects here
+
+        chance_poisoned = 0
+        turns_poisoned = 0
+        chance_bleeding = 0
+        turns_bleeding = 0
+        chance_faltering = 0
+        turns_faltering = 0
+        chance_taunted = 0
+        turns_taunted = 0
+        chance_convinced = 0
+        turns_convinced = 0
+
+        for item in self_entity.get_equipment().get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for item_effect in item_effects.permanent:
+                    if not item_effect.meets_conditions(self_entity, item):
+                        continue
+
+                    if item_effect.effect_type == EffectType.ChancePoisoned:
+                        chance_poisoned += int(item_effect.effect_value)
+                        turns_poisoned = max(turns_poisoned, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistPoisoned:
+                        chance_poisoned -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceBleeding:
+                        chance_bleeding += int(item_effect.effect_value)
+                        turns_bleeding = max(turns_bleeding, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistBleeding:
+                        chance_bleeding -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceFaltering:
+                        chance_faltering += int(item_effect.effect_value)
+                        turns_faltering = max(turns_faltering, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistFaltering:
+                        chance_faltering -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceTaunted:
+                        chance_taunted += int(item_effect.effect_value)
+                        turns_taunted = max(turns_taunted, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistTaunted:
+                        chance_taunted -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceConvinced:
+                        chance_convinced += int(item_effect.effect_value)
+                        turns_convinced = max(turns_convinced, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistConvinced:
+                        chance_convinced -= int(item_effect.effect_value)
+
+        if random() < chance_poisoned:
+            status_effect = Poisoned(
+                turns_remaining=turns_poisoned,
+                value=POISONED_PERCENT_HP,
+                source_str=f"{item.get_full_name()}"
+            )
+            other_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" f" is now {status_effect.name} for {turns_poisoned}"
+
+        if random() < chance_bleeding:
+            status_effect = Bleeding(
+                turns_remaining=turns_bleeding,
+                value=BLEED_PERCENT_HP,
+                source_str=f"{item.get_full_name()}"
+            )
+            other_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" f" is now {status_effect.name} for {turns_bleeding}"
+
+        if random() < chance_faltering:
+            status_effect = TurnSkipChance(
+                turns_remaining=turns_faltering,
+                value=1,
+                source_str=f"{item.get_full_name()}"
+            )
+            other_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" f" is now {status_effect.name} for {turns_faltering}"
+
+        if random() < chance_taunted:
+            status_effect = Taunted(
+                turns_remaining=turns_taunted,
+                forced_to_attack=self_entity,
+                source_str=f"{item.get_full_name()}"
+            )
+            other_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" f" is now {status_effect.name} for {turns_taunted}"
+
+        if random() < chance_convinced:
+            status_effect = CannotTarget(
+                turns_remaining=turns_convinced,
+                cant_target=self_entity,
+                source_str=f"{item.get_full_name()}"
+            )
+            other_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" f" is now {status_effect.name} for {turns_convinced}"
 
         if item_effect.effect_type == EffectType.RestoreHealth:
             healing = int(item_effect.effect_value)
@@ -1381,8 +1512,9 @@ class DuelView(discord.ui.View):
                         
             attacker.get_dueling().apply_chance_status_effect_from_permanent_effect(target, attacker, target_name, attacker_name)
 
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1 
             base_damage = weapon_stats.get_random_damage(attacker_attrs, item_effects)
-            damage = int(base_damage * (critical_hit_boost + critical_hit_dmg_buff))
+            damage = int(base_damage * critical_hit_final)
             damage += min(int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), damage)
 
             for item in attacker_equipment.get_all_equipped_items():
@@ -1391,7 +1523,8 @@ class DuelView(discord.ui.View):
                     continue
                 for item_effect in item_effects.on_successful_attack:
                     damage, result_str = attacker.get_dueling().apply_on_successful_attack_effects(item, item_effect, attacker, target, damage)
-                    result_strs.append(result_str.format([attacker_name, target_name]))
+                    if result_str != "":
+                        result_strs.append(result_str.format([attacker_name, target_name]))
 
             for item in target_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1399,7 +1532,8 @@ class DuelView(discord.ui.View):
                     continue
                 for item_effect in item_effects.on_attacked:
                     result_str = target.get_dueling().apply_on_attacked_effects(item, item_effect, target, attacker)
-                    result_strs.append(result_str.format([target_name, attacker_name]))
+                    if result_str != "":
+                        result_strs.append(result_str.format([target_name, attacker_name]))
 
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level) - piercing_dmg
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
@@ -1413,7 +1547,8 @@ class DuelView(discord.ui.View):
                         continue
                     for item_effect in item_effects.on_damaged:
                         result_str = target.get_dueling().apply_on_damaged_effect(item, item_effect, target, attacker, actual_damage_dealt)
-                        result_strs.append(result_str.format([target_name, attacker_name]))
+                        if result_str != "":
+                            result_strs.append(result_str.format([target_name, attacker_name]))
 
             attacker.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt

@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/mushroom_salad",
+    "icon": "\uD83E\uDD57",
+    "name": "Mushroom Salad",
+    "value": 280,
+    "inputs": {
+        "items/ingredient/herbs/seaclover": 2,
+        "items/ingredient/herbs/snowdew": 2,
+        "items/ingredient/herbs/shelterfoil": 2,
+        "items/ingredient/herbs/speckled_cap": 2
+    },
+    "outputs": {
+        "items/consumable/food/mushroom_salad": 1
+    }
+}

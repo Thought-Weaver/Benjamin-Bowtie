@@ -1,0 +1,27 @@
+{
+    "key": "items/consumable/potions/greater_constitution_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Constitution Potion",
+    "value": 350,
+    "rarity": "Rare",
+    "description": "Can be used while dueling or outside duels.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 0,
+        "target_own_group": true
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ConMod",
+                "effect_value": 10,
+                "effect_time": 4,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

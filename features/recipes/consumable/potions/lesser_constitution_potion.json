@@ -1,0 +1,13 @@
+{
+    "key": "recipes/consumable/potions/lesser_constitution_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Constitution Potion",
+    "value": 80,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/grave_moss": 1
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_constitution_potion": 1
+    }
+}

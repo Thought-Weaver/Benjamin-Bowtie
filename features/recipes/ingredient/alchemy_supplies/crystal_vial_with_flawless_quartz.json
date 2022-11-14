@@ -1,0 +1,15 @@
+{
+    "key": "recipes/ingredient/alchemy_supplies/crystal_vial_with_flawless_quartz",
+    "icon": "\uD83D\uDC1F",
+    "name": "Crystal Vial",
+    "value": 50,
+    "inputs": {
+        "items/valuable/gemstone/flawless_quartz": 1
+    },
+    "outputs": {
+        "items/consumable/ingredient/alchemy_supplies/crystal_vial": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 4
+    }
+}
