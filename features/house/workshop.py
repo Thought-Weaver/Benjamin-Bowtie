@@ -806,8 +806,8 @@ class WorkshopView(discord.ui.View):
 
         xp_strs = []
         for xp_class, xp in self._selected_recipe.xp_reward_for_use.items():
-            xp_strs.append(f"*(+{xp} {xp_class} xp)*")
-            player.get_expertise().add_xp_to_class(xp, xp_class)
+            final_xp = player.get_expertise().add_xp_to_class(xp, xp_class, player.get_equipment())
+            xp_strs.append(f"*(+{final_xp} {xp_class} xp)*")
         xp_display = '\n'.join(xp_strs)
 
         stats: Stats = player.get_stats()
@@ -833,9 +833,6 @@ class WorkshopView(discord.ui.View):
             if new_item.get_rarity() == Rarity.Artifact:
                 stats.crafting.artifact_items_crafted += 1
         output_display = '\n'.join(output_strs)
-
-        for xp_class, xp in self._selected_recipe.xp_reward_for_use.items():
-            player.get_expertise().add_xp_to_class(xp, xp_class)
         
         return Embed(title="Patterns", description=f"Crafting successful! You received:\n\n{output_display}\n{xp_display}\n\nChoose a pattern you've acquired or discovered to craft.\n\nNavigate through your patterns using the Prev and Next buttons.")
 
@@ -881,8 +878,8 @@ class WorkshopView(discord.ui.View):
 
         xp_strs = []
         for xp_class, xp in found_recipe.xp_reward_for_use.items():
-            xp_strs.append(f"*(+{xp} {xp_class} xp)*")
-            player.get_expertise().add_xp_to_class(xp, xp_class)
+            final_xp = player.get_expertise().add_xp_to_class(xp, xp_class, player.get_equipment())
+            xp_strs.append(f"*(+{final_xp} {xp_class} xp)*")
         xp_display = '\n'.join(xp_strs)
         if len(xp_strs) > 0:
             xp_display += "\n"

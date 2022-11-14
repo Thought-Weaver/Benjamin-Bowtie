@@ -74,7 +74,7 @@ class SellModal(discord.ui.Modal):
 
         player_xp: Expertise = player.get_expertise()
         xp_to_add: int = floor(item_value * amount_to_sell / 4)
-        player_xp.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant)
+        xp_to_add = player_xp.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant, player.get_equipment())
     
         amount_str: str = ""
         if total_amount == 1:

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-from zoneinfo import ZoneInfo
 import jsonpickle
 import os
 import random
@@ -260,11 +259,11 @@ class Adventures(commands.Cog):
             player_stats.fish.epic_fish_caught += 1
         
         author_player.get_inventory().add_item(fishing_result)
-        player_xp.add_xp_to_class(xp_to_add, xp_class)
+        final_xp = player_xp.add_xp_to_class(xp_to_add, xp_class, author_player.get_equipment())
 
         description = "It's been added to your b!inventory."
-        if xp_to_add > 0:
-            description += f"\n\n*(+{xp_to_add} {xp_class} xp)*"
+        if final_xp > 0:
+            description += f"\n\n*(+{final_xp} {xp_class} xp)*"
 
         embed = Embed(
             title=f"You caught {fishing_result.get_full_name()} worth {fishing_result.get_value_str()}!",
@@ -531,10 +530,10 @@ class Adventures(commands.Cog):
             expertise: Expertise = author_player.get_expertise()
             if result.get_key() == ItemKey.Diamond:
                 xp_to_add = 8
-                expertise.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant)
+                xp_to_add = expertise.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant, author_player.get_equipment())
             else:
                 xp_to_add = 34
-                expertise.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant)
+                xp_to_add = expertise.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant, author_player.get_equipment())
 
             xp_str: str = ""
             if xp_to_add > 0:

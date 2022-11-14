@@ -304,9 +304,9 @@ class Blacksmith(NPC):
             self._inventory.add_item(item)
         
         # Expertise Setup
-        self._expertise.add_xp_to_class(1000, ExpertiseClass.Fisher) # Level 5
-        self._expertise.add_xp_to_class(3976, ExpertiseClass.Merchant) # Level 15
-        self._expertise.add_xp_to_class(7000, ExpertiseClass.Guardian) # Level 25
+        self._expertise.add_xp_to_class(1000, ExpertiseClass.Fisher, self._equipment) # Level 5
+        self._expertise.add_xp_to_class(3976, ExpertiseClass.Merchant, self._equipment) # Level 15
+        self._expertise.add_xp_to_class(7000, ExpertiseClass.Guardian, self._equipment) # Level 25
         
         self._expertise.points_to_spend = 0
         
@@ -358,9 +358,9 @@ class Blacksmith(NPC):
         if self._expertise is None:
             self._expertise = Expertise()
 
-            self._expertise.add_xp_to_class(1000, ExpertiseClass.Fisher) # Level 5
-            self._expertise.add_xp_to_class(3976, ExpertiseClass.Merchant) # Level 15
-            self._expertise.add_xp_to_class(7000, ExpertiseClass.Guardian) # Level 25
+            self._expertise.add_xp_to_class(1000, ExpertiseClass.Fisher, self._equipment) # Level 5
+            self._expertise.add_xp_to_class(3976, ExpertiseClass.Merchant, self._equipment) # Level 15
+            self._expertise.add_xp_to_class(7000, ExpertiseClass.Guardian, self._equipment) # Level 25
             
             self._expertise.points_to_spend = 0
             

@@ -164,18 +164,31 @@ class Expertise():
         self.luck = 0
         self.memory = 0
 
-    def add_xp_to_class(self, xp: int, expertise_class: ExpertiseClass):
+    def add_xp_to_class(self, xp: int, expertise_class: ExpertiseClass, equipment: Equipment):
         levels_gained: int = 0
+
+        xp_adjustment = 0
+        for item in equipment.get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for effect in item_effects.permanent:
+                    if effect.effect_type == EffectType.AdditionalXP:
+                        xp_adjustment = max(xp_adjustment + effect.effect_value, -1)
+        final_xp_gain = xp + int(xp * xp_adjustment)
+
         if expertise_class == ExpertiseClass.Fisher:
-            levels_gained = self._fisher.add_xp(xp)
+            levels_gained = self._fisher.add_xp(final_xp_gain)
         elif expertise_class == ExpertiseClass.Merchant:
-            levels_gained = self._merchant.add_xp(xp)
+            levels_gained = self._merchant.add_xp(final_xp_gain)
         elif expertise_class == ExpertiseClass.Guardian:
-            levels_gained = self._guardian.add_xp(xp)
+            levels_gained = self._guardian.add_xp(final_xp_gain)
         elif expertise_class == ExpertiseClass.Alchemist:
-            levels_gained = self._alchemist.add_xp(xp)
+            levels_gained = self._alchemist.add_xp(final_xp_gain)
+        
         self.points_to_spend += levels_gained
-        self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level()
+        self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level() + self._alchemist.get_level()
+        
+        return final_xp_gain
 
     def update_stats(self, combined_attributes: Attributes):
         percent_health = self.hp / self.max_hp

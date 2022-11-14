@@ -42,8 +42,8 @@ class MrBones(NPC):
             self._inventory.add_item(item)
         
         # Expertise Setup
-        self._expertise.add_xp_to_class(1748260, ExpertiseClass.Merchant) # Level 100
-        self._expertise.add_xp_to_class(20150, ExpertiseClass.Guardian) # Level 25
+        self._expertise.add_xp_to_class(1748260, ExpertiseClass.Merchant, self._equipment) # Level 100
+        self._expertise.add_xp_to_class(20150, ExpertiseClass.Guardian, self._equipment) # Level 25
         
         self._expertise.points_to_spend = 0
         
@@ -194,8 +194,8 @@ class MrBones(NPC):
         if self._expertise is None:
             self._expertise = Expertise()
 
-            self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant) # Level 20
-            self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian) # Level 5
+            self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
+            self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
             
             self._expertise.points_to_spend = 0
                 

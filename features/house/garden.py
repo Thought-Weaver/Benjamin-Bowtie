@@ -560,9 +560,9 @@ class GardenView(discord.ui.View):
         if harvest_result.get_rarity() == Rarity.Legendary:
             stats.garden.legendary_seeds_dropped += num_seeds_to_add
 
-        player.get_expertise().add_xp_to_class(seed_data.xp_to_gain, ExpertiseClass.Alchemist)
+        final_xp = player.get_expertise().add_xp_to_class(seed_data.xp_to_gain, ExpertiseClass.Alchemist, player.get_equipment())
 
-        return self.get_embed_for_intent(additional=f"\n\n*You received {harvest_result.get_full_name()}{seeds_added_str}*")
+        return self.get_embed_for_intent(additional=f"\n\n*You received {harvest_result.get_full_name()}{seeds_added_str} and gained {final_xp} Alchemist xp*")
 
     def expand_garden(self):
         player: Player = self._get_player()

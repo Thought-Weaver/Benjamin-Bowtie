@@ -657,8 +657,8 @@ class Yenna(NPC):
         
         # Expertise Setup
         # TODO: When Alchemy is implemented, add XP to that class to get to Level 50
-        self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant) # Level 20
-        self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian) # Level 5
+        self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
+        self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
         
         self._expertise.points_to_spend = 0
         
@@ -861,8 +861,8 @@ class Yenna(NPC):
         if self._expertise is None:
             self._expertise = Expertise()
 
-            self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant) # Level 20
-            self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian) # Level 5
+            self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
+            self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
             
             self._expertise.points_to_spend = 0
             

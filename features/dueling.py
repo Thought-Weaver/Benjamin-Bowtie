@@ -1134,6 +1134,9 @@ class DuelView(discord.ui.View):
         return info_str + f"\n*It's {player_name}'s turn!*"
 
     def get_selected_entity_full_duel_info_str(self):
+        if self._current_target is None:
+            return ""
+
         name = self.get_name(self._current_target)
         expertise = self._current_target.get_expertise()
         dueling = self._current_target.get_dueling()
@@ -1184,7 +1187,7 @@ class DuelView(discord.ui.View):
                 winner_expertise = winner.get_expertise()
                 winner_dueling = winner.get_dueling()
                 
-                winner_expertise.add_xp_to_class(winner_xp, ExpertiseClass.Guardian)
+                final_winner_xp = winner_expertise.add_xp_to_class(winner_xp, ExpertiseClass.Guardian, winner.get_equipment())
                 
                 winner_dueling.reset_ability_cds()
                 winner_dueling.status_effects = []
@@ -1196,7 +1199,7 @@ class DuelView(discord.ui.View):
 
                 winner_expertise.level_up_check()
 
-                winner_str += f"{self.get_name(winner)} *(+{winner_xp} Guardian xp)*\n"
+                winner_str += f"{self.get_name(winner)} *(+{final_winner_xp} Guardian xp)*\n"
 
             loser_str = ""
             loser_xp = ceil(sum(winner.get_expertise().level for winner in duel_result.winners) / (2 * len(losers)))
@@ -1204,7 +1207,7 @@ class DuelView(discord.ui.View):
                 loser_expertise = loser.get_expertise()
                 loser_dueling = loser.get_dueling()
                 
-                loser_expertise.add_xp_to_class(loser_xp, ExpertiseClass.Guardian)
+                final_loser_xp = loser_expertise.add_xp_to_class(loser_xp, ExpertiseClass.Guardian, loser.get_equipment())
 
                 loser_dueling.reset_ability_cds()
                 loser_dueling.status_effects = []
@@ -1216,7 +1219,7 @@ class DuelView(discord.ui.View):
 
                 loser_expertise.level_up_check()
 
-                loser_str += f"{self.get_name(loser)} *(+{loser_xp} Guardian xp)*\n"
+                loser_str += f"{self.get_name(loser)} *(+{final_loser_xp} Guardian xp)*\n"
 
             return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\nPractice for the journeys yet to come.")
 
@@ -1472,6 +1475,9 @@ class DuelView(discord.ui.View):
         return "\n".join(result_strs)
 
     def use_ability_on_selected_targets(self):
+        if self._selected_ability is None:
+            return self.show_abilities("*Error: That ability doesn't exist.*")
+
         caster = self._turn_order[self._turn_index]
         names = [self.get_name(caster), *list(map(lambda x: self.get_name(x), self._selected_targets))]
         result_str = self._selected_ability.use_ability(caster, self._selected_targets)
@@ -1480,11 +1486,14 @@ class DuelView(discord.ui.View):
         # TODO: Add level up check mid-combat?
         xp_to_add: int = int(self._selected_ability.get_level_requirement() / 2)
         class_key: ExpertiseClass = self._selected_ability.get_class_key()
-        caster.get_expertise().add_xp_to_class(xp_to_add, class_key)
+        final_xp = caster.get_expertise().add_xp_to_class(xp_to_add, class_key, caster.get_equipment())
 
-        return result_str.format(*names) + f"\n\n*You gained {xp_to_add} {class_key} xp!*"
+        return result_str.format(*names) + f"\n\n*You gained {final_xp} {class_key} xp!*"
 
     def use_item_on_selected_targets(self):
+        if self._selected_item is None:
+            return self.show_items("*Error: That item doesn't exist.*")
+
         applicator = self._turn_order[self._turn_index]
         names = [self.get_name(applicator), *list(map(lambda x: self.get_name(x), self._selected_targets))]
         result_str = DUELING_CONSUMABLE_ITEM_EFFECTS[self._selected_item.get_key()](self._selected_item, applicator, self._selected_targets)
@@ -1495,6 +1504,9 @@ class DuelView(discord.ui.View):
         return result_str.format(*names)
 
     def confirm_target(self):
+        if self._current_target is None:
+            return self.show_targets()
+
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
         selected_targets_str = f"Current Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
 
@@ -1678,11 +1690,18 @@ class DuelView(discord.ui.View):
         return self._get_current_page_info()
 
     def confirm_item(self):
+        if self._selected_item is None:
+            return self.show_items("*Error: That item couldn't be selected.*")
+
         entity: Player | NPC = self._turn_order[self._turn_index]
         found_index = entity.get_inventory().item_exists(self._selected_item)
         if self._selected_item is not None and found_index == self._selected_item_index:
-            self._targets_remaining = self._selected_item.get_consumable_stats().get_num_targets()
-            target_own_group = self._selected_item.get_consumable_stats().get_target_own_group()
+            consumable_stats = self._selected_item.get_consumable_stats()
+            if consumable_stats is None:
+                return self.show_items("*Error: That item doesn't have consumable stats.*")
+            
+            self._targets_remaining = consumable_stats.get_num_targets()
+            target_own_group = consumable_stats.get_target_own_group()
 
             if self._targets_remaining == 0:
                 self._selected_targets = [entity]
@@ -1701,6 +1720,9 @@ class DuelView(discord.ui.View):
         return self.show_items("*Error: That item couldn't be selected.*")
 
     def confirm_ability(self):
+        if self._selected_ability is None:
+            return self.show_abilities("*Error: That item couldn't be selected.*")
+
         entity: Player | NPC = self._turn_order[self._turn_index]
         found_index = entity.get_dueling().ability_exists(self._selected_ability)
         if found_index == self._selected_ability_index:
