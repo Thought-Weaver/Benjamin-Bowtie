@@ -171,6 +171,16 @@ class Effect():
         self.conditions = conditions
         self.condition_values = condition_values
 
+    @staticmethod
+    def load_from_state(effect_data: dict):
+        return Effect(
+            effect_data.get("effect_type", ""),
+            effect_data.get("effect_value", 0),
+            effect_data.get("effect_time", 0),
+            effect_data.get("conditions", []),
+            effect_data.get("condition_values", [])
+        )
+
     def meets_conditions(self, entity: Player | NPC, item: Item):
         conditions_met = True
         for i, condition in enumerate(self.conditions):
@@ -474,15 +484,20 @@ class ItemEffects():
 
         return display_string
 
+    def load_effect_from_state(self, data):
+        if isinstance(data, Effect):
+            return data
+        return Effect.load_from_state(data)
+
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        self.permanent = state.get("permanent", [])
-        self.on_turn_start = state.get("on_turn_start", [])
-        self.on_turn_end = state.get("on_turn_end", [])
-        self.on_damaged = state.get("on_damaged", [])
-        self.on_successful_ability_used = state.get("on_successful_ability_used", [])
-        self.on_successful_attack = state.get("on_successful_attack", [])
-        self.on_attacked = state.get("on_attacked", [])
-        self.on_ability_used_against = state.get("on_ability_used_against", [])
+        self.permanent = [self.load_effect_from_state(data) for data in state.get("permanent", [])]
+        self.on_turn_start = [self.load_effect_from_state(data) for data in state.get("on_turn_start", [])]
+        self.on_turn_end = [self.load_effect_from_state(data) for data in state.get("on_turn_end", [])]
+        self.on_damaged = [self.load_effect_from_state(data) for data in state.get("on_damaged", [])]
+        self.on_successful_ability_used = [self.load_effect_from_state(data) for data in state.get("on_successful_ability_used", [])]
+        self.on_successful_attack = [self.load_effect_from_state(data) for data in state.get("on_successful_attack", [])]
+        self.on_attacked = [self.load_effect_from_state(data) for data in state.get("on_attacked", [])]
+        self.on_ability_used_against = [self.load_effect_from_state(data) for data in state.get("on_ability_used_against", [])]

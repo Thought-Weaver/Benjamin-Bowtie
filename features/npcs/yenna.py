@@ -23,6 +23,7 @@ from typing import TYPE_CHECKING, List
 from features.stats import Stats
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
+    from features.house.house import House
     from features.inventory import Inventory
     from features.player import Player
 
@@ -87,7 +88,7 @@ class EnterWaresButton(discord.ui.Button):
 
 class EnterRecipesButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Browse Recipes", row=0)
+        super().__init__(style=discord.ButtonStyle.secondary, label="Browse Recipes", row=1)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -102,7 +103,7 @@ class EnterRecipesButton(discord.ui.Button):
 
 class EnterIdentifyButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Identify Items", row=1)
+        super().__init__(style=discord.ButtonStyle.secondary, label="Identify Items", row=2)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -117,7 +118,7 @@ class EnterIdentifyButton(discord.ui.Button):
 
 class EnterTarotButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Tarot Reading", row=2)
+        super().__init__(style=discord.ButtonStyle.secondary, label="Tarot Reading", row=3)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -315,6 +316,7 @@ class YennaView(discord.ui.View):
         self.clear_items()
 
         self.add_item(EnterWaresButton())
+        self.add_item(EnterRecipesButton())
         self.add_item(EnterIdentifyButton())
         self.add_item(EnterTarotButton())
 
@@ -343,6 +345,14 @@ class YennaView(discord.ui.View):
                     "\"You wish to see what the cards reveal? Come, sit. Let us look into the past, the present, and the future.\"\n\n"
                     f"This will cost **{self._TAROT_COST} coins**. You have {player.get_inventory().get_coins_str()}.\n\n"
                     "*Note: This will RESET your attribute points, allowing you to reallocate them.*"
+                )
+            )
+        if self._intent == Intent.Recipes:
+            return Embed(
+                title="Browse Recipes",
+                description=(
+                    "\"There are some things I can teach you, yes. Perhaps it's better than potentially creating an explosion in your alchemy chamber.\"\n\n"
+                    f"You have {player.get_inventory().get_coins_str()}."
                 )
             )
         return self.get_initial_embed()
@@ -657,6 +667,105 @@ class YennaView(discord.ui.View):
         self.add_item(ExitButton(0))
         return self.get_embed_for_intent()
 
+    def display_recipe_info(self):
+        player: Player = self._get_player()
+        if self._selected_recipe is None:
+            self._get_recipes_page_buttons()
+            
+            return Embed(
+                title="Browse Recipes",
+                description=(
+                    f"You have {player.get_inventory().get_coins_str()}.\n\n"
+                    "Navigate through available recipes using the Prev and Next buttons.\n\n"
+                    "*Error: Something about that recipe changed or it's no longer available.*"
+                )
+            )
+
+        actual_cost: int = int(self._selected_recipe.value * self._COST_ADJUST)
+        actual_cost_str: str = f"{actual_cost} coin" if actual_cost == 1 else f"{actual_cost} coins"
+        return Embed(
+            title="Browse Recipes",
+            description=(
+                f"You have {player.get_inventory().get_coins_str()}.\n\n"
+                f"──────────\n{self._selected_recipe.get_name_and_icon()}\n\n**Price: {actual_cost_str}**\n──────────\n\n"
+                "Navigate through available recipes using the Prev and Next buttons."
+            )
+        )
+
+    def select_recipe(self, recipe: Recipe):
+        self._selected_recipe = recipe
+
+        self._get_recipes_page_buttons()
+        return self.display_recipe_info()
+
+    def _get_recipes_page_buttons(self):
+        self.clear_items()
+        
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        house: House = player.get_house()
+        all_slots = list(filter(lambda r: r not in house.crafting_recipes, self._recipes))
+
+        page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
+        for i, recipe in enumerate(page_slots):
+            self.add_item(RecipesDisplayButton(recipe, i))
+        if self._page != 0:
+            self.add_item(PrevButton(min(4, len(page_slots))))
+        if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
+            self.add_item(NextButton(min(4, len(page_slots))))
+        
+        if self._selected_recipe is not None:
+            actual_value: int = int(self._selected_recipe.value * self._COST_ADJUST)
+            if inventory.get_coins() >= actual_value:
+                self.add_item(ConfirmButton(min(4, len(page_slots))))
+        self.add_item(ExitButton(min(4, len(page_slots))))
+
+    def _purchase_recipe(self):
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        house: House = player.get_house()
+        if self._selected_recipe is not None:
+            actual_value: int = int(self._selected_recipe.value * self._COST_ADJUST)
+            if inventory.get_coins() >= actual_value:
+                inventory.remove_coins(actual_value)
+                house.crafting_recipes.append(LOADED_RECIPES.get_new_recipe(self._selected_recipe.key))
+                self._get_recipes_page_buttons()
+
+                return Embed(
+                    title="Browse Recipes",
+                    description=(
+                        f"You have {inventory.get_coins_str()}.\n\n"
+                        "Navigate through available recipes using the Prev and Next buttons.\n\n"
+                        f"*You purchased {self._selected_recipe.get_name_and_icon()}!*"
+                    )
+                )
+            else:
+                self._get_recipes_page_buttons()
+
+                return Embed(
+                    title="Browse Recipes",
+                    description=(
+                        f"You have {inventory.get_coins_str()}.\n\n"
+                        "Navigate through available recipes using the Prev and Next buttons.\n\n"
+                        f"*Error: You don't have enough coins to buy that!*"
+                    )
+                )
+
+        self._get_recipes_page_buttons()
+        return Embed(
+            title="Browse Recipes",
+            description=(
+                f"You have {inventory.get_coins_str()}.\n\n"
+                "Navigate through available recipes using the Prev and Next buttons.\n\n"
+                "*Error: Something about that recipe changed or it's no longer available.*"
+            )
+        )
+
+    def enter_recipes(self):
+        self._intent = Intent.Recipes
+        self._get_recipes_page_buttons()
+        return self.get_embed_for_intent()
+
     def confirm_using_intent(self):
         if self._intent == Intent.Wares:
             result = self._purchase_item()
@@ -676,31 +785,45 @@ class YennaView(discord.ui.View):
             return result
         if self._intent == Intent.Tarot:
             return self._tarot_reading()
+        if self._intent == Intent.Recipes:
+            result = self._purchase_recipe()
+
+            self._selected_recipe = None
+            self._get_recipes_page_buttons()
+
+            return result
+        
         return self.get_initial_embed()
 
     def next_page(self):
         self._page += 1
 
+        self._selected_item = None
+        self._selected_item_index = -1
+        self._selected_recipe = None
+
         if self._intent == Intent.Wares:
             self._get_wares_page_buttons()
         if self._intent == Intent.Identify:
             self._get_identify_page_buttons()
-
-        self._selected_item = None
-        self._selected_item_index = -1
+        if self._intent == Intent.Recipes:
+            self._get_recipes_page_buttons() 
 
         return self.get_embed_for_intent()
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
 
+        self._selected_item = None
+        self._selected_item_index = -1
+        self._selected_recipe = None
+
         if self._intent == Intent.Wares:
             self._get_wares_page_buttons()
         if self._intent == Intent.Identify:
             self._get_identify_page_buttons()
-
-        self._selected_item = None
-        self._selected_item_index = -1
+        if self._intent == Intent.Recipes:
+            self._get_recipes_page_buttons()
 
         return self.get_embed_for_intent()
 
@@ -710,6 +833,7 @@ class YennaView(discord.ui.View):
 
         self._selected_item = None
         self._selected_item_index = -1
+        self._selected_recipe = None
 
         self.show_initial_buttons()
         return self.get_initial_embed()

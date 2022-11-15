@@ -442,7 +442,7 @@ class WorkshopView(discord.ui.View):
         house.house_rooms.append(HouseRoom.Workshop)
         self._display_initial_buttons()
 
-        return self.get_embed_for_intent(error="\n\nWorkshop purchased! You can now craft, deconstruct items, and store materials.")
+        return self.get_embed_for_intent(error="\n\n*Workshop purchased! You can now craft, deconstruct items, and store materials.*")
 
     def enter_storage(self):
         self.clear_items()
@@ -516,24 +516,26 @@ class WorkshopView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
+        special_num_per_page: int = self._NUM_PER_PAGE - 1
+
         filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.CraftingMaterial])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
-        page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
+        page_slots = filtered_items[self._page * special_num_per_page:min(len(filtered_items), (self._page + 1) * special_num_per_page)]
         for i, item in enumerate(page_slots):
-            exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
+            exact_item_index: int = filtered_indices[i + (self._page * special_num_per_page)]
             self.add_item(SelectMaterialButton(exact_item_index, item, i))
         if self._page != 0:
-            self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(inventory_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
-            self.add_item(NextButton(min(4, len(page_slots))))
+            self.add_item(PrevButton(min(special_num_per_page, len(page_slots))))
+        if len(inventory_slots) - special_num_per_page * (self._page + 1) > 0:
+            self.add_item(NextButton(min(special_num_per_page, len(page_slots))))
         if self._selected_item_index != -1 and self._selected_item is not None:
             if self._current_crafting.get(self._selected_item.get_key(), 0) < inventory_slots[self._selected_item_index].get_count():
-                self.add_item(AddItemButton(min(4, len(page_slots))))
+                self.add_item(AddItemButton(min(special_num_per_page, len(page_slots))))
             if self._current_crafting.get(self._selected_item.get_key(), 0) > 0:
-                self.add_item(RemoveItemButton(min(4, len(page_slots))))
-        self.add_item(ConfirmCraftingButton(min(4, len(page_slots))))
-        self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
+                self.add_item(RemoveItemButton(min(special_num_per_page, len(page_slots))))
+        self.add_item(ConfirmCraftingButton(min(4, len(page_slots) + 1)))
+        self.add_item(ExitWithIntentButton(min(4, len(page_slots) + 1)))
 
     def enter_craft(self):
         self.clear_items()
@@ -872,7 +874,8 @@ class WorkshopView(discord.ui.View):
                 break
 
         if found_recipe is None:
-            return Embed(title="Craft", description=f"You attempt to combine these materials together, but nothing happens.\n──────────\n\nUse materials from your inventory and attempt to craft something.\n\nNavigate through your patterns using the Prev and Next buttons.")
+            self._current_cooking = {}
+            return Embed(title="Craft", description=f"You attempt to combine these materials together, but nothing happens.\n\n──────────\n\nUse materials from your inventory and attempt to craft something.\n\nNavigate through your patterns using the Prev and Next buttons.")
             
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} pattern!*\n" if new_recipe else ""
 

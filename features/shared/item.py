@@ -241,7 +241,7 @@ class ItemKey(StrEnum):
 
     # Weapons
     BasicDagger = "items/weapon/dagger/basic_dagger"
-    BasicSword = "items/weapon/dagger/basic_sword"
+    BasicSword = "items/weapon/sword/basic_sword"
 
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"
@@ -349,7 +349,7 @@ class Item():
             consumable_stats = ConsumableStats()
             consumable_stats.__setstate__(consumable_data)
 
-        item_effects_data = item_data.get("effects")
+        item_effects_data = item_data.get("item_effects")
         item_effects = None
         if item_effects_data is not None:
             item_effects = ItemEffects()
@@ -463,7 +463,7 @@ class Item():
 
         # Add in everything from items that are altering it
         for item_key in self._altering_item_keys:
-            item_effects_data = LOADED_ITEMS.get_item_state(item_key).get("effects")
+            item_effects_data = LOADED_ITEMS.get_item_state(item_key).get("item_effects")
             item_effects = None
             if item_effects_data is not None:
                 item_effects = ItemEffects()
@@ -514,7 +514,7 @@ class Item():
 
         if self._item_effects is not None:
             has_any_stats = True
-            display_string += f"{self._item_effects}"
+            display_string += f"{self._item_effects}\n"
 
         if has_any_stats:
             display_string += "\n"

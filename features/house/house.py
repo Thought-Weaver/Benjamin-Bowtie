@@ -5,7 +5,10 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
-from features.house.garden import MUTATION_PROBS
+from features.house.garden import MUTATION_PROBS, GardenView
+from features.house.storage import StorageView
+from features.house.study import StudyView
+from features.house.workshop import WorkshopView
 from features.inventory import Inventory
 
 from features.shared.constants import MAX_GARDEN_SIZE
@@ -140,8 +143,8 @@ class GardenButton(discord.ui.Button):
         
         view: HouseView = self.view
         if interaction.user == view.get_user():
-            new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
-            embed = Embed()
+            new_view: GardenView = GardenView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user(), view)
+            embed = new_view.get_embed_for_intent()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -155,8 +158,8 @@ class StorageButton(discord.ui.Button):
         
         view: HouseView = self.view
         if interaction.user == view.get_user():
-            new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
-            embed = Embed()
+            new_view: StorageView = StorageView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user(), view, view.get_context())
+            embed = new_view.get_embed_for_intent()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -170,8 +173,8 @@ class WorkshopButton(discord.ui.Button):
         
         view: HouseView = self.view
         if interaction.user == view.get_user():
-            new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
-            embed = Embed()
+            new_view: WorkshopView = WorkshopView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user(), view)
+            embed = new_view.get_embed_for_intent()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -185,8 +188,8 @@ class StudyButton(discord.ui.Button):
         
         view: HouseView = self.view
         if interaction.user == view.get_user():
-            new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
-            embed = Embed()
+            new_view: StudyView = StudyView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user(), view)
+            embed = new_view.get_embed_for_intent()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -201,7 +204,7 @@ class AlchemyChamberButton(discord.ui.Button):
         view: HouseView = self.view
         if interaction.user == view.get_user():
             new_view: AlchemyChamberView = AlchemyChamberView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user(), view)
-            embed = Embed()
+            embed = new_view.get_embed_for_intent()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
 
@@ -264,7 +267,7 @@ class HouseView(discord.ui.View):
         self.add_item(KitchenButton(1))
         self.add_item(MailboxButton(2))
         self.add_item(StorageButton(2))
-        self.add_item(RestButton(3))
+        # self.add_item(RestButton(3))
 
     def rest(self):
         # TODO: Implement resting mechanic and out-of-combat status effects
@@ -281,3 +284,6 @@ class HouseView(discord.ui.View):
 
     def get_guild_id(self):
         return self._guild_id
+
+    def get_context(self):
+        return self._context

@@ -6,6 +6,7 @@ from discord.embeds import Embed
 from discord.ext import commands
 from features.expertise import Expertise, ExpertiseClass
 from features.npcs.abarra import BlacksmithView
+from features.npcs.copperbroad import ChefView
 from features.npcs.yenna import YennaView
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -183,6 +184,21 @@ class BlacksmithButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=embed, view=blacksmith_view)
 
 
+class ChefButton(discord.ui.Button):
+    def __init__(self, row):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Visit Copperbroad", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MarketView = self.view
+        if interaction.user == view.get_user():
+            blacksmith_view: ChefView = ChefView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
+            embed = blacksmith_view.get_initial_embed()
+            await interaction.response.edit_message(content=None, embed=embed, view=blacksmith_view)
+
+
 class MarketView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, context: commands.Context):
         super().__init__(timeout=900)
@@ -243,7 +259,8 @@ class MarketView(discord.ui.View):
         self.clear_items()
         self.add_item(YennaButton(0))
         self.add_item(BlacksmithButton(1))
-        self.add_item(MarketSellButton(2))
+        self.add_item(ChefButton(2))
+        self.add_item(MarketSellButton(3))
 
     def enter_sell_market(self):
         self._get_current_page_buttons()

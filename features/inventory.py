@@ -104,7 +104,7 @@ class Inventory():
         item_indices: List[int] = []
         for i, item in enumerate(self._inventory_slots):
             item_class_tags: List[ClassTag] = item.get_class_tags()
-            if all(tag in item_class_tags for tag in tags):
+            if any(tag in item_class_tags for tag in tags):
                 if player_level is None or player_level >= item.get_level_requirement():
                     if require_enchantable_equipment and ClassTag.Equipment in item.get_class_tags() and len(item.get_altering_item_keys()) == 0:
                         continue

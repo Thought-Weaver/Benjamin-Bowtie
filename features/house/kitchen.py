@@ -385,13 +385,13 @@ class KitchenView(discord.ui.View):
         house: House = player.get_house()
         
         if inventory.get_coins() < self._PURCHASE_COST:
-            return self.get_embed_for_intent(error="*Error: You don't have enough coins to purchase the kitchen.*")
+            return self.get_embed_for_intent(error="\n\n*Error: You don't have enough coins to purchase the kitchen.*")
 
         inventory.remove_coins(self._PURCHASE_COST)
         house.house_rooms.append(HouseRoom.Kitchen)
         self._display_initial_buttons()
 
-        return self.get_embed_for_intent(error="Kitchen purchased! You can now cook and store ingredients.")
+        return self.get_embed_for_intent(error="\n\n*Kitchen purchased! You can now cook and store ingredients.*")
 
     def enter_cupboard(self):
         self.clear_items()
@@ -465,24 +465,26 @@ class KitchenView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
+        special_num_per_page: int = self._NUM_PER_PAGE - 1
+
         filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFood, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.Spice])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
-        page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
+        page_slots = filtered_items[self._page * special_num_per_page:min(len(filtered_items), (self._page + 1) * special_num_per_page)]
         for i, item in enumerate(page_slots):
-            exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
+            exact_item_index: int = filtered_indices[i + (self._page * special_num_per_page)]
             self.add_item(SelectCookingIngredientButton(exact_item_index, item, i))
         if self._page != 0:
-            self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(inventory_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
-            self.add_item(NextButton(min(4, len(page_slots))))
+            self.add_item(PrevButton(min(special_num_per_page, len(page_slots))))
+        if len(inventory_slots) - special_num_per_page * (self._page + 1) > 0:
+            self.add_item(NextButton(min(special_num_per_page, len(page_slots))))
         if self._selected_item_index != -1 and self._selected_item is not None:
             if self._current_cooking.get(self._selected_item.get_key(), 0) < inventory_slots[self._selected_item_index].get_count():
-                self.add_item(AddItemButton(min(4, len(page_slots))))
+                self.add_item(AddItemButton(min(special_num_per_page, len(page_slots))))
             if self._current_cooking.get(self._selected_item.get_key(), 0) > 0:
-                self.add_item(RemoveItemButton(min(4, len(page_slots))))
-        self.add_item(ConfirmCookingButton(min(4, len(page_slots))))
-        self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
+                self.add_item(RemoveItemButton(min(special_num_per_page, len(page_slots))))
+        self.add_item(ConfirmCookingButton(min(4, len(page_slots) + 1)))
+        self.add_item(ExitWithIntentButton(min(4, len(page_slots) + 1)))
 
     def enter_cook(self):
         self.clear_items()
@@ -792,7 +794,8 @@ class KitchenView(discord.ui.View):
                 break
 
         if found_recipe is None:
-            return Embed(title="Cook", description=f"You attempt to mix these ingredients together, but nothing happens.\n──────────\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through your recipes using the Prev and Next buttons.")
+            self._current_cooking = {}
+            return Embed(title="Cook", description=f"You attempt to mix these ingredients together, but nothing happens.\n\n──────────\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through your recipes using the Prev and Next buttons.")
             
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} recipe!*\n" if new_recipe else ""
 

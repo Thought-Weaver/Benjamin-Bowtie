@@ -318,10 +318,10 @@ class StudyView(discord.ui.View):
         if self._intent == Intent.Enchant:
             return Embed(title="Enchant", description="Choose an item to enchant.\n\nNavigate through your patterns using the Prev and Next buttons." + error)
         if self._intent == Intent.SelectSocket:
-            return Embed(title="Select Socket", description="Choose a socket to add or remove a gem.\n\nNavigate through your patterns using the Prev and Next buttons." + error)
+            return Embed(title="Select Socket", description="Choose a socket to add or remove a gem." + error)
         if self._intent == Intent.SelectGem:
-            return Embed(title="Select Gem", description="Choose a gem to place in this socket.\n\nNavigate through your patterns using the Prev and Next buttons." + error)
-        return Embed(title="Study", description="You enter the workshop, where you can use an existing pattern to craft weapons and armor, try making something from any materials you have in your inventory, or store materials for later use." + error)
+            return Embed(title="Select Gem", description="Choose a gem to place in this socket." + error)
+        return Embed(title="Study", description="You enter the study, where you can enchant items using gemstones, as well as store enchanting materials and equippable items." + error)
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -348,7 +348,7 @@ class StudyView(discord.ui.View):
         house.house_rooms.append(HouseRoom.Study)
         self._display_initial_buttons()
 
-        return self.get_embed_for_intent(error="\n\nStudy purchased! You can now enchant items and store materials.")
+        return self.get_embed_for_intent(error="\n\n*Study purchased! You can now enchant items and store materials.*")
 
     def enter_storage(self):
         self.clear_items()
@@ -588,8 +588,10 @@ class StudyView(discord.ui.View):
         if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
+        self._intent = Intent.SelectSocket
+
         self._get_socket_buttons()
-        return Embed(title="Deconstruct", description=f"──────────\n{self._selected_item}\n──────────\n\nChoose an item to deconstruct into some materials.\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Select Socket", description=f"──────────\n{self._selected_item}\n──────────\n\nChoose a socket to add or remove a gem.")
 
     def select_gem(self, item_index: int, item: Item):
         # TODO: Implement socketing

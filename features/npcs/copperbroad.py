@@ -32,8 +32,8 @@ class Intent(StrEnum):
 
 
 class EnterWaresButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Browse Wares", row=0)
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Browse Wares", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -47,8 +47,8 @@ class EnterWaresButton(discord.ui.Button):
 
 
 class EnterRecipesButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Browse Recipes", row=0)
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Browse Recipes", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -186,8 +186,8 @@ class ChefView(discord.ui.View):
 
     def show_initial_buttons(self):
         self.clear_items()
-        self.add_item(EnterWaresButton())
-        self.add_item(EnterRecipesButton())
+        self.add_item(EnterWaresButton(0))
+        self.add_item(EnterRecipesButton(1))
 
     def get_embed_for_intent(self):
         player: Player = self._get_player()
@@ -310,7 +310,7 @@ class ChefView(discord.ui.View):
     def display_recipe_info(self):
         player: Player = self._get_player()
         if self._selected_recipe is None:
-            self._get_wares_page_buttons()
+            self._get_recipes_page_buttons()
             
             return Embed(
                 title="Browse Recipes",
@@ -335,7 +335,7 @@ class ChefView(discord.ui.View):
     def select_recipe(self, recipe: Recipe):
         self._selected_recipe = recipe
 
-        self._get_wares_page_buttons()
+        self._get_recipes_page_buttons()
         return self.display_recipe_info()
 
     def _get_recipes_page_buttons(self):
@@ -428,28 +428,28 @@ class ChefView(discord.ui.View):
     def next_page(self):
         self._page += 1
 
+        self._selected_item = None
+        self._selected_item_index = -1
+        self._selected_recipe = None
+
         if self._intent == Intent.Wares:
             self._get_wares_page_buttons()
         if self._intent == Intent.Recipes:
             self._get_recipes_page_buttons()
-
-        self._selected_item = None
-        self._selected_item_index = -1
-        self._selected_recipe = None
 
         return self.get_embed_for_intent()
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
 
+        self._selected_item = None
+        self._selected_item_index = -1
+        self._selected_recipe = None
+
         if self._intent == Intent.Wares:
             self._get_wares_page_buttons()
         if self._intent == Intent.Recipes:
             self._get_recipes_page_buttons()
-
-        self._selected_item = None
-        self._selected_item_index = -1
-        self._selected_recipe = None
 
         return self.get_embed_for_intent()
 

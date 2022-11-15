@@ -102,12 +102,15 @@ class Recipe():
         return f"{self.icon} {self.name}"
 
     def num_can_be_made(self, inventory: Inventory):
-        num = 0
-        for output_key, quantity in self.outputs.items():
-            item = inventory.get_inventory_slots()[inventory.search_by_key(output_key)]
+        num = -1
+        for input_key, quantity in self.inputs.items():
+            item = inventory.get_inventory_slots()[inventory.search_by_key(input_key)]
             
             if quantity > 0 and item is not None:
-                num = min(int(item.get_count() / quantity), num)
+                if num == -1:
+                    num = int(item.get_count() / quantity)
+                else:
+                    num = min(int(item.get_count() / quantity), num)
         return num
 
     def __eq__(self, obj) -> bool:
@@ -141,7 +144,7 @@ class Recipe():
         if state.get("key", "") not in LOADED_RECIPES.get_all_keys():
             return
 
-        base_data = LOADED_RECIPES.get_recipe_state(state["_key"])
+        base_data = LOADED_RECIPES.get_recipe_state(state["key"])
 
         self.key = base_data.get("key", "")
         self.icon = base_data.get("icon", "")

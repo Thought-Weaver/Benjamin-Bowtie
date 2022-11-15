@@ -255,22 +255,22 @@ class BlacksmithView(discord.ui.View):
     def next_page(self):
         self._page += 1
 
-        if self._intent == Intent.Wares:
-            self._get_wares_page_buttons()
-
         self._selected_item = None
         self._selected_item_index = -1
+
+        if self._intent == Intent.Wares:
+            self._get_wares_page_buttons()
 
         return self.get_embed_for_intent()
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
 
-        if self._intent == Intent.Wares:
-            self._get_wares_page_buttons()
-
         self._selected_item = None
         self._selected_item_index = -1
+
+        if self._intent == Intent.Wares:
+            self._get_wares_page_buttons()
 
         return self.get_embed_for_intent()
 
