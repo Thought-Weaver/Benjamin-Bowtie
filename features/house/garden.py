@@ -6,9 +6,10 @@ import random
 from discord.embeds import Embed
 from enum import StrEnum
 from features.expertise import ExpertiseClass
-from features.house.house import HouseRoom
+from features.shared.enums import HouseRoom
 from features.shared.constants import MAX_GARDEN_SIZE
-from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey, Rarity
+from features.shared.enums import ClassTag
+from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from types import MappingProxyType

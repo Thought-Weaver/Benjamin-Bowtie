@@ -20,12 +20,14 @@ from features.inventory import InventoryView
 from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
 from features.npcs.abarra import Blacksmith
+from features.npcs.copperbroad import Chef
 from features.npcs.mrbones import Difficulty, MrBones
 from features.npcs.npc import NPCRoles
 from features.npcs.yenna import Yenna
 from features.player import Player
 from features.stats import StatCategory, StatView
-from features.shared.item import ClassTag, Item, LOADED_ITEMS, ItemKey
+from features.shared.enums import ClassTag
+from features.shared.item import Item, LOADED_ITEMS, ItemKey
 from features.stories.forest import ForestStory
 from features.stories.ocean import OceanStory
 from features.stories.story import Story
@@ -50,7 +52,6 @@ class Adventures(commands.Cog):
         self._database: dict = jsonpickle.decode(file_data) if os.path.isfile("./adventuresdb.json") else {}
 
         self._database_npc_and_story_setup()
-        self.save_database.start()
 
     def _database_npc_and_story_setup(self):
         for guild_id_str in self._database.keys():
@@ -71,6 +72,8 @@ class Adventures(commands.Cog):
                 self._database[guild_id_str]["npcs"][NPCRoles.Blacksmith] = Blacksmith()
             if self._database[guild_id_str]["npcs"].get(NPCRoles.KnucklebonesPatron) is None:
                 self._database[guild_id_str]["npcs"][NPCRoles.KnucklebonesPatron] = MrBones()
+            if self._database[guild_id_str]["npcs"].get(NPCRoles.Chef) is None:
+                self._database[guild_id_str]["npcs"][NPCRoles.Chef] = Chef()
 
     def _check_member_and_guild_existence(self, guild_id: int, user_id: int):
         guild_id_str: str = str(guild_id)

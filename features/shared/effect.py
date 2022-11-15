@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from features.shared.item import ClassTag
+from features.shared.attributes import Attributes
+from features.shared.enums import ClassTag
 from types import MappingProxyType
 from enum import StrEnum
 
@@ -159,7 +160,7 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
 })
 
 # -----------------------------------------------------------------------------
-# CLASSES
+# EFFECT CLASS
 # -----------------------------------------------------------------------------
 
 class Effect():
@@ -377,3 +378,111 @@ class Effect():
         self.effect_time = state.get("effect_time", 0)
         self.conditions = state.get("conditions", [])
         self.condition_values = state.get("condition_values", [])
+
+# -----------------------------------------------------------------------------
+# ITEM EFFECTS CLASS
+# -----------------------------------------------------------------------------
+
+class ItemEffects():
+    def __init__(self, permanent: List[Effect]=[], on_turn_start: List[Effect]=[], on_turn_end: List[Effect]=[], on_damaged: List[Effect]=[], on_successful_ability_used: List[Effect]=[], on_successful_attack: List[Effect]=[], on_attacked: List[Effect]=[], on_ability_used_against: List[Effect]=[]):
+        # Permanent is a special case since it doesn't ever trigger like the others and therefore encapsulates
+        # the concept of inherent item mods which are going to be referenced in a bunch of places.
+        self.permanent: List[Effect] = permanent
+        
+        self.on_turn_start: List[Effect] = on_turn_start
+        self.on_turn_end: List[Effect] = on_turn_end
+        self.on_damaged: List[Effect] = on_damaged # After taking damage from any source (post reduction and armor)
+        self.on_successful_ability_used: List[Effect] = on_successful_ability_used
+        self.on_successful_attack: List[Effect] = on_successful_attack
+        self.on_attacked: List[Effect] = on_attacked # On being attacked (not dodged)
+        self.on_ability_used_against: List[Effect] = on_ability_used_against
+
+    def get_permanent_attribute_mods(self) -> Attributes:
+        attr_mods = Attributes(0, 0, 0, 0, 0, 0)
+        for effect in self.permanent:
+            if effect.effect_type == EffectType.ConMod:
+                attr_mods.constitution += int(effect.effect_value)
+            if effect.effect_type == EffectType.StrMod:
+                attr_mods.strength += int(effect.effect_value)
+            if effect.effect_type == EffectType.DexMod:
+                attr_mods.dexterity += int(effect.effect_value)
+            if effect.effect_type == EffectType.IntMod:
+                attr_mods.intelligence += int(effect.effect_value)
+            if effect.effect_type == EffectType.LckMod:
+                attr_mods.luck += int(effect.effect_value)
+            if effect.effect_type == EffectType.MemMod:
+                attr_mods.memory += int(effect.effect_value)
+        return attr_mods
+
+    def has_item_effect(self, effect_type: EffectType):
+        all_effects: List[List[Effect]] = [
+            self.permanent,
+            self.on_turn_start,
+            self.on_turn_end,
+            self.on_damaged,
+            self.on_successful_ability_used,
+            self.on_successful_attack,
+            self.on_attacked,
+            self.on_ability_used_against
+        ]
+        return any(any(effect.effect_type == effect_type for effect in effect_group) for effect_group in all_effects)        
+
+    def sort_by_priority(self, effects: List[Effect]):
+        return sorted(effects, key=lambda effect: EFFECT_PRIORITY[effect.effect_type])
+
+    def __add__(self, other: ItemEffects):
+        return ItemEffects(
+            self.sort_by_priority(self.permanent + other.permanent),
+            self.sort_by_priority(self.on_turn_start + other.on_turn_start),
+            self.sort_by_priority(self.on_turn_end + other.on_turn_end),
+            self.sort_by_priority(self.on_damaged + other.on_damaged),
+            self.sort_by_priority(self.on_successful_ability_used + other.on_successful_ability_used),
+            self.sort_by_priority(self.on_successful_attack + other.on_successful_attack),
+            self.sort_by_priority(self.on_attacked + other.on_attacked),
+            self.sort_by_priority(self.on_ability_used_against + other.on_ability_used_against)
+        )
+
+    def __str__(self):
+        display_string = ""
+
+        permanent_effect_str = "\n".join([str(effect) for effect in self.permanent])
+        display_string += permanent_effect_str
+
+        on_turn_start_str = "\n".join([str(effect) for effect in self.on_turn_start])
+        if on_turn_start_str != "":
+            display_string += "\n\nAt the start of your turn:\n\n" + on_turn_start_str
+        
+        on_turn_end_str = "\n".join([str(effect) for effect in self.on_turn_end])
+        if on_turn_end_str != "":
+            display_string += "\n\nAt the end of your turn:\n\n" + on_turn_end_str
+        
+        on_successful_ability_used_str = "\n".join([str(effect) for effect in self.on_successful_ability_used])
+        if on_successful_ability_used_str != "":
+            display_string += "\n\nWhen you successfully use an ability:\n\n" + on_successful_ability_used_str
+        
+        on_successful_attack_str = "\n".join([str(effect) for effect in self.on_successful_attack])
+        if on_successful_attack_str != "":
+            display_string += "\n\nWhen you successfully attack:\n\n" + on_successful_attack_str
+        
+        on_attacked_str = "\n".join([str(effect) for effect in self.on_attacked])
+        if on_attacked_str != "":
+            display_string += "\n\nWhen you're attacked:\n\n" + on_attacked_str
+
+        on_ability_used_against_str = "\n".join([str(effect) for effect in self.on_ability_used_against])
+        if on_ability_used_against_str != "":
+            display_string += "\n\nWhen an ability is used on you:\n\n" + on_ability_used_against_str
+
+        return display_string
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.permanent = state.get("permanent", [])
+        self.on_turn_start = state.get("on_turn_start", [])
+        self.on_turn_end = state.get("on_turn_end", [])
+        self.on_damaged = state.get("on_damaged", [])
+        self.on_successful_ability_used = state.get("on_successful_ability_used", [])
+        self.on_successful_attack = state.get("on_successful_attack", [])
+        self.on_attacked = state.get("on_attacked", [])
+        self.on_ability_used_against = state.get("on_ability_used_against", [])

@@ -9,11 +9,12 @@ from dataclasses import dataclass
 from discord.embeds import Embed
 from discord.ext import commands
 from enum import StrEnum
-from features.expertise import Attributes, ExpertiseClass
+from features.expertise import ExpertiseClass
+from features.shared.attributes import Attributes
 from features.shared.constants import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
-from features.shared.consumables import DUELING_CONSUMABLE_ITEM_EFFECTS
 from features.shared.effect import EffectType
-from features.shared.item import ClassTag, WeaponStats
+from features.shared.enums import ClassTag
+from features.shared.item import WeaponStats
 from features.shared.statuseffect import *
 
 from typing import List, TYPE_CHECKING, Tuple
@@ -121,7 +122,9 @@ class Dueling():
         self.init_actions_remaining = 1
         self.actions_remaining = 1
 
-    def apply_on_successful_attack_effects(self, item: Item, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, damage_dealt: int) -> Tuple[int, str]:
+    # TODO: These functions aren't abstracted particularly well. I should be able to take some pieces from
+    # those below and put them into helper functions to reduce code duplication.
+    def apply_on_successful_attack_or_ability_effects(self, item: Item, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, other_entity_index: int, damage_dealt: int) -> Tuple[int, str]:
         # Note: Not all effects are listed here, since not all make sense to trigger
         # in this scenario.
         if not item_effect.meets_conditions(self_entity, item):
@@ -292,13 +295,13 @@ class Dueling():
             health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
             other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
-            return (damage_dealt, f"Stole {health_steal} health using {item.get_full_name()}")
+            return (damage_dealt, f"Stole {health_steal} health from " + "{" + f"{other_entity_index}" + "}" + f" using {item.get_full_name()}")
 
         if item_effect.effect_type == EffectType.ManaSteal:
             mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
             self_entity.get_expertise().restore_mana(mana_steal)
             other_entity.get_expertise().remove_mana(mana_steal)
-            return (damage_dealt, f"Stole {mana_steal} mana using {item.get_full_name()}")
+            return (damage_dealt, f"Stole {mana_steal} mana from " + "{" + f"{other_entity_index}" + "}" + f" using {item.get_full_name()}")
 
         if item_effect.effect_type == EffectType.RestoreHealth:
             healing = int(item_effect.effect_value)
@@ -322,7 +325,7 @@ class Dueling():
 
         return (damage_dealt, "")
 
-    def apply_on_attacked_effects(self, item: Item, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC):
+    def apply_on_attacked_or_damaged_effects(self, item: Item, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, self_entity_index: int, damage_dealt: int):
         # Note: Not all effects are listed here, since not all make sense to trigger
         # in this scenario.
         if not item_effect.meets_conditions(self_entity, item):
@@ -343,7 +346,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+            return "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}"
         
         if item_effect.effect_type == EffectType.StrMod:
             attr_mod = None
@@ -360,7 +363,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+            return "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.DexMod:
             attr_mod = None
@@ -377,7 +380,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+            return "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.IntMod:
             attr_mod = None
@@ -394,7 +397,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+            return "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.LckMod:
             attr_mod = None
@@ -411,7 +414,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+            return "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.MemMod:
             attr_mod = None
@@ -428,7 +431,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+            return "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.DmgResist:
             status_effect = DmgReduction(
@@ -437,7 +440,7 @@ class Dueling():
                 source_str=f"{item.get_full_name()}"
             )
             self.status_effects.append(status_effect)
-            return "{0}" + f" is now {status_effect.name} from {item.get_full_name()}"
+            return "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.DmgBuff:
             status_effect = None
@@ -454,185 +457,15 @@ class Dueling():
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(status_effect)
-            return "{0}" + f" is now {status_effect.name} from {item.get_full_name()}"
+            return "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {item.get_full_name()}"
 
-        # TODO: When armor changes are implemented, I'll want to implement the armor effects here
-
-        if item_effect.effect_type == EffectType.HealthSteal:
-            health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
-            self_entity.get_expertise().heal(health_steal)
-            other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
-            return f"Stole {health_steal} health using {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.ManaSteal:
-            mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
-            self_entity.get_expertise().restore_mana(mana_steal)
-            other_entity.get_expertise().remove_mana(mana_steal)
-            return f"Stole {mana_steal} mana using {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.RestoreHealth:
-            healing = int(item_effect.effect_value)
-            self_entity.get_expertise().heal(healing)
-            return f"Healed {healing} from {item.get_full_name()}"
-        
-        if item_effect.effect_type == EffectType.RestorePercentHealth:
-            healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
-            self_entity.get_expertise().heal(healing)
-            return f"Healed {healing} from {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.RestoreMana:
-            restoration = int(item_effect.effect_value)
-            self_entity.get_expertise().restore_mana(restoration)
-            return f"Restored {restoration} mana from {item.get_full_name()}"
-        
-        if item_effect.effect_type == EffectType.RestorePercentMana:
-            restoration = int(item_effect.effect_value * self_entity.get_expertise().max_mana)
-            self_entity.get_expertise().restore_mana(restoration)
-            return f"Restored {restoration} mana from {item.get_full_name()}"
-
-        return ""
-
-    def apply_on_damaged_effect(self, item: Item, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, damage_dealt: int):
-        # Note: Not all effects are listed here, since not all make sense to trigger
-        # in this scenario.
-        if not item_effect.meets_conditions(self_entity, item):
-            return ""
-
-        if item_effect.effect_type == EffectType.ConMod:
-            attr_mod = None
-            if item_effect.effect_value >= 0:
-                attr_mod = ConBuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            else:
-                attr_mod = ConDebuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
-        
-        if item_effect.effect_type == EffectType.StrMod:
-            attr_mod = None
-            if item_effect.effect_value >= 0:
-                attr_mod = StrBuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            else:
-                attr_mod = StrDebuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.DexMod:
-            attr_mod = None
-            if item_effect.effect_value >= 0:
-                attr_mod = DexBuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            else:
-                attr_mod = DexDebuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.IntMod:
-            attr_mod = None
-            if item_effect.effect_value >= 0:
-                attr_mod = IntBuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            else:
-                attr_mod = IntDebuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.LckMod:
-            attr_mod = None
-            if item_effect.effect_value >= 0:
-                attr_mod = LckBuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            else:
-                attr_mod = LckDebuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.MemMod:
-            attr_mod = None
-            if item_effect.effect_value >= 0:
-                attr_mod = MemBuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            else:
-                attr_mod = MemDebuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            self.status_effects.append(attr_mod)
-            return "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.DmgReflect:
+        if item_effect.effect_type == EffectType.DmgReflect and damage_dealt > 0:
             armor = other_entity.get_equipment().get_total_reduced_armor(other_entity.get_expertise().level)
             percent_dmg_reduct = other_entity.get_dueling().get_total_percent_dmg_reduct()
 
             damage_to_reflect = int(damage_dealt * item_effect.effect_value)
             other_entity.get_expertise().damage(damage_to_reflect, armor, percent_dmg_reduct, other_entity.get_equipment())
-            return "{0}" + f" reflected {damage_to_reflect} damage back to " + "{1}"
-
-        if item_effect.effect_type == EffectType.DmgResist:
-            status_effect = DmgReduction(
-                item_effect.effect_time,
-                item_effect.effect_value,
-                source_str=f"{item.get_full_name()}"
-            )
-            self.status_effects.append(status_effect)
-            return "{0}" + f" is now {status_effect.name} from {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.DmgBuff:
-            status_effect = None
-            if item_effect.effect_value >= 0:
-                status_effect = DmgBuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            else:
-                status_effect = DmgDebuff(
-                    item_effect.effect_time,
-                    item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
-                )
-            self.status_effects.append(status_effect)
-            return "{0}" + f" is now {status_effect.name} from {item.get_full_name()}"
+            return "{" + f"{self_entity_index}" + "}" + f" reflected {damage_to_reflect} damage back to " + "{0}"
 
         # TODO: When armor changes are implemented, I'll want to implement the armor effects here
 
@@ -687,7 +520,7 @@ class Dueling():
                 source_str=f"{item.get_full_name()}"
             )
             other_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" f" is now {status_effect.name} for {turns_poisoned}"
+            return "{0}" + f" is now {status_effect.name} for {turns_poisoned}"
 
         if random() < chance_bleeding:
             status_effect = Bleeding(
@@ -696,7 +529,7 @@ class Dueling():
                 source_str=f"{item.get_full_name()}"
             )
             other_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" f" is now {status_effect.name} for {turns_bleeding}"
+            return "{0}" + f" is now {status_effect.name} for {turns_bleeding}"
 
         if random() < chance_faltering:
             status_effect = TurnSkipChance(
@@ -705,7 +538,7 @@ class Dueling():
                 source_str=f"{item.get_full_name()}"
             )
             other_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" f" is now {status_effect.name} for {turns_faltering}"
+            return "{0}" + f" is now {status_effect.name} for {turns_faltering}"
 
         if random() < chance_taunted:
             status_effect = Taunted(
@@ -714,7 +547,7 @@ class Dueling():
                 source_str=f"{item.get_full_name()}"
             )
             other_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" f" is now {status_effect.name} for {turns_taunted}"
+            return "{0}" + f" is now {status_effect.name} for {turns_taunted}"
 
         if random() < chance_convinced:
             status_effect = CannotTarget(
@@ -723,7 +556,19 @@ class Dueling():
                 source_str=f"{item.get_full_name()}"
             )
             other_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" f" is now {status_effect.name} for {turns_convinced}"
+            return "{0}" + f" is now {status_effect.name} for {turns_convinced}"
+
+        if item_effect.effect_type == EffectType.HealthSteal:
+            health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
+            self_entity.get_expertise().heal(health_steal)
+            other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
+            return f"Stole {health_steal} health from " + "{0}" + f" using {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.ManaSteal:
+            mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
+            self_entity.get_expertise().restore_mana(mana_steal)
+            other_entity.get_expertise().remove_mana(mana_steal)
+            return f"Stole {mana_steal} mana from " + "{0}" + f" using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestoreHealth:
             healing = int(item_effect.effect_value)
@@ -842,6 +687,458 @@ class Dueling():
 
         return result_strs
 
+    def apply_on_turn_start_or_end_effects(self, item: Item, item_effect: Effect, entity: Player | NPC, entity_name: str):
+        # Note: Not all effects are listed here, since not all make sense to trigger
+        # in this scenario.
+        if not item_effect.meets_conditions(entity, item):
+            return ""
+
+        if item_effect.effect_type == EffectType.ConMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = ConBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = ConDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+        
+        if item_effect.effect_type == EffectType.StrMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = StrBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = StrDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.DexMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = DexBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = DexDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.IntMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = IntBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = IntDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.LckMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = LckBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = LckDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.MemMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = MemBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = MemDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.DmgResist:
+            status_effect = DmgReduction(
+                item_effect.effect_time,
+                item_effect.effect_value,
+                source_str=f"{item.get_full_name()}"
+            )
+            self.status_effects.append(status_effect)
+            return f"{entity_name} is now {status_effect.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.DmgBuff:
+            status_effect = None
+            if item_effect.effect_value >= 0:
+                status_effect = DmgBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                status_effect = DmgDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(status_effect)
+            return f"{entity_name} is now {status_effect.name} from {item.get_full_name()}"
+
+        # TODO: When armor changes are implemented, I'll want to implement the armor effects here
+
+        chance_poisoned = 0
+        turns_poisoned = 0
+        chance_bleeding = 0
+        turns_bleeding = 0
+        chance_faltering = 0
+        turns_faltering = 0
+
+        for item in entity.get_equipment().get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for item_effect in item_effects.permanent:
+                    if not item_effect.meets_conditions(entity, item):
+                        continue
+
+                    if item_effect.effect_type == EffectType.ChancePoisoned:
+                        chance_poisoned += int(item_effect.effect_value)
+                        turns_poisoned = max(turns_poisoned, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistPoisoned:
+                        chance_poisoned -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceBleeding:
+                        chance_bleeding += int(item_effect.effect_value)
+                        turns_bleeding = max(turns_bleeding, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistBleeding:
+                        chance_bleeding -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceFaltering:
+                        chance_faltering += int(item_effect.effect_value)
+                        turns_faltering = max(turns_faltering, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistFaltering:
+                        chance_faltering -= int(item_effect.effect_value)
+
+        if random() < chance_poisoned:
+            status_effect = Poisoned(
+                turns_remaining=turns_poisoned,
+                value=POISONED_PERCENT_HP,
+                source_str=f"{item.get_full_name()}"
+            )
+            entity.get_dueling().status_effects.append(status_effect)
+            return f"{entity_name} is now {status_effect.name} for {turns_poisoned}"
+
+        if random() < chance_bleeding:
+            status_effect = Bleeding(
+                turns_remaining=turns_bleeding,
+                value=BLEED_PERCENT_HP,
+                source_str=f"{item.get_full_name()}"
+            )
+            entity.get_dueling().status_effects.append(status_effect)
+            return f"{entity_name} is now {status_effect.name} for {turns_bleeding}"
+
+        if random() < chance_faltering:
+            status_effect = TurnSkipChance(
+                turns_remaining=turns_faltering,
+                value=1,
+                source_str=f"{item.get_full_name()}"
+            )
+            entity.get_dueling().status_effects.append(status_effect)
+            return f"{entity_name} is now {status_effect.name} for {turns_faltering}"
+
+        return ""
+
+
+    def apply_consumable_item_effect(self, item: Item, item_effect: Effect, self_entity: Player | NPC, target_entity: Player | NPC):
+        if not item_effect.meets_conditions(self_entity, item):
+            return ""
+
+        if item_effect.effect_type == EffectType.ConMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = ConBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = ConDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+        
+        if item_effect.effect_type == EffectType.StrMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = StrBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = StrDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.DexMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = DexBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = DexDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.IntMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = IntBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = IntDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.LckMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = LckBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = LckDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.MemMod:
+            attr_mod = None
+            if item_effect.effect_value >= 0:
+                attr_mod = MemBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                attr_mod = MemDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(attr_mod)
+            return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.DmgResist:
+            status_effect = DmgReduction(
+                item_effect.effect_time,
+                item_effect.effect_value,
+                source_str=f"{item.get_full_name()}"
+            )
+            self.status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.DmgBuff:
+            status_effect = None
+            if item_effect.effect_value >= 0:
+                status_effect = DmgBuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            else:
+                status_effect = DmgDebuff(
+                    item_effect.effect_time,
+                    item_effect.effect_value,
+                    source_str=f"{item.get_full_name()}"
+                )
+            self.status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} from {item.get_full_name()}"
+
+        # TODO: When armor changes are implemented, I'll want to implement the armor effects here
+
+        chance_poisoned = 0
+        turns_poisoned = 0
+        chance_bleeding = 0
+        turns_bleeding = 0
+        chance_faltering = 0
+        turns_faltering = 0
+        chance_taunted = 0
+        turns_taunted = 0
+        chance_convinced = 0
+        turns_convinced = 0
+
+        for item in self_entity.get_equipment().get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for item_effect in item_effects.permanent:
+                    if not item_effect.meets_conditions(self_entity, item):
+                        continue
+
+                    if item_effect.effect_type == EffectType.ChancePoisoned:
+                        chance_poisoned += int(item_effect.effect_value)
+                        turns_poisoned = max(turns_poisoned, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistPoisoned:
+                        chance_poisoned -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceBleeding:
+                        chance_bleeding += int(item_effect.effect_value)
+                        turns_bleeding = max(turns_bleeding, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistBleeding:
+                        chance_bleeding -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceFaltering:
+                        chance_faltering += int(item_effect.effect_value)
+                        turns_faltering = max(turns_faltering, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistFaltering:
+                        chance_faltering -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceTaunted:
+                        chance_taunted += int(item_effect.effect_value)
+                        turns_taunted = max(turns_taunted, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistTaunted:
+                        chance_taunted -= int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.ChanceConvinced:
+                        chance_convinced += int(item_effect.effect_value)
+                        turns_convinced = max(turns_convinced, item_effect.effect_time)
+                    if item_effect.effect_type == EffectType.ResistConvinced:
+                        chance_convinced -= int(item_effect.effect_value)
+
+        if random() < chance_poisoned:
+            status_effect = Poisoned(
+                turns_remaining=turns_poisoned,
+                value=POISONED_PERCENT_HP,
+                source_str=f"{item.get_full_name()}"
+            )
+            target_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} for {turns_poisoned}"
+
+        if random() < chance_bleeding:
+            status_effect = Bleeding(
+                turns_remaining=turns_bleeding,
+                value=BLEED_PERCENT_HP,
+                source_str=f"{item.get_full_name()}"
+            )
+            target_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} for {turns_bleeding}"
+
+        if random() < chance_faltering:
+            status_effect = TurnSkipChance(
+                turns_remaining=turns_faltering,
+                value=1,
+                source_str=f"{item.get_full_name()}"
+            )
+            target_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} for {turns_faltering}"
+
+        if random() < chance_taunted:
+            status_effect = Taunted(
+                turns_remaining=turns_taunted,
+                forced_to_attack=self_entity,
+                source_str=f"{item.get_full_name()}"
+            )
+            target_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} for {turns_taunted}"
+
+        if random() < chance_convinced:
+            status_effect = CannotTarget(
+                turns_remaining=turns_convinced,
+                cant_target=self_entity,
+                source_str=f"{item.get_full_name()}"
+            )
+            target_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} for {turns_convinced}"
+
+        if item_effect.effect_type == EffectType.HealthSteal:
+            health_steal = int(item_effect.effect_value * target_entity.get_expertise().hp)
+            self_entity.get_expertise().heal(health_steal)
+            target_entity.get_expertise().damage(health_steal, 0, 0, target_entity.get_equipment())
+            return f"Stole {health_steal} health from " + "{1}" + f" using {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.ManaSteal:
+            mana_steal = int(item_effect.effect_value * target_entity.get_expertise().mana)
+            self_entity.get_expertise().restore_mana(mana_steal)
+            target_entity.get_expertise().remove_mana(mana_steal)
+            return f"Stole {mana_steal} mana from " + "{1}" + f" using {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.RestoreHealth:
+            healing = int(item_effect.effect_value)
+            self_entity.get_expertise().heal(healing)
+            return f"Healed {healing} from {item.get_full_name()}"
+        
+        if item_effect.effect_type == EffectType.RestorePercentHealth:
+            healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
+            self_entity.get_expertise().heal(healing)
+            return f"Healed {healing} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.RestoreMana:
+            restoration = int(item_effect.effect_value)
+            self_entity.get_expertise().restore_mana(restoration)
+            return f"Restored {restoration} mana from {item.get_full_name()}"
+        
+        if item_effect.effect_type == EffectType.RestorePercentMana:
+            restoration = int(item_effect.effect_value * self_entity.get_expertise().max_mana)
+            self_entity.get_expertise().restore_mana(restoration)
+            return f"Restored {restoration} mana from {item.get_full_name()}"
+
+        return ""
 
 # -----------------------------------------------------------------------------
 # DUEL VIEW AND GUI
@@ -1192,11 +1489,30 @@ class DuelView(discord.ui.View):
             self._actions_remaining = self._turn_order[self._turn_index].get_dueling().init_actions_remaining
 
     def set_next_turn(self):
+        previous_entity: Player | NPC = self._turn_order[self._turn_index]
+        for item in previous_entity.get_equipment().get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is None:
+                continue
+            for item_effect in item_effects.on_turn_end:
+                result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, previous_entity, self.get_name(previous_entity))
+                if result_str != "":
+                    self._additional_info_string_data += result_str + " "
+
         self._turn_index = (self._turn_index + 1) % len(self._turn_order)
         while self._turn_order[self._turn_index].get_expertise().hp == 0:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
 
         entity: Player | NPC = self._turn_order[self._turn_index]
+
+        for item in previous_entity.get_equipment().get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is None:
+                continue
+            for item_effect in item_effects.on_turn_start:
+                result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity))
+                if result_str != "":
+                    self._additional_info_string_data += result_str + " "
         
         start_damage: int = 0
         start_heals: int = 0
@@ -1384,7 +1700,7 @@ class DuelView(discord.ui.View):
         taunt_target: Player | NPC | None = None
         for se in cur_turn_entity.get_dueling().status_effects:
             if se.key == StatusEffectKey.Taunted:
-                taunt_target = se.value
+                taunt_target = se.forced_to_attack
                 break
         if taunt_target is not None:
             self._selected_targets = [taunt_target]
@@ -1473,7 +1789,7 @@ class DuelView(discord.ui.View):
                         splash_dmg += int(item_effect.effect_value)
 
         result_strs = [f"{attacker_name} attacked using {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'}!\n"]
-        for target in self._selected_targets:
+        for i, target in enumerate(self._selected_targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
             target_dueling = target.get_dueling()
@@ -1522,7 +1838,7 @@ class DuelView(discord.ui.View):
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_successful_attack:
-                    damage, result_str = attacker.get_dueling().apply_on_successful_attack_effects(item, item_effect, attacker, target, damage)
+                    damage, result_str = attacker.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, attacker, target, i + 1, damage)
                     if result_str != "":
                         result_strs.append(result_str.format([attacker_name, target_name]))
 
@@ -1531,7 +1847,7 @@ class DuelView(discord.ui.View):
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_attacked:
-                    result_str = target.get_dueling().apply_on_attacked_effects(item, item_effect, target, attacker)
+                    result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, i + 1, attacker)
                     if result_str != "":
                         result_strs.append(result_str.format([target_name, attacker_name]))
 
@@ -1546,7 +1862,7 @@ class DuelView(discord.ui.View):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_damaged_effect(item, item_effect, target, attacker, actual_damage_dealt)
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, actual_damage_dealt)
                         if result_str != "":
                             result_strs.append(result_str.format([target_name, attacker_name]))
 
@@ -1630,13 +1946,21 @@ class DuelView(discord.ui.View):
             return self.show_items("*Error: That item doesn't exist.*")
 
         applicator = self._turn_order[self._turn_index]
-        names = [self.get_name(applicator), *list(map(lambda x: self.get_name(x), self._selected_targets))]
-        result_str = DUELING_CONSUMABLE_ITEM_EFFECTS[self._selected_item.get_key()](self._selected_item, applicator, self._selected_targets)
+        applicator_dueling = applicator.get_dueling()
+        applicator_name = self.get_name(applicator)
+
+        result_strs = []
+        for target in self._selected_targets:
+            item_effects = self._selected_item.get_item_effects()
+            if item_effects is not None:
+                for effect in item_effects.permanent:
+                    result_str = applicator_dueling.apply_consumable_item_effect(self._selected_item, effect, applicator, target)
+                    result_strs.append(result_str.format(applicator_name, self.get_name(target)))
 
         applicator.get_inventory().remove_item(self._selected_item_index, 1)
         applicator.get_stats().dueling.items_used += 1
         
-        return result_str.format(*names)
+        return "\n".join(result_strs)
 
     def confirm_target(self):
         if self._current_target is None:

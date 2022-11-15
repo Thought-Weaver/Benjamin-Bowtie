@@ -5,8 +5,7 @@ import discord
 from discord.embeds import Embed
 from discord.ext import commands
 from enum import StrEnum
-from features.house.house import HouseRoom
-from features.shared.item import ClassTag
+from features.shared.enums import ClassTag, HouseRoom
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 

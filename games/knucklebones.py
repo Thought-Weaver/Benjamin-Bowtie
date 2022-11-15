@@ -11,7 +11,8 @@ from features.npcs.npc import NPCRoles
 from features.player import Player
 
 from features.npcs.mrbones import Difficulty, MrBones
-from features.shared.item import ClassTag, ItemKey
+from features.shared.enums import ClassTag
+from features.shared.item import ItemKey
 from features.stats import Stats
 
 class AcceptButton(discord.ui.Button):

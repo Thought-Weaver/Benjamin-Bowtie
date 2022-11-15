@@ -5,33 +5,19 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
-from enum import StrEnum
 from features.house.garden import MUTATION_PROBS
 from features.inventory import Inventory
 
-from typing import TYPE_CHECKING, Dict, List
-
 from features.shared.constants import MAX_GARDEN_SIZE
+from features.shared.enums import HouseRoom
 from features.shared.item import LOADED_ITEMS
 
+from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.house.garden import GardenPlot
     from features.house.recipe import Recipe
     from features.player import Player
-
-# -----------------------------------------------------------------------------
-# ENUMS
-# -----------------------------------------------------------------------------
-
-class HouseRoom(StrEnum):
-    Unknown = "Unknown"
-    Study = "Study"
-    Alchemy = "Alchemy"
-    Workshop = "Workshop"
-    Kitchen = "Kitchen"
-    Garden = "Garden"
-    Storage = "Storage"
 
 # -----------------------------------------------------------------------------
 # HOUSE CLASS

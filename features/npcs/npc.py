@@ -16,6 +16,8 @@ class NPCRoles(StrEnum):
     FortuneTeller = "FortuneTeller"
     Blacksmith = "Blacksmith"
     KnucklebonesPatron = "KnucklebonesPatron"
+    Chef = "Chef"
+    RandomItemMerchant = "RandomItemMerchant"
 
 # -----------------------------------------------------------------------------
 # CLASSES

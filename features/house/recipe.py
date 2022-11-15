@@ -5,7 +5,8 @@ import json
 from enum import StrEnum
 from features.expertise import ExpertiseClass
 from features.inventory import Inventory
-from features.shared.item import LOADED_ITEMS, ClassTag, ItemKey
+from features.shared.enums import ClassTag
+from features.shared.item import LOADED_ITEMS, ItemKey
 from types import MappingProxyType
 
 from typing import Dict, List
@@ -15,14 +16,54 @@ from typing import Dict, List
 # -----------------------------------------------------------------------------
 
 class RecipeKey(StrEnum):
+    # Food
+    Bread = "recipes/consumable/food/bread"
+    CookedMinnow = "recipes/consumable/food/cooked_minnow"
     CookedRoughy = "recipes/consumable/food/cooked_roughy"
+    Dumpling = "recipes/consumable/food/dumpling"
+    FishCakeWithMinnow = "recipes/consumable/food/fish_cake_with_minnow"
+    FishCakeWithRoughy = "recipes/consumable/food/fish_cake_with_roughy"
+    FriedShrimp = "recipes/consumable/food/fried_shrimp"
+    MushroomSalad = "recipes/consumable/food/mushroom_salad"
+    MushroomStew = "recipes/consumable/food/mushroom_stew"
+    VegetableFritter = "recipes/consumable/food/vegetable_fritter"
+
+    # Potions
+    ConstitutionPotion = "recipes/consumable/potions/constitution_potion"
+    DexterityPotion = "recipes/consumable/potions/dexterity_potion"
+    FortitudePotion = "recipes/consumable/potions/fortitude_potion"
+    GreaterConstitutionPotion = "recipes/consumable/potions/greater_constitution_potion"
+    GreaterDexterityPotion = "recipes/consumable/potions/greater_dexterity_potion"
+    GreaterHealthPotion = "recipes/consumable/potions/greater_health_potion"
+    GreaterIntelligencePotion = "recipes/consumable/potions/greater_intelligence_potion"
+    GreaterManaPotion = "recipes/consumable/potions/greater_mana_potion"
+    GreaterPoison = "recipes/consumable/potions/greater_poison"
+    GreaterStrengthPotion = "recipes/consumable/potions/greater_strength_potion"
+    HealthPotion = "recipes/consumable/potions/health_potion"
+    IntelligencePotion = "recipes/consumable/potions/intelligence_potion"
+    LesserConstitutionPotion = "recipes/consumable/potions/lesser_constitution_potion"
+    LesserDexterityPotion = "recipes/consumable/potions/lesser_dexterity_potion"
+    LesserHealthPotion = "recipes/consumable/potions/lesser_health_potion"
+    LesserIntelligencePotion = "recipes/consumable/potions/lesser_intelligence_potion"
+    LesserManaPotion = "recipes/consumable/potions/lesser_mana_potion"
+    LesserPoison = "recipes/consumable/potions/lesser_poison"
+    LesserStrengthPotion = "recipes/consumable/potions/lesser_strength_potion"
+    LuckPotion = "recipes/consumable/potions/luck_potion"
+    ManaPotion = "recipes/consumable/potions/mana_potion"
+    Poison = "recipes/consumable/potions/poison"
+    SappingPotion = "recipes/consumable/potions/sapping_potion"
+    StrengthPotion = "recipes/consumable/potions/strength_potion"
+
+    # Alchemy Supplies
+    CrystalVialWithFlawlessQuartz = "recipes/ingredient/alchemy_supplies/crystal_vial_with_flawless_quartz"
+    CrystalVialWithQuartz = "recipes/ingredient/alchemy_supplies/crystal_vial_with_quartz"
 
 # -----------------------------------------------------------------------------
 # RECIPE CLASS
 # -----------------------------------------------------------------------------
 
 class Recipe():
-    def __init__(self, key: str, icon: str, name: str, value: int, inputs: Dict[ItemKey, int], outputs: Dict[ItemKey, int], xp_reward_for_use: Dict[ExpertiseClass, int]):
+    def __init__(self, key: RecipeKey, icon: str, name: str, value: int, inputs: Dict[ItemKey, int], outputs: Dict[ItemKey, int], xp_reward_for_use: Dict[ExpertiseClass, int]):
         # Figuring out whether the recipe should be displayed can be evaluated
         # based on the class tags of the outputs. The only problem with this is
         # that it makes filtering slower.
@@ -97,7 +138,7 @@ class Recipe():
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        if state.get("_key", "") not in LOADED_RECIPES.get_all_keys():
+        if state.get("key", "") not in LOADED_RECIPES.get_all_keys():
             return
 
         base_data = LOADED_RECIPES.get_recipe_state(state["_key"])

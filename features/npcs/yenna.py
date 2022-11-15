@@ -9,9 +9,11 @@ from enum import StrEnum
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Attribute, Expertise, ExpertiseClass
+from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.npcs.npc import NPC, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, SilkspeakingI, VitalityTransferIII
-from features.shared.item import LOADED_ITEMS, ClassTag, Item, ItemKey
+from features.shared.enums import ClassTag
+from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from random import choice
@@ -65,6 +67,7 @@ class Intent(StrEnum):
     Wares = "Wares"
     Identify = "Identify"
     Tarot = "Tarot"
+    Recipes = "Recipes"
 
 
 class EnterWaresButton(discord.ui.Button):
@@ -79,6 +82,21 @@ class EnterWaresButton(discord.ui.Button):
 
         if view.get_user() == interaction.user:
             response = view.enter_wares()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class EnterRecipesButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Browse Recipes", row=0)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: YennaView = self.view
+
+        if view.get_user() == interaction.user:
+            response = view.enter_recipes()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -144,6 +162,22 @@ class WaresDisplayButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
+class RecipesDisplayButton(discord.ui.Button):
+    def __init__(self, recipe: Recipe, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{recipe.name}", row=row, emoji=recipe.icon)
+        
+        self._recipe = recipe
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: YennaView = self.view
+        if interaction.user == view.get_user():
+            response = view.select_recipe(self._recipe)
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class IdentifyDisplayButton(discord.ui.Button):
     def __init__(self, item_index: int, item: Item, row: int):
         super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
@@ -187,6 +221,7 @@ class YennaView(discord.ui.View):
         self._yenna: Yenna = database[str(guild_id)]["npcs"][NPCRoles.FortuneTeller]
         self._wares: List[Item] = [
             # Potions
+            LOADED_ITEMS.get_new_item(ItemKey.CrystalVial),
             LOADED_ITEMS.get_new_item(ItemKey.LesserHealthPotion),
             LOADED_ITEMS.get_new_item(ItemKey.HealthPotion),
             LOADED_ITEMS.get_new_item(ItemKey.GreaterHealthPotion),
@@ -202,10 +237,53 @@ class YennaView(discord.ui.View):
             LOADED_ITEMS.get_new_item(ItemKey.Graspleaf),
             LOADED_ITEMS.get_new_item(ItemKey.Seaclover),
             LOADED_ITEMS.get_new_item(ItemKey.SpeckledCap),
-            LOADED_ITEMS.get_new_item(ItemKey.Stranglekelp)
+            LOADED_ITEMS.get_new_item(ItemKey.Stranglekelp),
+
+            # Seeds
+            LOADED_ITEMS.get_new_item(ItemKey.FoolsDelightSpores),
+            LOADED_ITEMS.get_new_item(ItemKey.GraspleafSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.GraveMossSpores),
+            LOADED_ITEMS.get_new_item(ItemKey.MagesBaneSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.MeddlespreadSpores),
+            LOADED_ITEMS.get_new_item(ItemKey.RiverblossomSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.SeacloverSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.ShelterfoilSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.SnowdewSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.SpeckledCapSpores),
+            LOADED_ITEMS.get_new_item(ItemKey.SungrainSeed)
         ]
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1
+
+        self._recipes: List[Recipe] = [
+            LOADED_RECIPES.get_new_recipe(RecipeKey.CrystalVialWithFlawlessQuartz),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.CrystalVialWithQuartz),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LesserConstitutionPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.ConstitutionPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterConstitutionPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LesserStrengthPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.StrengthPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterStrengthPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LesserDexterityPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.DexterityPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterDexterityPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LesserIntelligencePotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IntelligencePotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterIntelligencePotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LuckPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LesserHealthPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.HealthPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterHealthPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LesserManaPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.ManaPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterManaPotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LesserPoison),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.Poison),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterPoison),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.FortitudePotion),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.SappingPotion)
+        ]
+        self._selected_recipe: (Recipe | None) = None
 
         self._intent: (Intent | None) = None
 

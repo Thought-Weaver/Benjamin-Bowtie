@@ -12,7 +12,8 @@ from features.equipment import Equipment
 from features.expertise import ExpertiseClass
 from features.shared.constants import DEX_DODGE_SCALE, INT_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
 from features.shared.effect import EffectType
-from features.shared.item import ClassTag, WeaponStats
+from features.shared.enums import ClassTag
+from features.shared.item import WeaponStats
 from features.shared.statuseffect import *
 
 if TYPE_CHECKING:
@@ -129,6 +130,7 @@ class Ability():
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
+        caster_equipment = caster.get_equipment()
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
@@ -140,18 +142,52 @@ class Ability():
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
+            critical_hit_dmg_buff = 0
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is not None:
+                    for item_effect in item_effects.permanent:
+                        if not item_effect.meets_conditions(caster, item):
+                            continue
+
+                        if item_effect.effect_type == EffectType.CritDmgBuff:
+                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
+                        if item_effect.effect_type == EffectType.CritDmgReduction:
+                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
+
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = int(randint(dmg_range.start, dmg_range.stop) * critical_hit_boost)
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
+            base_damage = randint(dmg_range.start, dmg_range.stop)
+            damage = int(base_damage * critical_hit_final)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_successful_ability_used:
+                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage)
+                    if result_str != "":
+                        results.append(NegativeAbilityResult(result_str, False))
 
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -174,12 +210,23 @@ class Ability():
         results: List[NegativeAbilityResult] = []
         status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
 
+        caster_equipment = caster.get_equipment()
+
         for i, target in enumerate(targets):
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
                 target.get_stats().dueling.abilities_dodged += 1
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
+
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_successful_ability_used:
+                    _, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, 0)
+                    if result_str != "":
+                        results.append(NegativeAbilityResult(result_str, False))
 
             target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
             target.get_expertise().update_stats(target.get_combined_attributes())
@@ -208,7 +255,18 @@ class Ability():
         results: List[str] = []
         status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
 
+        caster_equipment = caster.get_equipment()
+
         for i, target in enumerate(targets):
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_successful_ability_used:
+                    _, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, 0)
+                    if result_str != "":
+                        results.append(result_str)
+
             target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
             target.get_expertise().update_stats(target.get_combined_attributes())
             results.append("{" + f"{i + 1}" + "}" + f" is now {status_effects_str}")
@@ -223,6 +281,7 @@ class Ability():
         results: List[str] = []
         
         caster_attrs = caster.get_combined_attributes()
+        caster_equipment = caster.get_equipment()
 
         healing_adjustment = 0
         for item in caster.get_equipment().get_all_equipped_items():
@@ -235,9 +294,28 @@ class Ability():
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
 
+            critical_hit_buff = 0
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is not None:
+                    for item_effect in item_effects.permanent:
+                        if not item_effect.meets_conditions(caster, item):
+                            continue
+
+                        if item_effect.effect_type == EffectType.CritDmgBuff:
+                            critical_hit_buff = min(int(critical_hit_buff + item_effect.effect_value), 1)
+                        if item_effect.effect_type == EffectType.CritDmgReduction:
+                            critical_hit_buff = max(int(critical_hit_buff - item_effect.effect_value), 0)
+
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
-            heal_amount = int(randint(heal_range.start, heal_range.stop) * critical_hit_boost)
+            if critical_hit_boost > 1:
+                caster.get_stats().dueling.critical_hit_successes += 1
+
+            critical_hit_final = max(critical_hit_boost + critical_hit_buff, 1) if critical_hit_boost > 1 else 1
+
+            base_heal = randint(heal_range.start, heal_range.stop)
+            heal_amount = int(base_heal * critical_hit_final)
             heal_amount += int(heal_amount * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             heal_amount += int(heal_amount * healing_adjustment)
 
@@ -1111,8 +1189,8 @@ class ThunderingTorrentI(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+        caster_equipment = caster.get_equipment()
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
@@ -1124,12 +1202,27 @@ class ThunderingTorrentI(Ability):
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
+            critical_hit_dmg_buff = 0
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is not None:
+                    for item_effect in item_effects.permanent:
+                        if not item_effect.meets_conditions(caster, item):
+                            continue
+
+                        if item_effect.effect_type == EffectType.CritDmgBuff:
+                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
+                        if item_effect.effect_type == EffectType.CritDmgReduction:
+                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
+
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = int(randint(10, 15) * critical_hit_boost)
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
+            base_damage = randint(10, 15)
+            damage = int(base_damage * critical_hit_final)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
@@ -1192,8 +1285,8 @@ class ThunderingTorrentII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+        caster_equipment = caster.get_equipment()
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
@@ -1205,12 +1298,27 @@ class ThunderingTorrentII(Ability):
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
+            critical_hit_dmg_buff = 0
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is not None:
+                    for item_effect in item_effects.permanent:
+                        if not item_effect.meets_conditions(caster, item):
+                            continue
+
+                        if item_effect.effect_type == EffectType.CritDmgBuff:
+                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
+                        if item_effect.effect_type == EffectType.CritDmgReduction:
+                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
+
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = int(randint(12, 18) * critical_hit_boost)
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
+            base_damage = randint(12, 18)
+            damage = int(base_damage * critical_hit_final)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
@@ -1273,8 +1381,8 @@ class ThunderingTorrentIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+        caster_equipment = caster.get_equipment()
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
@@ -1286,12 +1394,27 @@ class ThunderingTorrentIII(Ability):
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
+            critical_hit_dmg_buff = 0
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is not None:
+                    for item_effect in item_effects.permanent:
+                        if not item_effect.meets_conditions(caster, item):
+                            continue
+
+                        if item_effect.effect_type == EffectType.CritDmgBuff:
+                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
+                        if item_effect.effect_type == EffectType.CritDmgReduction:
+                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
+
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = int(randint(15, 20) * critical_hit_boost)
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
+            base_damage = randint(15, 20)
+            damage = int(base_damage * critical_hit_final)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
@@ -1552,8 +1675,8 @@ class WhirlpoolI(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+        caster_equipment = caster.get_equipment()
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
@@ -1565,15 +1688,30 @@ class WhirlpoolI(Ability):
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
+            target_dueling = target.get_dueling()
+            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
+
+            critical_hit_dmg_buff = 0
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is not None:
+                    for item_effect in item_effects.permanent:
+                        if not item_effect.meets_conditions(caster, item):
+                            continue
+
+                        if item_effect.effect_type == EffectType.CritDmgBuff:
+                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
+                        if item_effect.effect_type == EffectType.CritDmgReduction:
+                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
+
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            target_dueling = target.get_dueling()
-            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
-
-            damage = int(randint(10, 20) * critical_hit_boost)
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
+            base_damage = randint(10, 20)
+            damage = int(base_damage * critical_hit_final)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
@@ -1628,8 +1766,8 @@ class WhirlpoolII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+        caster_equipment = caster.get_equipment()
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
@@ -1641,15 +1779,30 @@ class WhirlpoolII(Ability):
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
+            target_dueling = target.get_dueling()
+            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
+
+            critical_hit_dmg_buff = 0
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is not None:
+                    for item_effect in item_effects.permanent:
+                        if not item_effect.meets_conditions(caster, item):
+                            continue
+
+                        if item_effect.effect_type == EffectType.CritDmgBuff:
+                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
+                        if item_effect.effect_type == EffectType.CritDmgReduction:
+                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
+
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            target_dueling = target.get_dueling()
-            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
-
-            damage = int(randint(15, 25) * critical_hit_boost)
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
+            base_damage = randint(10, 15)
+            damage = int(base_damage * critical_hit_final)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
@@ -1704,8 +1857,8 @@ class WhirlpoolIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
+        caster_equipment = caster.get_equipment()
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
@@ -1717,15 +1870,30 @@ class WhirlpoolIII(Ability):
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
+            target_dueling = target.get_dueling()
+            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
+
+            critical_hit_dmg_buff = 0
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is not None:
+                    for item_effect in item_effects.permanent:
+                        if not item_effect.meets_conditions(caster, item):
+                            continue
+
+                        if item_effect.effect_type == EffectType.CritDmgBuff:
+                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
+                        if item_effect.effect_type == EffectType.CritDmgReduction:
+                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
+
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            target_dueling = target.get_dueling()
-            target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
-
-            damage = int(randint(20, 30) * critical_hit_boost)
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
+            base_damage = randint(10, 15)
+            damage = int(base_damage * critical_hit_final)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)

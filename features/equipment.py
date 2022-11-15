@@ -3,8 +3,10 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
-from features.expertise import Attributes, Expertise
-from features.shared.item import ClassTag, Item
+from features.expertise import Expertise
+from features.shared.attributes import Attributes
+from features.shared.enums import ClassTag
+from features.shared.item import Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
