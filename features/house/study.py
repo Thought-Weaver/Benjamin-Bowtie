@@ -8,7 +8,7 @@ from features.shared.enums import ClassTag, HouseRoom
 from features.shared.item import LOADED_ITEMS
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
-from enum import StrEnum
+from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:

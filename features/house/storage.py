@@ -4,7 +4,7 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
-from enum import StrEnum
+from strenum import StrEnum
 from features.inventory import Inventory
 from features.shared.enums import ClassTag, HouseRoom
 from features.shared.nextbutton import NextButton

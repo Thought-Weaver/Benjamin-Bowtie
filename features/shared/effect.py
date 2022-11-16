@@ -3,7 +3,7 @@ from __future__ import annotations
 from features.shared.attributes import Attributes
 from features.shared.enums import ClassTag
 from types import MappingProxyType
-from enum import StrEnum
+from strenum import StrEnum
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:

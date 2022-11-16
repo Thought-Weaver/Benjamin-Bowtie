@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from enum import StrEnum
+from strenum import StrEnum
 
 from typing import List, TYPE_CHECKING
 

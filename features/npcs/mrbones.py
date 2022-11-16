@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from enum import StrEnum
+from strenum import StrEnum
 from random import randint, random
 from features.dueling import Dueling
 from features.equipment import Equipment

@@ -4,7 +4,7 @@ import json
 
 from aenum import Enum
 from random import randint
-from enum import StrEnum
+from strenum import StrEnum
 
 from features.shared.constants import DEX_DMG_SCALE
 from features.shared.effect import EffectType, ItemEffects

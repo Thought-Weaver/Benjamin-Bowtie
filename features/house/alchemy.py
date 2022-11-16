@@ -3,7 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
-from enum import StrEnum
+from strenum import StrEnum
 from features.house.recipe import LOADED_RECIPES, Recipe
 from features.shared.enums import ClassTag, HouseRoom
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity

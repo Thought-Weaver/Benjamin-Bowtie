@@ -6,7 +6,7 @@ from discord.embeds import Embed
 from features.house.recipe import LOADED_RECIPES, Recipe
 from features.shared.enums import ClassTag, HouseRoom
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
-from enum import StrEnum
+from strenum import StrEnum
 
 from typing import TYPE_CHECKING, Dict, List
 from features.shared.nextbutton import NextButton

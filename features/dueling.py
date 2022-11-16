@@ -8,7 +8,7 @@ import discord
 from dataclasses import dataclass
 from discord.embeds import Embed
 from discord.ext import commands
-from enum import StrEnum
+from strenum import StrEnum
 from features.expertise import ExpertiseClass
 from features.shared.attributes import Attributes
 from features.shared.constants import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE

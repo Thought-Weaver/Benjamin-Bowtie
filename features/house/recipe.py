@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from enum import StrEnum
+from strenum import StrEnum
 from features.expertise import ExpertiseClass
 from features.inventory import Inventory
 from features.shared.enums import ClassTag

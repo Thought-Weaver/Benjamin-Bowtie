@@ -1,4 +1,4 @@
-from enum import StrEnum
+from strenum import StrEnum
 
 class Story(StrEnum):
     Underworld = "underworld"

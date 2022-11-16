@@ -1,5 +1,5 @@
 from aenum import Enum, skip
-from enum import StrEnum
+from strenum import StrEnum
 
 # Using aenum and @skip to create an Enum of StrEnums
 # As a result, there can't be any top-level keys

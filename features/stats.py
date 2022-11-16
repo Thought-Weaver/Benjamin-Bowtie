@@ -4,7 +4,7 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
-from enum import StrEnum
+from strenum import StrEnum
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -286,7 +286,7 @@ class Stats():
                 f"Uncommon Seeds Harvested: *{self.uncommon_seeds_dropped}*\n"
                 f"Rare Seeds Harvested: *{self.rare_seeds_dropped}*\n"
                 f"Epic Seeds Harvested: *{self.epic_seeds_dropped}*\n"
-                f"Legendary Seeds Harvested: *{self.legendary_seeds_dropped}*\n\n"
+                f"Legendary Seeds Harvested: *{self.legendary_seeds_dropped}*"
             )
 
         def __getstate__(self):
@@ -358,7 +358,7 @@ class Stats():
                 f"Rare Items Cooked: *{self.rare_items_cooked}*\n"
                 f"Epic Items Cooked: *{self.epic_items_cooked}*\n"
                 f"Legendary Items Cooked: *{self.legendary_items_cooked}*\n"
-                f"Artifact Items Cooked: *{self.artifact_items_cooked}*\n"
+                f"Artifact Items Cooked: *{self.artifact_items_cooked}*"
             )
 
         def __getstate__(self):
