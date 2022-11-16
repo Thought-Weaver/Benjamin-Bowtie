@@ -1781,12 +1781,15 @@ class DuelView(discord.ui.View):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         splash_dmg = 0
+        splash_percent_dmg = 0
         for item in attacker_equipment.get_all_equipped_items():
             item_effects = item.get_item_effects()
             if item_effects is not None:
                 for item_effect in item_effects.permanent:
                     if item_effect.effect_type == EffectType.SplashDmg:
                         splash_dmg += int(item_effect.effect_value)
+                    if item_effect.effect_type == EffectType.SplashPercentMaxDmg:
+                        splash_percent_dmg += int(weapon_stats.get_max_damage() * item_effect.effect_value)
 
         result_strs = [f"{attacker_name} attacked using {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'}!\n"]
         for i, target in enumerate(self._selected_targets):
@@ -1809,6 +1812,7 @@ class DuelView(discord.ui.View):
                 attacker.get_stats().dueling.critical_hit_successes += 1
 
             piercing_dmg = 0
+            piercing_percent_dmg = 0
             critical_hit_dmg_buff = 0
             for item in attacker_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1819,8 +1823,8 @@ class DuelView(discord.ui.View):
 
                         if item_effect.effect_type == EffectType.PiercingDmg:
                             piercing_dmg += int(item_effect.effect_value)
-                        if item_effect.effect_type == EffectType.SplashDmg:
-                            splash_dmg += int(item_effect.effect_value)
+                        if item_effect.effect_type == EffectType.PiercingPercentDmg:
+                            piercing_percent_dmg += item_effect.effect_value
                         if item_effect.effect_type == EffectType.CritDmgBuff:
                             critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
                         if item_effect.effect_type == EffectType.CritDmgReduction:
@@ -1851,7 +1855,7 @@ class DuelView(discord.ui.View):
                     if result_str != "":
                         result_strs.append(result_str.format([target_name, attacker_name]))
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level) - piercing_dmg
+            target_armor = max(target_equipment.get_total_reduced_armor(target_expertise.level) - piercing_dmg - int(damage * piercing_percent_dmg), 0)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
 
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, target_equipment)
@@ -1912,16 +1916,16 @@ class DuelView(discord.ui.View):
             for target in self._allies:
                 target_armor = target.get_equipment().get_total_reduced_armor(target.get_expertise().level)
                 percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
-                target.get_expertise().damage(splash_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
+                target.get_expertise().damage(splash_dmg + splash_percent_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
             names_str = ", ".join([self.get_name(other) for other in self._allies])
-            result_strs.append(f"{attacker_name} dealt {splash_dmg} splash damage to {names_str}")
+            result_strs.append(f"{attacker_name} dealt {splash_dmg + splash_percent_dmg} splash damage to {names_str}")
         else:
             for target in self._enemies:
                 target_armor = target.get_equipment().get_total_reduced_armor(target.get_expertise().level)
                 percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
-                target.get_expertise().damage(splash_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
+                target.get_expertise().damage(splash_dmg + splash_percent_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
             names_str = ", ".join([self.get_name(other) for other in self._enemies])
-            result_strs.append(f"{attacker_name} dealt {splash_dmg} splash damage to {names_str}")
+            result_strs.append(f"{attacker_name} dealt {splash_dmg + splash_percent_dmg} splash damage to {names_str}")
 
         return "\n".join(result_strs)
 

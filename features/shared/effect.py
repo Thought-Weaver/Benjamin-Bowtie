@@ -43,9 +43,9 @@ class EffectType(StrEnum):
     RestoreArmor = "RestoreArmor" # TODO: Implement once armor changes are done
 
     PiercingDmg = "PiercingDmg"
-    PiercingPercentDmg = "PiercingPercentDmg" # TODO: Implement this
+    PiercingPercentDmg = "PiercingPercentDmg"
     SplashDmg = "SplashDmg"
-    SplashPercentMaxDmg = "SplashPercentMaxDmg" # TODO: Implement this
+    SplashPercentMaxDmg = "SplashPercentMaxDmg"
 
     # Everything in this group is associated with percent effect values
     CritDmgBuff = "CritDmgBuff"
@@ -76,8 +76,8 @@ class EffectType(StrEnum):
     # Everything in this group is associated with percent effect values
     AdjustedManaCosts = "AdjustedManaCosts"
     HealingAbilityBuff = "HealingAbilityBuff"
-    AdditionalXP = "AdditionalXP" # TODO: Implement this
-    PotionMod = "PotionMod"
+    AdditionalXP = "AdditionalXP"
+    PotionMod = "PotionMod" # TODO: Implement this
 
     ResurrectOnce = "ResurrectOnce"
 

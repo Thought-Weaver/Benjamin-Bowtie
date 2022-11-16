@@ -260,29 +260,12 @@ class YennaView(discord.ui.View):
             LOADED_RECIPES.get_new_recipe(RecipeKey.CrystalVialWithFlawlessQuartz),
             LOADED_RECIPES.get_new_recipe(RecipeKey.CrystalVialWithQuartz),
             LOADED_RECIPES.get_new_recipe(RecipeKey.LesserConstitutionPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.ConstitutionPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterConstitutionPotion),
             LOADED_RECIPES.get_new_recipe(RecipeKey.LesserStrengthPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.StrengthPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterStrengthPotion),
             LOADED_RECIPES.get_new_recipe(RecipeKey.LesserDexterityPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.DexterityPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterDexterityPotion),
             LOADED_RECIPES.get_new_recipe(RecipeKey.LesserIntelligencePotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.IntelligencePotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterIntelligencePotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.LuckPotion),
             LOADED_RECIPES.get_new_recipe(RecipeKey.LesserHealthPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.HealthPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterHealthPotion),
             LOADED_RECIPES.get_new_recipe(RecipeKey.LesserManaPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.ManaPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterManaPotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.LesserPoison),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.Poison),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.GreaterPoison),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.FortitudePotion),
-            LOADED_RECIPES.get_new_recipe(RecipeKey.SappingPotion)
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LesserPoison)
         ]
         self._selected_recipe: (Recipe | None) = None
 

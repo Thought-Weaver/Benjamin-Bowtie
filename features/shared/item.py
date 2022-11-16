@@ -282,6 +282,9 @@ class WeaponStats():
             damage += min(int(damage * DEX_DMG_SCALE * max(attacker_attrs.dexterity, 0)), damage)
         return randint(self._min_damage, self._max_damage)
 
+    def get_max_damage(self):
+        return self._max_damage
+
     def __getstate__(self):
         return self.__dict__
 
