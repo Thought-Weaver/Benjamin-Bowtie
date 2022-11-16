@@ -12,9 +12,10 @@ from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
+from math import sqrt
 from types import MappingProxyType
 
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING, List, Literal, Tuple
 
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
@@ -98,7 +99,7 @@ SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
 
 
 # (First Plant, Second Plant): (Yields this Plant, With this probability)
-MUTATION_PROBS: MappingProxyType[Tuple[ItemKey, ItemKey], Tuple[ItemKey, float]] = MappingProxyType({
+MUTATION_PROBS: MappingProxyType[Tuple[ItemKey | Literal[""], ItemKey | Literal[""]], Tuple[ItemKey, float]] = MappingProxyType({
     (ItemKey.DawnsGlory, ItemKey.Fissureleaf): (ItemKey.DragonsTeethSeed, 0.001),
     (ItemKey.Seaclover, ItemKey.Sungrain): (ItemKey.GoldenCloverSeed, 0.0005),
     (ItemKey.Asptongue, ItemKey.GraveMoss): (ItemKey.HushvineSeed, 0.03),
@@ -111,7 +112,9 @@ MUTATION_PROBS: MappingProxyType[Tuple[ItemKey, ItemKey], Tuple[ItemKey, float]]
     (ItemKey.Bloodcrown, ItemKey.GraveMoss): (ItemKey.WitherheartSeed, 0.005),
     (ItemKey.DawnsGlory, ItemKey.FoolsDelight): (ItemKey.BlazeClusterSpores, 0.05),
     (ItemKey.Meddlespread, ItemKey.Meddlespread): (ItemKey.FoolsDelightSpores, 0.03),
-    (ItemKey.Bloodcrown, ItemKey.Hushvine): (ItemKey.SpidersGroveSpores, 0.02)
+    (ItemKey.Bloodcrown, ItemKey.Hushvine): (ItemKey.SpidersGroveSpores, 0.02),
+    (ItemKey.FoolsDelight, ItemKey.SpeckledCap): (ItemKey.BloodcrownSpores, 0.08),
+    (ItemKey.Meddlespread, ""): (ItemKey.Meddlespread, 0.25)
 })
 
 # -----------------------------------------------------------------------------
@@ -140,9 +143,13 @@ class GardenPlot():
 
     def tick(self):
         if self.seed_data is None:
+            self.reset(keep_soil=True)
             return
 
         self.growth_ticks += 1
+
+        if self.growth_ticks == self.seed_data.ticks_until_mature:
+            self.plant = LOADED_ITEMS.get_new_item(self.seed_data.result)
         
         if self.growth_ticks >= self.seed_data.ticks_until_death:
             self.reset(keep_soil=True)
@@ -152,6 +159,7 @@ class GardenPlot():
         self.plant = None
         self.soil = None if not keep_soil else self.soil
         self.seed_data = None
+        self.growth_ticks = 0
 
     def is_mature(self):
         if self.seed_data is None:
@@ -163,10 +171,12 @@ class GardenPlot():
         seed_data = SEED_DATA.get(seed.get_key())
 
         if seed_data is None:
-            return
+            return "*That seed can't be planted*"
 
         self.seed = seed
         self.seed_data = seed_data
+
+        return f"*Planted {seed.get_full_name()}!*"
 
     def use_item(self, item: Item):
         # TODO: Implement this when I've figured out the lookup dicts and also designed the various gardening items
@@ -174,7 +184,7 @@ class GardenPlot():
 
     def get_icon(self):
         if self.seed_data is None:
-            return ""
+            return None
 
         if self.growth_ticks < self.seed_data.ticks_until_sprout:
             # Default sprout icon until then, maybe replaced with a different icon during the actual
@@ -189,6 +199,23 @@ class GardenPlot():
 
         # Return a question mark
         return "\u2753"
+
+    def __str__(self):
+        if self.seed is None or self.seed_data is None:
+            return ""
+        
+        growth_tick_str = "tick" if self.growth_ticks == 1 else "ticks"
+
+        ticks_until_mature = self.seed_data.ticks_until_mature - self.growth_ticks
+        mature_tick_str = "tick" if ticks_until_mature == 1 else "ticks"
+        
+        ticks_until_death = self.seed_data.ticks_until_death - self.growth_ticks
+        death_tick_str = "tick" if ticks_until_death == 1 else "ticks"
+        
+        mature_string = f"Mature in {ticks_until_mature} {mature_tick_str}" if ticks_until_mature > 0 else f"Will perish in {ticks_until_death} {death_tick_str}"
+        display_string = f"\n\n──────────\n{self.seed.get_full_name()}\n\n{self.growth_ticks} {growth_tick_str} old\n{mature_string}\n──────────"
+
+        return display_string
 
     def __getstate__(self):
         return self.__dict__
@@ -214,7 +241,7 @@ class Intent(StrEnum):
 
 class HarvestButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Harvest", row=row)
+        super().__init__(style=discord.ButtonStyle.secondary, label="Harvest", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -228,7 +255,7 @@ class HarvestButton(discord.ui.Button):
 
 class PlantSeedButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Plant Seed", row=row)
+        super().__init__(style=discord.ButtonStyle.secondary, label="Plant Seed", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -242,7 +269,7 @@ class PlantSeedButton(discord.ui.Button):
 
 class UseItemButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.blurple, label="Use Item", row=row)
+        super().__init__(style=discord.ButtonStyle.secondary, label="Use Item", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -287,7 +314,8 @@ class SelectSeedButton(discord.ui.Button):
 
 class GardenPlotButton(discord.ui.Button):
     def __init__(self, plot: GardenPlot, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, row=row, emoji=plot.get_icon())
+        icon = plot.get_icon()
+        super().__init__(style=discord.ButtonStyle.secondary, row=row, label=" " if icon is None else None, emoji=icon)
         
         self._plot = plot
 
@@ -409,7 +437,7 @@ class GardenView(discord.ui.View):
     def _display_initial_buttons(self):
         self.clear_items()
 
-        if HouseRoom.Storage in self._get_player().get_house().house_rooms:
+        if HouseRoom.Garden in self._get_player().get_house().house_rooms:
             self._get_garden_buttons()
         else:
             self.add_item(PurchaseGardenButton(self._PURCHASE_COST, 0))
@@ -423,19 +451,15 @@ class GardenView(discord.ui.View):
         player: Player = self._get_player()
         house: House = player.get_house()
         
-        num_per_row = 1
-        for i in range(1, MAX_GARDEN_SIZE + 1):
-            if len(house.garden_plots) % i == 0:
-                num_per_row = i
-
+        num_per_row = int(sqrt(len(house.garden_plots)))
         for i, plot in enumerate(house.garden_plots):
-            self.add_item(GardenPlotButton(plot, i % num_per_row))
+            self.add_item(GardenPlotButton(plot, int(i / num_per_row)))
 
         if self._selected_plot is not None:
             self.add_item(HarvestButton(min(4, num_per_row)))
             self.add_item(PlantSeedButton(min(4, num_per_row)))
             self.add_item(UseItemButton(min(4, num_per_row)))
-        if len(player.get_house().garden_plots) % MAX_GARDEN_SIZE != 0:
+        if int(sqrt(len(player.get_house().garden_plots))) < MAX_GARDEN_SIZE:
             self.add_item(ExpandButton(self._PLOT_COST, min(4, num_per_row)))
         self.add_item(ExitToHouseButton(min(4, num_per_row)))
 
@@ -447,7 +471,7 @@ class GardenView(discord.ui.View):
         house: House = player.get_house()
         
         if inventory.get_coins() < self._PURCHASE_COST:
-            return self.get_embed_for_intent(additional="\n\n*Error: You don't have enough coins to purchase the basement storage.*")
+            return self.get_embed_for_intent(additional="\n\n*Error: You don't have enough coins to purchase the garden.*")
 
         inventory.remove_coins(self._PURCHASE_COST)
         house.house_rooms.append(HouseRoom.Garden)
@@ -570,21 +594,17 @@ class GardenView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         house: House = player.get_house()
 
-        if len(house.garden_plots) % MAX_GARDEN_SIZE == 0:
+        if int(sqrt(len(house.garden_plots))) == MAX_GARDEN_SIZE:
             self._get_garden_buttons()
             return self.get_embed_for_intent(additional="\n\n*You've reached the max size for the garden!*")
 
         if inventory.get_coins() < self._PLOT_COST:
             return self.get_embed_for_intent(additional=f"\n\n*You don't have enough coins ({self._PLOT_COST}) to expand the garden.*")
 
-        cur_size = 1
-        for i in range(1, MAX_GARDEN_SIZE + 1):
-            if len(house.garden_plots) % i == 0:
-                cur_size = i
-
         inventory.remove_coins(self._PLOT_COST)
 
-        for i in range(cur_size * cur_size, (cur_size + 1) * (cur_size + 1)):
+        cur_size = int(sqrt(len(house.garden_plots)))
+        for _ in range(cur_size * cur_size, (cur_size + 1) * (cur_size + 1)):
             house.garden_plots.append(GardenPlot())
 
         self._get_garden_buttons()
@@ -593,7 +613,7 @@ class GardenView(discord.ui.View):
     def select_plot(self, plot: GardenPlot):
         self._selected_plot = plot
         self._get_garden_buttons()
-        return self.get_embed_for_intent()
+        return self.get_embed_for_intent(additional=str(plot))
 
     def select_seed(self, index: int, seed: Item):
         self._selected_item = seed

@@ -5,6 +5,7 @@ import discord
 from discord.embeds import Embed
 from discord.ext import commands
 from enum import StrEnum
+from features.inventory import Inventory
 from features.shared.enums import ClassTag, HouseRoom
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -13,7 +14,6 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.house.house import House, HouseView
-    from features.inventory import Inventory
     from features.shared.item import Item
     from features.player import Player
 
@@ -54,6 +54,8 @@ class RenameModal(discord.ui.Modal):
         if self._name_input.value in house.storage_bins.keys():
             await interaction.response.send_message(f"Error: That name is already taken.")
             return
+
+        house.storage_bins[self._name_input.value] = house.storage_bins.pop(self._storage_bin_key)
 
         embed = Embed(
             title="Basement Storage",
@@ -121,7 +123,7 @@ class RetrieveButton(discord.ui.Button):
 
 class BuyNewButton(discord.ui.Button):
     def __init__(self, cost: int, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"Buy New ({cost})", row=row)
+        super().__init__(style=discord.ButtonStyle.blurple, label=f"Buy New ({cost})", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -352,13 +354,13 @@ class StorageView(discord.ui.View):
         return self.get_embed_for_intent(additional="\n\n*Basement storage purchased! You can now store items with named storage chests.*")
     
     def return_to_main_menu(self):
-        self._display_initial_buttons()
-
         self._intent = None
         self._page = 0
         self._selected_item = None
         self._selected_item_index = -1
         self._selected_bin_key = ""
+
+        self._display_initial_buttons()
         
         return self.get_embed_for_intent()
 
@@ -378,6 +380,7 @@ class StorageView(discord.ui.View):
         if self._selected_bin_key != "":
             self.add_item(StoreButton(min(4, len(page_slots))))
             self.add_item(RetrieveButton(min(4, len(page_slots))))
+            self.add_item(RenameButton(self._selected_bin_key, min(4, len(page_slots))))
         self.add_item(BuyNewButton(self._NEW_BIN_COST, min(4, len(page_slots))))
         self.add_item(ExitToHouseButton(min(4, len(page_slots))))
 
@@ -475,6 +478,12 @@ class StorageView(discord.ui.View):
 
     def retrieve(self):
         player: Player = self._get_player()
+        house: House = player.get_house()
+
+        if self._selected_bin_key == "" or house.storage_bins.get(self._selected_bin_key) is None:
+            self.return_to_main_menu()
+            return self.get_embed_for_intent(additional="\n\n*Error: Something about that storage bin changed or it's no longer available.*")
+        
         storage_bin: Inventory = player.get_house().storage_bins.get(self._selected_bin_key, Inventory())
         storage_bin_slots = storage_bin.get_inventory_slots()
         if self._selected_item is None or storage_bin_slots[self._selected_item_index] != self._selected_item:
@@ -491,6 +500,12 @@ class StorageView(discord.ui.View):
 
     def retrieve_all(self):
         player: Player = self._get_player()
+        house: House = player.get_house()
+
+        if self._selected_bin_key == "" or house.storage_bins.get(self._selected_bin_key) is None:
+            self.return_to_main_menu()
+            return self.get_embed_for_intent(additional="\n\n*Error: Something about that storage bin changed or it's no longer available.*")
+        
         storage_bin: Inventory = player.get_house().storage_bins.get(self._selected_bin_key, Inventory())
         storage_bin_slots = storage_bin.get_inventory_slots()
         if self._selected_item is None or storage_bin_slots[self._selected_item_index] != self._selected_item:
@@ -508,7 +523,13 @@ class StorageView(discord.ui.View):
     def store(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        house: House = player.get_house()
+
+        if self._selected_bin_key == "" or house.storage_bins.get(self._selected_bin_key) is None:
+            self.return_to_main_menu()
+            return self.get_embed_for_intent(additional="\n\n*Error: Something about that storage bin changed or it's no longer available.*")
+
+        storage_bin: Inventory = player.get_house().storage_bins.get(self._selected_bin_key, Inventory())
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(additional="\n\n*Error: Something about that item changed or it's no longer available.*")
 
@@ -516,7 +537,7 @@ class StorageView(discord.ui.View):
         if removed_item is None:
             return self.get_embed_for_intent(additional="\n\n*Error: Something about that item changed or it's no longer available.*")
 
-        cupboard.add_item(removed_item)
+        storage_bin.add_item(removed_item)
         self._get_store_storage_bin_buttons()
 
         return Embed(title=f"{self._selected_bin_key} (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored 1 {removed_item.get_full_name()} and added it to the cupboard.*")
@@ -524,7 +545,13 @@ class StorageView(discord.ui.View):
     def store_all(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        cupboard: Inventory = player.get_house().kitchen_cupboard
+        house: House = player.get_house()
+
+        if self._selected_bin_key == "" or house.storage_bins.get(self._selected_bin_key) is None:
+            self.return_to_main_menu()
+            return self.get_embed_for_intent(additional="\n\n*Error: Something about that storage bin changed or it's no longer available.*")
+
+        storage_bin: Inventory = player.get_house().storage_bins.get(self._selected_bin_key, Inventory())
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(additional="\n\n*Error: Something about that item changed or it's no longer available.*")
 
@@ -532,7 +559,7 @@ class StorageView(discord.ui.View):
         if removed_item is None:
             return self.get_embed_for_intent(additional="\n\n*Error: Something about that item changed or it's no longer available.*")
 
-        cupboard.add_item(removed_item)
+        storage_bin.add_item(removed_item)
         self._get_store_storage_bin_buttons()
 
         return Embed(title=f"{self._selected_bin_key} (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored {removed_item.get_count()} {removed_item.get_full_name()} and added to the cupboard.*")
@@ -568,8 +595,9 @@ class StorageView(discord.ui.View):
         self._page += 1
         self._selected_item = None
         self._selected_item_index = -1
-        self._selected_recipe = None
 
+        if self._intent is None:
+            self._selected_bin_key = ""
         if self._intent == Intent.Store:
             self._get_store_storage_bin_buttons()
         if self._intent == Intent.Retrieve:
@@ -581,8 +609,9 @@ class StorageView(discord.ui.View):
         self._page = max(0, self._page - 1)
         self._selected_item = None
         self._selected_item_index = -1
-        self._selected_recipe = None
 
+        if self._intent is None:
+            self._selected_bin_key = ""
         if self._intent == Intent.Store:
             self._get_store_storage_bin_buttons()
         if self._intent == Intent.Retrieve:

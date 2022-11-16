@@ -10,6 +10,7 @@
     "state_tags": [],
     "count": 1,
     "level_requirement": 50,
+    "altering_item_keys": ["", "", ""],
     "item_effects": {
         "permanent": [
             {

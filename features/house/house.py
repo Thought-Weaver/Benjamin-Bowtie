@@ -256,7 +256,7 @@ class HouseView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
 
     def get_initial_embed(self):
-        return Embed(title="A Nice Home", description="")
+        return Embed(title="A Nice Home", description="This is your own place in the village, which you can expand with new rooms and capabilities.")
 
     def _display_initial_buttons(self):
         self.clear_items()

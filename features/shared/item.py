@@ -11,7 +11,7 @@ from features.shared.effect import EffectType, ItemEffects
 from features.shared.enums import ClassTag
 from types import MappingProxyType
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Literal
 
 if TYPE_CHECKING:
     from features.shared.attributes import Attributes
@@ -486,6 +486,9 @@ class Item():
     def get_consumable_stats(self) -> (ConsumableStats | None):
         return self._consumable_stats
 
+    def set_altering_item_keys(self, keys: List[ItemKey]) -> None:
+        self._altering_item_keys += keys
+
     def __str__(self):
         display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*" + (" (Unique)" if ClassTag.Misc.IsUnique in self._class_tags else "") + "\n\n"
         
@@ -521,6 +524,15 @@ class Item():
 
         if ClassTag.Misc.NeedsIdentification in self._class_tags:
             display_string += "*Needs Identification*\n\n"
+
+        if len(self._altering_item_keys) > 0:
+            for altering_item_key in self._altering_item_keys:
+                if altering_item_key == "":
+                    display_string += f"Empty Socket\n"
+                else:
+                    item = LOADED_ITEMS.get_new_item(altering_item_key)
+                    display_string += f"{item.get_full_name()}\n"
+            display_string += "\n"
 
         if self._description != "":
             display_string += f"{self._description}\n\n"
@@ -603,7 +615,7 @@ class Item():
         # These are stateful values and we use what's loaded from the database.
         self._state_tags = state.get("_state_tags", [])
         self._count = state.get("_count", 1)
-        self._altering_item_keys = state.get("_altering_item_keys", [])
+        self._altering_item_keys = state.get("_altering_item_keys", base_data.get("altering_item_keys", []))
 
 # I'm doing it this way because having a dict[ItemKey, Item] would
 # mean that using the items in the dict would all point to the same

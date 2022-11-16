@@ -5,6 +5,7 @@ import discord
 from discord.embeds import Embed
 from features.expertise import Expertise
 from features.shared.enums import ClassTag, HouseRoom
+from features.shared.item import LOADED_ITEMS
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from enum import StrEnum
@@ -152,8 +153,10 @@ class SelectEnchantItemButton(discord.ui.Button):
 
 
 class SelectSocketButton(discord.ui.Button):
-    def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"Socket {row}", row=row)
+    def __init__(self, socket_index: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"Socket {socket_index + 1}", row=socket_index)
+
+        self._socket_index = socket_index
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -161,7 +164,7 @@ class SelectSocketButton(discord.ui.Button):
         
         view: StudyView = self.view
         if interaction.user == view.get_user():
-            response = view.select_socket(self.row or -1)
+            response = view.select_socket(self._socket_index)
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -425,7 +428,7 @@ class StudyView(discord.ui.View):
 
         # You can only socket gems into items that you have a high enough level to use properly, and (of course)
         # the item must be able to be enchanted
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Equipment.Equipment], player_level=expertise.level, require_enchantable_equipment=True)
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Equipment.Equipment], player_level=expertise.level, require_enchantable_equipment=True, require_player_level=True)
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -434,7 +437,7 @@ class StudyView(discord.ui.View):
             self.add_item(SelectEnchantItemButton(exact_item_index, item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(inventory_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
+        if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
 
@@ -546,14 +549,11 @@ class StudyView(discord.ui.View):
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
             exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
-            self.add_item(SelectInventoryItemButton(exact_item_index, item, i))
+            self.add_item(SelectGemButton(exact_item_index, item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
-        if self._selected_item_index != -1 and self._selected_item is not None:
-            self.add_item(StoreItemButton(min(4, len(page_slots))))
-            self.add_item(StoreAllItemButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
 
     def select_socket(self, socket_index: int):
@@ -593,13 +593,55 @@ class StudyView(discord.ui.View):
         self._get_socket_buttons()
         return Embed(title="Select Socket", description=f"──────────\n{self._selected_item}\n──────────\n\nChoose a socket to add or remove a gem.")
 
-    def select_gem(self, item_index: int, item: Item):
-        # TODO: Implement socketing
-        return self.get_embed_for_intent()
+    def select_gem(self, index: int, item: Item):
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        inventory_slots: List[Item] = inventory.get_inventory_slots()
+        if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
+            self.exit_with_intent()
+            return self.get_embed_for_intent(error="\n\n*Error: Something about the item you want to enchant changed or it's no longer available.*")
+
+        if item is None or inventory_slots[index] != item:
+            self.exit_with_intent()
+            return self.get_embed_for_intent(error="\n\n*Error: Something about the gem changed or it's no longer available.*")
+
+        new_item = self._selected_item.remove_amount(1)
+        if new_item is None:
+            self.exit_with_intent()
+            return self.get_embed_for_intent(error="\n\n*Error: Something about the item you want to enchant changed or it's no longer available.*")
+
+        altering_item_keys = new_item.get_altering_item_keys()
+        if not (0 <= self._selected_socket < len(altering_item_keys)):
+            self.exit_with_intent()
+            return self.get_embed_for_intent(error="\n\n*Error: That's not a valid socket.*")
+        
+        inventory.remove_item(index, 1)
+        altering_item_keys[self._selected_socket] = item.get_key()
+        inventory.add_item(new_item)
+
+        return self.get_embed_for_intent(f"\n\n*{item.get_full_name()} has been socketed into socket {self._selected_socket}*")
 
     def remove_gem(self):
-        # TODO: Implement this too
-        pass
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        inventory_slots: List[Item] = inventory.get_inventory_slots()
+        if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
+            self.exit_with_intent()
+            return self.get_embed_for_intent(error="\n\n*Error: Something about the item you want to enchant changed or it's no longer available.*")
+
+        altering_item_keys = self._selected_item.get_altering_item_keys()
+        if not (0 <= self._selected_socket < len(altering_item_keys)):
+            self.exit_with_intent()
+            return self.get_embed_for_intent(error="\n\n*Error: That's not a valid socket.*")
+        
+        key = altering_item_keys[self._selected_socket]
+        altering_item_keys[self._selected_socket] = ""
+        item = LOADED_ITEMS.get_new_item(key)
+        inventory.add_item(item)
+        
+        self._get_gem_buttons()
+
+        return self.get_embed_for_intent(f"\n\n*{item.get_full_name()} has been unsocketed from socket {self._selected_socket}*")
 
     def exit_with_intent(self):
         self._page = 0
@@ -625,17 +667,21 @@ class StudyView(discord.ui.View):
 
     def next_page(self):
         self._page += 1
-        self._selected_item = None
-        self._selected_item_index = -1
-        self._selected_recipe = None
 
         if self._intent == Intent.Store:
+            self._selected_item = None
+            self._selected_item_index = -1
             self._get_store_storage_buttons()
         if self._intent == Intent.Retrieve:
+            self._selected_item = None
+            self._selected_item_index = -1
             self._get_retrieve_storage_buttons()
         if self._intent == Intent.Enchant:
+            self._selected_item = None
+            self._selected_item_index = -1
             self._get_select_enchant_item_buttons()
         if self._intent == Intent.SelectSocket:
+            self._selected_socket = -1
             self._get_socket_buttons()
         if self._intent == Intent.SelectGem:
             self._get_gem_buttons()
@@ -644,17 +690,21 @@ class StudyView(discord.ui.View):
 
     def prev_page(self):
         self._page = max(0, self._page - 1)
-        self._selected_item = None
-        self._selected_item_index = -1
-        self._selected_recipe = None
 
         if self._intent == Intent.Store:
+            self._selected_item = None
+            self._selected_item_index = -1
             self._get_store_storage_buttons()
         if self._intent == Intent.Retrieve:
+            self._selected_item = None
+            self._selected_item_index = -1
             self._get_retrieve_storage_buttons()
         if self._intent == Intent.Enchant:
+            self._selected_item = None
+            self._selected_item_index = -1
             self._get_select_enchant_item_buttons()
         if self._intent == Intent.SelectSocket:
+            self._selected_socket = -1
             self._get_socket_buttons()
         if self._intent == Intent.SelectGem:
             self._get_gem_buttons()

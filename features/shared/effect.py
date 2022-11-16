@@ -211,144 +211,153 @@ class Effect():
         if self.effect_type == EffectType.ConMod:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value} Constitution"
+            display_string += f"{int(self.effect_value)} Constitution"
         if self.effect_type == EffectType.StrMod:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value} Strength"
+            display_string += f"{int(self.effect_value)} Strength"
         if self.effect_type == EffectType.DexMod:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value} Dexterity"
+            display_string += f"{int(self.effect_value)} Dexterity"
         if self.effect_type == EffectType.IntMod:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value} Intelligence"
+            display_string += f"{int(self.effect_value)} Intelligence"
         if self.effect_type == EffectType.LckMod:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value} Luck"
+            display_string += f"{int(self.effect_value)} Luck"
         if self.effect_type == EffectType.MemMod:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value} Memory"
+            display_string += f"{int(self.effect_value)} Memory"
 
         if self.effect_type == EffectType.DmgReflect:
-            display_string += f"{self.effect_value * 100}% Damage Reflected"
+            display_string += f"{round(self.effect_value * 100, 2)}% Damage Reflected"
         if self.effect_type == EffectType.DmgResist:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Damage Resist"
+            display_string += f"{round(self.effect_value * 100, 2)}% Damage Resist"
         if self.effect_type == EffectType.DmgBuff:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Damage Dealt"
+            display_string += f"{round(self.effect_value * 100, 2)}% Damage Dealt"
         if self.effect_type == EffectType.DmgBuffSelfMaxHealth:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Max Health as Damage"
+            display_string += f"{round(self.effect_value * 100, 2)}% Max Health as Damage"
         if self.effect_type == EffectType.DmgBuffSelfRemainingHealth:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Remaining Health as Damage"
+            display_string += f"{round(self.effect_value * 100, 2)}% Remaining Health as Damage"
         if self.effect_type == EffectType.DmgBuffOtherMaxHealth:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Enemy Max Health as Damage"
+            display_string += f"{round(self.effect_value * 100, 2)}% Enemy Max Health as Damage"
         if self.effect_type == EffectType.DmgBuffOtherRemainingHealth:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Enemy Remaining Health as Damage"
+            display_string += f"{round(self.effect_value * 100, 2)}% Enemy Remaining Health as Damage"
         if self.effect_type == EffectType.DmgBuffLegends:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Damage Against Legendaries"
+            display_string += f"{round(self.effect_value * 100, 2)}% Damage Against Legendaries"
         if self.effect_type == EffectType.DmgBuffPoisoned:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Damage Against Poisoned Enemies"
+            display_string += f"{round(self.effect_value * 100, 2)}% Damage Against Poisoned Enemies"
         if self.effect_type == EffectType.DmgBuffBleeding:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Damage Against Bleeding Enemies"
+            display_string += f"{round(self.effect_value * 100, 2)}% Damage Against Bleeding Enemies"
         if self.effect_type == EffectType.DmgBuffFromDex:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Damage Scaling from Dex"
+            display_string += f"{round(self.effect_value * 100, 2)}% Damage Scaling from Dex"
         
         if self.effect_type == EffectType.ExtraArmor:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value} Extra Armor"
+            display_string += f"{int(self.effect_value)} Extra Armor"
         if self.effect_type == EffectType.RestoreArmor:
-            display_string += f"{self.effect_value} Armor Restored"
+            display_string += f"{int(self.effect_value)} Armor Restored"
 
         if self.effect_type == EffectType.PiercingDmg:
-            display_string += f"{self.effect_value} Piercing Damage"
+            display_string += f"{int(self.effect_value)} Piercing Damage"
+        if self.effect_type == EffectType.PiercingPercentDmg:
+            display_string += f"{round(self.effect_value * 100, 2)}% Piercing Damage"
         if self.effect_type == EffectType.SplashDmg:
-            display_string += f"{self.effect_value} Damage Splash"
+            display_string += f"{int(self.effect_value)} Splash Damage"
+        if self.effect_type == EffectType.SplashPercentMaxDmg:
+            display_string += f"{round(self.effect_value * 100, 2)}% Max Damage as Splash Damage"
+        
         if self.effect_type == EffectType.CritDmgBuff:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Crit Damage"
+            display_string += f"{round(self.effect_value * 100, 2)}% Crit Damage"
         if self.effect_type == EffectType.CritDmgReduction:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Crit Damage Reduction"
+            display_string += f"{round(self.effect_value * 100, 2)}% Crit Damage Reduction"
 
         if self.effect_type == EffectType.HealthSteal:
-            display_string += f"{self.effect_value} Health Stolen"
+            display_string += f"{int(self.effect_value)} Health Stolen"
         if self.effect_type == EffectType.ManaSteal:
-            display_string += f"{self.effect_value} Mana Stolen"
+            display_string += f"{int(self.effect_value)} Mana Stolen"
         
         if self.effect_type == EffectType.AdjustedCDs:
             turn_str = "Turn" if self.effect_value == 1 else "Turns"
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value} {turn_str} on Ability Cooldowns"
+            display_string += f"{int(self.effect_value)} {turn_str} on Ability Cooldowns"
         
         if self.effect_type == EffectType.ChancePoisoned:
-            display_string += f"{self.effect_value * 100}% Poisoned Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Poisoned Chance"
         if self.effect_type == EffectType.ResistPoisoned:
-            display_string += f"{self.effect_value * 100}% Resist Poisoned Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Resist Poisoned Chance"
         if self.effect_type == EffectType.ChanceBleeding:
-            display_string += f"{self.effect_value * 100}% Bleeding Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Bleeding Chance"
         if self.effect_type == EffectType.ResistBleeding:
-            display_string += f"{self.effect_value * 100}% Resist Bleeding Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Resist Bleeding Chance"
         if self.effect_type == EffectType.ChanceFaltering:
-            display_string += f"{self.effect_value * 100}% Faltering Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Faltering Chance"
         if self.effect_type == EffectType.ResistFaltering:
-            display_string += f"{self.effect_value * 100}% Resist Faltering Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Resist Faltering Chance"
         if self.effect_type == EffectType.ChanceTaunted:
-            display_string += f"{self.effect_value * 100}% Taunted Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Taunted Chance"
         if self.effect_type == EffectType.ResistTaunted:
-            display_string += f"{self.effect_value * 100}% Resist Taunted Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Resist Taunted Chance"
         if self.effect_type == EffectType.ChanceConvinced:
-            display_string += f"{self.effect_value * 100}% Convinced Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Convinced Chance"
         if self.effect_type == EffectType.ResistConvinced:
-            display_string += f"{self.effect_value * 100}% Resist Convinced Chance"
+            display_string += f"{round(self.effect_value * 100, 2)}% Resist Convinced Chance"
 
         if self.effect_type == EffectType.RestoreHealth:
-            display_string += f"Restore {self.effect_value} Health"
+            display_string += f"Restore {int(self.effect_value)} Health"
         if self.effect_type == EffectType.RestorePercentHealth:
-            display_string += f"Restore {self.effect_value * 100}% Health"
+            display_string += f"Restore {round(self.effect_value * 100, 2)}% Health"
         if self.effect_type == EffectType.RestoreMana:
-            display_string += f"Restore {self.effect_value} Mana"
+            display_string += f"Restore {int(self.effect_value)} Mana"
         if self.effect_type == EffectType.RestorePercentMana:
-            display_string += f"Restore {self.effect_value * 100}% Mana"
+            display_string += f"Restore {round(self.effect_value * 100, 2)}% Mana"
 
         if self.effect_type == EffectType.AdjustedManaCosts:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Ability Mana Costs"
+            display_string += f"{round(self.effect_value * 100, 2)}% Ability Mana Costs"
         if self.effect_type == EffectType.HealingAbilityBuff:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% Healing Ability Effect"
+            display_string += f"{round(self.effect_value * 100, 2)}% Healing Ability Effect"
         if self.effect_type == EffectType.AdditionalXP:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{self.effect_value * 100}% XP Gained"
+            display_string += f"{round(self.effect_value * 100, 2)}% XP Gained"
+        if self.effect_type == EffectType.PotionMod:
+            if self.effect_value > 0:
+                display_string += "+"
+            display_string += f"{round(self.effect_value * 100, 2)}% Potion Effect"
 
         # For now, specifically skip ResurrectOnce, since it's in the item description.
 
@@ -363,17 +372,17 @@ class Effect():
         conditions_strs = []
         for i, condition in enumerate(self.conditions):
             if condition == ConditionType.IsAbovePercentHealth:
-                conditions_strs.append(f"above {self.condition_values[i]}% health")
+                conditions_strs.append(f"above {int(self.condition_values[i])}% health")
             if condition == ConditionType.IsBelowPercentHealth:
-                conditions_strs.append(f"below {self.condition_values[i]}% health")
+                conditions_strs.append(f"below {int(self.condition_values[i])}% health")
             if condition == ConditionType.IsFullHealth:
                 conditions_strs.append("at full health")
             if condition == ConditionType.IsItemArmor:
                 conditions_strs.append("socketed in armor")
             if condition == ConditionType.IsItemInHand:
-                conditions_strs.append("socketed in a main hand or off hand item")
+                conditions_strs.append("socketed in a main-hand or off-hand item")
             
-            if i == len(self.conditions) - 1:
+            if len(self.conditions) > 1 and i == len(self.conditions) - 1:
                 conditions_strs[-1] = "and " + conditions_strs[-1]
         display_string += ", ".join(conditions_strs)
 
@@ -456,33 +465,35 @@ class ItemEffects():
         display_string = ""
 
         permanent_effect_str = "\n".join([str(effect) for effect in self.permanent])
-        display_string += permanent_effect_str
+        if permanent_effect_str != "":
+            display_string += permanent_effect_str + "\n\n"
 
         on_turn_start_str = "\n".join([str(effect) for effect in self.on_turn_start])
         if on_turn_start_str != "":
-            display_string += "\n\nAt the start of your turn:\n\n" + on_turn_start_str
+            display_string += "At the start of your turn:\n\n" + f"*{on_turn_start_str}*\n\n"
         
         on_turn_end_str = "\n".join([str(effect) for effect in self.on_turn_end])
         if on_turn_end_str != "":
-            display_string += "\n\nAt the end of your turn:\n\n" + on_turn_end_str
+            display_string += "At the end of your turn:\n\n" + f"*{on_turn_end_str}*\n\n"
         
         on_successful_ability_used_str = "\n".join([str(effect) for effect in self.on_successful_ability_used])
         if on_successful_ability_used_str != "":
-            display_string += "\n\nWhen you successfully use an ability:\n\n" + on_successful_ability_used_str
+            display_string += "When you successfully use an ability:\n\n" + f"*{on_successful_ability_used_str}*\n\n"
         
         on_successful_attack_str = "\n".join([str(effect) for effect in self.on_successful_attack])
         if on_successful_attack_str != "":
-            display_string += "\n\nWhen you successfully attack:\n\n" + on_successful_attack_str
+            display_string += "When you successfully attack:\n\n" + f"*{on_successful_attack_str}*\n\n"
         
         on_attacked_str = "\n".join([str(effect) for effect in self.on_attacked])
         if on_attacked_str != "":
-            display_string += "\n\nWhen you're attacked:\n\n" + on_attacked_str
+            display_string += "When you're attacked:\n\n" + f"*{on_attacked_str}*\n\n"
 
         on_ability_used_against_str = "\n".join([str(effect) for effect in self.on_ability_used_against])
         if on_ability_used_against_str != "":
-            display_string += "\n\nWhen an ability is used on you:\n\n" + on_ability_used_against_str
+            display_string += "When an ability is used on you:\n\n" + f"*{on_ability_used_against_str}*\n\n"
 
-        return display_string
+        # Remove the last two newlines
+        return display_string[:-2]
 
     def load_effect_from_state(self, data):
         if isinstance(data, Effect):

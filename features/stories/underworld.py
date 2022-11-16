@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class UnderworldStory():
     def __init__(self):
         self._something_stirs: int = 0
-        self.remaining_sunless_keys: List[str] = [
+        self.remaining_sunless_keys: List[ItemKey] = [
             ItemKey.SunlessStride,
             ItemKey.SunlessChains,
             ItemKey.SunlessGrip,
@@ -64,7 +64,7 @@ class UnderworldStory():
     def get_wishing_well_item(self):
         if len(self.remaining_sunless_keys) > 0:
             rand_index: int = random.randint(0, max(0, len(self.remaining_sunless_keys) - 1))
-            item_key: str = self.remaining_sunless_keys.pop(rand_index)
+            item_key: ItemKey = self.remaining_sunless_keys.pop(rand_index)
 
             return LOADED_ITEMS.get_new_item(item_key)
         else:
@@ -96,19 +96,19 @@ class UnderworldStory():
                     0.035, 0.035, 0.035, 0.035,
                     0.035, 0.035, 0.035, 0.035,
                     0.035, 0.035, 0.035, 0.035,
-                    0.035, 0.035, 0.035, 0.035,
+                    0.035, 0.035, 0.035,
 
                     0.01, 0.01, 0.01, 0.01,
                     0.01, 0.01, 0.01, 0.01,
                     0.01, 0.01, 0.01, 0.01,
                     0.01, 0.01, 0.01, 0.01,
-                    0.01, 0.01, 0.01, 0.01,
+                    0.01, 0.01, 0.01,
 
                     0.005, 0.005, 0.005, 0.005,
                     0.005, 0.005, 0.005, 0.005,
                     0.005, 0.005, 0.005, 0.005,
                     0.005, 0.005, 0.005, 0.005,
-                    0.005, 0.005, 0.005, 0.005,
+                    0.005, 0.005, 0.005,
                 ]
             )[0]
             return LOADED_ITEMS.get_new_item(rand_key)

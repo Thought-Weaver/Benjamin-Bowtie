@@ -478,7 +478,7 @@ class AlchemyChamberView(discord.ui.View):
             self.add_item(SelectAlchemizeingIngredientButton(exact_item_index, item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(special_num_per_page, len(page_slots))))
-        if len(inventory_slots) - special_num_per_page * (self._page + 1) > 0:
+        if len(filtered_items) - special_num_per_page * (self._page + 1) > 0:
             self.add_item(NextButton(min(special_num_per_page, len(page_slots))))
         if self._selected_item_index != -1 and self._selected_item is not None:
             if self._current_alchemizeing.get(self._selected_item.get_key(), 0) < inventory_slots[self._selected_item_index].get_count():

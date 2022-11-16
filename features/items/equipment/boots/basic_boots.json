@@ -12,5 +12,6 @@
     "level_requirement": 2,
     "armor_stats": {
         "armor_amount": 1
-    }
+    },
+    "altering_item_keys": ["", "", ""]
 }

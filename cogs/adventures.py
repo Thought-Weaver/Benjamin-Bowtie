@@ -43,7 +43,6 @@ if TYPE_CHECKING:
     from features.npcs.npc import NPC
     from features.stats import Stats
 
-
 class Adventures(commands.Cog):
     def __init__(self, bot: BenjaminBowtieBot):
         self._bot = bot
@@ -52,6 +51,7 @@ class Adventures(commands.Cog):
         self._database: dict = jsonpickle.decode(file_data) if os.path.isfile("./adventuresdb.json") else {}
 
         self._database_npc_and_story_setup()
+        self.tick.start()
 
     def _database_npc_and_story_setup(self):
         for guild_id_str in self._database.keys():
@@ -94,12 +94,14 @@ class Adventures(commands.Cog):
 
     @tasks.loop(time=[datetime.time(hour=i) for i in range(24)])
     async def tick(self):
-        # TODO: Also handle ticking down any status effects, if the player isn't in combat
         for guild_id in self._database.keys():
             guild_id_str = str(guild_id)
             for user_id in self._database[guild_id_str].get("members", {}).keys():
                 player: Player = self._get_player(guild_id, user_id)
                 player.get_house().tick()
+                if not player.get_dueling().is_in_combat:
+                    player.get_dueling().decrement_all_ability_cds()
+                    player.get_dueling().decrement_statuses_time_remaining()
 
         await self.save_database()
 
