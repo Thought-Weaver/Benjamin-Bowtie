@@ -466,14 +466,15 @@ class Item():
 
         # Add in everything from items that are altering it
         for item_key in self._altering_item_keys:
-            item_effects_data = LOADED_ITEMS.get_item_state(item_key).get("item_effects")
-            item_effects = None
-            if item_effects_data is not None:
-                item_effects = ItemEffects()
-                item_effects.__setstate__(item_effects_data)
-            
-            if item_effects is not None:
-                combined_effects += item_effects
+            if item_key != "":
+                item_effects_data = LOADED_ITEMS.get_item_state(item_key).get("item_effects")
+                item_effects = None
+                if item_effects_data is not None:
+                    item_effects = ItemEffects()
+                    item_effects.__setstate__(item_effects_data)
+                
+                if item_effects is not None:
+                    combined_effects += item_effects
 
         return combined_effects
 
