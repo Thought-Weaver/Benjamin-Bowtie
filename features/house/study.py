@@ -260,7 +260,7 @@ class StoreAllItemButton(discord.ui.Button):
 
 class RemoveGemButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"Remove Gem", row=row)
+        super().__init__(style=discord.ButtonStyle.blurple, label=f"Remove Gem", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -428,7 +428,7 @@ class StudyView(discord.ui.View):
 
         # You can only socket gems into items that you have a high enough level to use properly, and (of course)
         # the item must be able to be enchanted
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Equipment.Equipment], player_level=expertise.level, require_enchantable_equipment=True, require_player_level=True)
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Equipment.Equipment], player_level=expertise.level, require_enchantable_equipment=True)
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -554,6 +554,8 @@ class StudyView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
+        if self._selected_item is not None and self._selected_item.get_altering_item_keys()[self._selected_socket] != "":
+            self.add_item(RemoveGemButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
 
     def select_socket(self, socket_index: int):
@@ -615,11 +617,18 @@ class StudyView(discord.ui.View):
             self.exit_with_intent()
             return self.get_embed_for_intent(error="\n\n*Error: That's not a valid socket.*")
         
+        key = altering_item_keys[self._selected_socket]
+        if key != "":
+            old_item = LOADED_ITEMS.get_new_item(key)
+            inventory.add_item(old_item)
+
         inventory.remove_item(index, 1)
         altering_item_keys[self._selected_socket] = item.get_key()
         inventory.add_item(new_item)
 
-        return self.get_embed_for_intent(f"\n\n*{item.get_full_name()} has been socketed into socket {self._selected_socket}*")
+        self._get_gem_buttons()
+
+        return self.get_embed_for_intent(f"\n\n*{item.get_full_name()} has been socketed into socket {self._selected_socket + 1}*")
 
     def remove_gem(self):
         player: Player = self._get_player()

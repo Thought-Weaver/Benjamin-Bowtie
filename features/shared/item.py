@@ -385,11 +385,11 @@ class Item():
                 self._description,
                 self._flavor_text,
                 self._class_tags,
-                self._state_tags,
+                self._state_tags[:],
                 amount,
                 self._level_requirement,
                 self._item_effects,
-                self._altering_item_keys,
+                self._altering_item_keys[:],
                 self._armor_stats,
                 self._weapon_stats,
                 self._consumable_stats)
@@ -446,7 +446,7 @@ class Item():
         return self._state_tags
 
     def set_state_tags(self, new_tags: List[StateTag]) -> None:
-        self._state_tags += new_tags
+        self._state_tags = new_tags
 
     def get_key(self) -> ItemKey:
         return self._key
@@ -487,7 +487,7 @@ class Item():
         return self._consumable_stats
 
     def set_altering_item_keys(self, keys: List[ItemKey]) -> None:
-        self._altering_item_keys += keys
+        self._altering_item_keys = keys
 
     def __str__(self):
         display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*" + (" (Unique)" if ClassTag.Misc.IsUnique in self._class_tags else "") + "\n\n"
