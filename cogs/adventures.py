@@ -53,8 +53,8 @@ class Adventures(commands.Cog):
         self._database_npc_and_story_setup()
         self.tick.start()
 
-    def _database_npc_and_story_setup(self):
-        for guild_id_str in self._database.keys():
+    def _database_npc_and_story_setup(self, specific_guild_id_str: str | None=None):
+        def create_stories_and_npcs(guild_id_str: str):
             if self._database[guild_id_str].get("stories") is None:
                 self._database[guild_id_str]["stories"] = {}
             if self._database[guild_id_str]["stories"].get(Story.Forest) is None:
@@ -75,6 +75,12 @@ class Adventures(commands.Cog):
             if self._database[guild_id_str]["npcs"].get(NPCRoles.Chef) is None:
                 self._database[guild_id_str]["npcs"][NPCRoles.Chef] = Chef()
 
+        if specific_guild_id_str is not None:
+            create_stories_and_npcs(specific_guild_id_str)
+        else:
+            for guild_id_str in self._database.keys():
+                create_stories_and_npcs(guild_id_str)
+
     def _check_member_and_guild_existence(self, guild_id: int, user_id: int):
         guild_id_str: str = str(guild_id)
         user_id_str: str = str(user_id)
@@ -82,6 +88,7 @@ class Adventures(commands.Cog):
         if self._database.get(guild_id_str) is None:
             self._database[guild_id_str] = {}
             self._database[guild_id_str]["members"] = {}
+            self._database_npc_and_story_setup(guild_id_str)
         
         if self._database[guild_id_str]["members"].get(user_id_str) is None:
             self._database[guild_id_str]["members"][user_id_str] = Player()
@@ -109,7 +116,7 @@ class Adventures(commands.Cog):
         if os.path.isfile("./adventuresdb.json"):
             shutil.copy("adventuresdb.json", "adventuresdbbackup.json")
         
-        frozen = jsonpickle.encode(self._database)
+        frozen = jsonpickle.encode(self._database, make_refs=False)
         with open("adventuresdb.json", "w") as file:
             file.write(frozen)
     
@@ -179,9 +186,7 @@ class Adventures(commands.Cog):
         # TODO: Redo earnings analysis with luck later
 
         LUCK_MOD = 0.005 # Luck adjusts total bias by 0.5% per point
-        player_luck: int = author_player.get_expertise().luck
-        equipment_luck: int = author_player.get_equipment().get_total_attribute_mods().luck
-        total_luck: int = player_luck + equipment_luck
+        total_luck: int = author_player.get_combined_attributes().luck
         rand_val = random.choices(
             [0, 1, 2, 3, 4, 5], k=1,
             weights=[
@@ -497,9 +502,7 @@ class Adventures(commands.Cog):
         #   20 -> E(X) = 0.975 * -1 + 0.0096 * 150 -> 334.8 per hour
 
         LUCK_MOD = 0.001 # Luck adjusts total bias by 0.1% per point
-        author_luck: int = author_player.get_expertise().luck
-        equipment_luck: int = author_player.get_equipment().get_total_attribute_mods().luck
-        total_luck: int = author_luck + equipment_luck
+        total_luck: int = author_player.get_combined_attributes().luck
         rand_val = random.choices(
             [0, 1, 2, 3], k=1,
             weights=[
