@@ -5,6 +5,7 @@ import time
 
 from discord.embeds import Embed
 from discord.ext import commands
+from features.house.house import HouseView
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -303,18 +304,36 @@ class MailboxButton(discord.ui.Button):
                 await interaction.response.edit_message(content=None, embed=embed, view=view)
 
 
+class ExitToHouseButton(discord.ui.Button):
+    def __init__(self, row):
+        super().__init__(style=discord.ButtonStyle.red, label="Exit", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MailboxView = self.view
+        if interaction.user == view.get_user():
+            house_view: HouseView | None = view.get_house_view()
+            if house_view is not None:
+                embed = house_view.get_initial_embed()
+                await interaction.response.edit_message(content=None, embed=embed, view=house_view)
+            else:
+                await interaction.response.defer()
+
+
 class MailboxView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: discord.User):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: discord.User, house_view: HouseView | None=None):
         super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
         self._guild_id = guild_id
         self._user = user
+        self._house_view = house_view
+
         self._page = 0
 
-        # These buttons are going to descend vertically. Thinking about changing the
-        # inventory to be the same since it looks better on mobile too.
         self._NUM_PER_PAGE = 4
         
         self._get_current_page_buttons()
@@ -336,6 +355,8 @@ class MailboxView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(mailbox) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
+        if self.get_house_view() is not None:
+            self.add_item(ExitToHouseButton(min(4, len(page_slots))))
         
     def get_current_page_info(self):
         return Embed(
@@ -383,3 +404,6 @@ class MailboxView(discord.ui.View):
 
     def get_user(self):
         return self._user
+
+    def get_house_view(self):
+        return self._house_view

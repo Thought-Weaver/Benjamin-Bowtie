@@ -5,11 +5,14 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
+from features.house.alchemy import AlchemyChamberView
 from features.house.garden import MUTATION_PROBS, GardenView
+from features.house.kitchen import KitchenView
 from features.house.storage import StorageView
 from features.house.study import StudyView
 from features.house.workshop import WorkshopView
 from features.inventory import Inventory
+from features.mail import MailboxView
 
 from features.shared.constants import MAX_GARDEN_SIZE
 from features.shared.enums import HouseRoom
@@ -114,10 +117,6 @@ class House():
 # HOUSE VIEW
 # -----------------------------------------------------------------------------
 
-from features.house.alchemy import AlchemyChamberView
-from features.house.kitchen import KitchenView
-from features.mail import MailboxView
-
 class KitchenButton(discord.ui.Button):
     def __init__(self, row):
         super().__init__(style=discord.ButtonStyle.secondary, label="Kitchen", row=row)
@@ -218,7 +217,7 @@ class MailboxButton(discord.ui.Button):
         
         view: HouseView = self.view
         if interaction.user == view.get_user():
-            new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user())
+            new_view: MailboxView = MailboxView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_user(), view)
             embed = new_view.get_current_page_info()
             await interaction.response.edit_message(content=None, embed=embed, view=new_view)
 
@@ -267,11 +266,21 @@ class HouseView(discord.ui.View):
         self.add_item(KitchenButton(1))
         self.add_item(MailboxButton(2))
         self.add_item(StorageButton(2))
-        # self.add_item(RestButton(3))
+        self.add_item(RestButton(3))
 
     def rest(self):
-        # TODO: Implement resting mechanic and out-of-combat status effects
-        pass
+        player = self._get_player()
+        player_expertise = player.get_expertise()
+        player_dueling = player.get_dueling()
+
+        if player_dueling.is_in_combat:
+            return Embed(title="A Nice Home", description="This is your own place in the village, which you can expand with new rooms and capabilities.\n\n*You can't rest while in combat.")
+
+        player_dueling.status_effects = []
+        player_expertise.hp = player_expertise.max_hp
+        player_expertise.mana = player_expertise.max_mana
+
+        return Embed(title="A Nice Home", description="This is your own place in the village, which you can expand with new rooms and capabilities.\n\n*You have rested, clearing your status effects and restoring your HP and Mana.")
 
     def get_bot(self):
         return self._bot

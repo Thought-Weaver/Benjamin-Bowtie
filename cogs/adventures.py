@@ -27,7 +27,7 @@ from features.npcs.yenna import Yenna
 from features.player import Player
 from features.stats import StatCategory, StatView
 from features.shared.enums import ClassTag
-from features.shared.item import Item, LOADED_ITEMS, ItemKey
+from features.shared.item import Item, LOADED_ITEMS, ItemKey, Rarity
 from features.stories.forest import ForestStory
 from features.stories.ocean import OceanStory
 from features.stories.story import Story
@@ -540,7 +540,14 @@ class Adventures(commands.Cog):
             xp_to_add: int = 0
             expertise: Expertise = author_player.get_expertise()
             if ClassTag.Valuable.Gemstone in result.get_class_tags():
-                xp_to_add = 8
+                if result.get_rarity() == Rarity.Common:
+                    xp_to_add = 5
+                if result.get_rarity() == Rarity.Rare:
+                    xp_to_add = 8
+                if result.get_rarity() == Rarity.Epic:
+                    xp_to_add = 13
+                if result.get_rarity() == Rarity.Legendary:
+                    xp_to_add = 21
                 xp_to_add = expertise.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant, author_player.get_equipment())
             else:
                 xp_to_add = 34
