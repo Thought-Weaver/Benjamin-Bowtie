@@ -520,8 +520,11 @@ class Item():
             display_string += target_str
 
         if self._item_effects is not None:
-            has_any_stats = True
-            display_string += f"{self._item_effects}\n"
+            item_effects_str = str(self._item_effects)
+            # There are some cases where I'd rather use a custom description
+            if item_effects_str != "":
+                has_any_stats = True
+                display_string += f"{self._item_effects}\n"
 
         if has_any_stats:
             display_string += "\n"
