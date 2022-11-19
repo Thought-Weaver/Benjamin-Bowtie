@@ -938,7 +938,7 @@ class WrathOfTheWavesII(Ability):
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = int(randint(8, 12) * bonus_dmg_boost * critical_hit_boost)
+            damage = int(randint(6, 12) * bonus_dmg_boost * critical_hit_boost)
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
@@ -3474,7 +3474,7 @@ class BoundToGetLuckyII(Ability):
             icon="\uD83C\uDF40",
             name="Bound to Get Lucky II",
             class_key=ExpertiseClass.Merchant,
-            description="Gain +20 Luck for the next 2 turns.",
+            description="Gain +30 Luck for the next 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=4,
@@ -3487,7 +3487,7 @@ class BoundToGetLuckyII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
             turns_remaining=2,
-            value=20,
+            value=30,
             source_str=self.get_icon_and_name()
         )
 
@@ -3512,7 +3512,7 @@ class BoundToGetLuckyIII(Ability):
             icon="\uD83C\uDF40",
             name="Bound to Get Lucky III",
             class_key=ExpertiseClass.Merchant,
-            description="Gain +30 Luck for the next 2 turns.",
+            description="Gain +50 Luck for the next 2 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=4,
@@ -3525,7 +3525,7 @@ class BoundToGetLuckyIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
             turns_remaining=2,
-            value=30,
+            value=50,
             source_str=self.get_icon_and_name()
         )
 
