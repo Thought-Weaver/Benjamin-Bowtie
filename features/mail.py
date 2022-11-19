@@ -5,12 +5,12 @@ import time
 
 from discord.embeds import Embed
 from discord.ext import commands
-from features.house.house import HouseView
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
+    from features.house.house import HouseView
     from features.inventory import Inventory, Item
     from features.player import Player
     from features.stats import Stats

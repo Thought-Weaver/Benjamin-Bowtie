@@ -259,14 +259,14 @@ class HouseView(discord.ui.View):
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(StudyButton(0))
+        self.add_item(KitchenButton(0))
         self.add_item(AlchemyChamberButton(0))
         self.add_item(WorkshopButton(0))
         self.add_item(GardenButton(1))
-        self.add_item(KitchenButton(1))
+        self.add_item(StudyButton(1))
         self.add_item(MailboxButton(2))
         self.add_item(StorageButton(2))
-        self.add_item(RestButton(3))
+        # self.add_item(RestButton(3))
 
     def rest(self):
         player = self._get_player()
