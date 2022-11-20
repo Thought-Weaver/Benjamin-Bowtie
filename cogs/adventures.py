@@ -541,6 +541,8 @@ class Adventures(commands.Cog):
             expertise: Expertise = author_player.get_expertise()
             if ClassTag.Valuable.Gemstone in result.get_class_tags():
                 if result.get_rarity() == Rarity.Common:
+                    xp_to_add = 3
+                if result.get_rarity() == Rarity.Uncommon:
                     xp_to_add = 5
                 if result.get_rarity() == Rarity.Rare:
                     xp_to_add = 8
