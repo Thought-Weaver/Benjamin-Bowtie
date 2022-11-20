@@ -235,9 +235,10 @@ class Expertise():
         fisher_level_diff = self._fisher.level_up_check()
         merchant_level_diff = self._merchant.level_up_check()
         guardian_level_diff = self._guardian.level_up_check()
+        alchemist_level_diff = self._alchemist.level_up_check()
 
-        self.points_to_spend += fisher_level_diff + merchant_level_diff + guardian_level_diff
-        self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level()
+        self.points_to_spend += fisher_level_diff + merchant_level_diff + guardian_level_diff + alchemist_level_diff
+        self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level() + self._alchemist.get_level()
 
     def get_info_string(self, attribute_mods: Attributes, armor_str: str):
         self.level_up_check()
