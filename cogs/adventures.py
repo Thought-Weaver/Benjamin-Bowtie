@@ -41,6 +41,7 @@ if TYPE_CHECKING:
     from features.expertise import Expertise
     from features.inventory import Inventory
     from features.npcs.npc import NPC
+    from features.npcs.viktor import RandomItemMerchant
     from features.stats import Stats
 
 class Adventures(commands.Cog):
@@ -110,6 +111,11 @@ class Adventures(commands.Cog):
                     player.get_dueling().decrement_all_ability_cds()
                     player.get_dueling().decrement_statuses_time_remaining()
 
+            for npc_id in self._database[guild_id_str].get("npcs", {}).keys():
+                if npc_id == NPCRoles.RandomItemMerchant:
+                    npc: RandomItemMerchant = self._database[guild_id_str]["npcs"][npc_id]
+                    npc.tick()
+ 
         await self.save_database()
 
     async def save_database(self):

@@ -11,7 +11,7 @@ from features.shared.effect import EffectType, ItemEffects
 from features.shared.enums import ClassTag
 from types import MappingProxyType
 
-from typing import TYPE_CHECKING, List, Literal
+from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
     from features.shared.attributes import Attributes
@@ -28,6 +28,22 @@ class Rarity(StrEnum):
     Epic = "Epic"
     Legendary = "Legendary"
     Artifact = "Artifact"
+
+    def __lt__(self, rarity: Rarity) -> bool:
+        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Artifact, Rarity.Unknown]
+        return ordering.index(self) < ordering.index(rarity)
+
+    def __gt__(self, rarity: Rarity) -> bool:
+        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Artifact, Rarity.Unknown]
+        return ordering.index(self) > ordering.index(rarity)
+
+    def __leq__(self, rarity: Rarity) -> bool:
+        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Artifact, Rarity.Unknown]
+        return ordering.index(self) <= ordering.index(rarity)
+
+    def __geq__(self, rarity: Rarity) -> bool:
+        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Artifact, Rarity.Unknown]
+        return ordering.index(self) >= ordering.index(rarity)
 
 
 class StateTag(Enum):
@@ -52,7 +68,7 @@ class ItemKey(StrEnum):
     Shrimp = "items/creature/fish/shrimp"
     Squid = "items/creature/fish/squid"
 
-    # Wishing Well Results
+    # Sunless Set
     SunlessSteps = "items/equipment/boots/sunless_steps"
     SunlessHeart = "items/equipment/chest_armor/sunless_heart"
     SunlessGrip = "items/equipment/gloves/sunless_grip"
@@ -622,7 +638,16 @@ class Item():
         # These are stateful values and we use what's loaded from the database.
         self._state_tags = state.get("_state_tags", [])
         self._count = state.get("_count", 1)
-        self._altering_item_keys = state.get("_altering_item_keys", base_data.get("altering_item_keys", []))
+
+        # TODO: If I change the number of sockets on an item in the future, this will be inconvenient. I
+        # need to figure out a way (when the length of the base_data altering_item_keys is *less than* the
+        # one in state) to return those items to the player before replacing the altering_item_keys.
+        base_data_sockets = base_data.get("altering_item_keys", [])
+        state_sockets = state.get("_altering_item_keys", [])
+        if len(base_data_sockets) > len(state_sockets):
+            self._altering_item_keys = state_sockets + ["" for _ in range(len(base_data_sockets) - len(state_sockets))]
+        else:
+            self._altering_item_keys = state.get("_altering_item_keys", base_data_sockets)
 
 # I'm doing it this way because having a dict[ItemKey, Item] would
 # mean that using the items in the dict would all point to the same
