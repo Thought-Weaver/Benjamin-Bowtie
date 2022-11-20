@@ -19,5 +19,6 @@
                 "condition_values": []
             }
         ]
-    }
+    },
+    "altering_item_keys": [""]
 }
