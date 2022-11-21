@@ -47,6 +47,7 @@ class RecipeKey(StrEnum):
     LesserIntelligencePotion = "recipes/consumable/potions/lesser_intelligence_potion"
     LesserManaPotion = "recipes/consumable/potions/lesser_mana_potion"
     LesserPoison = "recipes/consumable/potions/lesser_poison"
+    LesserPoisonWithPufferfish = "recipes/consumable/potions/lesser_poison_with_pufferfish"
     LesserStrengthPotion = "recipes/consumable/potions/lesser_strength_potion"
     LuckPotion = "recipes/consumable/potions/luck_potion"
     ManaPotion = "recipes/consumable/potions/mana_potion"
@@ -111,6 +112,9 @@ class Recipe():
                     num = int(item.get_count() / quantity)
                 else:
                     num = min(int(item.get_count() / quantity), num)
+            else:
+                num = 0
+                break
         return num
 
     def __eq__(self, obj) -> bool:
