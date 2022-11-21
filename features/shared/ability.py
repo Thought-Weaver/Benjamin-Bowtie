@@ -844,7 +844,6 @@ class WrathOfTheWavesI(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
         for i, target in enumerate(targets):
@@ -870,6 +869,16 @@ class WrathOfTheWavesI(Ability):
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -946,6 +955,16 @@ class WrathOfTheWavesII(Ability):
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
+
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
@@ -1020,6 +1039,16 @@ class WrathOfTheWavesIII(Ability):
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1231,6 +1260,16 @@ class ThunderingTorrentI(Ability):
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
+
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
@@ -1326,6 +1365,16 @@ class ThunderingTorrentII(Ability):
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1423,6 +1472,16 @@ class ThunderingTorrentIII(Ability):
             
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
+
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
@@ -1486,6 +1545,7 @@ class DrownInTheDeepI(Ability):
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_dueling = target.get_dueling()
+            target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
@@ -1500,6 +1560,16 @@ class DrownInTheDeepI(Ability):
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
+
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1544,12 +1614,12 @@ class DrownInTheDeepII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_dueling = target.get_dueling()
+            target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
@@ -1564,6 +1634,16 @@ class DrownInTheDeepII(Ability):
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
+
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1608,12 +1688,12 @@ class DrownInTheDeepIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
-        caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_dueling = target.get_dueling()
+            target_equipment = target.get_equipment()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
@@ -1628,6 +1708,16 @@ class DrownInTheDeepIII(Ability):
             damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
+
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1717,6 +1807,16 @@ class WhirlpoolI(Ability):
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -1809,6 +1909,16 @@ class WhirlpoolII(Ability):
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
 
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
+
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
@@ -1899,6 +2009,16 @@ class WhirlpoolIII(Ability):
             target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+
+            if actual_damage_dealt > 0:
+                for item in target_equipment.get_all_equipped_items():
+                    item_effects = item.get_item_effects()
+                    if item_effects is None:
+                        continue
+                    for item_effect in item_effects.on_damaged:
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        if result_str != "":
+                            results.append(NegativeAbilityResult(result_str, False))
 
             caster.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt

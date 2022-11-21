@@ -1851,7 +1851,7 @@ class DuelView(discord.ui.View):
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_attacked:
-                    result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, i + 1, attacker)
+                    result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, i + 1, damage)
                     if result_str != "":
                         result_strs.append(result_str.format([target_name, attacker_name]))
 
@@ -1866,7 +1866,7 @@ class DuelView(discord.ui.View):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, actual_damage_dealt)
+                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, i + 1, actual_damage_dealt)
                         if result_str != "":
                             result_strs.append(result_str.format([target_name, attacker_name]))
 
