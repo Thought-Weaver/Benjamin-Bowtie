@@ -98,7 +98,7 @@ SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
 })
 
 
-# (First Plant, Second Plant): (Yields this Plant, With this probability)
+# (First Plant, Second Plant): (Yields this Plant, With this Probability)
 MUTATION_PROBS: MappingProxyType[Tuple[ItemKey | Literal[""], ItemKey | Literal[""]], Tuple[ItemKey, float]] = MappingProxyType({
     (ItemKey.DawnsGlory, ItemKey.Fissureleaf): (ItemKey.DragonsTeethSeed, 0.001),
     (ItemKey.Seaclover, ItemKey.Sungrain): (ItemKey.GoldenCloverSeed, 0.0005),

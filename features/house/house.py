@@ -76,7 +76,7 @@ class House():
                 if i + size + 1 < size and (i + 1) % size != 0:
                     neighbors.append(self.garden_plots[i + size + 1])
         
-                plant_keys = [neighbor_plot.seed_data.result if (neighbor_plot.seed_data is not None and neighbor_plot.is_mature()) else "" for neighbor_plot in neighbors]
+                plant_keys = [(neighbor_plot.seed_data.result if (neighbor_plot.seed_data is not None and neighbor_plot.is_mature()) else "") for neighbor_plot in neighbors]
 
                 min_prob = 1
                 min_prob_result = None
