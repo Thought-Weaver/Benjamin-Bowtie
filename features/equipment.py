@@ -10,7 +10,7 @@ from features.shared.item import Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
@@ -52,6 +52,19 @@ class Equipment():
             self._off_hand
         ]
         return list(filter(lambda item: item is not None, equipment))
+
+    def get_all_equipment_dict(self) -> Dict[ClassTag.Equipment, Item | None]:
+        return {
+            ClassTag.Equipment.Helmet: self._helmet,
+            ClassTag.Equipment.Amulet: self._amulet,
+            ClassTag.Equipment.ChestArmor: self._chest_armor,
+            ClassTag.Equipment.Gloves: self._gloves,
+            ClassTag.Equipment.Ring: self._ring,
+            ClassTag.Equipment.Leggings: self._leggings,
+            ClassTag.Equipment.Boots: self._boots,
+            ClassTag.Equipment.MainHand: self._main_hand,
+            ClassTag.Equipment.OffHand: self._off_hand
+        }
 
     def get_item_in_slot(self, slot: ClassTag.Equipment | None):
         if slot == ClassTag.Equipment.Helmet:

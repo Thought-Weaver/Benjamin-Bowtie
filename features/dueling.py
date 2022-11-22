@@ -524,8 +524,15 @@ class Dueling():
 
         if item_effect.effect_type == EffectType.ResurrectOnce:
             self_entity.get_expertise().heal(self_entity.get_expertise().max_hp)
+
+            equipment_dict = self_entity.get_equipment().get_all_equipment_dict()
+            for slot, equipped_item in equipment_dict.items():
+                if equipped_item is not None and equipped_item.get_key() == item.get_key():
+                    self_entity.get_equipment().unequip_item_from_slot(slot)
+
             item_index = self_entity.get_inventory().search_by_key(item.get_key())
             self_entity.get_inventory().remove_item(item_index, 1)
+
             return f"{item.get_full_name()} prevented you from dying, restored you to full health, and shattered"
 
         return ""
