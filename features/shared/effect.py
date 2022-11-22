@@ -94,6 +94,17 @@ class ConditionType(StrEnum):
     IsAbovePercentHealth = "IsAbovePercentHealth"
     IsFullHealth = "IsFullHealth"
 
+
+class ItemEffectCategory(StrEnum):
+    Permanent = "Permanent"
+    OnTurnStart = "OnTurnStart"
+    OnTurnEnd = "OnTurnEnd"
+    OnDamaged = "OnDamaged"
+    OnSuccessfulAbilityUsed = "OnSuccessfulAbilityUsed"
+    OnSuccessfulAttack = "OnSuccessfulAttack"
+    OnAttacked = "OnAttacked"
+    OnAbilityUsedAgainst = "OnAbilityUsedAgainst"
+
 # -----------------------------------------------------------------------------
 # PRIORITY DICT
 # -----------------------------------------------------------------------------

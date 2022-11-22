@@ -12,7 +12,7 @@ from strenum import StrEnum
 from features.expertise import ExpertiseClass
 from features.shared.attributes import Attributes
 from features.shared.constants import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
-from features.shared.effect import EffectType
+from features.shared.effect import EffectType, ItemEffectCategory
 from features.shared.enums import ClassTag
 from features.shared.item import WeaponStats
 from features.shared.statuseffect import *
@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from features.shared.effect import Effect
     from features.expertise import Expertise
     from features.shared.ability import Ability
+    from features.shared.effect import ItemEffects
     from features.shared.item import Item
     from features.shared.statuseffect import StatusEffect
 
@@ -121,6 +122,26 @@ class Dueling():
         self.status_effects = []
         self.init_actions_remaining = 1
         self.actions_remaining = 1
+
+    def map_item_effect_cat_to_arr(self, item_effects: ItemEffects, item_effect_cat: ItemEffectCategory):
+        if item_effect_cat == ItemEffectCategory.Permanent:
+            return item_effects.permanent
+        elif item_effect_cat == ItemEffectCategory.OnTurnStart:
+            return item_effects.on_turn_start
+        elif item_effect_cat == ItemEffectCategory.OnTurnEnd:
+            return item_effects.on_turn_end
+        elif item_effect_cat == ItemEffectCategory.OnDamaged:
+            return item_effects.on_damaged
+        elif item_effect_cat == ItemEffectCategory.OnSuccessfulAbilityUsed:
+            return item_effects.on_successful_ability_used
+        elif item_effect_cat == ItemEffectCategory.OnSuccessfulAttack:
+            return item_effects.on_successful_attack
+        elif item_effect_cat == ItemEffectCategory.OnAttacked:
+            return item_effects.on_attacked
+        elif item_effect_cat == ItemEffectCategory.OnAbilityUsedAgainst:
+            return item_effects.on_ability_used_against
+        return []
+
 
     # TODO: These functions aren't abstracted particularly well. I should be able to take some pieces from
     # those below and put them into helper functions to reduce code duplication.
@@ -295,7 +316,7 @@ class Dueling():
             health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
             other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
-            return (damage_dealt, f"Stole {health_steal} health from " + "{" + f"{other_entity_index}" + "}" + f" using {item.get_full_name()}")
+            return (damage_dealt, f"Stole {health_steal} HP from " + "{" + f"{other_entity_index}" + "}" + f" using {item.get_full_name()}")
 
         if item_effect.effect_type == EffectType.ManaSteal:
             mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
@@ -306,12 +327,12 @@ class Dueling():
         if item_effect.effect_type == EffectType.RestoreHealth:
             healing = int(item_effect.effect_value)
             self_entity.get_expertise().heal(healing)
-            return (damage_dealt, f"Healed {healing} from {item.get_full_name()}")
+            return (damage_dealt, f"Healed {healing} HP from {item.get_full_name()}")
         
         if item_effect.effect_type == EffectType.RestorePercentHealth:
             healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
             self_entity.get_expertise().heal(healing)
-            return (damage_dealt, f"Healed {healing} from {item.get_full_name()}")
+            return (damage_dealt, f"Healed {healing} HP from {item.get_full_name()}")
 
         if item_effect.effect_type == EffectType.RestoreMana:
             restoration = int(item_effect.effect_value)
@@ -469,6 +490,52 @@ class Dueling():
 
         # TODO: When armor changes are implemented, I'll want to implement the armor effects here
 
+        if item_effect.effect_type == EffectType.HealthSteal:
+            health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
+            self_entity.get_expertise().heal(health_steal)
+            other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
+            return f"Stole {health_steal} HP from " + "{0}" + f" using {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.ManaSteal:
+            mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
+            self_entity.get_expertise().restore_mana(mana_steal)
+            other_entity.get_expertise().remove_mana(mana_steal)
+            return f"Stole {mana_steal} mana from " + "{0}" + f" using {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.RestoreHealth:
+            healing = int(item_effect.effect_value)
+            self_entity.get_expertise().heal(healing)
+            return f"Healed {healing} HP from {item.get_full_name()}"
+        
+        if item_effect.effect_type == EffectType.RestorePercentHealth:
+            healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
+            self_entity.get_expertise().heal(healing)
+            return f"Healed {healing} HP from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.RestoreMana:
+            restoration = int(item_effect.effect_value)
+            self_entity.get_expertise().restore_mana(restoration)
+            return f"Restored {restoration} mana from {item.get_full_name()}"
+        
+        if item_effect.effect_type == EffectType.RestorePercentMana:
+            restoration = int(item_effect.effect_value * self_entity.get_expertise().max_mana)
+            self_entity.get_expertise().restore_mana(restoration)
+            return f"Restored {restoration} mana from {item.get_full_name()}"
+
+        return ""
+
+    def apply_chance_status_effect_from_total_item_effects(self, item_effect_cat: ItemEffectCategory, target: Player | NPC, self_entity: Player | NPC, target_index: int):
+        # The reason this is abstracted is because we should only ever apply status effect conditions like this
+        # once. If we were to do the aggregate repeatedly for each item that contributes that'd be too powerful,
+        # and if we were to do each item separately, then it wouldn't actually be the sum of the probability which
+        # is intuitive to the player.
+
+        # TODO: In the future, I may also confer positive status effects using this system, at which point I'll need to
+        # add a self_index as well.
+        
+        result_strs: List[str] = []
+
+        # TODO: There's probably a way to make this neater.
         chance_poisoned = 0
         turns_poisoned = 0
         chance_bleeding = 0
@@ -483,7 +550,9 @@ class Dueling():
         for item in self_entity.get_equipment().get_all_equipped_items():
             item_effects = item.get_item_effects()
             if item_effects is not None:
-                for item_effect in item_effects.permanent:
+                item_effects_arr: List[Effect] = self.map_item_effect_cat_to_arr(item_effects, item_effect_cat)
+
+                for item_effect in item_effects_arr:
                     if not item_effect.meets_conditions(self_entity, item):
                         continue
 
@@ -516,174 +585,42 @@ class Dueling():
         if random() < chance_poisoned:
             status_effect = Poisoned(
                 turns_remaining=turns_poisoned,
-                value=POISONED_PERCENT_HP,
-                source_str=f"{item.get_full_name()}"
+                value=POISONED_PERCENT_HP
             )
-            other_entity.get_dueling().status_effects.append(status_effect)
-            return "{0}" + f" is now {status_effect.name} for {turns_poisoned}"
+            target.get_dueling().status_effects.append(status_effect)
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_poisoned}")
 
         if random() < chance_bleeding:
             status_effect = Bleeding(
                 turns_remaining=turns_bleeding,
-                value=BLEED_PERCENT_HP,
-                source_str=f"{item.get_full_name()}"
+                value=BLEED_PERCENT_HP
             )
-            other_entity.get_dueling().status_effects.append(status_effect)
-            return "{0}" + f" is now {status_effect.name} for {turns_bleeding}"
+            target.get_dueling().status_effects.append(status_effect)
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_bleeding}")
 
         if random() < chance_faltering:
             status_effect = TurnSkipChance(
                 turns_remaining=turns_faltering,
-                value=1,
-                source_str=f"{item.get_full_name()}"
+                value=1
             )
-            other_entity.get_dueling().status_effects.append(status_effect)
-            return "{0}" + f" is now {status_effect.name} for {turns_faltering}"
+            target.get_dueling().status_effects.append(status_effect)
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_faltering}")
 
         if random() < chance_taunted:
             status_effect = Taunted(
                 turns_remaining=turns_taunted,
-                forced_to_attack=self_entity,
-                source_str=f"{item.get_full_name()}"
+                forced_to_attack=self_entity
             )
-            other_entity.get_dueling().status_effects.append(status_effect)
-            return "{0}" + f" is now {status_effect.name} for {turns_taunted}"
+            target.get_dueling().status_effects.append(status_effect)
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_taunted}")
 
         if random() < chance_convinced:
             status_effect = CannotTarget(
                 turns_remaining=turns_convinced,
-                cant_target=self_entity,
-                source_str=f"{item.get_full_name()}"
-            )
-            other_entity.get_dueling().status_effects.append(status_effect)
-            return "{0}" + f" is now {status_effect.name} for {turns_convinced}"
-
-        if item_effect.effect_type == EffectType.HealthSteal:
-            health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
-            self_entity.get_expertise().heal(health_steal)
-            other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
-            return f"Stole {health_steal} health from " + "{0}" + f" using {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.ManaSteal:
-            mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
-            self_entity.get_expertise().restore_mana(mana_steal)
-            other_entity.get_expertise().remove_mana(mana_steal)
-            return f"Stole {mana_steal} mana from " + "{0}" + f" using {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.RestoreHealth:
-            healing = int(item_effect.effect_value)
-            self_entity.get_expertise().heal(healing)
-            return f"Healed {healing} from {item.get_full_name()}"
-        
-        if item_effect.effect_type == EffectType.RestorePercentHealth:
-            healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
-            self_entity.get_expertise().heal(healing)
-            return f"Healed {healing} from {item.get_full_name()}"
-
-        if item_effect.effect_type == EffectType.RestoreMana:
-            restoration = int(item_effect.effect_value)
-            self_entity.get_expertise().restore_mana(restoration)
-            return f"Restored {restoration} mana from {item.get_full_name()}"
-        
-        if item_effect.effect_type == EffectType.RestorePercentMana:
-            restoration = int(item_effect.effect_value * self_entity.get_expertise().max_mana)
-            self_entity.get_expertise().restore_mana(restoration)
-            return f"Restored {restoration} mana from {item.get_full_name()}"
-
-        return ""
-
-    def apply_chance_status_effect_from_permanent_effect(self, target: Player | NPC, attacker: Player | NPC, target_name: str, attacker_name: str):
-        result_strs = []
-
-        # TODO: There's probably a way to make this neater.
-        chance_poisoned = 0
-        turns_poisoned = 0
-        chance_bleeding = 0
-        turns_bleeding = 0
-        chance_faltering = 0
-        turns_faltering = 0
-        chance_taunted = 0
-        turns_taunted = 0
-        chance_convinced = 0
-        turns_convinced = 0
-
-        for item in attacker.get_equipment().get_all_equipped_items():
-            item_effects = item.get_item_effects()
-            if item_effects is not None:
-                for item_effect in item_effects.permanent:
-                    if not item_effect.meets_conditions(attacker, item):
-                        continue
-
-                    if item_effect.effect_type == EffectType.ChancePoisoned:
-                        chance_poisoned += int(item_effect.effect_value)
-                        turns_poisoned = max(turns_poisoned, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistPoisoned:
-                        chance_poisoned -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceBleeding:
-                        chance_bleeding += int(item_effect.effect_value)
-                        turns_bleeding = max(turns_bleeding, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistBleeding:
-                        chance_bleeding -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceFaltering:
-                        chance_faltering += int(item_effect.effect_value)
-                        turns_faltering = max(turns_faltering, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistFaltering:
-                        chance_faltering -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceTaunted:
-                        chance_taunted += int(item_effect.effect_value)
-                        turns_taunted = max(turns_taunted, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistTaunted:
-                        chance_taunted -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceConvinced:
-                        chance_convinced += int(item_effect.effect_value)
-                        turns_convinced = max(turns_convinced, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistConvinced:
-                        chance_convinced -= int(item_effect.effect_value)
-
-        if random() < chance_poisoned:
-            status_effect = Poisoned(
-                turns_remaining=turns_poisoned,
-                value=POISONED_PERCENT_HP,
-                source_str=f"{attacker_name}'s equipment"
+                cant_target=self_entity
             )
             target.get_dueling().status_effects.append(status_effect)
-            result_strs.append(f"{target_name} is now {status_effect.name} for {turns_poisoned}")
-
-        if random() < chance_bleeding:
-            status_effect = Bleeding(
-                turns_remaining=turns_bleeding,
-                value=BLEED_PERCENT_HP,
-                source_str=f"{attacker_name}'s equipment"
-            )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append(f"{target_name} is now {status_effect.name} for {turns_bleeding}")
-
-        if random() < chance_faltering:
-            status_effect = TurnSkipChance(
-                turns_remaining=turns_faltering,
-                value=1,
-                source_str=f"{attacker_name}'s equipment"
-            )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append(f"{target_name} is now {status_effect.name} for {turns_faltering}")
-
-        if random() < chance_taunted:
-            status_effect = Taunted(
-                turns_remaining=turns_taunted,
-                forced_to_attack=attacker,
-                source_str=f"{attacker_name}'s equipment"
-            )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append(f"{target_name} is now {status_effect.name} for {turns_taunted}")
-
-        if random() < chance_convinced:
-            status_effect = CannotTarget(
-                turns_remaining=turns_convinced,
-                cant_target=attacker,
-                source_str=f"{attacker_name}'s equipment"
-            )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append(f"{target_name} is now {status_effect.name} for {turns_convinced}")
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_convinced}")
 
         return result_strs
 
@@ -823,63 +760,6 @@ class Dueling():
 
         # TODO: When armor changes are implemented, I'll want to implement the armor effects here
 
-        chance_poisoned = 0
-        turns_poisoned = 0
-        chance_bleeding = 0
-        turns_bleeding = 0
-        chance_faltering = 0
-        turns_faltering = 0
-
-        for item in entity.get_equipment().get_all_equipped_items():
-            item_effects = item.get_item_effects()
-            if item_effects is not None:
-                for item_effect in item_effects.permanent:
-                    if not item_effect.meets_conditions(entity, item):
-                        continue
-
-                    if item_effect.effect_type == EffectType.ChancePoisoned:
-                        chance_poisoned += int(item_effect.effect_value)
-                        turns_poisoned = max(turns_poisoned, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistPoisoned:
-                        chance_poisoned -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceBleeding:
-                        chance_bleeding += int(item_effect.effect_value)
-                        turns_bleeding = max(turns_bleeding, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistBleeding:
-                        chance_bleeding -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceFaltering:
-                        chance_faltering += int(item_effect.effect_value)
-                        turns_faltering = max(turns_faltering, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistFaltering:
-                        chance_faltering -= int(item_effect.effect_value)
-
-        if random() < chance_poisoned:
-            status_effect = Poisoned(
-                turns_remaining=turns_poisoned,
-                value=POISONED_PERCENT_HP,
-                source_str=f"{item.get_full_name()}"
-            )
-            entity.get_dueling().status_effects.append(status_effect)
-            return f"{entity_name} is now {status_effect.name} for {turns_poisoned}"
-
-        if random() < chance_bleeding:
-            status_effect = Bleeding(
-                turns_remaining=turns_bleeding,
-                value=BLEED_PERCENT_HP,
-                source_str=f"{item.get_full_name()}"
-            )
-            entity.get_dueling().status_effects.append(status_effect)
-            return f"{entity_name} is now {status_effect.name} for {turns_bleeding}"
-
-        if random() < chance_faltering:
-            status_effect = TurnSkipChance(
-                turns_remaining=turns_faltering,
-                value=1,
-                source_str=f"{item.get_full_name()}"
-            )
-            entity.get_dueling().status_effects.append(status_effect)
-            return f"{entity_name} is now {status_effect.name} for {turns_faltering}"
-
         return ""
 
 
@@ -1017,100 +897,11 @@ class Dueling():
 
         # TODO: When armor changes are implemented, I'll want to implement the armor effects here
 
-        chance_poisoned = 0
-        turns_poisoned = 0
-        chance_bleeding = 0
-        turns_bleeding = 0
-        chance_faltering = 0
-        turns_faltering = 0
-        chance_taunted = 0
-        turns_taunted = 0
-        chance_convinced = 0
-        turns_convinced = 0
-
-        for item in self_entity.get_equipment().get_all_equipped_items():
-            item_effects = item.get_item_effects()
-            if item_effects is not None:
-                for item_effect in item_effects.permanent:
-                    if not item_effect.meets_conditions(self_entity, item):
-                        continue
-
-                    if item_effect.effect_type == EffectType.ChancePoisoned:
-                        chance_poisoned += int(item_effect.effect_value)
-                        turns_poisoned = max(turns_poisoned, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistPoisoned:
-                        chance_poisoned -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceBleeding:
-                        chance_bleeding += int(item_effect.effect_value)
-                        turns_bleeding = max(turns_bleeding, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistBleeding:
-                        chance_bleeding -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceFaltering:
-                        chance_faltering += int(item_effect.effect_value)
-                        turns_faltering = max(turns_faltering, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistFaltering:
-                        chance_faltering -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceTaunted:
-                        chance_taunted += int(item_effect.effect_value)
-                        turns_taunted = max(turns_taunted, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistTaunted:
-                        chance_taunted -= int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.ChanceConvinced:
-                        chance_convinced += int(item_effect.effect_value)
-                        turns_convinced = max(turns_convinced, item_effect.effect_time)
-                    if item_effect.effect_type == EffectType.ResistConvinced:
-                        chance_convinced -= int(item_effect.effect_value)
-
-        if random() < chance_poisoned:
-            status_effect = Poisoned(
-                turns_remaining=turns_poisoned,
-                value=POISONED_PERCENT_HP,
-                source_str=f"{item.get_full_name()}"
-            )
-            target_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" + f" is now {status_effect.name} for {turns_poisoned}"
-
-        if random() < chance_bleeding:
-            status_effect = Bleeding(
-                turns_remaining=turns_bleeding,
-                value=BLEED_PERCENT_HP,
-                source_str=f"{item.get_full_name()}"
-            )
-            target_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" + f" is now {status_effect.name} for {turns_bleeding}"
-
-        if random() < chance_faltering:
-            status_effect = TurnSkipChance(
-                turns_remaining=turns_faltering,
-                value=1,
-                source_str=f"{item.get_full_name()}"
-            )
-            target_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" + f" is now {status_effect.name} for {turns_faltering}"
-
-        if random() < chance_taunted:
-            status_effect = Taunted(
-                turns_remaining=turns_taunted,
-                forced_to_attack=self_entity,
-                source_str=f"{item.get_full_name()}"
-            )
-            target_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" + f" is now {status_effect.name} for {turns_taunted}"
-
-        if random() < chance_convinced:
-            status_effect = CannotTarget(
-                turns_remaining=turns_convinced,
-                cant_target=self_entity,
-                source_str=f"{item.get_full_name()}"
-            )
-            target_entity.get_dueling().status_effects.append(status_effect)
-            return "{1}" + f" is now {status_effect.name} for {turns_convinced}"
-
         if item_effect.effect_type == EffectType.HealthSteal:
             health_steal = int(item_effect.effect_value * target_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
             target_entity.get_expertise().damage(health_steal, 0, 0, target_entity.get_equipment())
-            return f"Stole {health_steal} health from " + "{1}" + f" using {item.get_full_name()}"
+            return f"Stole {health_steal} HP from " + "{1}" + f" using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.ManaSteal:
             mana_steal = int(item_effect.effect_value * target_entity.get_expertise().mana)
@@ -1121,12 +912,12 @@ class Dueling():
         if item_effect.effect_type == EffectType.RestoreHealth:
             healing = int(item_effect.effect_value)
             self_entity.get_expertise().heal(healing)
-            return f"Healed {healing} from {item.get_full_name()}"
+            return f"Healed {healing} HP from {item.get_full_name()}"
         
         if item_effect.effect_type == EffectType.RestorePercentHealth:
             healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
             self_entity.get_expertise().heal(healing)
-            return f"Healed {healing} from {item.get_full_name()}"
+            return f"Healed {healing} HP from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestoreMana:
             restoration = int(item_effect.effect_value)
@@ -1490,6 +1281,13 @@ class DuelView(discord.ui.View):
 
     def set_next_turn(self):
         previous_entity: Player | NPC = self._turn_order[self._turn_index]
+        
+        item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnEnd, previous_entity, previous_entity, 0)
+        
+        for result_str in item_status_effects:
+            formatted_str = result_str.format([self.get_name(previous_entity)])
+            self._additional_info_string_data += formatted_str    
+        
         for item in previous_entity.get_equipment().get_all_equipped_items():
             item_effects = item.get_item_effects()
             if item_effects is None:
@@ -1504,6 +1302,12 @@ class DuelView(discord.ui.View):
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
 
         entity: Player | NPC = self._turn_order[self._turn_index]
+
+        item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnStart, entity, entity, 0)
+        
+        for result_str in item_status_effects:
+            formatted_str = result_str.format([self.get_name(previous_entity)])
+            self._additional_info_string_data += formatted_str    
 
         for item in previous_entity.get_equipment().get_all_equipped_items():
             item_effects = item.get_item_effects()
@@ -1700,6 +1504,10 @@ class DuelView(discord.ui.View):
         taunt_target: Player | NPC | None = None
         for se in cur_turn_entity.get_dueling().status_effects:
             if se.key == StatusEffectKey.Taunted:
+                # TODO: Why not just check this instead of using keys? Is there
+                # any risk associated with it? Arguably, it's nicer to potentially
+                # have the enum moved to the new enums file and avoid import issues.
+                assert(isinstance(se, Taunted))
                 taunt_target = se.forced_to_attack
                 break
         if taunt_target is not None:
@@ -1830,12 +1638,15 @@ class DuelView(discord.ui.View):
                         if item_effect.effect_type == EffectType.CritDmgReduction:
                             critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
                         
-            attacker.get_dueling().apply_chance_status_effect_from_permanent_effect(target, attacker, target_name, attacker_name)
-
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1 
             base_damage = weapon_stats.get_random_damage(attacker_attrs, item_effects)
             damage = int(base_damage * critical_hit_final)
             damage += min(int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), damage)
+
+            # Doing these after damage computation because the player doesn't get an indication the effect occurred
+            # until the Continue screen, so it feels slightly more natural to have them not affect damage dealt. I
+            # may reverse this decision later.
+            result_strs += [s.format([target_name]) for s in attacker.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAttack, target, attacker, i + 1)]
 
             for item in attacker_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1845,6 +1656,8 @@ class DuelView(discord.ui.View):
                     damage, result_str = attacker.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, attacker, target, i + 1, damage)
                     if result_str != "":
                         result_strs.append(result_str.format([attacker_name, target_name]))
+
+            result_strs += [s.format([attacker_name]) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAttacked, attacker, target, 0)]
 
             for item in target_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1861,6 +1674,7 @@ class DuelView(discord.ui.View):
             actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, target_equipment)
 
             if actual_damage_dealt > 0:
+                result_strs += [s.format([attacker_name]) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, attacker, target, 0)]
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -1876,6 +1690,7 @@ class DuelView(discord.ui.View):
 
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != attacker), se.on_being_hit_buffs))
                     result_strs.append(f"{target_name} gained {se.get_buffs_str()}")
             damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
@@ -1883,7 +1698,7 @@ class DuelView(discord.ui.View):
 
             generating_string = ""
             if generating_value != 0:
-                attacker.get_inventory().add_coins(generating_value)
+                attacker.get_inventory().add_coins(int(generating_value))
                 generating_string = f" and gained {generating_value} coins"
 
                 if tarnished_value != 0:
@@ -1912,20 +1727,21 @@ class DuelView(discord.ui.View):
                 names_str = ", ".join([self.get_name(other) for other in self._enemies])
                 result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} damage to {names_str} using Cursed Coins")
 
-        if attacker in self._enemies:
-            for target in self._allies:
-                target_armor = target.get_equipment().get_total_reduced_armor(target.get_expertise().level)
-                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
-                target.get_expertise().damage(splash_dmg + splash_percent_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
-            names_str = ", ".join([self.get_name(other) for other in self._allies])
-            result_strs.append(f"{attacker_name} dealt {splash_dmg + splash_percent_dmg} splash damage to {names_str}")
-        else:
-            for target in self._enemies:
-                target_armor = target.get_equipment().get_total_reduced_armor(target.get_expertise().level)
-                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
-                target.get_expertise().damage(splash_dmg + splash_percent_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
-            names_str = ", ".join([self.get_name(other) for other in self._enemies])
-            result_strs.append(f"{attacker_name} dealt {splash_dmg + splash_percent_dmg} splash damage to {names_str}")
+        if splash_dmg > 0 or splash_percent_dmg > 0:
+            if attacker in self._enemies:
+                for target in self._allies:
+                    target_armor = target.get_equipment().get_total_reduced_armor(target.get_expertise().level)
+                    percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                    target.get_expertise().damage(splash_dmg + splash_percent_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
+                names_str = ", ".join([self.get_name(other) for other in self._allies])
+                result_strs.append(f"{attacker_name} dealt {splash_dmg + splash_percent_dmg} splash damage to {names_str}")
+            else:
+                for target in self._enemies:
+                    target_armor = target.get_equipment().get_total_reduced_armor(target.get_expertise().level)
+                    percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                    target.get_expertise().damage(splash_dmg + splash_percent_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
+                names_str = ", ".join([self.get_name(other) for other in self._enemies])
+                result_strs.append(f"{attacker_name} dealt {splash_dmg + splash_percent_dmg} splash damage to {names_str}")
 
         return "\n".join(result_strs)
 

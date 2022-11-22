@@ -195,7 +195,7 @@ class ChefView(discord.ui.View):
             return Embed(
                 title="Browse Wares",
                 description=(
-                    "\"Take a look at what I got! Plenty of food and drink to go around.\"\n\n"
+                    "\"Take a look at what I got! Plenty o' food and drink ta go around.\"\n\n"
                     f"You have {player.get_inventory().get_coins_str()}."
                 )
             )
