@@ -522,6 +522,12 @@ class Dueling():
             self_entity.get_expertise().restore_mana(restoration)
             return f"Restored {restoration} mana from {item.get_full_name()}"
 
+        if item_effect.effect_type == EffectType.ResurrectOnce:
+            self_entity.get_expertise().heal(self_entity.get_expertise().max_hp)
+            item_index = self_entity.get_inventory().search_by_key(item.get_key())
+            self_entity.get_inventory().remove_item(item_index, 1)
+            return f"{item.get_full_name()} prevented you from dying, restored you to full health, and shattered"
+
         return ""
 
     def apply_chance_status_effect_from_total_item_effects(self, item_effect_cat: ItemEffectCategory, target: Player | NPC, self_entity: Player | NPC, target_index: int):

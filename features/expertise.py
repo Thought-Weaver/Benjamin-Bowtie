@@ -189,13 +189,6 @@ class Expertise():
         self.hp = min(self.max_hp, self.hp + heal_amount)
 
     def damage(self, damage: int, armor: int, percent_reduct: float, equipment: Equipment):
-        # TODO: This doesn't actually give any indication that you were resurrected since
-        # I can't return a string this way. Should it be moved out despite the duplicated
-        # code? Also, at the moment, it doesn't destroy the item afterwards.
-        if any(item.get_item_effects() is not None and item.get_item_effects().has_item_effect(EffectType.ResurrectOnce) for item in equipment.get_all_equipped_items()):
-            self.hp = self.max_hp
-            return 0
-
         actual_damage = max(0, damage - armor)
         actual_damage -= int(actual_damage * percent_reduct)
         self.hp = max(0, self.hp - actual_damage)
