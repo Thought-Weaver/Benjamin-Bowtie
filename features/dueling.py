@@ -522,7 +522,7 @@ class Dueling():
             self_entity.get_expertise().restore_mana(restoration)
             return f"Restored {restoration} mana from {item.get_full_name()}"
 
-        if item_effect.effect_type == EffectType.ResurrectOnce:
+        if item_effect.effect_type == EffectType.ResurrectOnce and self_entity.get_expertise().hp <= 0:
             self_entity.get_expertise().heal(self_entity.get_expertise().max_hp)
 
             equipment_dict = self_entity.get_equipment().get_all_equipment_dict()
