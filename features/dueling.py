@@ -1770,7 +1770,9 @@ class DuelView(discord.ui.View):
         applicator_name = self.get_name(applicator)
 
         result_strs = []
-        for target in self._selected_targets:
+        for i, target in enumerate(self._selected_targets):
+            result_strs += [s.format([self.get_name(target)]) for s in applicator_dueling.apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAttack, target, applicator, i + 1)]
+
             item_effects = self._selected_item.get_item_effects()
             if item_effects is not None:
                 for effect in item_effects.permanent:
