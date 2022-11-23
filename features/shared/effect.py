@@ -312,9 +312,9 @@ class Effect():
             display_string += f"{round(self.effect_value * 100, 2)}% Crit Damage Reduction"
 
         if self.effect_type == EffectType.HealthSteal:
-            display_string += f"{self.effect_value}% Health Steal"
+            display_string += f"{round(self.effect_value * 100, 2)}% Health Steal"
         if self.effect_type == EffectType.ManaSteal:
-            display_string += f"{self.effect_value}% Mana Steal"
+            display_string += f"{round(self.effect_value * 100, 2)}% Mana Steal"
         
         if self.effect_type == EffectType.AdjustedCDs:
             turn_str = "Turn" if self.effect_value == 1 else "Turns"
