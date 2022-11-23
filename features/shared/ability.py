@@ -117,7 +117,7 @@ class Ability():
         else:
             damage = int(mana_to_blood_percent * final_mana_cost)
             if damage > 0:
-                caster.get_expertise().damage(damage, 0, 0, caster.get_equipment())
+                caster.get_expertise().damage(damage, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
                 return f"You took {damage} damage to cast this from Contract: Mana to Blood"
             
         if self._cooldown >= 0:
@@ -135,6 +135,7 @@ class Ability():
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
+            target_dueling = target.get_dueling()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
@@ -178,10 +179,11 @@ class Ability():
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -198,12 +200,11 @@ class Ability():
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
 
         result_str = self.remove_mana_and_set_cd(caster)
         if result_str is not None:
@@ -859,6 +860,7 @@ class WrathOfTheWavesI(Ability):
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
+            target_dueling = target.get_dueling()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
@@ -888,10 +890,11 @@ class WrathOfTheWavesI(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -908,12 +911,11 @@ class WrathOfTheWavesI(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -958,6 +960,7 @@ class WrathOfTheWavesII(Ability):
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
+            target_dueling = target.get_dueling()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
@@ -987,10 +990,11 @@ class WrathOfTheWavesII(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -1007,12 +1011,11 @@ class WrathOfTheWavesII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1057,6 +1060,7 @@ class WrathOfTheWavesIII(Ability):
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
+            target_dueling = target.get_dueling()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
@@ -1086,10 +1090,11 @@ class WrathOfTheWavesIII(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -1106,12 +1111,11 @@ class WrathOfTheWavesIII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1276,6 +1280,7 @@ class ThunderingTorrentI(Ability):
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
+            target_dueling = target.get_dueling()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
@@ -1319,11 +1324,11 @@ class ThunderingTorrentI(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
-            target_dueling = target.get_dueling()
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -1340,8 +1345,6 @@ class ThunderingTorrentI(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
                 value=int(actual_damage_dealt / 2),
@@ -1350,8 +1353,9 @@ class ThunderingTorrentI(Ability):
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1396,6 +1400,7 @@ class ThunderingTorrentII(Ability):
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
+            target_dueling = target.get_dueling()
 
             target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
             if target_dodged:
@@ -1439,11 +1444,11 @@ class ThunderingTorrentII(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
-            target_dueling = target.get_dueling()
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -1460,8 +1465,6 @@ class ThunderingTorrentII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
                 value=int(actual_damage_dealt / 2),
@@ -1470,8 +1473,9 @@ class ThunderingTorrentII(Ability):
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1559,11 +1563,12 @@ class ThunderingTorrentIII(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             target_dueling = target.get_dueling()
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
             
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -1580,8 +1585,6 @@ class ThunderingTorrentIII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
                 value=int(actual_damage_dealt / 2),
@@ -1590,8 +1593,9 @@ class ThunderingTorrentIII(Ability):
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1666,7 +1670,7 @@ class DrownInTheDeepI(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, 0, ignore_armor=True)
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -1755,7 +1759,7 @@ class DrownInTheDeepII(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, 0, ignore_armor=True)
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -1844,7 +1848,7 @@ class DrownInTheDeepIII(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            actual_damage_dealt = target_expertise.damage(damage, 0, 0, caster.get_equipment())
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, 0, ignore_armor=True)
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -1955,9 +1959,11 @@ class WhirlpoolI(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -1974,12 +1980,11 @@ class WhirlpoolI(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -2070,9 +2075,11 @@ class WhirlpoolII(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -2089,12 +2096,11 @@ class WhirlpoolII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -2185,9 +2191,11 @@ class WhirlpoolIII(Ability):
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
 
-            target_armor = target_equipment.get_total_reduced_armor(target_expertise.level)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, caster.get_equipment())
+
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
@@ -2204,12 +2212,11 @@ class WhirlpoolIII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
-
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
         
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -4787,7 +4794,7 @@ class VitalityTransferI(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         damage_amount = ceil(caster.get_expertise().max_hp * 0.15)
-        caster.get_expertise().damage(damage_amount, 0, 0, caster.get_equipment())
+        caster.get_expertise().damage(damage_amount, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
 
         heal_amount = damage_amount
 
@@ -4824,7 +4831,7 @@ class VitalityTransferII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         damage_amount = ceil(caster.get_expertise().max_hp * 0.25)
-        caster.get_expertise().damage(damage_amount, 0, 0, caster.get_equipment())
+        caster.get_expertise().damage(damage_amount, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
 
         heal_amount = damage_amount
 
@@ -4861,7 +4868,7 @@ class VitalityTransferIII(Ability):
 
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         damage_amount = ceil(caster.get_expertise().max_hp * 0.35)
-        caster.get_expertise().damage(damage_amount, 0, 0, caster.get_equipment())
+        caster.get_expertise().damage(damage_amount, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
 
         heal_amount = damage_amount
 

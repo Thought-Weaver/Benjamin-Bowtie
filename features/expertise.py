@@ -14,6 +14,7 @@ from features.shared.effect import EffectType
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
+    from features.dueling import Dueling
     from features.equipment import Equipment
     from features.player import Player
 
@@ -188,11 +189,14 @@ class Expertise():
     def heal(self, heal_amount: int):
         self.hp = min(self.max_hp, self.hp + heal_amount)
 
-    def damage(self, damage: int, armor: int, percent_reduct: float, equipment: Equipment):
-        actual_damage = max(0, damage - armor)
-        actual_damage -= int(actual_damage * percent_reduct)
-        self.hp = max(0, self.hp - actual_damage)
-        return actual_damage
+    def damage(self, damage: int, dueling: Dueling, percent_reduct: float, ignore_armor: bool):
+        damage_to_health = damage - int(damage * percent_reduct)
+
+        if not ignore_armor:
+            damage_to_health = dueling.damage_armor(damage_to_health)
+
+        self.hp = max(0, self.hp - damage_to_health)
+        return damage_to_health
 
     def restore_mana(self, restore_amount: int):
         self.mana = min(self.max_mana, self.mana + restore_amount)

@@ -47,20 +47,35 @@ class Dueling():
         # Storing here because abilities will affect them and access is
         # easier this way
         self.actions_remaining: int = 1
+        # With the armor rework, at the start of the duel, this gets set
+        # to the player/npc's total armor. When this reaches 0, damage
+        # is done to the entity's health.
+        self.armor: int = 0
 
     # TODO: Implement an abstract method for automatically taking a turn
     # which NPCs will implement.
 
-    @staticmethod
-    def format_armor_dmg_reduct_str(damage: int, actual_damage_dealt: int):
-        # Could deal more damage due to weaknesses or less due to armor and resistances
-        # This is here since it's only really used during Dueling
-        if damage == actual_damage_dealt:
-            return ""
+    def damage_armor(self, damage: int):
+        # This function returns the damage remaining to deal to the entity's
+        # health.
+        if self.armor > 0:
+            return damage
         
-        damage_reduction_str = "+" if actual_damage_dealt > damage else ""
-        damage_reduction_str = f" ({damage_reduction_str}{-(damage - actual_damage_dealt)})" if damage != actual_damage_dealt else ""
-        return damage_reduction_str
+        diff = self.armor - damage
+        self.armor = max(diff, 0)
+
+        # If there's remaining damage, this will return a positive amount of
+        # it to deal to the entity's health.
+        return abs(min(diff, 0))
+
+    def get_armor_string(self, max_reduced_armor: int):
+        armor_num_squares = ceil(self.armor / max_reduced_armor * 10)
+        armor_squares_string = ""
+
+        for i in range(1, 11):
+            armor_squares_string += "⬜" if i <= armor_num_squares else "⬛"
+
+        return f"{armor_squares_string} ({self.armor}/{max_reduced_armor})"
 
     def get_total_percent_dmg_reduct(self):
         total_percent_reduction = 0
@@ -310,12 +325,23 @@ class Dueling():
                     f"+{additional_dmg} damage from {item.get_full_name()}"
                 )
 
-        # TODO: When armor changes are implemented, I'll want to implement the armor effects here
+        if item_effect.effect_type == EffectType.RestoreArmor:
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - self_entity.get_dueling().armor))
+            self_entity.get_dueling().armor += to_restore
+            return (damage_dealt, f"Restored {to_restore} Armor using {item.get_full_name()}")
+
+        if item_effect.effect_type == EffectType.RestorePercentArmor:
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
+            to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
+            self_entity.get_dueling().armor += to_restore
+            return (damage_dealt, f"Restored {to_restore} Armor using {item.get_full_name()}")
 
         if item_effect.effect_type == EffectType.HealthSteal:
             health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
-            other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
+            other_entity.get_expertise().damage(health_steal, other_entity.get_dueling(), percent_reduct=0, ignore_armor=True)
             return (damage_dealt, f"Stole {health_steal} HP from " + "{" + f"{other_entity_index}" + "}" + f" using {item.get_full_name()}")
 
         if item_effect.effect_type == EffectType.ManaSteal:
@@ -481,19 +507,32 @@ class Dueling():
             return "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.DmgReflect and damage_dealt > 0:
-            armor = other_entity.get_equipment().get_total_reduced_armor(other_entity.get_expertise().level)
-            percent_dmg_reduct = other_entity.get_dueling().get_total_percent_dmg_reduct()
-
             damage_to_reflect = int(damage_dealt * item_effect.effect_value)
-            other_entity.get_expertise().damage(damage_to_reflect, armor, percent_dmg_reduct, other_entity.get_equipment())
-            return "{" + f"{self_entity_index}" + "}" + f" reflected {damage_to_reflect} damage back to " + "{0}"
 
-        # TODO: When armor changes are implemented, I'll want to implement the armor effects here
+            org_armor = other_entity.get_dueling().armor
+            damage_done = other_entity.get_expertise().damage(damage_to_reflect, other_entity.get_dueling(), percent_reduct=0, ignore_armor=False)
+            cur_armor = other_entity.get_dueling().armor
+
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
+            return "{" + f"{self_entity_index}" + "}" + f" reflected {damage_done}{armor_str} damage back to " + "{0}"
+
+        if item_effect.effect_type == EffectType.RestoreArmor:
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - self_entity.get_dueling().armor))
+            self_entity.get_dueling().armor += to_restore
+            return (damage_dealt, f"Restored {to_restore} Armor using {item.get_full_name()}")
+
+        if item_effect.effect_type == EffectType.RestorePercentArmor:
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
+            to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
+            self_entity.get_dueling().armor += to_restore
+            return (damage_dealt, f"Restored {to_restore} Armor using {item.get_full_name()}")
 
         if item_effect.effect_type == EffectType.HealthSteal:
             health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
-            other_entity.get_expertise().damage(health_steal, 0, 0, other_entity.get_equipment())
+            other_entity.get_expertise().damage(health_steal, other_entity.get_dueling(), percent_reduct=0, ignore_armor=True)
             return f"Stole {health_steal} HP from " + "{0}" + f" using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.ManaSteal:
@@ -772,7 +811,18 @@ class Dueling():
             self.status_effects.append(status_effect)
             return f"{entity_name} is now {status_effect.name} from {item.get_full_name()}"
 
-        # TODO: When armor changes are implemented, I'll want to implement the armor effects here
+        if item_effect.effect_type == EffectType.RestoreArmor:
+            max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
+            to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - entity.get_dueling().armor))
+            entity.get_dueling().armor += to_restore
+            return f"Restored {to_restore} Armor using {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.RestorePercentArmor:
+            max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
+            armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
+            to_restore = min(armor_from_effect, max(0, max_reduced_armor - entity.get_dueling().armor))
+            entity.get_dueling().armor += to_restore
+            return f"Restored {to_restore} Armor using {item.get_full_name()}"
 
         return ""
 
@@ -914,7 +964,7 @@ class Dueling():
         if item_effect.effect_type == EffectType.HealthSteal:
             health_steal = int(item_effect.effect_value * target_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
-            target_entity.get_expertise().damage(health_steal, 0, 0, target_entity.get_equipment())
+            target_entity.get_expertise().damage(health_steal, target_entity.get_dueling(), percent_reduct=0, ignore_armor=True)
             return f"Stole {health_steal} HP from " + "{1}" + f" using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.ManaSteal:
@@ -1231,6 +1281,7 @@ class DuelView(discord.ui.View):
 
         for entity in allies + enemies:
             entity.get_dueling().is_in_combat = True
+            entity.get_dueling().armor = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
             # Make sure stats are correct.
             entity.get_expertise().update_stats(entity.get_combined_attributes())
 
@@ -1354,7 +1405,7 @@ class DuelView(discord.ui.View):
                 max_should_skip_chance = max(se.value, max_should_skip_chance)
         
         # Fixed damage is taken directly, no reduction
-        entity.get_expertise().damage(start_damage, 0, 0, entity.get_equipment())
+        entity.get_expertise().damage(start_damage, entity.get_dueling(), percent_reduct=0, ignore_armor=True)
         if start_damage > 0:
             self._additional_info_string_data += f"{self.get_name(entity)} took {start_damage} damage! "
 
@@ -1389,7 +1440,11 @@ class DuelView(discord.ui.View):
         info_str = "──────────\n"
         for i, entity in enumerate(self._turn_order):
             group_icon = ":handshake:" if self._is_ally(entity) else ":imp:"
-            info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon}\n\n{entity.get_expertise().get_health_and_mana_string()}"
+
+            max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
+            armor_str: str = f"\n{entity.get_dueling().get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 else ""
+
+            info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon}\n\n{entity.get_expertise().get_health_and_mana_string()}{armor_str}"
             if len(entity.get_dueling().status_effects) > 0:
                 info_str += f"\n\n{entity.get_dueling().get_statuses_string()}"
             info_str += "\n──────────\n"
@@ -1405,8 +1460,12 @@ class DuelView(discord.ui.View):
         name = self.get_name(self._current_target)
         expertise = self._current_target.get_expertise()
         dueling = self._current_target.get_dueling()
+        equipment = self._current_target.get_equipment()
 
-        duel_string = f"──────────\n({self._current_target_index + 1}) **{name}**\n\n{expertise.get_health_and_mana_string()}"
+        max_reduced_armor: int = equipment.get_total_reduced_armor(expertise.level)
+        armor_str = f"\n{dueling.get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 else ""
+
+        duel_string = f"──────────\n({self._current_target_index + 1}) **{name}**\n\n{expertise.get_health_and_mana_string()}{armor_str}"
         if len(dueling.status_effects) > 0:
             duel_string += f"\n\n{dueling.get_statuses_string()}"
 
@@ -1682,10 +1741,11 @@ class DuelView(discord.ui.View):
                     if result_str != "":
                         result_strs.append(result_str.format([target_name, attacker_name]))
 
-            target_armor = max(target_equipment.get_total_reduced_armor(target_expertise.level) - piercing_dmg - int(damage * piercing_percent_dmg), 0)
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
 
-            actual_damage_dealt = target_expertise.damage(damage, target_armor, percent_dmg_reduct, target_equipment)
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 result_strs += [s.format([attacker_name]) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, attacker, target, 0)]
@@ -1707,7 +1767,6 @@ class DuelView(discord.ui.View):
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != attacker), se.on_being_hit_buffs))
                     result_strs.append(f"{target_name} gained {se.get_buffs_str()}")
-            damage_reduction_str = Dueling.format_armor_dmg_reduct_str(damage, actual_damage_dealt)
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             generating_string = ""
@@ -1720,22 +1779,23 @@ class DuelView(discord.ui.View):
             
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{damage_reduction_str}{percent_dmg_reduct_str}{critical_hit_str} damage to {target_name}{generating_string}")
+            result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage to {target_name}{generating_string}")
         
             attacker.get_stats().dueling.attacks_done += 1
         
         if cursed_coins_damage != 0:
             if attacker in self._enemies:
                 for other in self._allies:
-                    other.get_expertise().damage(cursed_coins_damage, 0, 0, other.get_equipment())
+                    other.get_expertise().damage(cursed_coins_damage, other.get_dueling(), percent_reduct=0, ignore_armor=True)
                     attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
                 
                 names_str = ", ".join([self.get_name(other) for other in self._allies])
                 result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} damage to {names_str}")
             elif attacker in self._allies:
                 for other in self._enemies:
-                    other.get_expertise().damage(cursed_coins_damage, 0, 0, other.get_equipment())
+                    other.get_expertise().damage(cursed_coins_damage, other.get_dueling(), percent_reduct=0, ignore_armor=True)
                     attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
                 
                 names_str = ", ".join([self.get_name(other) for other in self._enemies])
@@ -1744,18 +1804,14 @@ class DuelView(discord.ui.View):
         if splash_dmg > 0 or splash_percent_dmg > 0:
             if attacker in self._enemies:
                 for target in self._allies:
-                    target_armor = target.get_equipment().get_total_reduced_armor(target.get_expertise().level)
                     percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
-                    target.get_expertise().damage(splash_dmg + splash_percent_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
-                names_str = ", ".join([self.get_name(other) for other in self._allies])
-                result_strs.append(f"{attacker_name} dealt {splash_dmg + splash_percent_dmg} splash damage to {names_str}")
+                    damage_dealt = target.get_expertise().damage(splash_dmg + splash_percent_dmg, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+                    result_strs.append(f"{attacker_name} dealt {damage_dealt} splash damage to {self.get_name(target)}")
             else:
                 for target in self._enemies:
-                    target_armor = target.get_equipment().get_total_reduced_armor(target.get_expertise().level)
                     percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
-                    target.get_expertise().damage(splash_dmg + splash_percent_dmg, target_armor, percent_dmg_reduct, target.get_equipment())
-                names_str = ", ".join([self.get_name(other) for other in self._enemies])
-                result_strs.append(f"{attacker_name} dealt {splash_dmg + splash_percent_dmg} splash damage to {names_str}")
+                    damage_dealt = target.get_expertise().damage(splash_dmg + splash_percent_dmg, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+                    result_strs.append(f"{attacker_name} dealt {damage_dealt} splash damage to {self.get_name(target)}")
 
         return "\n".join(result_strs)
 

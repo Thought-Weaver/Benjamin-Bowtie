@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/potions/coralskin_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Coralskin Potion",
+    "value": 400,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/shellflower": 2,
+        "items/ingredient/herbs/shellplate": 2
+    },
+    "outputs": {
+        "items/consumable/potions/coralskin_potion": 1
+    }
+}

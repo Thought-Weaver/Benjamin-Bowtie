@@ -21,7 +21,7 @@
         ],
         "on_turn_start": [
             {
-                "effect_type": "RestoreArmor",
+                "effect_type": "RestorePercentArmor",
                 "effect_value": 0.015,
                 "effect_time": -1,
                 "conditions": ["IsFullHealth", "IsItemArmor"],

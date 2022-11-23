@@ -38,9 +38,8 @@ class EffectType(StrEnum):
     DmgBuffBleeding = "DmgBuffBleeding"
     DmgBuffFromDex = "DmgBuffFromDex"
 
-    # Everything in this group is associated with percent effect values
-    ExtraArmor = "ExtraArmor" # TODO: Implement once armor changes are done
-    RestoreArmor = "RestoreArmor" # TODO: Implement once armor changes are done
+    RestoreArmor = "RestoreArmor"
+    RestorePercentArmor = "RestorePercentArmor"
 
     PiercingDmg = "PiercingDmg"
     PiercingPercentDmg = "PiercingPercentDmg"
@@ -129,8 +128,8 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
     EffectType.DmgBuffBleeding: 15,
     EffectType.DmgBuffFromDex: 16,
 
-    EffectType.ExtraArmor: 17,
-    EffectType.RestoreArmor: 18,
+    EffectType.RestoreArmor: 17,
+    EffectType.RestorePercentArmor: 18,
     
     EffectType.PiercingDmg: 19,
     EffectType.PiercingPercentDmg: 20,
@@ -286,12 +285,10 @@ class Effect():
                 display_string += "+"
             display_string += f"{round(self.effect_value * 100, 2)}% Damage Scaling from Dex"
         
-        if self.effect_type == EffectType.ExtraArmor:
-            if self.effect_value > 0:
-                display_string += "+"
-            display_string += f"{int(self.effect_value)} Extra Armor"
         if self.effect_type == EffectType.RestoreArmor:
             display_string += f"{int(self.effect_value)} Armor Restored"
+        if self.effect_type == EffectType.RestorePercentArmor:
+            display_string += f"{round(self.effect_value * 100, 2)}% Armor Restored"
 
         if self.effect_type == EffectType.PiercingDmg:
             display_string += f"{int(self.effect_value)} Piercing Damage"

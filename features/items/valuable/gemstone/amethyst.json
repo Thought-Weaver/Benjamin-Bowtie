@@ -17,10 +17,12 @@
                 "effect_time": -1,
                 "conditions": ["IsItemInHand"],
                 "condition_values": [0]
-            },
+            }
+        ],
+        "on_damaged": [
             {
-                "effect_type": "ExtraArmor",
-                "effect_value": 0.04,
+                "effect_type": "RestoreArmor",
+                "effect_value": 2,
                 "effect_time": -1,
                 "conditions": ["IsItemArmor"],
                 "condition_values": [0]
