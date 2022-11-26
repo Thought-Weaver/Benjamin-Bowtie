@@ -436,12 +436,16 @@ class Item():
         return f"{self._icon} {self._name}"
 
     def get_value(self) -> int:
-        return self._value
+        sockted_item_keys = list(filter(lambda x: x != "", self._altering_item_keys))
+        value = self._value
+        for item_key in sockted_item_keys:
+            value += int(LOADED_ITEMS.get_item_state(item_key)["value"])
+        return value
 
     def get_value_str(self) -> str:
-        if self._value == 1:
+        if self.get_value() == 1:
             return "1 coin"
-        return f"{self._value} coins"
+        return f"{self.get_value()} coins"
 
     def get_count(self) -> int:
         return self._count
@@ -565,7 +569,7 @@ class Item():
         if self._count > 1:
             display_string += f"Quantity: *{self._count}*\n"
         
-        display_string += f"Value: *{self._value}* each\n"
+        display_string += f"Value: *{self.get_value()}* each\n"
         display_string += f"Level Requirement: {self._level_requirement}"
         
         return display_string
