@@ -379,9 +379,9 @@ class Effect():
         conditions_strs = []
         for i, condition in enumerate(self.conditions):
             if condition == ConditionType.IsAbovePercentHealth:
-                conditions_strs.append(f"above {int(self.condition_values[i])}% health")
+                conditions_strs.append(f"above {round(self.condition_values[i] * 100, 2)}% health")
             if condition == ConditionType.IsBelowPercentHealth:
-                conditions_strs.append(f"below {int(self.condition_values[i])}% health")
+                conditions_strs.append(f"below {round(self.condition_values[i] * 100, 2)}% health")
             if condition == ConditionType.IsFullHealth:
                 conditions_strs.append("at full health")
             if condition == ConditionType.IsItemArmor:

@@ -213,7 +213,14 @@ class GardenPlot():
         death_tick_str = "tick" if ticks_until_death == 1 else "ticks"
         
         mature_string = f"Mature in {ticks_until_mature} {mature_tick_str}" if ticks_until_mature > 0 else f"Will perish in {ticks_until_death} {death_tick_str}"
-        display_string = f"\n\n──────────\n{self.seed.get_full_name()}\n\n{self.growth_ticks} {growth_tick_str} old\n{mature_string}\n──────────"
+
+        num_mutations = 0
+        for plant_key_1, plant_key_2 in MUTATION_PROBS.keys():
+            if self.seed_data.result == plant_key_1 or self.seed_data.result == plant_key_2:
+                num_mutations += 1
+        mutate_string = f"{num_mutations} possible mutations\n" if num_mutations > 0 else ""
+
+        display_string = f"\n\n──────────\n{self.seed.get_full_name()}\n\n{self.growth_ticks} {growth_tick_str} old\n{mature_string}\n{mutate_string}──────────"
 
         return display_string
 
