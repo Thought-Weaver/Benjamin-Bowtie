@@ -110,7 +110,7 @@ class Recipe():
                 num = 0
                 break
 
-            item = inventory.get_inventory_slots()[inventory.search_by_key(input_key)]
+            item = inventory.get_inventory_slots()[item_index]
             
             if quantity > 0 and item is not None:
                 if num == -1:
