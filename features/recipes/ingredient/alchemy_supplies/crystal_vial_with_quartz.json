@@ -7,7 +7,7 @@
         "items/valuable/gemstone/quartz": 2
     },
     "outputs": {
-        "items/consumable/ingredient/alchemy_supplies/crystal_vial": 1
+        "items/ingredient/alchemy_supplies/crystal_vial": 1
     },
     "xp_reward_for_use": {
         "Alchemist": 2

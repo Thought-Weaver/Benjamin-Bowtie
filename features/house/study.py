@@ -10,14 +10,13 @@ from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from strenum import StrEnum
 
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.house.house import House, HouseView
     from features.inventory import Inventory
     from features.shared.item import Item
     from features.player import Player
-    from features.stats import Stats
 
 
 # -----------------------------------------------------------------------------
@@ -560,6 +559,7 @@ class StudyView(discord.ui.View):
 
     def select_socket(self, socket_index: int):
         self._selected_socket = socket_index
+        self._intent = Intent.SelectGem
 
         self._get_gem_buttons()
 

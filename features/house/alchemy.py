@@ -508,7 +508,7 @@ class AlchemyChamberView(discord.ui.View):
         self.clear_items()
         player: Player = self._get_player()
         recipes: List[Recipe] = player.get_house().crafting_recipes
-        filtered_recipes: List[Recipe] = list(filter(lambda r: r.any_output_has_any_class_tag([ClassTag.Consumable.Potion]), recipes))
+        filtered_recipes: List[Recipe] = list(filter(lambda r: r.any_output_has_any_class_tag([ClassTag.Consumable.Potion, ClassTag.Ingredient.PotionIngredient]), recipes))
 
         page_slots = filtered_recipes[self._page * self._NUM_PER_PAGE:min(len(filtered_recipes), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, recipe in enumerate(page_slots):
