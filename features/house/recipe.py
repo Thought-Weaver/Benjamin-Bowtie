@@ -105,6 +105,11 @@ class Recipe():
     def num_can_be_made(self, inventory: Inventory):
         num = -1
         for input_key, quantity in self.inputs.items():
+            item_index = inventory.search_by_key(input_key)
+            if item_index == -1:
+                num = 0
+                break
+
             item = inventory.get_inventory_slots()[inventory.search_by_key(input_key)]
             
             if quantity > 0 and item is not None:
