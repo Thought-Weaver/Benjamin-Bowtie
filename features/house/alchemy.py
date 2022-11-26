@@ -85,9 +85,10 @@ class ExitToHouseButton(discord.ui.Button):
         
         view: AlchemyChamberView = self.view
         if interaction.user == view.get_user():
-            house_view: HouseView = view.get_house_view()
-            embed = house_view.get_initial_embed()
-            await interaction.response.edit_message(content=None, embed=embed, view=house_view)
+            house_view: HouseView | None = view.get_house_view()
+            if house_view is not None:
+                embed = house_view.get_initial_embed()
+                await interaction.response.edit_message(content=None, embed=embed, view=house_view)
 
 
 class ExitWithIntentButton(discord.ui.Button):
@@ -326,7 +327,7 @@ class PurchaseAlchemyChamberButton(discord.ui.Button):
 
 
 class AlchemyChamberView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView | None):
         super().__init__(timeout=900)
 
         self._bot = bot
@@ -374,10 +375,12 @@ class AlchemyChamberView(discord.ui.View):
             self.add_item(EnterRecipesButton(0))
             self.add_item(EnterAlchemizeButton(1))
             self.add_item(EnterCupboardButton(2))
-            self.add_item(ExitToHouseButton(3))
+            if self._house_view is not None:
+                self.add_item(ExitToHouseButton(3))
         else:
             self.add_item(PurchaseAlchemyChamberButton(self._PURCHASE_COST, 0))
-            self.add_item(ExitToHouseButton(0))
+            if self._house_view is not None:
+                self.add_item(ExitToHouseButton(0))
 
         self._intent = None
 

@@ -257,9 +257,10 @@ class ExitToHouseButton(discord.ui.Button):
         
         view: StorageView = self.view
         if interaction.user == view.get_user():
-            house_view: HouseView = view.get_house_view()
-            embed = house_view.get_initial_embed()
-            await interaction.response.edit_message(content=None, embed=embed, view=house_view)
+            house_view: HouseView | None = view.get_house_view()
+            if house_view is not None:
+                embed = house_view.get_initial_embed()
+                await interaction.response.edit_message(content=None, embed=embed, view=house_view)
 
 
 class ExitToBasementButton(discord.ui.Button):
@@ -291,7 +292,7 @@ class PurchaseStorageButton(discord.ui.Button):
 
 
 class StorageView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView, context: commands.Context):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView | None, context: commands.Context):
         super().__init__(timeout=900)
 
         self._bot = bot
@@ -333,7 +334,8 @@ class StorageView(discord.ui.View):
             self._get_storage_buttons()
         else:
             self.add_item(PurchaseStorageButton(self._PURCHASE_COST, 0))
-            self.add_item(ExitToHouseButton(0))
+            if self._house_view is not None:
+                self.add_item(ExitToHouseButton(0))
 
         self._intent = None
 
@@ -382,7 +384,8 @@ class StorageView(discord.ui.View):
             self.add_item(RetrieveButton(min(4, len(page_slots))))
             self.add_item(RenameButton(self._selected_bin_key, min(4, len(page_slots))))
         self.add_item(BuyNewButton(self._NEW_BIN_COST, min(4, len(page_slots))))
-        self.add_item(ExitToHouseButton(min(4, len(page_slots))))
+        if self._house_view is not None:
+            self.add_item(ExitToHouseButton(min(4, len(page_slots))))
 
     def select_storage_bin(self, bin_key: str):
         self._selected_bin_key = bin_key

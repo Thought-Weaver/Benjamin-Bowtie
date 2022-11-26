@@ -388,9 +388,10 @@ class ExitToHouseButton(discord.ui.Button):
         
         view: GardenView = self.view
         if interaction.user == view.get_user():
-            house_view: HouseView = view.get_house_view()
-            embed = house_view.get_initial_embed()
-            await interaction.response.edit_message(content=None, embed=embed, view=house_view)
+            house_view: HouseView | None = view.get_house_view()
+            if house_view is not None:
+                embed = house_view.get_initial_embed()
+                await interaction.response.edit_message(content=None, embed=embed, view=house_view)
 
 
 class ExitToGardenButton(discord.ui.Button):
@@ -408,7 +409,7 @@ class ExitToGardenButton(discord.ui.Button):
 
 
 class GardenView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView | None):
         super().__init__(timeout=900)
 
         self._bot = bot
@@ -448,7 +449,8 @@ class GardenView(discord.ui.View):
             self._get_garden_buttons()
         else:
             self.add_item(PurchaseGardenButton(self._PURCHASE_COST, 0))
-            self.add_item(ExitToHouseButton(0))
+            if self._house_view is not None:
+                self.add_item(ExitToHouseButton(0))
 
         self._intent = None
 
@@ -468,7 +470,8 @@ class GardenView(discord.ui.View):
             self.add_item(UseItemButton(min(4, num_per_row)))
         if int(sqrt(len(player.get_house().garden_plots))) < MAX_GARDEN_SIZE:
             self.add_item(ExpandButton(self._PLOT_COST, min(4, num_per_row)))
-        self.add_item(ExitToHouseButton(min(4, num_per_row)))
+        if self._house_view is not None:
+            self.add_item(ExitToHouseButton(min(4, num_per_row)))
 
         self._intent = None
 

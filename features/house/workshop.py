@@ -100,9 +100,10 @@ class ExitToHouseButton(discord.ui.Button):
         
         view: WorkshopView = self.view
         if interaction.user == view.get_user():
-            house_view: HouseView = view.get_house_view()
-            embed = house_view.get_initial_embed()
-            await interaction.response.edit_message(content=None, embed=embed, view=house_view)
+            house_view: HouseView | None = view.get_house_view()
+            if house_view is not None:
+                embed = house_view.get_initial_embed()
+                await interaction.response.edit_message(content=None, embed=embed, view=house_view)
 
 
 class ExitWithIntentButton(discord.ui.Button):
@@ -372,7 +373,7 @@ class ConfirmDeconstructButton(discord.ui.Button):
 
 
 class WorkshopView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView | None):
         super().__init__(timeout=900)
 
         self._bot = bot
@@ -423,10 +424,12 @@ class WorkshopView(discord.ui.View):
             self.add_item(EnterCraftButton(1))
             self.add_item(DeconstructButton(2))
             self.add_item(EnterStorageButton(3))
-            self.add_item(ExitToHouseButton(4))
+            if self._house_view is not None:
+                self.add_item(ExitToHouseButton(4))
         else:
             self.add_item(PurchaseWorkshopButton(self._PURCHASE_COST, 0))
-            self.add_item(ExitToHouseButton(0))
+            if self._house_view is not None:
+                self.add_item(ExitToHouseButton(0))
 
         self._intent = None
 

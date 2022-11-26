@@ -15,6 +15,12 @@ from bot import BenjaminBowtieBot
 from features.dueling import GroupPlayerVsPlayerDuelView, PlayerVsPlayerDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
+from features.house.alchemy import AlchemyChamberView
+from features.house.garden import GardenView
+from features.house.kitchen import KitchenView
+from features.house.storage import StorageView
+from features.house.study import StudyView
+from features.house.workshop import WorkshopView
 from features.house.house import HouseView
 from features.inventory import InventoryView
 from features.mail import Mail, MailView, MailboxView
@@ -451,7 +457,7 @@ class Adventures(commands.Cog):
         )
         await context.send(embed=embed, view=MarketView(self._bot, self._database, context.guild.id, context.author, context))
 
-    @commands.command(name="mailbox", help="Open mail you've received from others", aliases=["inbox"])
+    @commands.command(name="mailbox", help="Open mail you've received from others", aliases=["inbox"], hidden=True)
     async def mailbox_handler(self, context: commands.Context):
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         
@@ -799,6 +805,90 @@ class Adventures(commands.Cog):
         
         house_view: HouseView = HouseView(self._bot, self._database, context.guild.id, context.author, context)
         await context.send(embed=house_view.get_initial_embed(), view=house_view)
+
+    @commands.command(name="garden", help="Visit your home's garden", hidden=True)
+    async def garden_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit your garden.")
+            return
+        
+        view = GardenView(self._bot, self._database, context.guild.id, context.author, None)
+        embed = view.get_embed_for_intent()
+        await context.send(embed=embed, view=view)
+
+    @commands.command(name="study", help="Enter your home's study", hidden=True)
+    async def study_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit your study.")
+            return
+        
+        view = StudyView(self._bot, self._database, context.guild.id, context.author, None)
+        embed = view.get_embed_for_intent()
+        await context.send(embed=embed, view=view)
+
+    @commands.command(name="workshop", help="Enter your home's workshop", hidden=True)
+    async def workshop_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit your workshop.")
+            return
+        
+        view = WorkshopView(self._bot, self._database, context.guild.id, context.author, None)
+        embed = view.get_embed_for_intent()
+        await context.send(embed=embed, view=view)
+
+    @commands.command(name="alchemychamber", help="Enter your home's alchemy chamber", aliases=["alchemy"], hidden=True)
+    async def alchemy_chamber_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit your alchemy chamber.")
+            return
+        
+        view = AlchemyChamberView(self._bot, self._database, context.guild.id, context.author, None)
+        embed = view.get_embed_for_intent()
+        await context.send(embed=embed, view=view)
+
+    @commands.command(name="kitchen", help="Enter your home's kitchen", hidden=True)
+    async def kitchen_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit your kitchen.")
+            return
+        
+        view = KitchenView(self._bot, self._database, context.guild.id, context.author, None)
+        embed = view.get_embed_for_intent()
+        await context.send(embed=embed, view=view)
+
+    @commands.command(name="storage", help="Enter your home's storage", hidden=True)
+    async def storage_handler(self, context: commands.Context):
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit your storage.")
+            return
+        
+        view = StorageView(self._bot, self._database, context.guild.id, context.author, None, context)
+        embed = view.get_embed_for_intent()
+        await context.send(embed=embed, view=view)
 
 
 async def setup(bot: BenjaminBowtieBot):
