@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/chest_armor/iron_plate_cuirass",
+    "icon": "\uD83D\uDC55",
+    "name": "Iron Plate Cuirass",
+    "value": 290,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Chest_Armor"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 22,
+    "armor_stats": {
+        "armor_amount": 35
+    }
+}

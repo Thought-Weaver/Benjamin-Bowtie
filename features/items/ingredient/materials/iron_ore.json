@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/iron_ore",
+    "icon": "\uD83E\uDEA8",
+    "name": "Iron Ore",
+    "value": 5,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

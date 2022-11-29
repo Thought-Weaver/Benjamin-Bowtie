@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/leggings/orichalcum_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Orichalcum Leggings",
+    "value": 1780,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Leggings"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 35,
+    "armor_stats": {
+        "armor_amount": 30
+    }
+}

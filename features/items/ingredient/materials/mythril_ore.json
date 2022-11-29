@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/mythril_ore",
+    "icon": "\uD83E\uDEA8",
+    "name": "Mythril Ore",
+    "value": 120,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

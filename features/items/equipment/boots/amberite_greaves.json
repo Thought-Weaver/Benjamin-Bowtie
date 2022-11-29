@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/boots/amberite_greaves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Amberite Greaves",
+    "value": 630,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Boots"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 25,
+    "armor_stats": {
+        "armor_amount": 20
+    }
+}

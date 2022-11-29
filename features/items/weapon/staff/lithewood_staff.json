@@ -1,0 +1,28 @@
+{
+    "key": "items/weapon/staff/lithewood_staff",
+    "icon": "\uD83E\uDE84",
+    "name": "Lithewood Staff",
+    "value": 70,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Staff", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 8,
+    "weapon_stats": {
+        "min_damage": 1,
+        "max_damage": 3
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromInt",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

@@ -1,8 +1,8 @@
 {
-    "key": "items/weapon/dagger/basic_dagger",
+    "key": "items/weapon/dagger/iron_dagger",
     "icon": "\uD83D\uDDE1\uFE0F",
-    "name": "Basic Dagger",
-    "value": 25,
+    "name": "Iron Dagger",
+    "value": 30,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",

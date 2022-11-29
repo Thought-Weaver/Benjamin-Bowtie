@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/amberite_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Amberite Ingot",
+    "value": 200,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

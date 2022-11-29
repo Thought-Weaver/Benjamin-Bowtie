@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/gloves/leather_gloves",
+    "icon": "\uD83E\uDDE4",
+    "name": "Leather Gloves",
+    "value": 45,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Gloves"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 8,
+    "armor_stats": {
+        "armor_amount": 2
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/chest_armor/mothsilk_robe",
+    "icon": "\uD83D\uDC58",
+    "name": "Mothsilk Robe",
+    "value": 105,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Chest_Armor"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 3,
+    "armor_stats": {
+        "armor_amount": 6
+    }
+}

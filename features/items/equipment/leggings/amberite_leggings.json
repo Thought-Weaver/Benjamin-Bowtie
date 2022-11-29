@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/leggings/amberite_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Amberite Leggings",
+    "value": 1050,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Leggings"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 25,
+    "armor_stats": {
+        "armor_amount": 20
+    }
+}

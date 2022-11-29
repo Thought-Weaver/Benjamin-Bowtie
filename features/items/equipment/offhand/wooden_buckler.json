@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/boots/basic_boots",
+    "icon": "\uD83E\uDD7E",
+    "name": "Wooden Buckler",
+    "value": 115,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Off_Hand", "Shield"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 8,
+    "armor_stats": {
+        "armor_amount": 10
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "key": "items/weapon/greatsword/iron_greatsword",
+    "icon": "\u2694\uFE0F",
+    "name": "Iron Greatsword",
+    "value": 135,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Greatsword", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 10,
+    "weapon_stats": {
+        "min_damage": 5,
+        "max_damage": 8
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "key": "items/equipment/boots/tattered_boot",
+    "icon": "\uD83E\uDD7E",
+    "name": "Tattered Boots",
+    "value": 2,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Boots"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0
+}

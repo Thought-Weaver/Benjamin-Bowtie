@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/mothsilk",
+    "icon": "\uD83E\uDDF5",
+    "name": "Mothsilk",
+    "value": 7,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

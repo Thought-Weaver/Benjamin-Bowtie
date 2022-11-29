@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/helmet/mythril_plate_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Mythril Plate Helmet",
+    "value": 5400,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Helmet"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 70,
+    "armor_stats": {
+        "armor_amount": 150
+    }
+}

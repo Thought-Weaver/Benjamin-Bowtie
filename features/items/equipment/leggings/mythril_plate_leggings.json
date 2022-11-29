@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/leggings/mythril_plate_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Mythril Plate Leggings",
+    "value": 6400,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Leggings"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 70,
+    "armor_stats": {
+        "armor_amount": 135
+    }
+}

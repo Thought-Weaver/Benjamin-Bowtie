@@ -1,8 +1,8 @@
 {
-    "key": "items/equipment/boots/basic_boots",
+    "key": "items/equipment/boots/spidersilk_boots",
     "icon": "\uD83E\uDD7E",
-    "name": "Basic Boots",
-    "value": 2,
+    "name": "Spidersilk Boots",
+    "value": 38,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
@@ -12,6 +12,5 @@
     "level_requirement": 2,
     "armor_stats": {
         "armor_amount": 1
-    },
-    "altering_item_keys": []
+    }
 }

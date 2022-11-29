@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/silver_ore",
+    "icon": "\uD83E\uDEA8",
+    "name": "Silver Ore",
+    "value": 15,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

@@ -9,7 +9,7 @@
     "class_tags": ["Equipment", "Gloves"],
     "state_tags": [],
     "count": 1,
-    "level_requirement": 50,
+    "level_requirement": 80,
     "altering_item_keys": [""],
     "item_effects": {
         "permanent": [
@@ -23,6 +23,6 @@
         ]
     },
     "armor_stats": {
-        "armor_amount": 10
+        "armor_amount": 120
     }
 }

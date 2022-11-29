@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/leggings/silver_plate_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Silver Plate Leggings",
+    "value": 1200,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Leggings"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 45,
+    "armor_stats": {
+        "armor_amount": 35
+    }
+}

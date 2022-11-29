@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/mothsilk_bolt",
+    "icon": "\uD83E\uDDF5",
+    "name": "Mothsilk Bolt",
+    "value": 25,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

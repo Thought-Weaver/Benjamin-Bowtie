@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/chest_armor/amberite_cuirass",
+    "icon": "\uD83C\uDFBD",
+    "name": "Amberite Cuirass",
+    "value": 2080,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Chest_Armor"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 25,
+    "armor_stats": {
+        "armor_amount": 50
+    }
+}

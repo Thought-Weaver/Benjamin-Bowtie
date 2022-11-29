@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/whetstone",
+    "icon": "\uD83E\uDEA8",
+    "name": "Whetstone",
+    "value": 75,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

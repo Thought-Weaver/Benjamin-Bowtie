@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/spidersilk",
+    "icon": "\uD83D\uDD78\uFE0F",
+    "name": "Spidersilk",
+    "value": 3,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

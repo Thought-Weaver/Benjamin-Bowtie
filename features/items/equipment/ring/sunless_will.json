@@ -9,7 +9,7 @@
     "class_tags": ["Equipment", "Ring"],
     "state_tags": [],
     "count": 1,
-    "level_requirement": 50,
+    "level_requirement": 80,
     "altering_item_keys": [""],
     "item_effects": {
         "permanent": [

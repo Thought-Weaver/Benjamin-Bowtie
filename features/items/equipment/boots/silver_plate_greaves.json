@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/boots/silver_plate_greaves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Silver Plate Greaves",
+    "value": 740,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Boots"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 45,
+    "armor_stats": {
+        "armor_amount": 35
+    }
+}

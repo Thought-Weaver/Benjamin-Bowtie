@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/leather_scraps",
+    "icon": "\uD83C\uDF97\uFE0F",
+    "name": "Leather Scraps",
+    "value": 5,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

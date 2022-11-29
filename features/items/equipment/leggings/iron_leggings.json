@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/leggings/iron_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Iron Leggings",
+    "value": 135,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Leggings"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 10,
+    "armor_stats": {
+        "armor_amount": 5
+    }
+}

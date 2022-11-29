@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/chest_armor/mythril_plate_cuirass",
+    "icon": "\uD83D\uDC55",
+    "name": "Mythril Plate Cuirass",
+    "value": 13100,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Chest_Armor"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 60,
+    "armor_stats": {
+        "armor_amount": 200
+    }
+}

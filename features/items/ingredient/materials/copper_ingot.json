@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/copper_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Copper Ingot",
+    "value": 35,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

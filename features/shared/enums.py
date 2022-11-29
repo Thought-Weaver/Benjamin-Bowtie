@@ -50,7 +50,7 @@ class ClassTag(Enum):
         RawFood = "Raw_Food" # Like uncooked potatoes, meat, etc.
         Spice = "Spice" # Specifically for cooking
         PotionIngredient = "Potion_Ingredient"
-        CraftingMaterial = "CraftingMaterial"
+        CraftingMaterial = "Crafting_Material"
 
     @skip
     class Creature(StrEnum):

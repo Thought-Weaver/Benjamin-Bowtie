@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/boots/mythril_plate_greaves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Mythril Plate Greaves",
+    "value": 4200,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Boots"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 60,
+    "armor_stats": {
+        "armor_amount": 135
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/leggings/amberite_plate_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Amberite Plate Leggings",
+    "value": 2775,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Leggings"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 50,
+    "armor_stats": {
+        "armor_amount": 60
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/gloves/mothsilk_gloves",
+    "icon": "\uD83E\uDDE4",
+    "name": "Mothsilk Gloves",
+    "value": 36,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Gloves"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 3,
+    "armor_stats": {
+        "armor_amount": 2
+    }
+}

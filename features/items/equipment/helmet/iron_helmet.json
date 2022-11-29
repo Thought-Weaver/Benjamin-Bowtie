@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/helmet/iron_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Iron Helmet",
+    "value": 135,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Helmet"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 10,
+    "armor_stats": {
+        "armor_amount": 10
+    }
+}

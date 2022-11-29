@@ -1,0 +1,14 @@
+{
+    "key": "items/equipment/amulet/silver_necklace",
+    "icon": "\uD83D\uDCFF",
+    "name": "Silver Necklace",
+    "value": 145,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Amulet"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 5,
+    "altering_item_keys": [""]
+}

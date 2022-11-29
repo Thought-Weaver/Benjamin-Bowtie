@@ -1,8 +1,8 @@
 {
-    "key": "items/weapon/sword/basic_sword",
+    "key": "items/weapon/sword/iron_sword",
     "icon": "\u2694\uFE0F",
-    "name": "Basic Sword",
-    "value": 40,
+    "name": "Iron Sword",
+    "value": 50,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",

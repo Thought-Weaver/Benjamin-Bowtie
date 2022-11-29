@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/orichalcum_ore",
+    "icon": "\uD83E\uDEA8",
+    "name": "Orichalcum Ore",
+    "value": 80,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

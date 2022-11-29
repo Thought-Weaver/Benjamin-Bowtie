@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/helmet/amberite_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Amberite Helmet",
+    "value": 850,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Helmet"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 25,
+    "armor_stats": {
+        "armor_amount": 25
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/voidseen_ore",
+    "icon": "\uD83E\uDEA8",
+    "name": "Voidseen Ore",
+    "value": 250,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}
