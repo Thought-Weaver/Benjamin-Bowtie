@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/leather",
+    "icon": "\uD83E\uDDF5",
+    "name": "Leather",
+    "value": 70,
+    "inputs": {
+        "items/ingredient/materials/leather_scraps": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/leather": 1
+    }
+}

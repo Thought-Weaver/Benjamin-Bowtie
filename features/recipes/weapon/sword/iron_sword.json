@@ -1,0 +1,15 @@
+{
+    "key": "recipes/weapon/sword/iron_sword",
+    "icon": "\u2694\uFE0F",
+    "name": "Iron Sword",
+    "value": 85,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 2,
+        "items/ingredient/materials/leather_scraps": 1,
+        "items/ingredient/materials/whetstone": 1
+    },
+    "outputs": {
+        "items/weapon/sword/iron_sword": 1,
+        "items/ingredient/materials/whetstone": 1
+    }
+}

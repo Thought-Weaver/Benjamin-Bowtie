@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/helmet/orichalcum_plate_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Orichalcum Plate Helmet",
+    "value": 12000,
+    "inputs": {
+        "items/ingredient/materials/orichalcum_ingot": 10,
+        "items/ingredient/materials/thick_leather": 4
+    },
+    "outputs": {
+        "items/equipment/helmet/orichalcum_plate_helmet": 1
+    }
+}

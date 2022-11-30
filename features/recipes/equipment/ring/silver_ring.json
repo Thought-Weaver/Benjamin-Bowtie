@@ -1,0 +1,14 @@
+{
+    "key": "recipes/equipment/ring/silver_ring",
+    "icon": "\uD83D\uDC8D",
+    "name": "Silver Ring",
+    "value": 250,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 1,
+        "items/ingredient/materials/jewelers_kit": 1
+    },
+    "outputs": {
+        "items/equipment/ring/silver_ring": 1,
+        "items/ingredient/materials/jewelers_kit": 1
+    }
+}

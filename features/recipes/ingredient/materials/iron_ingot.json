@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/iron_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Iron Ingot",
+    "value": 90,
+    "inputs": {
+        "items/ingredient/materials/iron_ore": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/iron_ingot": 1
+    }
+}

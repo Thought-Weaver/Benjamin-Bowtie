@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/gloves/mothsilk_gloves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Mothsilk Gloves",
+    "value": 110,
+    "inputs": {
+        "items/ingredient/materials/mothsilk_bolt": 1,
+        "items/ingredient/materials/leather_scraps": 2
+    },
+    "outputs": {
+        "items/equipment/gloves/mothsilk_gloves": 1
+    }
+}

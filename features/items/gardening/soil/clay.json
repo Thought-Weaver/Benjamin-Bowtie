@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/soil/clay",
+    "icon": "\uD83D\uDFE4",
+    "name": "Clay",
+    "value": 8,
+    "rarity": "Common",
+    "description": "When set as the soil for a garden plot, increases the chance to receive a seed by 5% and plants also have that same chance to drop seeds after expiring.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Soil"],
+    "state_tags": [],
+    "count": 1
+}

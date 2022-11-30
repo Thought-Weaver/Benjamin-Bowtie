@@ -1,0 +1,12 @@
+{
+    "key": "recipes/equipment/leggings/leather_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Leather Leggings",
+    "value": 195,
+    "inputs": {
+        "items/ingredient/materials/leather": 3
+    },
+    "outputs": {
+        "items/equipment/leggings/leather_leggings": 1
+    }
+}

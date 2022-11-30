@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/boots/spidersilk_boots",
+    "icon": "\uD83E\uDD7E",
+    "name": "Spidersilk Boots",
+    "value": 120,
+    "inputs": {
+        "items/ingredient/materials/spidersilk_bolt": 1,
+        "items/ingredient/materials/leather": 1
+    },
+    "outputs": {
+        "items/equipment/boots/spidersilk_boots": 1
+    }
+}

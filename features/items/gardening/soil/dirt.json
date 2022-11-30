@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/soil/dirt",
+    "icon": "\uD83D\uDFE4",
+    "name": "Dirt",
+    "value": 2,
+    "rarity": "Common",
+    "description": "Clears the the current soil type in a garden plot.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Soil"],
+    "state_tags": [],
+    "count": 1
+}

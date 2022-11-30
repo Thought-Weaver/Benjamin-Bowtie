@@ -1,0 +1,14 @@
+{
+    "key": "recipes/equipment/amulet/copper_necklace",
+    "icon": "\uD83D\uDCFF",
+    "name": "Copper Necklace",
+    "value": 250,
+    "inputs": {
+        "items/ingredient/materials/copper_ingot": 2,
+        "items/ingredient/materials/jewelers_kit": 1
+    },
+    "outputs": {
+        "items/equipment/amulet/copper_necklace": 1,
+        "items/ingredient/materials/jewelers_kit": 1
+    }
+}

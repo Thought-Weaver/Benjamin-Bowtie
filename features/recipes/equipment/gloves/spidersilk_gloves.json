@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/gloves/spidersilk_gloves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Spidersilk Gloves",
+    "value": 80,
+    "inputs": {
+        "items/ingredient/materials/spidersilk_bolt": 1,
+        "items/ingredient/materials/leather_scraps": 2
+    },
+    "outputs": {
+        "items/equipment/gloves/spidersilk_gloves": 1
+    }
+}

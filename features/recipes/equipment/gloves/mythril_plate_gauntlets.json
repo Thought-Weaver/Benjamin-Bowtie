@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/gloves/mythril_plate_gauntlets",
+    "icon": "\uD83E\uDD7E",
+    "name": "Mythril Plate Gauntlets",
+    "value": 9100,
+    "inputs": {
+        "items/ingredient/materials/mythril_ingot": 5,
+        "items/ingredient/materials/thick_leather": 6
+    },
+    "outputs": {
+        "items/equipment/gloves/mythril_plate_gauntlets": 1
+    }
+}

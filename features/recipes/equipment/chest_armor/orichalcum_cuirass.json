@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/chest_armor/orichalcum_cuirass",
+    "icon": "\uD83C\uDFBD",
+    "name": "Orichalcum Cuirass",
+    "value": 6200,
+    "inputs": {
+        "items/ingredient/materials/orichalcum_ingot": 10,
+        "items/ingredient/materials/leather": 3
+    },
+    "outputs": {
+        "items/equipment/chest_armor/orichalcum_cuirass": 1
+    }
+}

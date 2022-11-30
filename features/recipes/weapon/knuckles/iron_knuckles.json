@@ -1,0 +1,15 @@
+{
+    "key": "recipes/weapon/knuckles/iron_knuckles",
+    "icon": "\uD83C\uDF62",
+    "name": "Iron Knuckles",
+    "value": 500,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 6,
+        "items/ingredient/materials/leather_scraps": 1,
+        "items/ingredient/materials/whetstone": 1
+    },
+    "outputs": {
+        "items/weapon/knuckles/iron_knuckles": 1,
+        "items/ingredient/materials/whetstone": 1
+    }
+}

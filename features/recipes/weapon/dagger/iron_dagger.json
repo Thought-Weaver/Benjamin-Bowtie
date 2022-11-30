@@ -1,0 +1,15 @@
+{
+    "key": "recipes/weapon/dagger/iron_dagger",
+    "icon": "\uD83D\uDDE1\uFE0F",
+    "name": "Iron Dagger",
+    "value": 95,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 1,
+        "items/ingredient/materials/leather_scraps": 1,
+        "items/ingredient/materials/whetstone": 1
+    },
+    "outputs": {
+        "items/weapon/dagger/iron_dagger": 1,
+        "items/ingredient/materials/whetstone": 1
+    }
+}

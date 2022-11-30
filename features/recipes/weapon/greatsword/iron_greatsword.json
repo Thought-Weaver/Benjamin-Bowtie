@@ -1,0 +1,15 @@
+{
+    "key": "recipes/weapon/greatsword/iron_greatsword",
+    "icon": "\u2694\uFE0F",
+    "name": "Iron Greatsword",
+    "value": 415,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 5,
+        "items/ingredient/materials/leather": 1,
+        "items/ingredient/materials/whetstone": 1
+    },
+    "outputs": {
+        "items/weapon/greatsword/iron_greatsword": 1,
+        "items/ingredient/materials/whetstone": 1
+    }
+}

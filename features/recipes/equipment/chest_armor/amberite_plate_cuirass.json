@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/chest_armor/amberite_plate_cuirass",
+    "icon": "\uD83D\uDC55",
+    "name": "Amberite Plate Cuirass",
+    "value": 16600,
+    "inputs": {
+        "items/ingredient/materials/amberite_ingot": 25,
+        "items/ingredient/materials/thick_leather": 6
+    },
+    "outputs": {
+        "items/equipment/chest_armor/amberite_plate_cuirass": 1
+    }
+}

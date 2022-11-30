@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/leggings/iron_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Iron Leggings",
+    "value": 400,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 5,
+        "items/ingredient/materials/leather": 1
+    },
+    "outputs": {
+        "items/equipment/leggings/iron_leggings": 1
+    }
+}

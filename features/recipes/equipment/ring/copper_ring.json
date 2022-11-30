@@ -1,0 +1,14 @@
+{
+    "key": "recipes/equipment/ring/copper_ring",
+    "icon": "\uD83D\uDC8D",
+    "name": "Copper Ring",
+    "value": 130,
+    "inputs": {
+        "items/ingredient/materials/copper_ingot": 1,
+        "items/ingredient/materials/jewelers_kit": 1
+    },
+    "outputs": {
+        "items/equipment/ring/copper_ring": 1,
+        "items/ingredient/materials/jewelers_kit": 1
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/chest_armor/silver_plate_cuirass",
+    "icon": "\uD83D\uDC55",
+    "name": "Silver Plate Cuirass",
+    "value": 6900,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 25,
+        "items/ingredient/materials/thick_leather": 6
+    },
+    "outputs": {
+        "items/equipment/chest_armor/silver_plate_cuirass": 1
+    }
+}

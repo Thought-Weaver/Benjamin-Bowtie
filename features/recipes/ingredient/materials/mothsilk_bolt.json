@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/mothsilk_bolt",
+    "icon": "\uD83D\uDD78\uFE0F",
+    "name": "Mothsilk Bolt",
+    "value": 80,
+    "inputs": {
+        "items/ingredient/materials/mothsilk": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/mothsilk_bolt": 1
+    }
+}

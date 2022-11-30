@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/leggings/mythril_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Mythril Leggings",
+    "value": 8000,
+    "inputs": {
+        "items/ingredient/materials/mythril_ingot": 5,
+        "items/ingredient/materials/leather": 1
+    },
+    "outputs": {
+        "items/equipment/leggings/mythril_leggings": 1
+    }
+}

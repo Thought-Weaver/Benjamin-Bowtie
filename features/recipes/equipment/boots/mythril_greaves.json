@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/boots/mythril_greaves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Mythril Greaves",
+    "value": 4700,
+    "inputs": {
+        "items/ingredient/materials/mythril_ingot": 3,
+        "items/ingredient/materials/leather": 1
+    },
+    "outputs": {
+        "items/equipment/boots/mythril_greaves": 1
+    }
+}

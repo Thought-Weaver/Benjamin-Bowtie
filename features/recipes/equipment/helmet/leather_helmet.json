@@ -1,0 +1,12 @@
+{
+    "key": "recipes/equipment/helmet/leather_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Leather Helmet",
+    "value": 260,
+    "inputs": {
+        "items/ingredient/materials/leather": 4
+    },
+    "outputs": {
+        "items/equipment/helmet/leather_helmet": 1
+    }
+}

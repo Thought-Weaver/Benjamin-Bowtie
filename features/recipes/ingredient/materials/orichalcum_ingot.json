@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/orichalcum_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Orichalcum Ingot",
+    "value": 1100,
+    "inputs": {
+        "items/ingredient/materials/orichalcum_ore": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/orichalcum_ingot": 1
+    }
+}

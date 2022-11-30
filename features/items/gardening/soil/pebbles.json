@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/soil/pebbles",
+    "icon": "\uD83E\uDEA8",
+    "name": "Pebbles",
+    "value": 15,
+    "rarity": "Common",
+    "description": "When set as the soil for a garden plot, stops the plot from ticking, effectively freezing the plant to be harvested later; plants with this soil cannot mutate.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Soil"],
+    "state_tags": [],
+    "count": 1
+}

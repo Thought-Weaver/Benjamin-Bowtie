@@ -1,0 +1,28 @@
+{
+    "key": "items/weapon/knuckles/iron_knuckles",
+    "icon": "\uD83E\uDD4A",
+    "name": "Iron Knuckles",
+    "value": 150,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Knuckles", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 15,
+    "weapon_stats": {
+        "min_damage": 3,
+        "max_damage": 6
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "StrMod",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/leggings/mythril_plate_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Mythril Plate Leggings",
+    "value": 19200,
+    "inputs": {
+        "items/ingredient/materials/mythril_ingot": 12,
+        "items/ingredient/materials/thick_leather": 4
+    },
+    "outputs": {
+        "items/equipment/leggings/mythril_plate_leggings": 1
+    }
+}

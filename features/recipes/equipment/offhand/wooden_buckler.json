@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/offhand/wooden_buckler",
+    "icon": "\uD83E\uDD7E",
+    "name": "Wooden Buckler",
+    "value": 350,
+    "inputs": {
+        "items/ingredient/herbs/wrathbark": 4,
+        "items/ingredient/materials/leather": 2
+    },
+    "outputs": {
+        "items/equipment/offhand/wooden_buckler": 1
+    }
+}

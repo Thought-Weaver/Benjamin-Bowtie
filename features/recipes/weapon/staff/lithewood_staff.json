@@ -1,0 +1,14 @@
+{
+    "key": "recipes/weapon/staff/lithewood_staff",
+    "icon": "\uD83E\uDE84",
+    "name": "Lithewood Staff",
+    "value": 220,
+    "inputs": {
+        "items/ingredient/herbs/lithewood": 1,
+        "items/ingredient/materials/leather_scraps": 1,
+        "items/ingredient/materials/quartz": 1
+    },
+    "outputs": {
+        "items/weapon/staff/lithewood_staff": 1
+    }
+}

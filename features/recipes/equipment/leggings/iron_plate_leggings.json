@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/leggings/iron_plate_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Iron Plate Leggings",
+    "value": 1900,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 12,
+        "items/ingredient/materials/thick_leather": 4
+    },
+    "outputs": {
+        "items/equipment/leggings/iron_plate_leggings": 1
+    }
+}

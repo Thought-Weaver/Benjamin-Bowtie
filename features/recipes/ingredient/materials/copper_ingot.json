@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/copper_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Copper Ingot",
+    "value": 110,
+    "inputs": {
+        "items/ingredient/materials/copper_ore": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/copper_ingot": 1
+    }
+}

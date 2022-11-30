@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/leggings/amberite_plate_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Amberite Plate Leggings",
+    "value": 8300,
+    "inputs": {
+        "items/ingredient/materials/amberite_ingot": 12,
+        "items/ingredient/materials/thick_leather": 4
+    },
+    "outputs": {
+        "items/equipment/leggings/amberite_plate_leggings": 1
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/boots/leather_boots",
+    "icon": "\uD83E\uDD7E",
+    "name": "Leather Boots",
+    "value": 180,
+    "inputs": {
+        "items/ingredient/materials/leather": 2,
+        "items/ingredient/materials/leather_scraps": 1
+    },
+    "outputs": {
+        "items/equipment/boots/leather_boots": 1
+    }
+}

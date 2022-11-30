@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/gloves/amberite_gauntlets",
+    "icon": "\uD83E\uDD7E",
+    "name": "Amberite Gauntlets",
+    "value": 1400,
+    "inputs": {
+        "items/ingredient/materials/amberite_ingot": 2,
+        "items/ingredient/materials/leather": 3
+    },
+    "outputs": {
+        "items/equipment/gloves/amberite_gauntlets": 1
+    }
+}

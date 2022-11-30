@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/boots/orichalcum_greaves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Orichalcum Greaves",
+    "value": 3350,
+    "inputs": {
+        "items/ingredient/materials/orichalcum_ingot": 3,
+        "items/ingredient/materials/leather": 1
+    },
+    "outputs": {
+        "items/equipment/boots/orichalcum_greaves": 1
+    }
+}

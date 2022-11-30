@@ -1,0 +1,14 @@
+{
+    "key": "recipes/weapon/staff/wrathbark_staff",
+    "icon": "\uD83E\uDE84",
+    "name": "Wrathbark Staff",
+    "value": 300,
+    "inputs": {
+        "items/ingredient/herbs/wrathbark": 2,
+        "items/ingredient/materials/leather_scraps": 1,
+        "items/ingredient/materials/quartz": 1
+    },
+    "outputs": {
+        "items/weapon/staff/wrathbark_staff": 1
+    }
+}

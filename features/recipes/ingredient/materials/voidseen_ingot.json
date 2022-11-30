@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/voidseen_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Voidseen Ingot",
+    "value": 3800,
+    "inputs": {
+        "items/ingredient/materials/voidseen_ore": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/voidseen_ingot": 1
+    }
+}

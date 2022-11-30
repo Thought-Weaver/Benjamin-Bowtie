@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/boots/mythril_plate_greaves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Mythril Plate Greaves",
+    "value": 12600,
+    "inputs": {
+        "items/ingredient/materials/mythril_ingot": 8,
+        "items/ingredient/materials/thick_leather": 2
+    },
+    "outputs": {
+        "items/equipment/boots/mythril_plate_greaves": 1
+    }
+}

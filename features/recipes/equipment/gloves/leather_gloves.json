@@ -1,0 +1,12 @@
+{
+    "key": "recipes/equipment/gloves/leather_gloves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Leather Gloves",
+    "value": 140,
+    "inputs": {
+        "items/ingredient/materials/leather": 2
+    },
+    "outputs": {
+        "items/equipment/gloves/leather_gloves": 1
+    }
+}

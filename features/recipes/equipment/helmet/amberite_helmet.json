@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/helmet/amberite_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Amberite Helmet",
+    "value": 2550,
+    "inputs": {
+        "items/ingredient/materials/amberite_ingot": 4,
+        "items/ingredient/materials/leather": 2
+    },
+    "outputs": {
+        "items/equipment/helmet/amberite_helmet": 1
+    }
+}

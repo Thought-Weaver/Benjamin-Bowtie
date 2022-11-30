@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/leggings/silver_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Silver Leggings",
+    "value": 1150,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 5,
+        "items/ingredient/materials/leather": 1
+    },
+    "outputs": {
+        "items/equipment/leggings/silver_leggings": 1
+    }
+}

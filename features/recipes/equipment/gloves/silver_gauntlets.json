@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/gloves/silver_gauntlets",
+    "icon": "\uD83E\uDD7E",
+    "name": "Silver Gauntlets",
+    "value": 620,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 2,
+        "items/ingredient/materials/leather": 3
+    },
+    "outputs": {
+        "items/equipment/gloves/silver_gauntlets": 1
+    }
+}

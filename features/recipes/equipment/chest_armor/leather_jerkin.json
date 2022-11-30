@@ -1,0 +1,12 @@
+{
+    "key": "recipes/equipment/chest_armor/leather_jerkin",
+    "icon": "\uD83C\uDFBD",
+    "name": "Leather Jerkin",
+    "value": 400,
+    "inputs": {
+        "items/ingredient/materials/leather": 6
+    },
+    "outputs": {
+        "items/equipment/chest_armor/leather_jerkin": 1
+    }
+}

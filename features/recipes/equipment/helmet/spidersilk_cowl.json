@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/helmet/spidersilk_cowl",
+    "icon": "\uD83C\uDFA9",
+    "name": "Spidersilk Cowl",
+    "value": 60,
+    "inputs": {
+        "items/ingredient/materials/spidersilk_bolt": 1,
+        "items/ingredient/materials/leather_scraps": 1
+    },
+    "outputs": {
+        "items/equipment/helmet/spidersilk_cowl": 1
+    }
+}

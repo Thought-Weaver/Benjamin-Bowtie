@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/amberite_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Amberite Ingot",
+    "value": 650,
+    "inputs": {
+        "items/ingredient/materials/amberite_ore": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/amberite_ingot": 1
+    }
+}

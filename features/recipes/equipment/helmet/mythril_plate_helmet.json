@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/helmet/mythril_plate_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Mythril Plate Helmet",
+    "value": 16100,
+    "inputs": {
+        "items/ingredient/materials/mythril_ingot": 10,
+        "items/ingredient/materials/thick_leather": 4
+    },
+    "outputs": {
+        "items/equipment/helmet/mythril_plate_helmet": 1
+    }
+}

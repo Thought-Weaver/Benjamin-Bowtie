@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/silver_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Silver Ingot",
+    "value": 220,
+    "inputs": {
+        "items/ingredient/materials/silver_ore": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/silver_ingot": 1
+    }
+}

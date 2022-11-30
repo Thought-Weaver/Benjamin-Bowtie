@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/helmet/mothsilk_cowl",
+    "icon": "\uD83C\uDFA9",
+    "name": "Mothsilk Cowl",
+    "value": 95,
+    "inputs": {
+        "items/ingredient/materials/mothsilk_bolt": 1,
+        "items/ingredient/materials/leather_scraps": 1
+    },
+    "outputs": {
+        "items/equipment/helmet/mothsilk_cowl": 1
+    }
+}

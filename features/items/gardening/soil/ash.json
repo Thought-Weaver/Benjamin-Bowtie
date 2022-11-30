@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/soil/ash",
+    "icon": "\uD83D\uDFE4",
+    "name": "Ash",
+    "value": 12,
+    "rarity": "Common",
+    "description": "When set as the soil for a garden plot, doubles the chance for mutations to occur.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Soil"],
+    "state_tags": [],
+    "count": 1
+}

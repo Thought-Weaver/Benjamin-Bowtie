@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/boots/mothsilk_boots",
+    "icon": "\uD83E\uDD7E",
+    "name": "Mothsilk Boots",
+    "value": 160,
+    "inputs": {
+        "items/ingredient/materials/mothsilk_bolt": 1,
+        "items/ingredient/materials/leather": 1
+    },
+    "outputs": {
+        "items/equipment/boots/mothsilk_boots": 1
+    }
+}

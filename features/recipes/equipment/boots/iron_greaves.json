@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/boots/iron_greaves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Iron Greaves",
+    "value": 280,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 3,
+        "items/ingredient/materials/leather": 1
+    },
+    "outputs": {
+        "items/equipment/boots/iron_greaves": 1
+    }
+}

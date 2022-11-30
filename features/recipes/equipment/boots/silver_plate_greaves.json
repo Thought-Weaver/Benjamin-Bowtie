@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/boots/silver_plate_greaves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Silver Plate Greaves",
+    "value": 2250,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 8,
+        "items/ingredient/materials/thick_leather": 2
+    },
+    "outputs": {
+        "items/equipment/boots/silver_plate_greaves": 1
+    }
+}

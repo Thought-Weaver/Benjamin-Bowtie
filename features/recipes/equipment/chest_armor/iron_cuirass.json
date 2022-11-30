@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/chest_armor/iron_cuirass",
+    "icon": "\uD83C\uDFBD",
+    "name": "Iron Cuirass",
+    "value": 860,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 10,
+        "items/ingredient/materials/leather": 3
+    },
+    "outputs": {
+        "items/equipment/chest_armor/iron_cuirass": 1
+    }
+}

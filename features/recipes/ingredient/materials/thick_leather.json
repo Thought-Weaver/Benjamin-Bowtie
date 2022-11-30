@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/thick_leather",
+    "icon": "\uD83E\uDDF5",
+    "name": "Thick Leather",
+    "value": 280,
+    "inputs": {
+        "items/ingredient/materials/leather": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/thick_leather": 1
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/spidersilk_bolt",
+    "icon": "\uD83D\uDD78\uFE0F",
+    "name": "Spidersilk Bolt",
+    "value": 45,
+    "inputs": {
+        "items/ingredient/materials/spidersilk": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/spidersilk_bolt": 1
+    }
+}

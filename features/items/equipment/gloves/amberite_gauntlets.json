@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/gloves/amberite_gauntlets",
+    "icon": "\uD83E\uDDE4",
+    "name": "Amberite Gauntlets",
+    "value": 470,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Gloves"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 25,
+    "armor_stats": {
+        "armor_amount": 12
+    }
+}

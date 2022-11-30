@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/helmet/silver_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Silver Helmet",
+    "value": 775,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 4,
+        "items/ingredient/materials/leather": 2
+    },
+    "outputs": {
+        "items/equipment/helmet/silver_helmet": 1
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "key": "recipes/equipment/amulet/gold_necklace",
+    "icon": "\uD83D\uDCFF",
+    "name": "Gold Necklace",
+    "value": 680,
+    "inputs": {
+        "items/ingredient/materials/gold_ingot": 2,
+        "items/ingredient/materials/jewelers_kit": 1
+    },
+    "outputs": {
+        "items/equipment/amulet/gold_necklace": 1,
+        "items/ingredient/materials/jewelers_kit": 1
+    }
+}

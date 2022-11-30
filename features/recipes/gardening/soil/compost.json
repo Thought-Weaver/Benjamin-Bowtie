@@ -1,0 +1,12 @@
+{
+    "key": "recipes/gardening/soil/compost",
+    "icon": "\uD83C\uDF42",
+    "name": "Compost",
+    "value": 18,
+    "inputs": {
+        "items/misc/junk/clump_of_leaves": 5
+    },
+    "outputs": {
+        "items/gardening/soil/compost": 1
+    }
+}

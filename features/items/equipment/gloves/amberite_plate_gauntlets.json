@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/gloves/amberite_plate_gauntlets",
+    "icon": "\uD83E\uDDE4",
+    "name": "Amberite Plate Gauntlets",
+    "value": 1530,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Gloves"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 50,
+    "armor_stats": {
+        "armor_amount": 50
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/helmet/silver_plate_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Silver Plate Helmet",
+    "value": 3200,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 10,
+        "items/ingredient/materials/thick_leather": 4
+    },
+    "outputs": {
+        "items/equipment/helmet/silver_plate_helmet": 1
+    }
+}

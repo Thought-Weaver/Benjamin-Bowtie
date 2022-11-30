@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/soil/loam",
+    "icon": "\uD83D\uDFE4",
+    "name": "Loam",
+    "value": 5,
+    "rarity": "Common",
+    "description": "When set as the soil for a garden plot, increases the maximum number of seeds you can receive by 1.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Soil"],
+    "state_tags": [],
+    "count": 1
+}

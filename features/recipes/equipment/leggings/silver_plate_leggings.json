@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/leggings/silver_plate_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Silver Plate Leggings",
+    "value": 3600,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 12,
+        "items/ingredient/materials/thick_leather": 4
+    },
+    "outputs": {
+        "items/equipment/leggings/silver_plate_leggings": 1
+    }
+}

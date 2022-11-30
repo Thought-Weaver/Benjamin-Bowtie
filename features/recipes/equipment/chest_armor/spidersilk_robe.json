@@ -1,0 +1,12 @@
+{
+    "key": "recipes/equipment/chest_armor/spidersilk_robe",
+    "icon": "\uD83D\uDC58",
+    "name": "Spidersilk Robe",
+    "value": 165,
+    "inputs": {
+        "items/ingredient/materials/spidersilk_bolt": 4
+    },
+    "outputs": {
+        "items/equipment/chest_armor/spidersilk_robe": 1
+    }
+}

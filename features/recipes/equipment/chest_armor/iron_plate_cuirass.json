@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/chest_armor/iron_plate_cuirass",
+    "icon": "\uD83D\uDC55",
+    "name": "Iron Plate Cuirass",
+    "value": 3300,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 25,
+        "items/ingredient/materials/thick_leather": 6
+    },
+    "outputs": {
+        "items/equipment/chest_armor/iron_plate_cuirass": 1
+    }
+}

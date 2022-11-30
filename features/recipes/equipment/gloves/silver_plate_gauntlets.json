@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/gloves/silver_plate_gauntlets",
+    "icon": "\uD83E\uDD7E",
+    "name": "Silver Plate Gauntlets",
+    "value": 2700,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 5,
+        "items/ingredient/materials/thick_leather": 6
+    },
+    "outputs": {
+        "items/equipment/gloves/silver_plate_gauntlets": 1
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "key": "recipes/equipment/ring/gold_ring",
+    "icon": "\uD83D\uDC8D",
+    "name": "Gold Ring",
+    "value": 350,
+    "inputs": {
+        "items/ingredient/materials/gold_ingot": 1,
+        "items/ingredient/materials/jewelers_kit": 1
+    },
+    "outputs": {
+        "items/equipment/ring/gold_ring": 1,
+        "items/ingredient/materials/jewelers_kit": 1
+    }
+}

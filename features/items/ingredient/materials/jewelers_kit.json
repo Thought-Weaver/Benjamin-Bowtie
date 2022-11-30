@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/materials/jewelers_kit",
+    "icon": "\uD83D\uDCBC",
+    "name": "Jewelers Kit",
+    "value": 500,
+    "rarity": "Epic",
+    "description": "Used for crafting jewelry. Is not consumed during crafting and can be reused.",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Crafting_Material"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/gloves/mythril_plate_gauntlets",
+    "icon": "\uD83E\uDDE4",
+    "name": "Mythril Plate Gauntlets",
+    "value": 3100,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Gloves"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 60,
+    "armor_stats": {
+        "armor_amount": 100
+    }
+}

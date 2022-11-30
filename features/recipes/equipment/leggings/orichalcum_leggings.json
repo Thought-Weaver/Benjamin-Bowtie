@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/leggings/orichalcum_leggings",
+    "icon": "\uD83D\uDC56",
+    "name": "Orichalcum Leggings",
+    "value": 5325,
+    "inputs": {
+        "items/ingredient/materials/orichalcum_ingot": 5,
+        "items/ingredient/materials/leather": 1
+    },
+    "outputs": {
+        "items/equipment/leggings/orichalcum_leggings": 1
+    }
+}

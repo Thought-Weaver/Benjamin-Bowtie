@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/helmet/mythril_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Mythril Helmet",
+    "value": 6200,
+    "inputs": {
+        "items/ingredient/materials/mythril_ingot": 4,
+        "items/ingredient/materials/leather": 2
+    },
+    "outputs": {
+        "items/equipment/helmet/mythril_helmet": 1
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/gloves/orichalcum_gauntlets",
+    "icon": "\uD83E\uDDE4",
+    "name": "Orichalcum Gauntlets",
+    "value": 770,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Gloves"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 35,
+    "armor_stats": {
+        "armor_amount": 20
+    }
+}

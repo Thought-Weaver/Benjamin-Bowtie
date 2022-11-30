@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/mythril_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Mythril Ingot",
+    "value": 1600,
+    "inputs": {
+        "items/ingredient/materials/mythril_ore": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/mythril_ingot": 1
+    }
+}

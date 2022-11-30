@@ -1,0 +1,14 @@
+{
+    "key": "recipes/equipment/amulet/silver_necklace",
+    "icon": "\uD83D\uDCFF",
+    "name": "Silver Necklace",
+    "value": 475,
+    "inputs": {
+        "items/ingredient/materials/silver_ingot": 2,
+        "items/ingredient/materials/jewelers_kit": 1
+    },
+    "outputs": {
+        "items/equipment/amulet/silver_necklace": 1,
+        "items/ingredient/materials/jewelers_kit": 1
+    }
+}

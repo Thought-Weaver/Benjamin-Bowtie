@@ -1,0 +1,16 @@
+{
+    "key": "items/equipment/gloves/iron_gauntlets",
+    "icon": "\uD83E\uDDE4",
+    "name": "Iron Gauntlets",
+    "value": 115,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Gloves"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 10,
+    "armor_stats": {
+        "armor_amount": 5
+    }
+}

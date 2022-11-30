@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/gold_ingot",
+    "icon": "\uD83E\uDDF1",
+    "name": "Gold Ingot",
+    "value": 325,
+    "inputs": {
+        "items/ingredient/materials/gold_ore": 4
+    },
+    "outputs": {
+        "items/ingredient/materials/gold_ingot": 1
+    }
+}

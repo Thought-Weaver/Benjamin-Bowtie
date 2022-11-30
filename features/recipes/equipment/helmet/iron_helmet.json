@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/helmet/iron_helmet",
+    "icon": "\uD83C\uDFA9",
+    "name": "Iron Helmet",
+    "value": 400,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 4,
+        "items/ingredient/materials/leather": 2
+    },
+    "outputs": {
+        "items/equipment/helmet/iron_helmet": 1
+    }
+}

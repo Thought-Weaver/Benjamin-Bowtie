@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/chest_armor/mythril_cuirass",
+    "icon": "\uD83C\uDFBD",
+    "name": "Mythril Cuirass",
+    "value": 15200,
+    "inputs": {
+        "items/ingredient/materials/mythril_ingot": 10,
+        "items/ingredient/materials/leather": 3
+    },
+    "outputs": {
+        "items/equipment/chest_armor/mythril_cuirass": 1
+    }
+}

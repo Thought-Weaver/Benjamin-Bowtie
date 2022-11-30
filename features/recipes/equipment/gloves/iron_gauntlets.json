@@ -1,0 +1,13 @@
+{
+    "key": "recipes/equipment/gloves/iron_gauntlets",
+    "icon": "\uD83E\uDD7E",
+    "name": "Iron Gauntlets",
+    "value": 335,
+    "inputs": {
+        "items/ingredient/materials/iron_ingot": 2,
+        "items/ingredient/materials/leather": 3
+    },
+    "outputs": {
+        "items/equipment/gloves/iron_gauntlets": 1
+    }
+}
