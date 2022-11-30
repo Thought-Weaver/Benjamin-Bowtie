@@ -7,6 +7,8 @@ from strenum import StrEnum
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
+from features.house.house import House
+from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.npcs.npc import NPC, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, CounterstrikeIII, EvadeIII, HeavySlamII, PiercingStrikeIII, PressTheAdvantageI, ScarArmorII, SecondWindIII, WhirlwindIII
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
@@ -25,6 +27,7 @@ if TYPE_CHECKING:
 
 class Intent(StrEnum):
     Wares = "Wares"
+    Patterns = "Patterns"
 
 
 class EnterWaresButton(discord.ui.Button):
@@ -39,6 +42,21 @@ class EnterWaresButton(discord.ui.Button):
 
         if view.get_user() == interaction.user:
             response = view.enter_wares()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class EnterPatternsButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Browse Patterns", row=1)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: BlacksmithView = self.view
+
+        if view.get_user() == interaction.user:
+            response = view.enter_patterns()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -74,6 +92,22 @@ class WaresDisplayButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
+class PatternsDisplayButton(discord.ui.Button):
+    def __init__(self, pattern: Recipe, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{pattern.name}", row=row, emoji=pattern.icon)
+        
+        self._pattern = pattern
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: BlacksmithView = self.view
+        if interaction.user == view.get_user():
+            response = view.select_pattern(self._pattern)
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class ConfirmButton(discord.ui.Button):
     def __init__(self, row: int):
         super().__init__(style=discord.ButtonStyle.green, label="Confirm", row=row)
@@ -99,11 +133,45 @@ class BlacksmithView(discord.ui.View):
 
         self._blacksmith: BlacksmithView = database[str(guild_id)]["npcs"][NPCRoles.Blacksmith]
         self._wares: List[Item] = [
-            LOADED_ITEMS.get_new_item(ItemKey.BasicDagger),
-            LOADED_ITEMS.get_new_item(ItemKey.BasicSword)
+            LOADED_ITEMS.get_new_item(ItemKey.IronDagger),
+            LOADED_ITEMS.get_new_item(ItemKey.IronSword),
+            LOADED_ITEMS.get_new_item(ItemKey.IronOre),
+            LOADED_ITEMS.get_new_item(ItemKey.CopperOre),
+            LOADED_ITEMS.get_new_item(ItemKey.Mothsilk),
+            LOADED_ITEMS.get_new_item(ItemKey.Spidersilk),
+            LOADED_ITEMS.get_new_item(ItemKey.Whetstone),
+            LOADED_ITEMS.get_new_item(ItemKey.JewelersKit)
         ]
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1
+
+        self._patterns: List[Recipe] = [
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronIngot),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.CopperIngot),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.MothsilkBolt),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.SpidersilkBolt),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronDagger),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronGreatsword),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronKnuckles),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronSpear),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LithewoodStaff),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.WrathbarkStaff),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronSword),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.CopperRing),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.CopperNecklace),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LeatherHelmet),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LeatherJerkin),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LeatherGloves),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LeatherLeggings),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.LeatherBoots),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronHelmet),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronCuirass),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronGauntlets),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronLeggings),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.IronGreaves),
+            LOADED_RECIPES.get_new_recipe(RecipeKey.WoodenBuckler)
+        ]
+        self._selected_pattern: (Recipe | None) = None
 
         self._intent: (Intent | None) = None
 
@@ -241,6 +309,105 @@ class BlacksmithView(discord.ui.View):
         self._get_wares_page_buttons()
         return self.get_embed_for_intent()
 
+    def display_pattern_info(self):
+        player: Player = self._get_player()
+        if self._selected_pattern is None:
+            self._get_patterns_page_buttons()
+            
+            return Embed(
+                title="Browse Patterns",
+                description=(
+                    f"You have {player.get_inventory().get_coins_str()}.\n\n"
+                    "Navigate through available recipes using the Prev and Next buttons.\n\n"
+                    "*Error: Something about that recipe changed or it's no longer available.*"
+                )
+            )
+
+        actual_cost: int = int(self._selected_pattern.value * self._COST_ADJUST)
+        actual_cost_str: str = f"{actual_cost} coin" if actual_cost == 1 else f"{actual_cost} coins"
+        return Embed(
+            title="Browse Patterns",
+            description=(
+                f"You have {player.get_inventory().get_coins_str()}.\n\n"
+                f"──────────\n{self._selected_pattern.get_name_and_icon()}\n\n**Price: {actual_cost_str}**\n──────────\n\n"
+                "Navigate through available recipes using the Prev and Next buttons."
+            )
+        )
+
+    def select_pattern(self, pattern: Recipe):
+        self._selected_pattern = pattern
+
+        self._get_patterns_page_buttons()
+        return self.display_pattern_info()
+
+    def _get_patterns_page_buttons(self):
+        self.clear_items()
+        
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        house: House = player.get_house()
+        all_slots = list(filter(lambda r: r not in house.crafting_recipes, self._patterns))
+
+        page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
+        for i, pattern in enumerate(page_slots):
+            self.add_item(PatternsDisplayButton(pattern, i))
+        if self._page != 0:
+            self.add_item(PrevButton(min(4, len(page_slots))))
+        if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
+            self.add_item(NextButton(min(4, len(page_slots))))
+        
+        if self._selected_pattern is not None:
+            actual_value: int = int(self._selected_pattern.value * self._COST_ADJUST)
+            if inventory.get_coins() >= actual_value:
+                self.add_item(ConfirmButton(min(4, len(page_slots))))
+        self.add_item(ExitButton(min(4, len(page_slots))))
+
+    def _purchase_pattern(self):
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        house: House = player.get_house()
+        if self._selected_pattern is not None:
+            actual_value: int = int(self._selected_pattern.value * self._COST_ADJUST)
+            if inventory.get_coins() >= actual_value:
+                inventory.remove_coins(actual_value)
+                house.crafting_recipes.append(LOADED_RECIPES.get_new_recipe(self._selected_pattern.key))
+                self._get_patterns_page_buttons()
+
+                return Embed(
+                    title="Browse Patterns",
+                    description=(
+                        f"You have {inventory.get_coins_str()}.\n\n"
+                        "Navigate through available recipes using the Prev and Next buttons.\n\n"
+                        f"*You purchased {self._selected_pattern.get_name_and_icon()}!*"
+                    )
+                )
+            else:
+                self._get_patterns_page_buttons()
+
+                return Embed(
+                    title="Browse Patterns",
+                    description=(
+                        f"You have {inventory.get_coins_str()}.\n\n"
+                        "Navigate through available recipes using the Prev and Next buttons.\n\n"
+                        f"*Error: You don't have enough coins to buy that!*"
+                    )
+                )
+
+        self._get_patterns_page_buttons()
+        return Embed(
+            title="Browse Patterns",
+            description=(
+                f"You have {inventory.get_coins_str()}.\n\n"
+                "Navigate through available recipes using the Prev and Next buttons.\n\n"
+                "*Error: Something about that recipe changed or it's no longer available.*"
+            )
+        )
+
+    def enter_patterns(self):
+        self._intent = Intent.Patterns
+        self._get_patterns_page_buttons()
+        return self.get_embed_for_intent()
+
     def confirm_using_intent(self):
         if self._intent == Intent.Wares:
             result = self._purchase_item()
@@ -250,6 +417,13 @@ class BlacksmithView(discord.ui.View):
             self._get_wares_page_buttons()
 
             return result
+        if self._intent == Intent.Patterns:
+            result = self._purchase_pattern()
+
+            self._selected_pattern = None
+            self._get_patterns_page_buttons()
+
+            return result
         return self.get_initial_embed()
 
     def next_page(self):
@@ -257,9 +431,12 @@ class BlacksmithView(discord.ui.View):
 
         self._selected_item = None
         self._selected_item_index = -1
+        self._selected_pattern = None
 
         if self._intent == Intent.Wares:
             self._get_wares_page_buttons()
+        if self._intent == Intent.Patterns:
+            self._get_patterns_page_buttons()
 
         return self.get_embed_for_intent()
 
@@ -268,9 +445,12 @@ class BlacksmithView(discord.ui.View):
 
         self._selected_item = None
         self._selected_item_index = -1
+        self._selected_pattern = None
 
         if self._intent == Intent.Wares:
             self._get_wares_page_buttons()
+        if self._intent == Intent.Patterns:
+            self._get_patterns_page_buttons()
 
         return self.get_embed_for_intent()
 
@@ -280,6 +460,7 @@ class BlacksmithView(discord.ui.View):
 
         self._selected_item = None
         self._selected_item_index = -1
+        self._selected_pattern = None
 
         self.show_initial_buttons()
         return self.get_initial_embed()

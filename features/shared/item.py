@@ -53,7 +53,6 @@ class StateTag(Enum):
 class ItemKey(StrEnum):
     # Fishing Results
     AncientVase = "items/valuable/ancient_vase"
-    BasicBoots = "items/equipment/boots/basic_boots"
     ClumpOfLeaves = "items/misc/junk/clump_of_leaves"
     Conch = "items/misc/junk/conch"
     Crab = "items/creature/fish/crab"
@@ -67,6 +66,7 @@ class ItemKey(StrEnum):
     Shark = "items/creature/fish/shark"
     Shrimp = "items/creature/fish/shrimp"
     Squid = "items/creature/fish/squid"
+    TatteredBoot = "items/misc/junk/tattered_boot"
 
     # Sunless Set
     SunlessSteps = "items/equipment/boots/sunless_steps"
@@ -255,9 +255,149 @@ class ItemKey(StrEnum):
     Turquoise = "items/valuable/gemstone/turquoise"
     Zircon = "items/valuable/gemstone/zircon"
 
+    # Equipment
+    
+    # Amulet
+    CopperNecklace = "items/equipment/amulet/copper_necklace"
+    GoldNecklace = "items/equipment/amulet/gold_necklace"
+    SilverNecklace = "items/equipment/amulet/silver_necklace"
+
+    # Boots
+    AmberiteGreaves = "items/equipment/boots/amberite_greaves"
+    AmberitePlateGreaves = "items/equipment/boots/amberite_plate_greaves"
+    IronGreaves = "items/equipment/boots/iron_greaves"
+    IronPlateGreaves = "items/equipment/boots/iron_plate_greaves"
+    LeatherBoots = "items/equipment/boots/leather_boots"
+    MothsilkBoots = "items/equipment/boots/mothsilk_boots"
+    MythrilGreaves = "items/equipment/boots/mythril_greaves"
+    MythrilPlateGreaves = "items/equipment/boots/mythril_plate_greaves"
+    OrichalcumGreaves = "items/equipment/boots/orichalcum_greaves"
+    OrichalcumPlateGreaves = "items/equipment/boots/orichalcum_plate_greaves"
+    SilverGreaves = "items/equipment/boots/silver_greaves"
+    SilverPlateGreaves = "items/equipment/boots/silver_plate_greaves"
+    SpidersilkBoots = "items/equipment/boots/spidersilk_boots"
+
+    # Chest Armor
+    AmberiteCuirass = "items/equipment/chest_armor/amberite_cuirass"
+    AmberitePlateCuirass = "items/equipment/chest_armor/amberite_plate_cuirass"
+    IronCuirass = "items/equipment/chest_armor/iron_cuirass"
+    IronPlateCuirass = "items/equipment/chest_armor/iron_plate_cuirass"
+    LeatherJerkin = "items/equipment/chest_armor/leather_jerkin"
+    MothsilkRobe = "items/equipment/chest_armor/mothsilk_robe"
+    MythrilCuirass = "items/equipment/chest_armor/mythril_cuirass"
+    MythrilPlateCuirass = "items/equipment/chest_armor/mythril_plate_cuirass"
+    OrichalcumCuirass = "items/equipment/chest_armor/orichalcum_cuirass"
+    OrichalcumPlateCuirass = "items/equipment/chest_armor/orichalcum_plate_cuirass"
+    SilverCuirass = "items/equipment/chest_armor/silver_cuirass"
+    SilverPlateCuirass = "items/equipment/chest_armor/silver_plate_cuirass"
+    SpidersilkRobe = "items/equipment/chest_armor/spidersilk_robe"
+
+    # Gloves
+    AmberiteGauntlets = "items/equipment/gloves/amberite_gauntlets"
+    AmberitePlateGauntlets = "items/equipment/gloves/amberite_plate_gauntlets"
+    IronGauntlets = "items/equipment/gloves/iron_gauntlets"
+    IronPlateGauntlets = "items/equipment/gloves/iron_plate_gauntlets"
+    LeatherGloves = "items/equipment/gloves/leather_gloves"
+    MothsilkGloves = "items/equipment/gloves/mothsilk_gloves"
+    MythrilGauntlets = "items/equipment/gloves/mythril_gauntlets"
+    MythrilPlateGauntlets = "items/equipment/gloves/mythril_plate_gauntlets"
+    OrichalcumGauntlets = "items/equipment/gloves/orichalcum_gauntlets"
+    OrichalcumPlateGauntlets = "items/equipment/gloves/orichalcum_plate_gauntlets"
+    SilverGauntlets = "items/equipment/gloves/silver_gauntlets"
+    SilverPlateGauntlets = "items/equipment/gloves/silver_plate_gauntlets"
+    SpidersilkGloves = "items/equipment/gloves/spidersilk_gloves"
+
+    # Helmet
+    AmberiteHelmet = "items/equipment/helmet/amberite_helmet"
+    AmberitePlateHelmet = "items/equipment/helmet/amberite_plate_helmet"
+    IronHelmet = "items/equipment/helmet/iron_helmet"
+    IronPlateHelmet = "items/equipment/helmet/iron_plate_helmet"
+    LeatherHelmet = "items/equipment/helmet/leather_helmet"
+    MothsilkCowl = "items/equipment/helmet/mothsilk_cowl"
+    MythrilHelmet = "items/equipment/helmet/mythril_helmet"
+    MythrilPlateHelmet = "items/equipment/helmet/mythril_plate_helmet"
+    OrichalcumHelmet = "items/equipment/helmet/orichalcum_helmet"
+    OrichalcumPlateHelmet = "items/equipment/helmet/orichalcum_plate_helmet"
+    SilverHelmet = "items/equipment/helmet/silver_helmet"
+    SilverPlateHelmet = "items/equipment/helmet/silver_plate_helmet"
+    SpidersilkCowl = "items/equipment/helmet/spidersilk_cowl"
+
+    # Leggings
+    AmberiteLeggings = "items/equipment/leggings/amberite_leggings"
+    AmberitePlateLeggings = "items/equipment/leggings/amberite_plate_leggings"
+    IronLeggings = "items/equipment/leggings/iron_leggings"
+    IronPlateLeggings = "items/equipment/leggings/iron_plate_leggings"
+    LeatherLeggings = "items/equipment/leggings/leather_leggings"
+    MythrilLeggings = "items/equipment/leggings/mythril_leggings"
+    MythrilPlateLeggings = "items/equipment/leggings/mythril_plate_leggings"
+    OrichalcumLeggings = "items/equipment/leggings/orichalcum_leggings"
+    OrichalcumPlateLeggings = "items/equipment/leggings/orichalcum_plate_leggings"
+    SilverLeggings = "items/equipment/leggings/silver_leggings"
+    SilverPlateLeggings = "items/equipment/leggings/silver_plate_leggings"
+
+    # Offhand
+    WoodenBuckler = "items/equipment/offhand/wooden_buckler"
+
+    # Rings
+    CopperRing = "items/equipment/ring/copper_ring"
+    GoldRing = "items/equipment/ring/gold_ring"
+    SilverRing = "items/equipment/ring/silver_ring"
+
+    # Gardening
+    Ash = "items/gardening/soil/ash"
+    Clay = "items/gardening/soil/clay"
+    Compost = "items/gardening/soil/compost"
+    Dirt = "items/gardening/soil/dirt"
+    Loam = "items/gardening/soil/loam"
+    Pebbles = "items/gardening/soil/pebbles"
+
+    # Materials
+    AmberiteIngot = "items/ingredient/materials/amberite_ingot"
+    AmberiteOre = "items/ingredient/materials/amberite_ore"
+    CopperIngot = "items/ingredient/materials/copper_ingot"
+    CopperOre = "items/ingredient/materials/copper_ore"
+    GoldIngot = "items/ingredient/materials/gold_ingot"
+    GoldOre = "items/ingredient/materials/gold_ore"
+    IronIngot = "items/ingredient/materials/iron_ingot"
+    IronOre = "items/ingredient/materials/iron_ore"
+    JewelersKit = "items/ingredient/materials/jewelers_kit"
+    Leather = "items/ingredient/materials/leather"
+    LeatherScraps = "items/ingredient/materials/leather_scraps"
+    MothsilkBolt = "items/ingredient/materials/mothsilk_bolt"
+    Mothsilk = "items/ingredient/materials/mothsilk"
+    MythrilIngot = "items/ingredient/materials/mythril_ingot"
+    MythrilOre = "items/ingredient/materials/mythril_ore"
+    OrichalcumIngot = "items/ingredient/materials/orichalcum_ingot"
+    OrichalcumOre = "items/ingredient/materials/orichalcum_ore"
+    SilverIngot = "items/ingredient/materials/silver_ingot"
+    SilverOre = "items/ingredient/materials/silver_ore"
+    SpidersilkBolt = "items/ingredient/materials/spidersilk_bolt"
+    Spidersilk = "items/ingredient/materials/spidersilk"
+    ThickLeather = "items/ingredient/materials/thick_leather"
+    VoidseenIngot = "items/ingredient/materials/voidseen_ingot"
+    VoidseenOre = "items/ingredient/materials/voidseen_ore"
+    Whetstone = "items/ingredient/materials/whetstone"
+
     # Weapons
-    BasicDagger = "items/weapon/dagger/basic_dagger"
-    BasicSword = "items/weapon/sword/basic_sword"
+
+    # Daggers
+    IronDagger = "items/weapon/dagger/iron_dagger"
+
+    # Greatswords
+    IronGreatsword = "items/weapon/greatsword/iron_greatsword"
+
+    # Knuckles
+    IronKnuckles = "items/weapon/knuckles/iron_knuckles"
+    
+    # Spears
+    IronSpear = "items/weapon/spear/iron_spear"
+    
+    # Staves
+    LithewoodStaff = "items/weapon/staff/lithewood_staff"
+    WrathbarkStaff = "items/weapon/staff/wrathbark_staff"
+    
+    # Swords
+    IronSword = "items/weapon/sword/iron_sword"
 
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"

@@ -148,7 +148,9 @@ class GardenPlot():
 
         self.growth_ticks += 1
 
-        if self.growth_ticks == self.seed_data.ticks_until_mature:
+        maturity_adjustment = 1 if self.soil is not None and self.soil.get_key() == ItemKey.Compost else 0
+        adjusted_ticks_until_mature = max(self.seed_data.ticks_until_mature - maturity_adjustment, 1)
+        if self.growth_ticks == adjusted_ticks_until_mature:
             self.plant = LOADED_ITEMS.get_new_item(self.seed_data.result)
         
         if self.growth_ticks >= self.seed_data.ticks_until_death:
@@ -165,7 +167,9 @@ class GardenPlot():
         if self.seed_data is None:
             return False
 
-        return self.growth_ticks >= self.seed_data.ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death
+        maturity_adjustment = 1 if self.soil is not None and self.soil.get_key() == ItemKey.Compost else 0
+        adjusted_ticks_until_mature = max(self.seed_data.ticks_until_mature - maturity_adjustment, 1)
+        return self.growth_ticks >= adjusted_ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death
 
     def plant_seed(self, seed: Item):
         seed_data = SEED_DATA.get(seed.get_key())
@@ -179,8 +183,10 @@ class GardenPlot():
         return f"*Planted {seed.get_full_name()}!*"
 
     def use_item(self, item: Item):
-        # TODO: Implement this when I've figured out the lookup dicts and also designed the various gardening items
-        pass
+        if ClassTag.Gardening.Soil in item.get_class_tags():
+            self.soil = item
+            return f"*Soil changed to {item.get_full_name()}!*"
+        return "*That item can't be used on this plot!*"
 
     def get_icon(self):
         if self.seed_data is None:
@@ -191,10 +197,13 @@ class GardenPlot():
             # sprouting phase
             return "\uD83D\uDFEB"
 
-        if self.growth_ticks >= self.seed_data.ticks_until_sprout and self.growth_ticks < self.seed_data.ticks_until_mature:
+        maturity_adjustment = 1 if self.soil is not None and self.soil.get_key() == ItemKey.Compost else 0
+        adjusted_ticks_until_mature = max(self.seed_data.ticks_until_mature - maturity_adjustment, 1)
+
+        if self.growth_ticks >= self.seed_data.ticks_until_sprout and self.growth_ticks < adjusted_ticks_until_mature:
             return self.seed_data.sprout_icon
-        
-        if self.growth_ticks >= self.seed_data.ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death:
+
+        if self.growth_ticks >= adjusted_ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death:
             return self.seed_data.mature_icon
 
         # Return a question mark
@@ -206,7 +215,10 @@ class GardenPlot():
         
         growth_tick_str = "tick" if self.growth_ticks == 1 else "ticks"
 
-        ticks_until_mature = self.seed_data.ticks_until_mature - self.growth_ticks
+        maturity_adjustment = 1 if self.soil is not None and self.soil.get_key() == ItemKey.Compost else 0
+        adjusted_ticks_until_mature = max(self.seed_data.ticks_until_mature - maturity_adjustment, 1)
+
+        ticks_until_mature = adjusted_ticks_until_mature - self.growth_ticks
         mature_tick_str = "tick" if ticks_until_mature == 1 else "ticks"
         
         ticks_until_death = self.seed_data.ticks_until_death - self.growth_ticks
@@ -577,9 +589,11 @@ class GardenView(discord.ui.View):
         if harvest_result.get_rarity() == Rarity.Legendary:
             stats.garden.legendary_plants_harvested += 1
 
+        max_seed_adjustment = 1 if self._selected_plot.soil is not None and self._selected_plot.soil.get_key() == ItemKey.Loam else 0
+        seed_drop_adjustment = 0.15 if self._selected_plot.soil is not None and self._selected_plot.soil.get_key() == ItemKey.Clay else 0
         num_seeds_to_add = 0
-        for _ in range(seed_data.max_seeds_can_drop):
-            if random.random() < seed_data.chance_to_drop_seed:
+        for _ in range(seed_data.max_seeds_can_drop + max_seed_adjustment):
+            if random.random() < seed_data.chance_to_drop_seed + seed_drop_adjustment:
                 num_seeds_to_add += 1
                 inventory.add_item(LOADED_ITEMS.get_new_item(seed_key))
         seeds_added_str = f" and {num_seeds_to_add} seeds" if num_seeds_to_add > 0 else ""

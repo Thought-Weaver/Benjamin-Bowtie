@@ -251,7 +251,15 @@ class YennaView(discord.ui.View):
             LOADED_ITEMS.get_new_item(ItemKey.ShelterfoilSeed),
             LOADED_ITEMS.get_new_item(ItemKey.SnowdewSeed),
             LOADED_ITEMS.get_new_item(ItemKey.SpeckledCapSpores),
-            LOADED_ITEMS.get_new_item(ItemKey.SungrainSeed)
+            LOADED_ITEMS.get_new_item(ItemKey.SungrainSeed),
+
+            # Soils
+            LOADED_ITEMS.get_new_item(ItemKey.Ash),
+            LOADED_ITEMS.get_new_item(ItemKey.Clay),
+            LOADED_ITEMS.get_new_item(ItemKey.Compost),
+            LOADED_ITEMS.get_new_item(ItemKey.Dirt),
+            LOADED_ITEMS.get_new_item(ItemKey.Loam),
+            LOADED_ITEMS.get_new_item(ItemKey.Pebbles)
         ]
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1

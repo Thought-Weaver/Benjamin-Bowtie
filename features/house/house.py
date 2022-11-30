@@ -16,7 +16,7 @@ from features.mail import MailboxView
 
 from features.shared.constants import MAX_GARDEN_SIZE
 from features.shared.enums import HouseRoom
-from features.shared.item import LOADED_ITEMS
+from features.shared.item import LOADED_ITEMS, ItemKey
 
 from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:
@@ -57,6 +57,9 @@ class House():
             for i, plot in enumerate(self.garden_plots):
                 if plot.seed is not None:
                     continue
+                
+                if plot.soil is not None and plot.soil.get_key() == ItemKey.Pebbles:
+                    continue
 
                 neighbors: List[GardenPlot] = []
                 if i - size >= 0:
@@ -76,16 +79,22 @@ class House():
                 if i + size + 1 < size and (i + 1) % size != 0:
                     neighbors.append(self.garden_plots[i + size + 1])
         
-                plant_keys = [(neighbor_plot.seed_data.result if (neighbor_plot.seed_data is not None and neighbor_plot.is_mature()) else "") for neighbor_plot in neighbors]
+                plant_keys = [(neighbor_plot.seed_data.result if (
+                    neighbor_plot.seed_data is not None and neighbor_plot.is_mature() and (
+                        neighbor_plot.soil is None or neighbor_plot.soil.get_key() != ItemKey.Pebbles
+                    )
+                ) else "") for neighbor_plot in neighbors]
 
+                mutation_adjustment = 2 if plot.soil is not None and plot.soil.get_key() == ItemKey.Ash else 0
                 min_prob = 1
                 min_prob_result = None
                 for required_plants, possible_result in MUTATION_PROBS.items():
                     if required_plants[0] in plant_keys and required_plants[1] in plant_keys:
-                        if random.random() < possible_result[1]:
+                        adjusted_mutation_chance = possible_result[1] * mutation_adjustment
+                        if random.random() < adjusted_mutation_chance:
                             # Favor the result with the lowest probability if random chance has willed it.
-                            if possible_result[1] <= min_prob:
-                                min_prob = possible_result[1]
+                            if adjusted_mutation_chance <= min_prob:
+                                min_prob = adjusted_mutation_chance
                                 min_prob_result = possible_result[0]
                 
                 if min_prob_result is not None:

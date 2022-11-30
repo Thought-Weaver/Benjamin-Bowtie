@@ -1,11 +1,11 @@
 {
-    "key": "items/equipment/boots/tattered_boot",
+    "key": "items/misc/junk/tattered_boot",
     "icon": "\uD83E\uDD7E",
     "name": "Tattered Boots",
     "value": 2,
     "rarity": "Common",
     "description": "",
-    "flavor_text": "",
+    "flavor_text": "Perhaps it once belonged to a sailor.",
     "class_tags": ["Equipment", "Boots"],
     "state_tags": [],
     "count": 1,

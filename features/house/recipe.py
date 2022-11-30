@@ -59,6 +59,133 @@ class RecipeKey(StrEnum):
     CrystalVialWithFlawlessQuartz = "recipes/ingredient/alchemy_supplies/crystal_vial_with_flawless_quartz"
     CrystalVialWithQuartz = "recipes/ingredient/alchemy_supplies/crystal_vial_with_quartz"
 
+    # Equipment
+    
+    # Amulet
+    CopperNecklace = "recipes/equipment/amulet/copper_necklace"
+    GoldNecklace = "recipes/equipment/amulet/gold_necklace"
+    SilverNecklace = "recipes/equipment/amulet/silver_necklace"
+
+    # Boots
+    AmberiteGreaves = "recipes/equipment/boots/amberite_greaves"
+    AmberitePlateGreaves = "recipes/equipment/boots/amberite_plate_greaves"
+    IronGreaves = "recipes/equipment/boots/iron_greaves"
+    IronPlateGreaves = "recipes/equipment/boots/iron_plate_greaves"
+    LeatherBoots = "recipes/equipment/boots/leather_boots"
+    MothsilkBoots = "recipes/equipment/boots/mothsilk_boots"
+    MythrilGreaves = "recipes/equipment/boots/mythril_greaves"
+    MythrilPlateGreaves = "recipes/equipment/boots/mythril_plate_greaves"
+    OrichalcumGreaves = "recipes/equipment/boots/orichalcum_greaves"
+    OrichalcumPlateGreaves = "recipes/equipment/boots/orichalcum_plate_greaves"
+    SilverGreaves = "recipes/equipment/boots/silver_greaves"
+    SilverPlateGreaves = "recipes/equipment/boots/silver_plate_greaves"
+    SpidersilkBoots = "recipes/equipment/boots/spidersilk_boots"
+
+    # Chest Armor
+    AmberiteCuirass = "recipes/equipment/chest_armor/amberite_cuirass"
+    AmberitePlateCuirass = "recipes/equipment/chest_armor/amberite_plate_cuirass"
+    IronCuirass = "recipes/equipment/chest_armor/iron_cuirass"
+    IronPlateCuirass = "recipes/equipment/chest_armor/iron_plate_cuirass"
+    LeatherJerkin = "recipes/equipment/chest_armor/leather_jerkin"
+    MothsilkRobe = "recipes/equipment/chest_armor/mothsilk_robe"
+    MythrilCuirass = "recipes/equipment/chest_armor/mythril_cuirass"
+    MythrilPlateCuirass = "recipes/equipment/chest_armor/mythril_plate_cuirass"
+    OrichalcumCuirass = "recipes/equipment/chest_armor/orichalcum_cuirass"
+    OrichalcumPlateCuirass = "recipes/equipment/chest_armor/orichalcum_plate_cuirass"
+    SilverCuirass = "recipes/equipment/chest_armor/silver_cuirass"
+    SilverPlateCuirass = "recipes/equipment/chest_armor/silver_plate_cuirass"
+    SpidersilkRobe = "recipes/equipment/chest_armor/spidersilk_robe"
+
+    # Gloves
+    AmberiteGauntlets = "recipes/equipment/gloves/amberite_gauntlets"
+    AmberitePlateGauntlets = "recipes/equipment/gloves/amberite_plate_gauntlets"
+    IronGauntlets = "recipes/equipment/gloves/iron_gauntlets"
+    IronPlateGauntlets = "recipes/equipment/gloves/iron_plate_gauntlets"
+    LeatherGloves = "recipes/equipment/gloves/leather_gloves"
+    MothsilkGloves = "recipes/equipment/gloves/mothsilk_gloves"
+    MythrilGauntlets = "recipes/equipment/gloves/mythril_gauntlets"
+    MythrilPlateGauntlets = "recipes/equipment/gloves/mythril_plate_gauntlets"
+    OrichalcumGauntlets = "recipes/equipment/gloves/orichalcum_gauntlets"
+    OrichalcumPlateGauntlets = "recipes/equipment/gloves/orichalcum_plate_gauntlets"
+    SilverGauntlets = "recipes/equipment/gloves/silver_gauntlets"
+    SilverPlateGauntlets = "recipes/equipment/gloves/silver_plate_gauntlets"
+    SpidersilkGloves = "recipes/equipment/gloves/spidersilk_gloves"
+
+    # Helmet
+    AmberiteHelmet = "recipes/equipment/helmet/amberite_helmet"
+    AmberitePlateHelmet = "recipes/equipment/helmet/amberite_plate_helmet"
+    IronHelmet = "recipes/equipment/helmet/iron_helmet"
+    IronPlateHelmet = "recipes/equipment/helmet/iron_plate_helmet"
+    LeatherHelmet = "recipes/equipment/helmet/leather_helmet"
+    MothsilkCowl = "recipes/equipment/helmet/mothsilk_cowl"
+    MythrilHelmet = "recipes/equipment/helmet/mythril_helmet"
+    MythrilPlateHelmet = "recipes/equipment/helmet/mythril_plate_helmet"
+    OrichalcumHelmet = "recipes/equipment/helmet/orichalcum_helmet"
+    OrichalcumPlateHelmet = "recipes/equipment/helmet/orichalcum_plate_helmet"
+    SilverHelmet = "recipes/equipment/helmet/silver_helmet"
+    SilverPlateHelmet = "recipes/equipment/helmet/silver_plate_helmet"
+    SpidersilkCowl = "recipes/equipment/helmet/spidersilk_cowl"
+
+    # Leggings
+    AmberiteLeggings = "recipes/equipment/leggings/amberite_leggings"
+    AmberitePlateLeggings = "recipes/equipment/leggings/amberite_plate_leggings"
+    IronLeggings = "recipes/equipment/leggings/iron_leggings"
+    IronPlateLeggings = "recipes/equipment/leggings/iron_plate_leggings"
+    LeatherLeggings = "recipes/equipment/leggings/leather_leggings"
+    MythrilLeggings = "recipes/equipment/leggings/mythril_leggings"
+    MythrilPlateLeggings = "recipes/equipment/leggings/mythril_plate_leggings"
+    OrichalcumLeggings = "recipes/equipment/leggings/orichalcum_leggings"
+    OrichalcumPlateLeggings = "recipes/equipment/leggings/orichalcum_plate_leggings"
+    SilverLeggings = "recipes/equipment/leggings/silver_leggings"
+    SilverPlateLeggings = "recipes/equipment/leggings/silver_plate_leggings"
+
+    # Offhand
+    WoodenBuckler = "recipes/equipment/offhand/wooden_buckler"
+
+    # Rings
+    CopperRing = "recipes/equipment/ring/copper_ring"
+    GoldRing = "recipes/equipment/ring/gold_ring"
+    SilverRing = "recipes/equipment/ring/silver_ring"
+
+    # Gardening
+    Compost = "recipes/gardening/soil/compost"
+
+    # Materials
+    AmberiteIngot = "recipes/ingredient/materials/amberite_ingot"
+    CopperIngot = "recipes/ingredient/materials/copper_ingot"
+    GoldIngot = "recipes/ingredient/materials/gold_ingot"
+    IronIngot = "recipes/ingredient/materials/iron_ingot"
+    Leather = "recipes/ingredient/materials/leather"
+    LeatherScraps = "recipes/ingredient/materials/leather_scraps"
+    MothsilkBolt = "recipes/ingredient/materials/mothsilk_bolt"
+    MythrilIngot = "recipes/ingredient/materials/mythril_ingot"
+    OrichalcumIngot = "recipes/ingredient/materials/orichalcum_ingot"
+    SilverIngot = "recipes/ingredient/materials/silver_ingot"
+    SpidersilkBolt = "recipes/ingredient/materials/spidersilk_bolt"
+    ThickLeather = "recipes/ingredient/materials/thick_leather"
+    VoidseenIngot = "recipes/ingredient/materials/voidseen_ingot"
+
+    # Weapons
+
+    # Daggers
+    IronDagger = "recipes/weapon/dagger/iron_dagger"
+
+    # Greatswords
+    IronGreatsword = "recipes/weapon/greatsword/iron_greatsword"
+
+    # Knuckles
+    IronKnuckles = "recipes/weapon/knuckles/iron_knuckles"
+    
+    # Spears
+    IronSpear = "recipes/weapon/spear/iron_spear"
+    
+    # Staves
+    LithewoodStaff = "recipes/weapon/staff/lithewood_staff"
+    WrathbarkStaff = "recipes/weapon/staff/wrathbark_staff"
+    
+    # Swords
+    IronSword = "recipes/weapon/sword/iron_sword"
+
 # -----------------------------------------------------------------------------
 # RECIPE CLASS
 # -----------------------------------------------------------------------------

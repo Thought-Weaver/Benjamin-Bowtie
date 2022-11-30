@@ -1,0 +1,12 @@
+{
+    "key": "recipes/ingredient/materials/leather_scraps",
+    "icon": "\uD83C\uDF97\uFE0F",
+    "name": "Leather Scraps",
+    "value": 20,
+    "inputs": {
+        "items/misc/junk/tattered_boot": 1
+    },
+    "outputs": {
+        "items/ingredient/materials/leather_scraps": 1
+    }
+}
