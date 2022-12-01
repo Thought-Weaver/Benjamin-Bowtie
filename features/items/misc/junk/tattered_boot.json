@@ -1,12 +1,12 @@
 {
     "key": "items/misc/junk/tattered_boot",
     "icon": "\uD83E\uDD7E",
-    "name": "Tattered Boots",
-    "value": 2,
+    "name": "Tattered Boot",
+    "value": 1,
     "rarity": "Common",
     "description": "",
     "flavor_text": "Perhaps it once belonged to a sailor.",
-    "class_tags": ["Equipment", "Boots"],
+    "class_tags": ["Ingredient", "Crafting_Material"],
     "state_tags": [],
     "count": 1,
     "level_requirement": 0

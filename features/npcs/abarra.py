@@ -198,6 +198,7 @@ class BlacksmithView(discord.ui.View):
     def show_initial_buttons(self):
         self.clear_items()
         self.add_item(EnterWaresButton())
+        self.add_item(EnterPatternsButton())
 
     def get_embed_for_intent(self):
         player: Player = self._get_player()
@@ -412,8 +413,6 @@ class BlacksmithView(discord.ui.View):
         if self._intent == Intent.Wares:
             result = self._purchase_item()
 
-            self._selected_item = None
-            self._selected_item_index = -1
             self._get_wares_page_buttons()
 
             return result

@@ -195,6 +195,22 @@ class Stats():
             self.games_played = state.get("games_played", 0)
             self.coins_won = state.get("coins_won", 0)
 
+            self.npc_easy_games_won = state.get("npc_easy_games_won", 0)
+            self.npc_easy_games_tied = state.get("npc_easy_games_tied", 0)
+            self.npc_easy_games_played = state.get("npc_easy_games_played", 0)
+
+            self.npc_medium_games_won = state.get("npc_medium_games_won", 0)
+            self.npc_medium_games_tied = state.get("npc_medium_games_tied", 0)
+            self.npc_medium_games_played = state.get("npc_medium_games_played", 0)
+
+            self.npc_hard_games_won = state.get("npc_hard_games_won", 0)
+            self.npc_hard_games_tied = state.get("npc_hard_games_tied", 0)
+            self.npc_hard_games_played = state.get("npc_hard_games_played", 0)
+
+            self.mr_bones_games_won = state.get("mr_bones_games_won", 0)
+            self.mr_bones_games_tied = state.get("mr_bones_games_tied", 0)
+            self.mr_bones_games_played = state.get("mr_bones_games_played", 0)
+
     class WishingWellStats():
         def __init__(self):
             self.coins_tossed: int = 0

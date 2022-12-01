@@ -1,4 +1,5 @@
 from __future__ import annotations
+from random import random
 
 import discord
 
@@ -763,6 +764,7 @@ class KitchenView(discord.ui.View):
 
     def try_cooking(self):
         if len(self._current_cooking.items()) == 0:
+            self._get_cook_buttons()
             return self.get_embed_for_intent(error="\n\n*Error: You need to add at least one item.*")
 
         # TODO: See above also here.
@@ -774,15 +776,20 @@ class KitchenView(discord.ui.View):
         for input_key, quantity in self._current_cooking.items():
             index = inventory.search_by_key(input_key)
             if index == -1:
+                self._get_cook_buttons()
                 return self.get_embed_for_intent(error="\n\n*Error: You don't have at least one of the items needed to cook that.*")
         
             item = inventory.get_inventory_slots()[index]
             if item.get_count() < quantity:
+                self._get_cook_buttons()
                 return self.get_embed_for_intent(error="\n\n*Error: You don't have enough of one of those items to cook that.*")
 
         for input_key, quantity in self._current_cooking.items():
             index = inventory.search_by_key(input_key)
-            inventory.remove_item(index, quantity)
+            # Make experimenting a risk-and-reward situation rather than always consuming the items
+            for _ in range(quantity):
+                if random() < 0.5:
+                    inventory.remove_item(index, 1)
 
         found_recipe = None
         new_recipe = False
@@ -798,6 +805,7 @@ class KitchenView(discord.ui.View):
 
         if found_recipe is None:
             self._current_cooking = {}
+            self._get_cook_buttons()
             return Embed(title="Cook", description=f"You attempt to mix these ingredients together, but nothing happens.\n\n──────────\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through your recipes using the Prev and Next buttons.")
             
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} recipe!*\n" if new_recipe else ""
@@ -835,6 +843,8 @@ class KitchenView(discord.ui.View):
         output_display = '\n'.join(output_strs)
 
         stats.crafting.cooking_recipes_discovered += 1
+
+        self._get_cook_buttons()
 
         return Embed(title="Cook", description=f"Cooking successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n──────────\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
 

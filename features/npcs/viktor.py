@@ -244,8 +244,6 @@ class RandomItemMerchantView(discord.ui.View):
         if self._intent == Intent.Wares:
             result = self._purchase_item()
 
-            self._selected_item = None
-            self._selected_item_index = -1
             self._get_wares_page_buttons()
 
             return result
@@ -299,19 +297,19 @@ class RandomItemMerchant(NPC):
     def tick(self):
         possible_items = list(filter(lambda x: x.get_rarity() < Rarity.Artifact, [LOADED_ITEMS.get_new_item(key) for key in ItemKey]))
         prob_map: Dict[Rarity, float] = {
-            Rarity.Common: 0.5,
+            Rarity.Common: 0.6,
             Rarity.Uncommon: 0.3,
-            Rarity.Rare: 0.15,
-            Rarity.Epic: 0.04,
-            Rarity.Legendary: 0.01,
+            Rarity.Rare: 0.075,
+            Rarity.Epic: 0.02,
+            Rarity.Legendary: 0.005,
             Rarity.Artifact: 0,
             Rarity.Unknown: 0
         }
         weights = [prob_map[item.get_rarity()] for item in possible_items]
-        new_items = random.choices(possible_items, k=10, weights=weights)
+        new_items = random.choices(possible_items, k=8, weights=weights)
         
         self._current_wares = new_items
-        self._cost_adjust = random.randint(-25, 75) / 100.0
+        self._cost_adjust = random.randint(75, 175) / 100.0
 
     def _setup_inventory(self):
         self.tick()
@@ -380,3 +378,6 @@ class RandomItemMerchant(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
             self._setup_abilities()
+
+        self._current_wares = state.get("_current_wares", [])
+        self._cost_adjust = state.get("_cost_adjust", 1.5)

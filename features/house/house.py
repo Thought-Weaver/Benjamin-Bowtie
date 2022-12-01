@@ -90,19 +90,22 @@ class House():
                 min_prob_result = None
                 for required_plants, possible_result in MUTATION_PROBS.items():
                     if required_plants[0] in plant_keys and required_plants[1] in plant_keys:
+                        self.garden_plots[i].may_mutate = True
                         adjusted_mutation_chance = possible_result[1] * mutation_adjustment
                         if random.random() < adjusted_mutation_chance:
                             # Favor the result with the lowest probability if random chance has willed it.
                             if adjusted_mutation_chance <= min_prob:
                                 min_prob = adjusted_mutation_chance
                                 min_prob_result = possible_result[0]
-                        plot.may_mutate = True
                 
                 if min_prob_result is not None:
                     seed = LOADED_ITEMS.get_new_item(min_prob_result)
                     self.garden_plots[i].plant_seed(seed)
 
         for plot in self.garden_plots:
+            if plot.soil is not None and plot.soil.get_key() == ItemKey.Pebbles:
+                continue
+
             plot.tick()
 
     def tick(self):
@@ -276,7 +279,7 @@ class HouseView(discord.ui.View):
         self.add_item(StudyButton(1))
         self.add_item(MailboxButton(2))
         self.add_item(StorageButton(2))
-        # self.add_item(RestButton(3))
+        self.add_item(RestButton(3))
 
     def rest(self):
         player = self._get_player()
@@ -290,7 +293,7 @@ class HouseView(discord.ui.View):
         player_expertise.hp = player_expertise.max_hp
         player_expertise.mana = player_expertise.max_mana
 
-        return Embed(title="A Nice Home", description="This is your own place in the village, which you can expand with new rooms and capabilities.\n\n*You have rested, clearing your status effects and restoring your HP and Mana.")
+        return Embed(title="A Nice Home", description="This is your own place in the village, which you can expand with new rooms and capabilities.\n\n*You have rested, clearing your status effects and restoring your HP and Mana.*")
 
     def get_bot(self):
         return self._bot

@@ -29,6 +29,7 @@ from features.npcs.abarra import Blacksmith
 from features.npcs.copperbroad import Chef
 from features.npcs.mrbones import Difficulty, MrBones
 from features.npcs.npc import NPCRoles
+from features.npcs.viktor import RandomItemMerchant
 from features.npcs.yenna import Yenna
 from features.player import Player
 from features.stats import StatCategory, StatView
@@ -47,7 +48,6 @@ if TYPE_CHECKING:
     from features.expertise import Expertise
     from features.inventory import Inventory
     from features.npcs.npc import NPC
-    from features.npcs.viktor import RandomItemMerchant
     from features.stats import Stats
 
 class Adventures(commands.Cog):
@@ -81,6 +81,8 @@ class Adventures(commands.Cog):
                 self._database[guild_id_str]["npcs"][NPCRoles.KnucklebonesPatron] = MrBones()
             if self._database[guild_id_str]["npcs"].get(NPCRoles.Chef) is None:
                 self._database[guild_id_str]["npcs"][NPCRoles.Chef] = Chef()
+            if self._database[guild_id_str]["npcs"].get(NPCRoles.RandomItemMerchant) is None:
+                self._database[guild_id_str]["npcs"][NPCRoles.RandomItemMerchant] = RandomItemMerchant()
 
         if specific_guild_id_str is not None:
             create_stories_and_npcs(specific_guild_id_str)
@@ -218,9 +220,10 @@ class Adventures(commands.Cog):
         # 55% chance of getting a Common non-fish reward
         if rand_val == 0:
             items = [
-                LOADED_ITEMS.get_new_item(ItemKey.BasicBoots), 
+                LOADED_ITEMS.get_new_item(ItemKey.TatteredBoot), 
                 LOADED_ITEMS.get_new_item(ItemKey.ClumpOfLeaves), 
-                LOADED_ITEMS.get_new_item(ItemKey.Conch)
+                LOADED_ITEMS.get_new_item(ItemKey.Conch),
+                LOADED_ITEMS.get_new_item(ItemKey.Stranglekelp)
             ]
             fishing_result = random.choice(items)
             player_stats.fish.common_items_caught += 1

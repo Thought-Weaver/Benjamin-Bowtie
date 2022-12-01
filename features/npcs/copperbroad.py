@@ -410,8 +410,6 @@ class ChefView(discord.ui.View):
         if self._intent == Intent.Wares:
             result = self._purchase_item()
 
-            self._selected_item = None
-            self._selected_item_index = -1
             self._get_wares_page_buttons()
 
             return result

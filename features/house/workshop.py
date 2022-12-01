@@ -1,4 +1,5 @@
 from __future__ import annotations
+from random import random
 
 import discord
 
@@ -552,7 +553,7 @@ class WorkshopView(discord.ui.View):
         self.clear_items()
         player: Player = self._get_player()
         recipes: List[Recipe] = player.get_house().crafting_recipes
-        filtered_recipes: List[Recipe] = list(filter(lambda r: r.any_output_has_any_class_tag([ClassTag.Equipment.Equipment]), recipes))
+        filtered_recipes: List[Recipe] = list(filter(lambda r: r.any_output_has_any_class_tag([ClassTag.Equipment.Equipment, ClassTag.Ingredient.CraftingMaterial]), recipes))
 
         page_slots = filtered_recipes[self._page * self._NUM_PER_PAGE:min(len(filtered_recipes), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, recipe in enumerate(page_slots):
@@ -843,6 +844,7 @@ class WorkshopView(discord.ui.View):
 
     def try_crafting(self):
         if len(self._current_crafting.items()) == 0:
+            self._get_craft_buttons()
             return self.get_embed_for_intent(error="\n\n*Error: You need to add at least one item.*")
 
         # TODO: See above also here.
@@ -854,15 +856,20 @@ class WorkshopView(discord.ui.View):
         for input_key, quantity in self._current_crafting.items():
             index = inventory.search_by_key(input_key)
             if index == -1:
+                self._get_craft_buttons()
                 return self.get_embed_for_intent(error="\n\n*Error: You don't have at least one of the items needed to craft that.*")
         
             item = inventory.get_inventory_slots()[index]
             if item.get_count() < quantity:
+                self._get_craft_buttons()
                 return self.get_embed_for_intent(error="\n\n*Error: You don't have enough of one of those items to craft that.*")
 
         for input_key, quantity in self._current_crafting.items():
             index = inventory.search_by_key(input_key)
-            inventory.remove_item(index, quantity)
+            # Make experimenting a risk-and-reward situation rather than always consuming the items
+            for _ in range(quantity):
+                if random() < 0.5:
+                    inventory.remove_item(index, 1)
 
         found_recipe = None
         new_recipe = False
@@ -878,6 +885,7 @@ class WorkshopView(discord.ui.View):
 
         if found_recipe is None:
             self._current_cooking = {}
+            self._get_craft_buttons()
             return Embed(title="Craft", description=f"You attempt to combine these materials together, but nothing happens.\n\n──────────\n\nUse materials from your inventory and attempt to craft something.\n\nNavigate through your patterns using the Prev and Next buttons.")
             
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} pattern!*\n" if new_recipe else ""
@@ -916,6 +924,8 @@ class WorkshopView(discord.ui.View):
 
         stats.crafting.patterns_discovered += 1
 
+        self._get_craft_buttons()
+
         return Embed(title="Craft", description=f"Crafting successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n──────────\n\nChoose a pattern you've acquired or discovered to craft.\n\nNavigate through your patterns using the Prev and Next buttons.")
 
     def select_deconstruct_item(self, index: int, item: Item):
@@ -935,6 +945,7 @@ class WorkshopView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots: List[Item] = inventory.get_inventory_slots()
         if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
+            self._get_deconstruct_buttons()
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
         # TODO: By doing this reverse lookup, I've defined crafting/deconstructing as a reversible process. Namely, there must exist a recipe
@@ -961,6 +972,7 @@ class WorkshopView(discord.ui.View):
         result_str = "\n".join(result_strs)
 
         if not found:
+            self._get_deconstruct_buttons()
             return self.get_embed_for_intent(error="\n\n*You cannot deconstruct that item.*")
 
         return Embed(title="Deconstruct", description=f"You successfully deconstructed {self._selected_item.get_full_name()} into:\n\n──────────\n{result_str}\n──────────\n\nChoose an item to deconstruct into some materials.\n\nChoose an item to deconstruct into some materials.\n\nNavigate through the items using the Prev and Next buttons.")

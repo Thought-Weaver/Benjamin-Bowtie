@@ -155,7 +155,6 @@ class GardenPlot():
 
     def tick(self):
         if self.seed_data is None:
-            self.reset(keep_soil=True)
             return
 
         self.growth_ticks += 1
@@ -225,7 +224,13 @@ class GardenPlot():
 
     def __str__(self):
         if self.seed is None or self.seed_data is None:
-            return ""
+            may_mutate_string = ""
+            if self.seed is None and self.seed_data is None and self.may_mutate:
+                may_mutate_string = "*This plot might mutate into a new plant next tick!*\n"
+            
+            soil_str = f"\n**{self.soil.get_full_name()}:** {self.soil.get_description()}" if self.soil is not None else ""
+            result_str = f"\n\n──────────{soil_str}\n{may_mutate_string}──────────" if (soil_str != "" or may_mutate_string != "") else ""
+            return result_str
         
         growth_tick_str = "tick" if self.growth_ticks == 1 else "ticks"
 
@@ -246,11 +251,9 @@ class GardenPlot():
                 num_mutations += 1
         mutate_string = f"{num_mutations} possible mutation{'s' if num_mutations != 1 else ''}\n" if num_mutations > 0 else ""
 
-        may_mutate_string = ""
-        if self.seed is None and self.seed_data is None and self.may_mutate:
-            may_mutate_string = "*This plot might grow a crossbred plant next tick!*\n"
+        soil_str = f"{self.soil.get_full_name()}: {self.soil.get_description()}\n\n" if self.soil is not None else ""
 
-        display_string = f"\n\n──────────\n{self.seed.get_full_name()}\n\n{self.growth_ticks} {growth_tick_str} old\n{mature_string}\n{mutate_string}{may_mutate_string}──────────"
+        display_string = f"\n\n──────────\n{self.seed.get_full_name()}\n\n{soil_str}{self.growth_ticks} {growth_tick_str} old\n{mature_string}\n{mutate_string}──────────"
 
         return display_string
 
@@ -347,6 +350,23 @@ class SelectSeedButton(discord.ui.Button):
         view: GardenView = self.view
         if interaction.user == view.get_user():
             response = view.select_seed(self._item_index, self._item)
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class SelectItemButton(discord.ui.Button):
+    def __init__(self, item_index: int, item: Item, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
+        
+        self._item_index = item_index
+        self._item = item
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: GardenView = self.view
+        if interaction.user == view.get_user():
+            response = view.select_item(self._item_index, self._item)
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -557,7 +577,7 @@ class GardenView(discord.ui.View):
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
             exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
-            self.add_item(SelectSeedButton(exact_item_index, item, i))
+            self.add_item(SelectItemButton(exact_item_index, item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
@@ -688,6 +708,18 @@ class GardenView(discord.ui.View):
 
         self._get_garden_buttons()
         return self.get_embed_for_intent(additional=f"\n\n*{response}*")
+
+    def select_item(self, index: int, item: Item):
+        self._selected_item = item
+        self._selected_item_index = index
+
+        self._get_use_item_buttons()
+
+        player: Player = self._get_player()
+        inventory_slots: List[Item] = player.get_inventory().get_inventory_slots()
+        if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
+            return self.get_embed_for_intent(additional="\n\n*Error: Something about that item changed or it's no longer available.*")
+        return Embed(title="Use Item", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
 
     def confirm_use_item(self):
         if self._selected_plot is None:

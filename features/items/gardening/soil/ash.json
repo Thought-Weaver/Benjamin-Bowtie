@@ -4,7 +4,7 @@
     "name": "Ash",
     "value": 12,
     "rarity": "Common",
-    "description": "When set as the soil for a garden plot, doubles the chance for mutations to occur.",
+    "description": "When set as the soil for a garden plot, doubles the chance for a mutation to occur in that plot.",
     "flavor_text": "",
     "class_tags": ["Gardening", "Soil"],
     "state_tags": [],

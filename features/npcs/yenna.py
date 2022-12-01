@@ -233,24 +233,15 @@ class YennaView(discord.ui.View):
             # Herbs
             LOADED_ITEMS.get_new_item(ItemKey.AntlerCoral),
             LOADED_ITEMS.get_new_item(ItemKey.Asptongue),
-            LOADED_ITEMS.get_new_item(ItemKey.Bloodcrown),
-            LOADED_ITEMS.get_new_item(ItemKey.FoolsDelight),
-            LOADED_ITEMS.get_new_item(ItemKey.Graspleaf),
             LOADED_ITEMS.get_new_item(ItemKey.Seaclover),
-            LOADED_ITEMS.get_new_item(ItemKey.SpeckledCap),
+            LOADED_ITEMS.get_new_item(ItemKey.Shellplate),
             LOADED_ITEMS.get_new_item(ItemKey.Stranglekelp),
 
             # Seeds
-            LOADED_ITEMS.get_new_item(ItemKey.FoolsDelightSpores),
-            LOADED_ITEMS.get_new_item(ItemKey.GraspleafSeed),
-            LOADED_ITEMS.get_new_item(ItemKey.GraveMossSpores),
-            LOADED_ITEMS.get_new_item(ItemKey.MagesBaneSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.AsptongueSeed),
             LOADED_ITEMS.get_new_item(ItemKey.MeddlespreadSpores),
-            LOADED_ITEMS.get_new_item(ItemKey.RiverblossomSeed),
             LOADED_ITEMS.get_new_item(ItemKey.SeacloverSeed),
-            LOADED_ITEMS.get_new_item(ItemKey.ShelterfoilSeed),
             LOADED_ITEMS.get_new_item(ItemKey.SnowdewSeed),
-            LOADED_ITEMS.get_new_item(ItemKey.SpeckledCapSpores),
             LOADED_ITEMS.get_new_item(ItemKey.SungrainSeed),
 
             # Soils
@@ -761,8 +752,6 @@ class YennaView(discord.ui.View):
         if self._intent == Intent.Wares:
             result = self._purchase_item()
 
-            self._selected_item = None
-            self._selected_item_index = -1
             self._get_wares_page_buttons()
 
             return result
