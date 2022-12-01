@@ -1,11 +1,11 @@
 from __future__ import annotations
-from math import ceil
 
 import discord
 
 from discord.embeds import Embed
 from features.expertise import Expertise
 from features.shared.attributes import Attributes
+from features.shared.constants import ARMOR_OVERLEVELED_DEBUFF
 from features.shared.enums import ClassTag
 from features.shared.item import Item
 from features.shared.nextbutton import NextButton
@@ -17,12 +17,6 @@ if TYPE_CHECKING:
     from features.inventory import Inventory
     from features.player import Player
     from features.shared.item import ArmorStats
-
-# -----------------------------------------------------------------------------
-# CONSTANTS
-# -----------------------------------------------------------------------------
-
-ARMOR_OVERLEVELED_DEBUFF = 0.15
 
 # -----------------------------------------------------------------------------
 # CLASSES

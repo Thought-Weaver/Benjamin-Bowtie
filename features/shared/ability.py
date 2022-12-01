@@ -903,7 +903,7 @@ class WrathOfTheWavesI(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -1003,7 +1003,7 @@ class WrathOfTheWavesII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -1103,7 +1103,7 @@ class WrathOfTheWavesIII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -1337,7 +1337,7 @@ class ThunderingTorrentI(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -1457,7 +1457,7 @@ class ThunderingTorrentII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -1577,7 +1577,7 @@ class ThunderingTorrentIII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -1679,7 +1679,7 @@ class DrownInTheDeepI(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -1768,7 +1768,7 @@ class DrownInTheDeepII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -1857,7 +1857,7 @@ class DrownInTheDeepIII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -1972,7 +1972,7 @@ class WhirlpoolI(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -2088,7 +2088,7 @@ class WhirlpoolII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -2204,7 +2204,7 @@ class WhirlpoolIII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -2379,11 +2379,13 @@ class WhirlwindI(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+        
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.5)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2423,11 +2425,13 @@ class WhirlwindII(Ability):
         caster_attrs = caster.get_combined_attributes()
         
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.6)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2467,11 +2471,13 @@ class WhirlwindIII(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.7)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2902,11 +2908,13 @@ class CounterstrikeI(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = int(0.75 * base_damage + 0.1 * (caster_expertise.max_hp - caster_expertise.hp))
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2946,11 +2954,13 @@ class CounterstrikeII(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = int(0.8 * base_damage + 0.2 * (caster_expertise.max_hp - caster_expertise.hp))
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -2990,11 +3000,13 @@ class CounterstrikeIII(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = int(0.85 * base_damage + 0.3 * (caster_expertise.max_hp - caster_expertise.hp))
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -3077,11 +3089,13 @@ class PiercingStrikeI(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = int(1.1 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -3133,11 +3147,13 @@ class PiercingStrikeII(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = int(1.2 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -3189,11 +3205,13 @@ class PiercingStrikeIII(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = int(1.3 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -3398,11 +3416,13 @@ class HeavySlamI(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+        
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = int((0.4 + 0.05 * caster_attrs.constitution) * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -3441,11 +3461,13 @@ class HeavySlamII(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+        
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = int((0.6 + 0.05 * caster_attrs.constitution) * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
@@ -3484,11 +3506,13 @@ class HeavySlamIII(Ability):
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0        
+
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects)
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = int((0.8 + 0.05 * caster_attrs.constitution) * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 

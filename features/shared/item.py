@@ -6,7 +6,7 @@ from aenum import Enum
 from random import randint
 from strenum import StrEnum
 
-from features.shared.constants import DEX_DMG_SCALE
+from features.shared.constants import DEX_DMG_SCALE, WEAPON_OVERLEVELED_DEBUFF
 from features.shared.effect import ConditionType, EffectType, ItemEffects
 from features.shared.enums import ClassTag
 from types import MappingProxyType
@@ -430,13 +430,15 @@ class WeaponStats():
     def get_range_str(self):
         return f"{self._min_damage}-{self._max_damage} base damage"
 
-    def get_random_damage(self, attacker_attrs: Attributes, item_effects: ItemEffects | None):
+    def get_random_damage(self, attacker_attrs: Attributes, item_effects: ItemEffects | None, level_diff: int):
         damage = randint(self._min_damage, self._max_damage)
         # TODO: How should these stack? Should this logic be here now? Should I just allow items to specify how much they scale
         # from Dex since that's possible now?
         if item_effects is not None and any(effect.effect_type == EffectType.DmgBuffFromDex for effect in item_effects.permanent):
             damage += min(int(damage * DEX_DMG_SCALE * max(attacker_attrs.dexterity, 0)), damage)
-        return randint(self._min_damage, self._max_damage)
+        
+        reduce_to: float = max(0, 1.0 - (WEAPON_OVERLEVELED_DEBUFF * max(0, level_diff)))
+        return int(damage * reduce_to)
 
     def get_max_damage(self):
         return self._max_damage
