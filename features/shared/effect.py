@@ -462,6 +462,23 @@ class ItemEffects():
     def sort_by_priority(self, effects: List[Effect]):
         return sorted(effects, key=lambda effect: EFFECT_PRIORITY[effect.effect_type])
 
+    def get_socket_str(self, condition_type: ConditionType):
+        def filter_by_condition(effect_lst: List[Effect], ct: ConditionType):
+            return [effect for effect in effect_lst if ct in effect.conditions]
+        
+        return str(
+            ItemEffects(
+                filter_by_condition(self.permanent, condition_type),
+                filter_by_condition(self.on_turn_start, condition_type),
+                filter_by_condition(self.on_turn_end, condition_type),
+                filter_by_condition(self.on_damaged, condition_type),
+                filter_by_condition(self.on_successful_ability_used, condition_type),
+                filter_by_condition(self.on_successful_attack, condition_type),
+                filter_by_condition(self.on_attacked, condition_type),
+                filter_by_condition(self.on_ability_used_against, condition_type),
+            )
+        )
+
     def __add__(self, other: ItemEffects):
         return ItemEffects(
             self.sort_by_priority(self.permanent + other.permanent),

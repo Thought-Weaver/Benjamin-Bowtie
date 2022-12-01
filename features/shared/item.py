@@ -7,7 +7,7 @@ from random import randint
 from strenum import StrEnum
 
 from features.shared.constants import DEX_DMG_SCALE
-from features.shared.effect import EffectType, ItemEffects
+from features.shared.effect import ConditionType, EffectType, ItemEffects
 from features.shared.enums import ClassTag
 from types import MappingProxyType
 
@@ -698,7 +698,12 @@ class Item():
                     display_string += f"Empty Socket\n"
                 else:
                     item = LOADED_ITEMS.get_new_item(altering_item_key)
-                    display_string += f"{item.get_full_name()}\n"
+                    condition_type = ConditionType.IsItemArmor
+                    if ClassTag.Equipment.MainHand in item.get_class_tags() or ClassTag.Equipment.OffHand in item.get_class_tags():
+                        condition_type = ConditionType.IsItemInHand
+                    item_effects = item.get_item_effects()
+                    active_item_effects_str = f"{item_effects.get_socket_str(condition_type)}\n\n" if item_effects is not None else ""
+                    display_string += f"{item.get_full_name()}\n{active_item_effects_str}"
             display_string += "\n"
 
         if self._description != "":
