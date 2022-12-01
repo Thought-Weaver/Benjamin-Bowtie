@@ -262,24 +262,46 @@ class Knucklebones(discord.ui.View):
         player_2_stats = self._player_2.get_stats()
         winner_stats = winner.get_stats()
 
-        player_1_stats.knucklebones.games_played += 1
+        if self._difficulty == Difficulty.Easy:
+            player_1_stats.knucklebones.npc_easy_games_played += 1
+        elif self._difficulty == Difficulty.Medium:
+            player_1_stats.knucklebones.npc_medium_games_played += 1
+        elif self._difficulty == Difficulty.Hard:
+            player_1_stats.knucklebones.npc_hard_games_played += 1
+        elif self._difficulty == Difficulty.MrBones:
+            player_1_stats.knucklebones.mr_bones_games_played += 1
+        else:
+            player_1_stats.knucklebones.games_played += 1
+        # Player 2 will always be an NPC or another player, so just increment this.
         player_2_stats.knucklebones.games_played += 1
 
         if is_tied:
-            player_1_stats.knucklebones.games_tied += 1
+            if self._difficulty == Difficulty.Easy:
+                player_1_stats.knucklebones.npc_easy_games_tied += 1
+            elif self._difficulty == Difficulty.Medium:
+                player_1_stats.knucklebones.npc_medium_games_tied += 1
+            elif self._difficulty == Difficulty.Hard:
+                player_1_stats.knucklebones.npc_hard_games_tied += 1
+            elif self._difficulty == Difficulty.MrBones:
+                player_1_stats.knucklebones.mr_bones_games_tied += 1
+            else:
+                player_1_stats.knucklebones.games_tied += 1
             player_2_stats.knucklebones.games_tied += 1
 
             if isinstance(self._player_2, MrBones):
                 self._database[str(self._guild_id)]["npcs"][NPCRoles.KnucklebonesPatron].get_stats().games_tied += 1
             return
         
-        winner_stats.knucklebones.games_won += 1
-
-        if isinstance(winner, MrBones):
-            if self._difficulty == Difficulty.MrBones:
-                mrbones_stats: Stats = self._database[str(self._guild_id)]["npcs"][NPCRoles.KnucklebonesPatron].get_stats()
-                mrbones_stats.knucklebones.games_played += 1
-                mrbones_stats.knucklebones.games_won += 1
+        if self._difficulty == Difficulty.Easy:
+            winner_stats.knucklebones.npc_easy_games_won += 1
+        elif self._difficulty == Difficulty.Medium:
+            winner_stats.knucklebones.npc_medium_games_won += 1
+        elif self._difficulty == Difficulty.Hard:
+            winner_stats.knucklebones.npc_hard_games_won += 1
+        elif self._difficulty == Difficulty.MrBones:
+            winner_stats.knucklebones.mr_bones_games_won += 1
+        else:
+            winner_stats.knucklebones.games_won += 1
 
         if amount_won > 0:
             winner_stats.knucklebones.coins_won += amount_won

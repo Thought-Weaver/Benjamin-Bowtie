@@ -139,6 +139,23 @@ class Stats():
             self.games_won: int = 0
             self.games_tied: int = 0
             self.games_played: int = 0
+
+            self.npc_easy_games_won: int = 0
+            self.npc_easy_games_tied: int = 0
+            self.npc_easy_games_played: int = 0
+
+            self.npc_medium_games_won: int = 0
+            self.npc_medium_games_tied: int = 0
+            self.npc_medium_games_played: int = 0
+
+            self.npc_hard_games_won: int = 0
+            self.npc_hard_games_tied: int = 0
+            self.npc_hard_games_played: int = 0
+
+            self.mr_bones_games_won: int = 0
+            self.mr_bones_games_tied: int = 0
+            self.mr_bones_games_played: int = 0
+
             self.coins_won: int = 0
 
         def get_name(self):
@@ -146,9 +163,26 @@ class Stats():
 
         def get_stats_str(self):
             return (
-                f"Games Played: *{self.games_played}*\n"
-                f"Games Won: *{self.games_won}*\n"
-                f"Games Tied: *{self.games_tied}*\n"
+                f"PvP Games Played: *{self.games_played}*\n"
+                f"PvP Games Won: *{self.games_won}*\n"
+                f"PvP Games Tied: *{self.games_tied}*\n\n"
+
+                f"NPC Easy Games Played: *{self.npc_easy_games_played}*\n"
+                f"NPC Easy Games Won: *{self.npc_easy_games_won}*\n"
+                f"NPC Easy Games Tied: *{self.npc_easy_games_tied}*\n\n"
+
+                f"NPC Medium Games Played: *{self.npc_medium_games_played}*\n"
+                f"NPC Medium Games Won: *{self.npc_medium_games_won}*\n"
+                f"NPC Medium Games Tied: *{self.npc_medium_games_tied}*\n\n"
+
+                f"NPC Hard Games Played: *{self.npc_hard_games_played}*\n"
+                f"NPC Hard Games Won: *{self.npc_hard_games_won}*\n"
+                f"NPC Hard Games Tied: *{self.npc_hard_games_tied}*\n\n"
+
+                f"Mr. Bones Games Played: *{self.mr_bones_games_played}*\n"
+                f"Mr. Bones Games Won: *{self.mr_bones_games_won}*\n"
+                f"Mr. Bones Games Tied: *{self.mr_bones_games_tied}*\n\n"
+
                 f"Coins Won: *{self.coins_won}*"
             )
 
