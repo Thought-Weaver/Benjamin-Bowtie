@@ -96,6 +96,7 @@ class House():
                             if adjusted_mutation_chance <= min_prob:
                                 min_prob = adjusted_mutation_chance
                                 min_prob_result = possible_result[0]
+                        plot.may_mutate = True
                 
                 if min_prob_result is not None:
                     seed = LOADED_ITEMS.get_new_item(min_prob_result)

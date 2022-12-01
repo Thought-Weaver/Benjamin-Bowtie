@@ -100,21 +100,32 @@ SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
 
 # (First Plant, Second Plant): (Yields this Plant, With this Probability)
 MUTATION_PROBS: MappingProxyType[Tuple[ItemKey | Literal[""], ItemKey | Literal[""]], Tuple[ItemKey, float]] = MappingProxyType({
-    (ItemKey.DawnsGlory, ItemKey.Fissureleaf): (ItemKey.DragonsTeethSeed, 0.001),
-    (ItemKey.Seaclover, ItemKey.Sungrain): (ItemKey.GoldenCloverSeed, 0.0005),
-    (ItemKey.Asptongue, ItemKey.GraveMoss): (ItemKey.HushvineSeed, 0.03),
-    (ItemKey.Graspleaf, ItemKey.GraveMoss): (ItemKey.RotstalkSeed, 0.03),
-    (ItemKey.Meddlespread, ItemKey.Snowdew): (ItemKey.WanderweedSeed, 0.04),
-    (ItemKey.Riverblossom, ItemKey.Sungrain): (ItemKey.DawnsGlorySeed, 0.02),
-    (ItemKey.DragonsTeeth, ItemKey.Witherheart): (ItemKey.ForgottenTearsSeed, 0.0001),
-    (ItemKey.Manabloom, ItemKey.Rotstalk): (ItemKey.LichbloomSeed, 0.001),
-    (ItemKey.MagesBane, ItemKey.Riverblossom): (ItemKey.ManabloomSeed, 0.02),
-    (ItemKey.Bloodcrown, ItemKey.GraveMoss): (ItemKey.WitherheartSeed, 0.005),
-    (ItemKey.DawnsGlory, ItemKey.FoolsDelight): (ItemKey.BlazeClusterSpores, 0.05),
-    (ItemKey.Meddlespread, ItemKey.Meddlespread): (ItemKey.FoolsDelightSpores, 0.03),
-    (ItemKey.Bloodcrown, ItemKey.Hushvine): (ItemKey.SpidersGroveSpores, 0.02),
-    (ItemKey.FoolsDelight, ItemKey.SpeckledCap): (ItemKey.BloodcrownSpores, 0.08),
-    (ItemKey.Meddlespread, ""): (ItemKey.Meddlespread, 0.25)
+    (ItemKey.Seaclover, ItemKey.Seaclover): (ItemKey.GraspleafSeed, 0.25),
+    (ItemKey.Graspleaf, ItemKey.Seaclover): (ItemKey.BramblefrondSeed, 0.2),
+    (ItemKey.Bramblefrond, ItemKey.Graspleaf): (ItemKey.FissureleafSeed, 0.15),
+    (ItemKey.Fissureleaf, ItemKey.Seaclover): (ItemKey.RazorgrassSeed, 0.1),
+    (ItemKey.Razorgrass, ItemKey.Graspleaf): (ItemKey.GraveMossSpores, 0.08),
+    (ItemKey.GraveMoss, ItemKey.Asptongue): (ItemKey.HushvineSeed, 0.02),
+    (ItemKey.Hushvine, ItemKey.FoolsDelight): (ItemKey.RotstalkSeed, 0.01),
+    (ItemKey.Snowdew, ItemKey.Sungrain): (ItemKey.DawnsGlorySeed, 0.15),
+    (ItemKey.DawnsGlory, ItemKey.Snowdew): (ItemKey.RiverblossomSeed, 0.1),
+    (ItemKey.Riverblossom, ItemKey.Riverblossom): (ItemKey.ManabloomSeed, 0.03),
+    (ItemKey.Manabloom, ItemKey.FoolsDelight): (ItemKey.DreamMakerSeed, 0.01),
+    (ItemKey.DreamMaker, ItemKey.Rotstalk): (ItemKey.WitherheartSeed, 0.005),
+    (ItemKey.Witherheart, ItemKey.DawnsGlory): (ItemKey.DragonsTeethSeed, 0.02),
+    (ItemKey.Witherheart, ItemKey.Manabloom): (ItemKey.MagesBaneSeed, 0.1),
+    (ItemKey.DreamMaker, ItemKey.Manabloom): (ItemKey.LichbloomSeed, 0.005),
+    (ItemKey.Lichbloom, ItemKey.DragonsTeeth): (ItemKey.ForgottenTearsSeed, 0.001),
+    (ItemKey.Snowdew, ItemKey.Seaclover): (ItemKey.FrostwortSeed, 0.25),
+    (ItemKey.Frostwort, ItemKey.Seaclover): (ItemKey.ShelterfoilSeed, 0.15),
+    (ItemKey.Shelterfoil, ItemKey.Frostwort): (ItemKey.ShellflowerSeed, 0.05),
+    (ItemKey.Meddlespread, ItemKey.Meddlespread): (ItemKey.SpeckledCapSpores, 0.25),
+    (ItemKey.SpeckledCap, ItemKey.Meddlespread): (ItemKey.BloodcrownSpores, 0.2),
+    (ItemKey.Bloodcrown, ItemKey.SpeckledCap): (ItemKey.FoolsDelightSpores, 0.15),
+    (ItemKey.FoolsDelight, ItemKey.Bloodcrown): (ItemKey.SpidersGroveSpores, 0.01),
+    (ItemKey.Bloodcrown, ItemKey.DawnsGlory): (ItemKey.BlazeClusterSpores, 0.1),
+    (ItemKey.Seaclover, ItemKey.Sungrain): (ItemKey.GoldenCloverSeed, 0.005),
+    (ItemKey.Meddlespread, ItemKey.Snowdew): (ItemKey.WanderweedSeed, 0.01)
 })
 
 # -----------------------------------------------------------------------------
@@ -129,6 +140,7 @@ class GardenPlot():
         self.soil: Item | None = None
         self.seed_data: SeedData | None = None
         self.growth_ticks: int = 0
+        self.may_mutate: bool = False
 
     def harvest(self):
         if self.seed is None:
@@ -162,6 +174,7 @@ class GardenPlot():
         self.soil = None if not keep_soil else self.soil
         self.seed_data = None
         self.growth_ticks = 0
+        self.may_mutate = False
 
     def is_mature(self):
         if self.seed_data is None:
@@ -179,6 +192,7 @@ class GardenPlot():
 
         self.seed = seed
         self.seed_data = seed_data
+        self.may_mutate = False
 
         return f"*Planted {seed.get_full_name()}!*"
 
@@ -232,7 +246,11 @@ class GardenPlot():
                 num_mutations += 1
         mutate_string = f"{num_mutations} possible mutation{'s' if num_mutations != 1 else ''}\n" if num_mutations > 0 else ""
 
-        display_string = f"\n\n──────────\n{self.seed.get_full_name()}\n\n{self.growth_ticks} {growth_tick_str} old\n{mature_string}\n{mutate_string}──────────"
+        may_mutate_string = ""
+        if self.seed is None and self.seed_data is None and self.may_mutate:
+            may_mutate_string = "*This plot might grow a crossbred plant next tick!*\n"
+
+        display_string = f"\n\n──────────\n{self.seed.get_full_name()}\n\n{self.growth_ticks} {growth_tick_str} old\n{mature_string}\n{mutate_string}{may_mutate_string}──────────"
 
         return display_string
 
@@ -244,6 +262,7 @@ class GardenPlot():
         self.plant = state.get("plant", None)
         self.soil = state.get("soil", None)
         self.growth_ticks = state.get("growth_ticks", 0)
+        self.may_mutate = state.get("may_mutate", False)
 
         self.seed_data = None
         if self.seed is not None:
