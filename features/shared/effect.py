@@ -308,7 +308,7 @@ class Effect():
         if self.effect_type == EffectType.CritDmgBuff:
             if self.effect_value > 0:
                 display_string += "+"
-            display_string += f"{round(self.effect_value * 100, 2)}% Crit Damage"
+            display_string += f"{round(self.effect_value * 100, 2)}% Crit Effect"
         if self.effect_type == EffectType.CritDmgReduction:
             if self.effect_value > 0:
                 display_string += "+"
