@@ -922,7 +922,8 @@ class WorkshopView(discord.ui.View):
                 stats.crafting.artifact_items_crafted += 1
         output_display = '\n'.join(output_strs)
 
-        stats.crafting.patterns_discovered += 1
+        if new_recipe:
+            stats.crafting.patterns_discovered += 1
 
         self._get_craft_buttons()
 

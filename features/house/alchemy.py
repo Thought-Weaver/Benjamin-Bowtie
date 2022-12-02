@@ -844,7 +844,8 @@ class AlchemyChamberView(discord.ui.View):
                 stats.crafting.artifact_items_alchemized += 1
         output_display = '\n'.join(output_strs)
 
-        stats.crafting.alchemy_recipes_discovered += 1
+        if new_recipe:
+            stats.crafting.alchemy_recipes_discovered += 1
 
         self._get_alchemize_buttons()
 
