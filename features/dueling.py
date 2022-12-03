@@ -58,7 +58,7 @@ class Dueling():
     def damage_armor(self, damage: int):
         # This function returns the damage remaining to deal to the entity's
         # health.
-        if self.armor > 0:
+        if self.armor == 0:
             return damage
         
         diff = self.armor - damage
@@ -75,7 +75,7 @@ class Dueling():
         for i in range(1, 11):
             armor_squares_string += "⬜" if i <= armor_num_squares else "⬛"
 
-        return f"{armor_squares_string} ({self.armor}/{max_reduced_armor})"
+        return f"Armor: {armor_squares_string} ({self.armor}/{max_reduced_armor})"
 
     def get_total_percent_dmg_reduct(self):
         total_percent_reduction = 0
