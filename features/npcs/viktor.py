@@ -21,6 +21,12 @@ if TYPE_CHECKING:
     from features.player import Player
 
 # -----------------------------------------------------------------------------
+# CONSTANTS
+# -----------------------------------------------------------------------------
+
+MAX_PURCHASABLE_THIS_TICK = 10
+
+# -----------------------------------------------------------------------------
 # NPC VIEW
 # -----------------------------------------------------------------------------
 
@@ -129,12 +135,16 @@ class RandomItemMerchantView(discord.ui.View):
 
     def get_embed_for_intent(self):
         player: Player = self._get_player()
+
+        items_remaining: int = MAX_PURCHASABLE_THIS_TICK - self._random_item_merchant.get_purchased_this_tick(str(self._user.id))
+        item_str = "items" if items_remaining != 1 else "item"
+
         if self._intent == Intent.Wares:
             return Embed(
                 title="Browse Wares",
                 description=(
                     "\"I have MANY THINGS!\" he says pointing to all the various things.\n\n"
-                    f"You have {player.get_inventory().get_coins_str()}."
+                    f"You have {player.get_inventory().get_coins_str()}. You can purchase {items_remaining} more {item_str} this hour."
                 )
             )
         return self.get_initial_embed()
@@ -142,13 +152,17 @@ class RandomItemMerchantView(discord.ui.View):
     def display_item_info(self):
         player: Player = self._get_player()
         wares: List[Item] = self._random_item_merchant.get_current_wares()
+
+        items_remaining: int = MAX_PURCHASABLE_THIS_TICK - self._random_item_merchant.get_purchased_this_tick(str(self._user.id))
+        item_str = "items" if items_remaining != 1 else "item"
+
         if self._selected_item is None or not (0 <= self._selected_item_index < len(wares) and wares[self._selected_item_index] == self._selected_item):
             self._get_wares_page_buttons()
             
             return Embed(
                 title="Browse Wares",
                 description=(
-                    f"You have {player.get_inventory().get_coins_str()}.\n\n"
+                    f"You have {player.get_inventory().get_coins_str()}. You can purchase {items_remaining} more {item_str} this hour.\n\n"
                     "Navigate through available wares using the Prev and Next buttons.\n\n"
                     "*Error: Something about that item changed or it's no longer available.*"
                 )
@@ -159,7 +173,7 @@ class RandomItemMerchantView(discord.ui.View):
         return Embed(
             title="Browse Wares",
             description=(
-                f"You have {player.get_inventory().get_coins_str()}.\n\n"
+                f"You have {player.get_inventory().get_coins_str()}. You can purchase {items_remaining} more {item_str} this hour.\n\n"
                 f"──────────\n{self._selected_item}\n\n**Price: {actual_cost_str}**\n──────────\n\n"
                 "Navigate through available wares using the Prev and Next buttons."
             )
@@ -198,6 +212,19 @@ class RandomItemMerchantView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         wares: List[Item] = self._random_item_merchant.get_current_wares()
 
+        if self._random_item_merchant.get_purchased_this_tick(str(self._user.id)) >= MAX_PURCHASABLE_THIS_TICK:
+            return Embed(
+                title="Browse Wares",
+                description=(
+                    f"You have {inventory.get_coins_str()}.\n\n"
+                    "Navigate through available wares using the Prev and Next buttons.\n\n"
+                    "*You can't purchase any more items from Viktor this hour!*"
+                )
+            )
+
+        items_remaining: int = MAX_PURCHASABLE_THIS_TICK - self._random_item_merchant.get_purchased_this_tick(str(self._user.id))
+        item_str = "items" if items_remaining != 1 else "item"
+
         if self._selected_item is not None and wares[self._selected_item_index] == self._selected_item:
             actual_value: int = int(self._selected_item.get_value() * self._random_item_merchant.get_cost_adjust())
             if inventory.get_coins() >= actual_value:
@@ -205,10 +232,14 @@ class RandomItemMerchantView(discord.ui.View):
                 inventory.add_item(LOADED_ITEMS.get_new_item(self._selected_item.get_key()))
                 self._get_wares_page_buttons()
 
+                self._random_item_merchant.add_purchased_this_tick(str(self._user.id))
+                items_remaining: int = MAX_PURCHASABLE_THIS_TICK - self._random_item_merchant.get_purchased_this_tick(str(self._user.id))
+                item_str = "items" if items_remaining != 1 else "item"
+
                 return Embed(
                     title="Browse Wares",
                     description=(
-                        f"You have {inventory.get_coins_str()}.\n\n"
+                        f"You have {inventory.get_coins_str()}. You can purchase {items_remaining} more {item_str} this hour.\n\n"
                         "Navigate through available wares using the Prev and Next buttons.\n\n"
                         f"*You purchased 1 {self._selected_item.get_full_name()}!*"
                     )
@@ -219,7 +250,7 @@ class RandomItemMerchantView(discord.ui.View):
                 return Embed(
                     title="Browse Wares",
                     description=(
-                        f"You have {inventory.get_coins_str()}.\n\n"
+                        f"You have {inventory.get_coins_str()}. You can purchase {items_remaining} more {item_str} this hour.\n\n"
                         "Navigate through available wares using the Prev and Next buttons.\n\n"
                         f"*Error: You don't have enough coins to buy that!*"
                     )
@@ -229,7 +260,7 @@ class RandomItemMerchantView(discord.ui.View):
         return Embed(
             title="Browse Wares",
             description=(
-                f"You have {inventory.get_coins_str()}.\n\n"
+                f"You have {inventory.get_coins_str()}. You can purchase {items_remaining} more {item_str} this hour.\n\n"
                 "Navigate through available wares using the Prev and Next buttons.\n\n"
                 "*Error: Something about that item changed or it's no longer available.*"
             )
@@ -309,7 +340,8 @@ class RandomItemMerchant(NPC):
         new_items = random.choices(possible_items, k=8, weights=weights)
         
         self._current_wares = new_items
-        self._cost_adjust = random.randint(110, 200) / 100.0
+        self._cost_adjust = random.randint(125, 225) / 100.0
+        self._purchased_this_tick: Dict[str, int] = {}
 
     def _setup_inventory(self):
         self.tick()
@@ -319,6 +351,12 @@ class RandomItemMerchant(NPC):
     
     def get_cost_adjust(self):
         return self._cost_adjust
+
+    def add_purchased_this_tick(self, id_str: str):
+        self._purchased_this_tick[id_str] = self._purchased_this_tick.get(id_str, 0) + 1
+
+    def get_purchased_this_tick(self, id_str: str):
+        return self._purchased_this_tick.get(id_str, 0)
 
     def _setup_xp(self):
         # Expertise Setup
@@ -381,3 +419,4 @@ class RandomItemMerchant(NPC):
 
         self._current_wares = state.get("_current_wares", [])
         self._cost_adjust = state.get("_cost_adjust", 1.5)
+        self._purchased_this_tick = state.get("_purchased_this_tick", {})
