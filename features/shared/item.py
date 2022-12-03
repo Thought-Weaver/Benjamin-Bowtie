@@ -701,7 +701,7 @@ class Item():
                 else:
                     item = LOADED_ITEMS.get_new_item(altering_item_key)
                     condition_type = ConditionType.IsItemArmor
-                    if ClassTag.Equipment.MainHand in item.get_class_tags() or ClassTag.Equipment.OffHand in item.get_class_tags():
+                    if ClassTag.Equipment.MainHand in self.get_class_tags() or ClassTag.Equipment.OffHand in self.get_class_tags():
                         condition_type = ConditionType.IsItemInHand
                     item_effects = item.get_item_effects()
                     active_item_effects_str = f"{item_effects.get_socket_str(condition_type)}\n\n" if item_effects is not None else ""

@@ -333,7 +333,7 @@ class YennaView(discord.ui.View):
             return Embed(
                 title="Browse Recipes",
                 description=(
-                    "\"There are some things I can teach you, yes. Perhaps it's better than potentially creating an explosion in your alchemy chamber.\"\n\n"
+                    "\"There are some things I can teach you, yes. I suspect you'd prefer it to creating an explosion in your alchemy chamber.\"\n\n"
                     f"You have {player.get_inventory().get_coins_str()}."
                 )
             )
