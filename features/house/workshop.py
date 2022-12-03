@@ -958,6 +958,7 @@ class WorkshopView(discord.ui.View):
         result_strs = []
         for recipe_key in LOADED_RECIPES.get_all_keys():
             recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
+            # TODO: Because of this system, weapons and jewelry can't be deconstructed since they return a whetstone/kit
             if len(recipe.outputs.items()) == 1 and list(recipe.outputs.values())[0] == 1:
                 if list(recipe.outputs.keys())[0] == self._selected_item.get_key():
                     inventory.remove_item(self._selected_item_index, 1)
