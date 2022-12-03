@@ -864,13 +864,6 @@ class WorkshopView(discord.ui.View):
                 self._get_craft_buttons()
                 return self.get_embed_for_intent(error="\n\n*Error: You don't have enough of one of those items to craft that.*")
 
-        for input_key, quantity in self._current_crafting.items():
-            index = inventory.search_by_key(input_key)
-            # Make experimenting a risk-and-reward situation rather than always consuming the items
-            for _ in range(quantity):
-                if random() < 0.5:
-                    inventory.remove_item(index, 1)
-
         found_recipe = None
         new_recipe = False
         for recipe_key in LOADED_RECIPES.get_all_keys():
@@ -882,6 +875,15 @@ class WorkshopView(discord.ui.View):
                     player.get_house().crafting_recipes.append(recipe)
                 found_recipe = recipe
                 break
+
+        for input_key, quantity in self._current_crafting.items():
+            index = inventory.search_by_key(input_key)
+            # Make experimenting a risk-and-reward situation rather than always consuming the items
+            for _ in range(quantity):
+                if found_recipe is None and random() < 0.5:
+                    inventory.remove_item(index, 1)
+                else:
+                    inventory.remove_item(index, 1)
 
         if found_recipe is None:
             self._current_cooking = {}
