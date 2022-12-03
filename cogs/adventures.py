@@ -341,6 +341,7 @@ class Adventures(commands.Cog):
         
         if isinstance(user, User):
             challenged_player = self._get_player(context.guild.id, user.id)
+            challenged_player_name = user.display_name
             challenged_player_dueling: Dueling = challenged_player.get_dueling()
             if challenged_player_dueling.is_in_combat:
                 await context.send(f"That person is in a duel and can't play knucklebones.")
