@@ -309,7 +309,7 @@ class RandomItemMerchant(NPC):
         new_items = random.choices(possible_items, k=8, weights=weights)
         
         self._current_wares = new_items
-        self._cost_adjust = random.randint(75, 175) / 100.0
+        self._cost_adjust = random.randint(110, 200) / 100.0
 
     def _setup_inventory(self):
         self.tick()
