@@ -3,7 +3,7 @@
     "icon": "\u2697\uFE0F",
     "name": "Poison",
     "value": 50,
-    "rarity": "Common",
+    "rarity": "Uncommon",
     "description": "Can be used while dueling or outside duels.",
     "flavor_text": "",
     "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],

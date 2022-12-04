@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/leggings/silver_plate_leggings": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 21
     }
 }

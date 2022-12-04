@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/helmet/amberite_plate_helmet": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 34
     }
 }

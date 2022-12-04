@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/boots/leather_boots": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 8
     }
 }

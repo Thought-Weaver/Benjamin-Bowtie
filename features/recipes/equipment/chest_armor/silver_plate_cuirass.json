@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/chest_armor/silver_plate_cuirass": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 21
     }
 }

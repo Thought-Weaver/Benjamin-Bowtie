@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/boots/mythril_plate_greaves": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 34
     }
 }

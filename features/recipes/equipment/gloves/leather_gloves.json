@@ -8,5 +8,8 @@
     },
     "outputs": {
         "items/equipment/gloves/leather_gloves": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 8
     }
 }

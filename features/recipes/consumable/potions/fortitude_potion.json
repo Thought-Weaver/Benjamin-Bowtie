@@ -11,5 +11,8 @@
     },
     "outputs": {
         "items/consumable/potions/fortitude_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
     }
 }

@@ -10,5 +10,8 @@
     },
     "outputs": {
         "items/consumable/potions/greater_poison": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
     }
 }

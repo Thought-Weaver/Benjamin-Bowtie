@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/offhand/wooden_buckler": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 5
     }
 }

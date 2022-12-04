@@ -10,5 +10,8 @@
     },
     "outputs": {
         "items/consumable/potions/poison": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 8
     }
 }

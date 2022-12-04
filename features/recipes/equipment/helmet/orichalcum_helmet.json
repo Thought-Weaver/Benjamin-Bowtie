@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/helmet/orichalcum_helmet": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 21
     }
 }

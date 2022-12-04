@@ -8,5 +8,8 @@
     },
     "outputs": {
         "items/equipment/leggings/leather_leggings": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 8
     }
 }

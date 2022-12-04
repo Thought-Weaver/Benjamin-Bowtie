@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/boots/silver_greaves": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 13
     }
 }

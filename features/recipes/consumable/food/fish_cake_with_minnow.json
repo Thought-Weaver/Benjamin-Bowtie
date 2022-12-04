@@ -12,6 +12,6 @@
         "items/consumable/food/fish_cake": 1
     },
     "xp_reward_for_use": {
-        "Fisher": 16
+        "Fisher": 10
     }
 }

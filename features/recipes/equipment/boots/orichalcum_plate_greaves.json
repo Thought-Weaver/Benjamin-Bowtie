@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/boots/orichalcum_plate_greaves": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 34
     }
 }

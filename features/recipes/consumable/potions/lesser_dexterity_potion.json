@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/consumable/potions/lesser_dexterity_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 8
     }
 }

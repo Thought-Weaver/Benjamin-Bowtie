@@ -8,5 +8,8 @@
     },
     "outputs": {
         "items/equipment/helmet/leather_helmet": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 8
     }
 }

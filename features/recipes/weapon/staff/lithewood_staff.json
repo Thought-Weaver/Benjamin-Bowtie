@@ -10,5 +10,8 @@
     },
     "outputs": {
         "items/weapon/staff/lithewood_staff": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 5
     }
 }

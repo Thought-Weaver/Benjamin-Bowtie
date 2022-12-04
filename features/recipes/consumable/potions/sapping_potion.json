@@ -10,5 +10,8 @@
     },
     "outputs": {
         "items/consumable/potions/sapping_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
     }
 }

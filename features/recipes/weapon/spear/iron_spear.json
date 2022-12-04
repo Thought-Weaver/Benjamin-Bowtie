@@ -11,5 +11,8 @@
     "outputs": {
         "items/weapon/spear/iron_spear": 1,
         "items/ingredient/materials/whetstone": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 5
     }
 }

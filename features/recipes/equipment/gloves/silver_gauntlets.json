@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/gloves/silver_gauntlets": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 13
     }
 }

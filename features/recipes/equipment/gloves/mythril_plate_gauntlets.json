@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/gloves/mythril_plate_gauntlets": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 34
     }
 }

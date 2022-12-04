@@ -9,5 +9,8 @@
     },
     "outputs": {
         "items/equipment/chest_armor/orichalcum_cuirass": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 21
     }
 }

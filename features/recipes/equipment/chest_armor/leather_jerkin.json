@@ -8,5 +8,8 @@
     },
     "outputs": {
         "items/equipment/chest_armor/leather_jerkin": 1
+    },
+    "xp_reward_for_use": {
+        "Guardian": 8
     }
 }
