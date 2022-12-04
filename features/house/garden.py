@@ -71,7 +71,7 @@ SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
     ItemKey.DragonsTeethSeed: SeedData(10, 25, 30, ItemKey.DragonsTeeth, 0.02, 1, "\uD83C\uDF31", 625),
     ItemKey.DreamMakerSeed: SeedData(3, 6, 16, ItemKey.DreamMaker, 0.4, 1, "\uD83C\uDF31", 36),
     ItemKey.FissureleafSeed: SeedData(1, 3, 12, ItemKey.Fissureleaf, 0.75, 2, "\uD83C\uDF31", 9),
-    ItemKey.FoolsDelightSpores: SeedData(5, 5, 20, ItemKey.FoolsDelight, 0.95, 2, "\uD83C\uDF31", 25),
+    ItemKey.FoolsDelightSpores: SeedData(5, 5, 20, ItemKey.FoolsDelight, 0.4, 2, "\uD83C\uDF31", 25),
     ItemKey.ForgottenTearsSeed: SeedData(8, 15, 50, ItemKey.ForgottenTears, 0.05, 1, "\uD83C\uDF31", 225),
     ItemKey.FrostwortSeed: SeedData(2, 3, 10, ItemKey.Frostwort, 0.6, 4, "\uD83C\uDF31", 9),
     ItemKey.GoldenCloverSeed: SeedData(1, 3, 5, ItemKey.GoldenClover, 0.1, 1, "\uD83C\uDF31", 9),
