@@ -90,6 +90,11 @@ class House():
                 min_prob_result = None
                 for required_plants, possible_result in MUTATION_PROBS.items():
                     if required_plants[0] in plant_keys and required_plants[1] in plant_keys:
+                        # In the case where two of the same plant can mutate itself, make sure there are at least
+                        # two around to do that.
+                        if required_plants[0] == required_plants[1] and plant_keys.count(required_plants[0]) < 2:
+                            continue
+                        
                         self.garden_plots[i].may_mutate = True
                         adjusted_mutation_chance = possible_result[1] * mutation_adjustment
                         if random.random() < adjusted_mutation_chance:
