@@ -42,7 +42,7 @@ class House():
 
         self.garden_plots: List[GardenPlot] = []
 
-    def tick_garden(self):
+    def tick_garden(self, only_update_display: bool=False):
         if HouseRoom.Garden not in self.house_rooms:
             return
 
@@ -98,15 +98,16 @@ class House():
                                 min_prob = adjusted_mutation_chance
                                 min_prob_result = possible_result[0]
                 
-                if min_prob_result is not None:
+                if min_prob_result is not None and not only_update_display:
                     seed = LOADED_ITEMS.get_new_item(min_prob_result)
                     self.garden_plots[i].plant_seed(seed)
 
-        for plot in self.garden_plots:
-            if plot.soil is not None and plot.soil.get_key() == ItemKey.Pebbles:
-                continue
+        if not only_update_display:
+            for plot in self.garden_plots:
+                if plot.soil is not None and plot.soil.get_key() == ItemKey.Pebbles:
+                    continue
 
-            plot.tick()
+                plot.tick()
 
     def tick(self):
         self.tick_garden()

@@ -78,7 +78,7 @@ SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
     ItemKey.GraspleafSeed: SeedData(1, 3, 18, ItemKey.Graspleaf, 0.85, 2, "\uD83C\uDF31", 9),
     ItemKey.GraveMossSpores: SeedData(4, 4, 12, ItemKey.GraveMoss, 0.6, 3, "\uD83C\uDF31", 16),
     ItemKey.HushvineSeed: SeedData(5, 10, 20, ItemKey.Hushvine, 0.5, 2, "\uD83C\uDF31", 100),
-    ItemKey.LichbloomSeed: SeedData(24, 64, 2400, ItemKey.Lichbloom, 0.01, 1, "\uD83C\uDF31", 4096),
+    ItemKey.LichbloomSeed: SeedData(24, 64, 2400, ItemKey.Lichbloom, 0.01, 1, "\uD83C\uDF31", 1024),
     ItemKey.MagesBaneSeed: SeedData(5, 12, 16, ItemKey.MagesBane, 0.2, 2, "\uD83C\uDF31", 144),
     ItemKey.ManabloomSeed: SeedData(3, 5, 15, ItemKey.Riverblossom, 0.3, 2, "\uD83C\uDF31", 25),
     ItemKey.MeddlespreadSpores: SeedData(1, 1, 30, ItemKey.Meddlespread, 0.9, 6, "\uD83C\uDF31", 1),
@@ -650,6 +650,8 @@ class GardenView(discord.ui.View):
 
         final_xp = player.get_expertise().add_xp_to_class(seed_data.xp_to_gain, ExpertiseClass.Alchemist, player.get_equipment())
 
+        player.get_house().tick_garden(only_update_display=True)
+
         return self.get_embed_for_intent(additional=f"\n\n*You received {harvest_result.get_full_name()}{seeds_added_str} and gained {final_xp} Alchemist xp*")
 
     def expand_garden(self):
@@ -669,6 +671,8 @@ class GardenView(discord.ui.View):
         cur_size = int(sqrt(len(house.garden_plots)))
         for _ in range(cur_size * cur_size, (cur_size + 1) * (cur_size + 1)):
             house.garden_plots.append(GardenPlot())
+
+        player.get_house().tick_garden(only_update_display=True)
 
         self._get_garden_buttons()
         return self.get_embed_for_intent(additional=f"\n\n*You increased the size of the garden from {cur_size * cur_size} plots to {(cur_size + 1) * (cur_size + 1)} plots!*")
@@ -706,6 +710,8 @@ class GardenView(discord.ui.View):
 
         response = self._selected_plot.plant_seed(seed)
 
+        player.get_house().tick_garden(only_update_display=True)
+
         self._get_garden_buttons()
         return self.get_embed_for_intent(additional=f"\n\n*{response}*")
 
@@ -736,6 +742,8 @@ class GardenView(discord.ui.View):
             return self.get_embed_for_intent(additional="\n\n*Error: Something about that item changed or it's no longer available.*")
 
         response = self._selected_plot.use_item(self._selected_item)
+
+        player.get_house().tick_garden(only_update_display=True)
 
         self._get_garden_buttons()
         return self.get_embed_for_intent(additional=f"\n\n*{response}*")
