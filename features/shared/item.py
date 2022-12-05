@@ -185,6 +185,7 @@ class ItemKey(StrEnum):
     SeacloverSeed = "items/gardening/seed/seaclover_seed"
     ShellflowerSeed = "items/gardening/seed/shellflower_seed"
     ShelterfoilSeed = "items/gardening/seed/shelterfoil_seed"
+    ShiverrootSeed = "items/gardening/seed/shiverroot_seed"
     SirensKissSeed = "items/gardening/seed/sirens_kiss_seed"
     SnowdewSeed = "items/gardening/seed/snowdew_seed"
     SpeckledCapSpores = "items/gardening/seed/speckled_cap_spores"
