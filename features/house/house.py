@@ -1,4 +1,5 @@
 from __future__ import annotations
+from math import sqrt
 import random
 
 import discord
@@ -46,10 +47,7 @@ class House():
         if HouseRoom.Garden not in self.house_rooms:
             return
 
-        size = 1
-        for i in range(1, MAX_GARDEN_SIZE + 1):
-            if len(self.garden_plots) % i == 0:
-                size = i
+        size = int(sqrt(len(self.garden_plots)))
 
         # Do mutations first rather than as the plots tick to avoid plant death
         # and confusing results for the player.
