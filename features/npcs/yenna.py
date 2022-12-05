@@ -353,7 +353,7 @@ class YennaView(discord.ui.View):
                 )
             )
 
-        actual_cost: int = int(self._selected_item.get_value() * self._COST_ADJUST)
+        actual_cost: int = int(self._selected_item.get_value() * self._COST_ADJUST) + 1
         actual_cost_str: str = f"{actual_cost} coin" if actual_cost == 1 else f"{actual_cost} coins"
         return Embed(
             title="Browse Wares",
@@ -387,7 +387,7 @@ class YennaView(discord.ui.View):
             self.add_item(NextButton(min(4, len(page_slots))))
         
         if self._selected_item is not None:
-            actual_value: int = int(self._selected_item.get_value() * self._COST_ADJUST)
+            actual_value: int = int(self._selected_item.get_value() * self._COST_ADJUST) + 1
             if inventory.get_coins() >= actual_value:
                 self.add_item(ConfirmButton(min(4, len(page_slots))))
         self.add_item(ExitButton(min(4, len(page_slots))))
@@ -396,7 +396,7 @@ class YennaView(discord.ui.View):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
         if self._selected_item is not None and self._wares[self._selected_item_index] == self._selected_item:
-            actual_value: int = int(self._selected_item.get_value() * self._COST_ADJUST)
+            actual_value: int = int(self._selected_item.get_value() * self._COST_ADJUST) + 1
             if inventory.get_coins() >= actual_value:
                 inventory.remove_coins(actual_value)
                 inventory.add_item(LOADED_ITEMS.get_new_item(self._selected_item.get_key()))
@@ -663,7 +663,7 @@ class YennaView(discord.ui.View):
                 )
             )
 
-        actual_cost: int = int(self._selected_recipe.value * self._COST_ADJUST)
+        actual_cost: int = int(self._selected_recipe.value * self._COST_ADJUST) + 1
         actual_cost_str: str = f"{actual_cost} coin" if actual_cost == 1 else f"{actual_cost} coins"
         return Embed(
             title="Browse Recipes",
@@ -697,7 +697,7 @@ class YennaView(discord.ui.View):
             self.add_item(NextButton(min(4, len(page_slots))))
         
         if self._selected_recipe is not None:
-            actual_value: int = int(self._selected_recipe.value * self._COST_ADJUST)
+            actual_value: int = int(self._selected_recipe.value * self._COST_ADJUST) + 1
             if inventory.get_coins() >= actual_value:
                 self.add_item(ConfirmButton(min(4, len(page_slots))))
         self.add_item(ExitButton(min(4, len(page_slots))))
@@ -707,7 +707,7 @@ class YennaView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         house: House = player.get_house()
         if self._selected_recipe is not None:
-            actual_value: int = int(self._selected_recipe.value * self._COST_ADJUST)
+            actual_value: int = int(self._selected_recipe.value * self._COST_ADJUST) + 1
             if inventory.get_coins() >= actual_value:
                 inventory.remove_coins(actual_value)
                 house.crafting_recipes.append(LOADED_RECIPES.get_new_recipe(self._selected_recipe.key))

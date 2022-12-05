@@ -168,7 +168,8 @@ class RandomItemMerchantView(discord.ui.View):
                 )
             )
 
-        actual_cost: int = int(self._selected_item.get_value() * self._random_item_merchant.get_cost_adjust())
+        # Add 1 to account for low-cost items and avoid free XP/coin exploits
+        actual_cost: int = int(self._selected_item.get_value() * self._random_item_merchant.get_cost_adjust()) + 1
         actual_cost_str: str = f"{actual_cost} coin" if actual_cost == 1 else f"{actual_cost} coins"
         return Embed(
             title="Browse Wares",
@@ -202,7 +203,7 @@ class RandomItemMerchantView(discord.ui.View):
             self.add_item(NextButton(min(4, len(page_slots))))
         
         if self._selected_item is not None:
-            actual_value: int = int(self._selected_item.get_value() * self._random_item_merchant.get_cost_adjust())
+            actual_value: int = int(self._selected_item.get_value() * self._random_item_merchant.get_cost_adjust()) + 1
             if inventory.get_coins() >= actual_value:
                 self.add_item(ConfirmButton(min(4, len(page_slots))))
         self.add_item(ExitButton(min(4, len(page_slots))))
@@ -226,7 +227,7 @@ class RandomItemMerchantView(discord.ui.View):
         item_str = "items" if items_remaining != 1 else "item"
 
         if self._selected_item is not None and wares[self._selected_item_index] == self._selected_item:
-            actual_value: int = int(self._selected_item.get_value() * self._random_item_merchant.get_cost_adjust())
+            actual_value: int = int(self._selected_item.get_value() * self._random_item_merchant.get_cost_adjust()) + 1
             if inventory.get_coins() >= actual_value:
                 inventory.remove_coins(actual_value)
                 inventory.add_item(LOADED_ITEMS.get_new_item(self._selected_item.get_key()))
