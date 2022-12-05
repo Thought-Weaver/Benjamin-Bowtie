@@ -465,7 +465,7 @@ class StorageView(discord.ui.View):
         inventory_slots: List[Item] = player.get_inventory().get_inventory_slots()
         if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(additional="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title=f"{self._selected_bin_key} (Storing)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title=f"{self._selected_bin_key} (Storing)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_storage_bin_item(self, index: int, item: Item):
         self._selected_item = item
@@ -477,7 +477,7 @@ class StorageView(discord.ui.View):
         storage_bin_slots: List[Item] = player.get_house().storage_bins.get(self._selected_bin_key, Inventory()).get_inventory_slots()
         if self._selected_item is None or storage_bin_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(additional="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title=f"{self._selected_bin_key} (Retrieving)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title=f"{self._selected_bin_key} (Retrieving)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def retrieve(self):
         player: Player = self._get_player()

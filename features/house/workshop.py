@@ -409,7 +409,7 @@ class WorkshopView(discord.ui.View):
             return Embed(title="Storage (Retrieving)", description="Choose an item to retrieve from storage.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Craft:
             current_crafting_str = self.get_current_crafting_str()
-            current_crafting_display = f"──────────\n{current_crafting_str}──────────\n\n" if current_crafting_str != "" else ""
+            current_crafting_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_crafting_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_crafting_str != "" else ""
             return Embed(title="Craft", description=f"{current_crafting_display}Use materials from your inventory and attempt to craft something.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Patterns:
             return Embed(title="Patterns", description="Choose a pattern you've acquired or discovered to craft.\n\nNavigate through your patterns using the Prev and Next buttons." + error)
@@ -647,7 +647,7 @@ class WorkshopView(discord.ui.View):
         inventory_slots: List[Item] = player.get_inventory().get_inventory_slots()
         if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Storage (Storing)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Storage (Storing)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_recipe(self, recipe: Recipe):
         self._selected_recipe = recipe
@@ -658,7 +658,7 @@ class WorkshopView(discord.ui.View):
 
         num_can_be_created = self._selected_recipe.num_can_be_made(self._get_player().get_inventory())
 
-        return Embed(title="Patterns", description=f"──────────\n{self._selected_recipe}\nYou have enough materials to make {num_can_be_created}.\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Patterns", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_recipe}\nYou have enough materials to make {num_can_be_created}.\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_storage_item(self, index: int, item: Item):
         self._selected_item = item
@@ -670,7 +670,7 @@ class WorkshopView(discord.ui.View):
         storage_slots: List[Item] = player.get_house().workshop_storage.get_inventory_slots()
         if self._selected_item is None or storage_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Storage (Retrieving)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Storage (Retrieving)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def retrieve(self):
         player: Player = self._get_player()
@@ -754,7 +754,7 @@ class WorkshopView(discord.ui.View):
         self._current_crafting[item_key] = self._current_crafting.get(item_key, 0) + 1
 
         current_crafting_str = self.get_current_crafting_str()
-        current_crafting_display = f"──────────\n{current_crafting_str}──────────\n\n" if current_crafting_str != "" else ""
+        current_crafting_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_crafting_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_crafting_str != "" else ""
         return Embed(title="Craft", description=f"{current_crafting_display}Use materials from your inventory and attempt to craft something.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def remove_crafting_item(self):
@@ -767,7 +767,7 @@ class WorkshopView(discord.ui.View):
         self._current_crafting[item_key] = max(self._current_crafting.get(item_key, 0) - 1, 0)
 
         current_crafting_str = self.get_current_crafting_str()
-        current_crafting_display = f"──────────\n{current_crafting_str}──────────\n\n" if current_crafting_str != "" else ""
+        current_crafting_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_crafting_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_crafting_str != "" else ""
         return Embed(title="Craft", description=f"{current_crafting_display}Use materials from your inventory and attempt to craft something.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_material(self, index: int, item: Item):
@@ -782,7 +782,7 @@ class WorkshopView(discord.ui.View):
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
         current_crafting_str = self.get_current_crafting_str()
-        current_crafting_display = f"──────────\n{current_crafting_str}──────────\n\n" if current_crafting_str != "" else ""
+        current_crafting_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_crafting_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_crafting_str != "" else ""
         return Embed(title="Craft", description=f"{current_crafting_display}Use materials from your inventory and attempt to craft something.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def use_pattern(self):
@@ -888,8 +888,8 @@ class WorkshopView(discord.ui.View):
         if found_recipe is None:
             self._current_cooking = {}
             self._get_craft_buttons()
-            return Embed(title="Craft", description=f"You attempt to combine these materials together, but nothing happens.\n\n──────────\n\nUse materials from your inventory and attempt to craft something.\n\nNavigate through your patterns using the Prev and Next buttons.")
-            
+            return Embed(title="Craft", description=f"You attempt to combine these materials together, but nothing happens.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nUse materials from your inventory and attempt to craft something.\n\nNavigate through your patterns using the Prev and Next buttons.")
+
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} pattern!*\n" if new_recipe else ""
 
         xp_strs = []
@@ -929,7 +929,7 @@ class WorkshopView(discord.ui.View):
 
         self._get_craft_buttons()
 
-        return Embed(title="Craft", description=f"Crafting successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n──────────\n\nChoose a pattern you've acquired or discovered to craft.\n\nNavigate through your patterns using the Prev and Next buttons.")
+        return Embed(title="Craft", description=f"Crafting successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose a pattern you've acquired or discovered to craft.\n\nNavigate through your patterns using the Prev and Next buttons.")
 
     def select_deconstruct_item(self, index: int, item: Item):
         self._selected_item = item
@@ -941,7 +941,7 @@ class WorkshopView(discord.ui.View):
         inventory_slots: List[Item] = player.get_inventory().get_inventory_slots()
         if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Deconstruct", description=f"──────────\n{self._selected_item}\n──────────\n\nChoose an item to deconstruct into some materials.\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Deconstruct", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose an item to deconstruct into some materials.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def deconstruct(self):
         player: Player = self._get_player()
@@ -979,7 +979,7 @@ class WorkshopView(discord.ui.View):
             self._get_deconstruct_buttons()
             return self.get_embed_for_intent(error="\n\n*You cannot deconstruct that item.*")
 
-        return Embed(title="Deconstruct", description=f"You successfully deconstructed {self._selected_item.get_full_name()} into:\n\n──────────\n{result_str}\n──────────\n\nChoose an item to deconstruct into some materials.\n\nChoose an item to deconstruct into some materials.\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Deconstruct", description=f"You successfully deconstructed {self._selected_item.get_full_name()} into:\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{result_str}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose an item to deconstruct into some materials.\n\nChoose an item to deconstruct into some materials.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def exit_with_intent(self):
         self._selected_item = None

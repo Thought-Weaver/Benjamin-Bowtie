@@ -236,7 +236,7 @@ class Knucklebones(discord.ui.View):
             self._current_roll = randint(1, 6)
 
     def _take_npc_turn(self):
-        pre_npc_move_board = self._get_game_state_string() + "\n\n" + self._get_current_turn_string() + "\n────────────────────\n\n"
+        pre_npc_move_board = self._get_game_state_string() + "\n\n" + self._get_current_turn_string() + "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
         npc_move_turn_str = self._turn.make_move(self._player_1_board, self._player_2_board, self._difficulty if self._difficulty != Difficulty.MrBones else Difficulty.Hard, self._compute_points_in_col, self._current_roll, self._player_2_display_name) + "\n\n"
         self._roll()
         self._turn = self._player_1 if self._turn == self._player_2 else self._player_2

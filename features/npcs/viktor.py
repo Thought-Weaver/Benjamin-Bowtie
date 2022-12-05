@@ -175,7 +175,7 @@ class RandomItemMerchantView(discord.ui.View):
             title="Browse Wares",
             description=(
                 f"You have {player.get_inventory().get_coins_str()}. You can purchase {items_remaining} more {item_str} this hour.\n\n"
-                f"──────────\n{self._selected_item}\n\n**Price: {actual_cost_str}**\n──────────\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n\n**Price: {actual_cost_str}**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
                 "Navigate through available wares using the Prev and Next buttons."
             )
         )

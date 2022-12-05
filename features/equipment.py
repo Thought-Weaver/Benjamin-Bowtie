@@ -325,7 +325,7 @@ class EquipmentView(discord.ui.View):
 
         description = ""
         if equipped_item is not None:
-            description += f"──────────\n{equipped_item}\n──────────\n\n"
+            description += f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{equipped_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
         description += "Choose an item from your inventory to equip."
 
         return Embed(
@@ -358,7 +358,7 @@ class EquipmentView(discord.ui.View):
 
             embed = Embed(
                 title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
-                description=f"──────────\n{item}\n──────────\n\nEquipped! You can choose a different item from your inventory to equip or exit."
+                description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nEquipped! You can choose a different item from your inventory to equip or exit."
             )
 
             expertise.update_stats(player.get_combined_attributes())
@@ -425,7 +425,7 @@ class EquipmentView(discord.ui.View):
 
     def get_full_equipment_str(self):
         player_equipment: Equipment = self.get_player().get_equipment()
-        base_none_equipped_str: str = "──────────\nNone Equipped\n──────────"
+        base_none_equipped_str: str = "᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\nNone Equipped\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
 
         helmet = player_equipment.get_item_in_slot(ClassTag.Equipment.Helmet)
         gloves = player_equipment.get_item_in_slot(ClassTag.Equipment.Gloves)
@@ -438,15 +438,15 @@ class EquipmentView(discord.ui.View):
         boots = player_equipment.get_item_in_slot(ClassTag.Equipment.Boots)
 
         equipment_strs = [
-            f"**Helmet:**\n──────────\n{str(helmet)}\n──────────" if helmet is not None else "**Helmet:**\n" + base_none_equipped_str,
-            f"**Gloves:**\n──────────\n{str(gloves)}\n──────────" if gloves is not None else "**Gloves:**\n" + base_none_equipped_str,
-            f"**Amulet:**\n──────────\n{str(amulet)}\n──────────" if amulet is not None else "**Amulet:**\n" + base_none_equipped_str,
-            f"**Ring:**\n──────────\n{str(ring)}\n──────────" if ring is not None else "**Ring:**\n" + base_none_equipped_str,
-            f"**Chest Armor:**\n──────────\n{str(chest_armor)}\n──────────" if chest_armor is not None else "**Chest Armor:**\n" + base_none_equipped_str,
-            f"**Main Hand:**\n──────────\n{str(main_hand)}\n──────────" if main_hand is not None else "**Main Hand:**\n" + base_none_equipped_str,
-            f"**Off Hand:**\n──────────\n{str(off_hand)}\n──────────" if off_hand is not None else "**Off Hand:**\n" + base_none_equipped_str,
-            f"**Leggings:**\n──────────\n{str(leggings)}\n──────────" if leggings is not None else "**Leggings:**\n" + base_none_equipped_str,
-            f"**Boots:**\n──────────\n{str(boots)}\n──────────" if boots is not None else "**Boots:**\n" + base_none_equipped_str
+            f"**Helmet:**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(helmet)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if helmet is not None else "**Helmet:**\n" + base_none_equipped_str,
+            f"**Gloves:**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(gloves)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if gloves is not None else "**Gloves:**\n" + base_none_equipped_str,
+            f"**Amulet:**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(amulet)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if amulet is not None else "**Amulet:**\n" + base_none_equipped_str,
+            f"**Ring:**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(ring)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if ring is not None else "**Ring:**\n" + base_none_equipped_str,
+            f"**Chest Armor:**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(chest_armor)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if chest_armor is not None else "**Chest Armor:**\n" + base_none_equipped_str,
+            f"**Main Hand:**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(main_hand)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if main_hand is not None else "**Main Hand:**\n" + base_none_equipped_str,
+            f"**Off Hand:**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(off_hand)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if off_hand is not None else "**Off Hand:**\n" + base_none_equipped_str,
+            f"**Leggings:**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(leggings)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if leggings is not None else "**Leggings:**\n" + base_none_equipped_str,
+            f"**Boots:**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(boots)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if boots is not None else "**Boots:**\n" + base_none_equipped_str
         ]
 
         return "\n\n".join(equipment_strs)
@@ -470,7 +470,7 @@ class EquipmentView(discord.ui.View):
         if equipped_item is not None:
             return Embed(
                 title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
-                description=f"──────────\n{equipped_item}\n──────────\n\nChoose an item from your inventory to equip."
+                description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{equipped_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose an item from your inventory to equip."
             )
         else:
             return Embed(

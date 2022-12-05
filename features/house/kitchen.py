@@ -361,7 +361,7 @@ class KitchenView(discord.ui.View):
             return Embed(title="Cupboard (Retrieving)", description="Choose an item to retrieve from the cupboard.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Cook:
             current_cooking_str = self.get_current_cooking_str()
-            current_cooking_display = f"──────────\n{current_cooking_str}──────────\n\n" if current_cooking_str != "" else ""
+            current_cooking_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_cooking_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_cooking_str != "" else ""
             return Embed(title="Cook", description=f"{current_cooking_display}Mix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Recipes:
             return Embed(title="Recipes", description="Choose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons." + error)
@@ -567,7 +567,7 @@ class KitchenView(discord.ui.View):
         inventory_slots: List[Item] = player.get_inventory().get_inventory_slots()
         if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Cupboard (Storing)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Cupboard (Storing)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_recipe(self, recipe: Recipe):
         self._selected_recipe = recipe
@@ -578,7 +578,7 @@ class KitchenView(discord.ui.View):
 
         num_can_be_created = self._selected_recipe.num_can_be_made(self._get_player().get_inventory())
 
-        return Embed(title="Recipes", description=f"──────────\n{self._selected_recipe}\nYou have enough ingredients to make {num_can_be_created}.\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Recipes", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_recipe}\nYou have enough ingredients to make {num_can_be_created}.\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_cupboard_item(self, index: int, item: Item):
         self._selected_item = item
@@ -590,7 +590,7 @@ class KitchenView(discord.ui.View):
         cupboard_slots: List[Item] = player.get_house().kitchen_cupboard.get_inventory_slots()
         if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Cupboard (Retrieving)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Cupboard (Retrieving)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def retrieve(self):
         player: Player = self._get_player()
@@ -674,7 +674,7 @@ class KitchenView(discord.ui.View):
         self._current_cooking[item_key] = self._current_cooking.get(item_key, 0) + 1
 
         current_cooking_str = self.get_current_cooking_str()
-        current_cooking_display = f"──────────\n{current_cooking_str}──────────\n\n" if current_cooking_str != "" else ""
+        current_cooking_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_cooking_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_cooking_str != "" else ""
         return Embed(title="Cook", description=f"{current_cooking_display}Mix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def remove_cooking_item(self):
@@ -687,7 +687,7 @@ class KitchenView(discord.ui.View):
         self._current_cooking[item_key] = max(self._current_cooking.get(item_key, 0) - 1, 0)
 
         current_cooking_str = self.get_current_cooking_str()
-        current_cooking_display = f"──────────\n{current_cooking_str}──────────\n\n" if current_cooking_str != "" else ""
+        current_cooking_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_cooking_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_cooking_str != "" else ""
         return Embed(title="Cook", description=f"{current_cooking_display}Mix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_cooking_ingredient(self, index: int, item: Item):
@@ -702,7 +702,7 @@ class KitchenView(discord.ui.View):
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
         current_cooking_str = self.get_current_cooking_str()
-        current_cooking_display = f"──────────\n{current_cooking_str}──────────\n\n" if current_cooking_str != "" else ""
+        current_cooking_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_cooking_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_cooking_str != "" else ""
         return Embed(title="Cook", description=f"{current_cooking_display}Mix together ingredients from your inventory and attempt to cook something.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def use_recipe(self):
@@ -808,7 +808,7 @@ class KitchenView(discord.ui.View):
         if found_recipe is None:
             self._current_cooking = {}
             self._get_cook_buttons()
-            return Embed(title="Cook", description=f"You attempt to mix these ingredients together, but nothing happens.\n\n──────────\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through your recipes using the Prev and Next buttons.")
+            return Embed(title="Cook", description=f"You attempt to mix these ingredients together, but nothing happens.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through your recipes using the Prev and Next buttons.")
             
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} recipe!*\n" if new_recipe else ""
 
@@ -849,7 +849,7 @@ class KitchenView(discord.ui.View):
 
         self._get_cook_buttons()
 
-        return Embed(title="Cook", description=f"Cooking successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n──────────\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
+        return Embed(title="Cook", description=f"Cooking successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
 
     def exit_with_intent(self):
         self._selected_item = None

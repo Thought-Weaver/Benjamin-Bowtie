@@ -363,7 +363,7 @@ class AlchemyChamberView(discord.ui.View):
             return Embed(title="Cupboard (Retrieving)", description="Choose an item to retrieve from the cupboard.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Alchemize:
             current_alchemizing_str = self.get_current_alchemizing_str()
-            current_alchemizing_display = f"──────────\n{current_alchemizing_str}──────────\n\n" if current_alchemizing_str != "" else ""
+            current_alchemizing_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_alchemizing_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_alchemizing_str != "" else ""
             return Embed(title="Alchemize", description=f"{current_alchemizing_display}Mix together ingredients from your inventory and attempt to create a potion.\n\nNavigate through the items using the Prev and Next buttons." + error)
         if self._intent == Intent.Recipes:
             return Embed(title="Recipes", description="Choose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons." + error)
@@ -569,7 +569,7 @@ class AlchemyChamberView(discord.ui.View):
         inventory_slots: List[Item] = player.get_inventory().get_inventory_slots()
         if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Cupboard (Storing)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Cupboard (Storing)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_recipe(self, recipe: Recipe):
         self._selected_recipe = recipe
@@ -580,7 +580,7 @@ class AlchemyChamberView(discord.ui.View):
 
         num_can_be_created = self._selected_recipe.num_can_be_made(self._get_player().get_inventory())
 
-        return Embed(title="Recipes", description=f"──────────\n{self._selected_recipe}\nYou have enough ingredients to make {num_can_be_created}.\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Recipes", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_recipe}\nYou have enough ingredients to make {num_can_be_created}.\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_cupboard_item(self, index: int, item: Item):
         self._selected_item = item
@@ -592,7 +592,7 @@ class AlchemyChamberView(discord.ui.View):
         cupboard_slots: List[Item] = player.get_house().alchemy_chamber_cupboard.get_inventory_slots()
         if self._selected_item is None or cupboard_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Cupboard (Retrieving)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Cupboard (Retrieving)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def retrieve(self):
         player: Player = self._get_player()
@@ -676,7 +676,7 @@ class AlchemyChamberView(discord.ui.View):
         self._current_alchemizing[item_key] = self._current_alchemizing.get(item_key, 0) + 1
 
         current_alchemizing_str = self.get_current_alchemizing_str()
-        current_alchemizing_display = f"──────────\n{current_alchemizing_str}──────────\n\n" if current_alchemizing_str != "" else ""
+        current_alchemizing_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_alchemizing_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_alchemizing_str != "" else ""
         return Embed(title="Alchemize", description=f"{current_alchemizing_display}Mix together ingredients from your inventory and attempt to create a potion.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def remove_alchemizing_item(self):
@@ -689,7 +689,7 @@ class AlchemyChamberView(discord.ui.View):
         self._current_alchemizing[item_key] = max(self._current_alchemizing.get(item_key, 0) - 1, 0)
 
         current_alchemizing_str = self.get_current_alchemizing_str()
-        current_alchemizing_display = f"──────────\n{current_alchemizing_str}──────────\n\n" if current_alchemizing_str != "" else ""
+        current_alchemizing_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_alchemizing_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_alchemizing_str != "" else ""
         return Embed(title="Alchemize", description=f"{current_alchemizing_display}Mix together ingredients from your inventory and attempt to create a potion.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_alchemizing_ingredient(self, index: int, item: Item):
@@ -704,7 +704,7 @@ class AlchemyChamberView(discord.ui.View):
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
         current_alchemizing_str = self.get_current_alchemizing_str()
-        current_alchemizing_display = f"──────────\n{current_alchemizing_str}──────────\n\n" if current_alchemizing_str != "" else ""
+        current_alchemizing_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_alchemizing_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_alchemizing_str != "" else ""
         return Embed(title="Alchemize", description=f"{current_alchemizing_display}Mix together ingredients from your inventory and attempt to create a potion.\n\nNavigate through the items using the Prev and Next buttons.")
 
     def use_recipe(self):
@@ -810,7 +810,7 @@ class AlchemyChamberView(discord.ui.View):
         if found_recipe is None:
             self._current_cooking = {}
             self._get_alchemize_buttons()
-            return Embed(title="Alchemize", description=f"You attempt to mix these ingredients together, but nothing happens.\n\n──────────\n\nMix together ingredients from your inventory and attempt to create a potion.\n\nNavigate through your recipes using the Prev and Next buttons.")
+            return Embed(title="Alchemize", description=f"You attempt to mix these ingredients together, but nothing happens.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nMix together ingredients from your inventory and attempt to create a potion.\n\nNavigate through your recipes using the Prev and Next buttons.")
             
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} recipe!*\n" if new_recipe else ""
 
@@ -851,7 +851,7 @@ class AlchemyChamberView(discord.ui.View):
 
         self._get_alchemize_buttons()
 
-        return Embed(title="Alchemize", description=f"alchemizing successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n──────────\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
+        return Embed(title="Alchemize", description=f"alchemizing successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
 
     def exit_with_intent(self):
         self._selected_item = None

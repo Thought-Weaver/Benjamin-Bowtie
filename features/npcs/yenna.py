@@ -359,7 +359,7 @@ class YennaView(discord.ui.View):
             title="Browse Wares",
             description=(
                 f"You have {player.get_inventory().get_coins_str()}.\n\n"
-                f"──────────\n{self._selected_item}\n\n**Price: {actual_cost_str}**\n──────────\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n\n**Price: {actual_cost_str}**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
                 "Navigate through available wares using the Prev and Next buttons."
             )
         )
@@ -455,7 +455,7 @@ class YennaView(discord.ui.View):
             title="Identify Item",
             description=(
                 f"You have {player.get_inventory().get_coins_str()}.\n\n"
-                f"──────────\n**{self._selected_item.get_full_name()}**\n*{self._selected_item.get_rarity()} Item*\n\nIdentification Cost: {self._IDENTIFY_COST}\n──────────\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n**{self._selected_item.get_full_name()}**\n*{self._selected_item.get_rarity()} Item*\n\nIdentification Cost: {self._IDENTIFY_COST}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
                 "Navigate through your items using the Prev and Next buttons."
             )
         )
@@ -669,7 +669,7 @@ class YennaView(discord.ui.View):
             title="Browse Recipes",
             description=(
                 f"You have {player.get_inventory().get_coins_str()}.\n\n"
-                f"──────────\n{self._selected_recipe.get_name_and_icon()}\n\n**Price: {actual_cost_str}**\n──────────\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_recipe.get_name_and_icon()}\n\n**Price: {actual_cost_str}**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
                 "Navigate through available recipes using the Prev and Next buttons."
             )
         )

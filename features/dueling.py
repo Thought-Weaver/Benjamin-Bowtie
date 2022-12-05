@@ -1437,7 +1437,7 @@ class DuelView(discord.ui.View):
             return entity in self._enemies
 
     def get_duel_info_str(self):
-        info_str = "──────────\n"
+        info_str = "᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n"
         for i, entity in enumerate(self._turn_order):
             group_icon = ":handshake:" if self._is_ally(entity) else ":imp:"
 
@@ -1447,7 +1447,7 @@ class DuelView(discord.ui.View):
             info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon}\n\n{entity.get_expertise().get_health_and_mana_string()}{armor_str}"
             if len(entity.get_dueling().status_effects) > 0:
                 info_str += f"\n\n{entity.get_dueling().get_statuses_string()}"
-            info_str += "\n──────────\n"
+            info_str += "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n"
 
         player_name = self.get_user_for_current_turn().display_name
 
@@ -1465,11 +1465,11 @@ class DuelView(discord.ui.View):
         max_reduced_armor: int = equipment.get_total_reduced_armor(expertise.level)
         armor_str = f"\n{dueling.get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 else ""
 
-        duel_string = f"──────────\n({self._current_target_index + 1}) **{name}**\n\n{expertise.get_health_and_mana_string()}{armor_str}"
+        duel_string = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n({self._current_target_index + 1}) **{name}**\n\n{expertise.get_health_and_mana_string()}{armor_str}"
         if len(dueling.status_effects) > 0:
             duel_string += f"\n\n{dueling.get_statuses_string()}"
 
-        return f"{duel_string}\n──────────"
+        return f"{duel_string}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
 
     def get_victory_screen(self, duel_result: DuelResult):
         self.clear_items()
@@ -1984,11 +1984,11 @@ class DuelView(discord.ui.View):
         if self._intent == Intent.Item:
             description = "Selected item info will be displayed here."
             if self._selected_item is not None:
-                description = f"──────────\n{self._selected_item}\n──────────"
+                description = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
         if self._intent == Intent.Ability:
             description = f"{player.get_expertise().get_health_and_mana_string()}\nCoins: {player.get_inventory().get_coins_str()}\n\n"
             if self._selected_ability is not None:
-                description += f"──────────\n{self._selected_ability}\n──────────"
+                description += f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_ability}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
             else:
                 description += "Selected ability info will be displayed here."
         if error_str is not None:
@@ -2363,7 +2363,7 @@ class GroupPlayerVsPlayerDuelView(discord.ui.View):
             "Players will enter combat in turn order according to their Dexterity attribute. Each turn, you will choose an action to take: "
             "Attacking using their main hand weapon, using an ability, or using an item.\n\n"
             "The duel ends when all opponents have been reduced to 0 HP. Following the duel, all players will be restored to full HP and mana.\n\n"
-            f"The game will begin when all players have selected a team and at least 1 person is on each team.\n\n──────────\n**Team 1:**\n\n{team_1_names}\n──────────\n**Team 2:**\n\n{team_2_names}\n──────────"
+            f"The game will begin when all players have selected a team and at least 1 person is on each team.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n**Team 1:**\n\n{team_1_names}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n**Team 2:**\n\n{team_2_names}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
         ))
 
     def add_to_team_1(self, user: discord.User):

@@ -150,7 +150,7 @@ class InventoryButton(discord.ui.Button):
                 title=f"{view.get_user().display_name}'s Inventory",
                 description=(
                     f"You have {coins_str}.\n\n"
-                    f"──────────\n{self._item}\n──────────\n\n"
+                    f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
                     "Navigate through your items using the Prev and Next buttons."
                 )
             ))

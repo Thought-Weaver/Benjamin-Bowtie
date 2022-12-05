@@ -372,7 +372,7 @@ class Adventures(commands.Cog):
                 challenged_player_name = "Mr. Bones"
                 difficulty = Difficulty.MrBones
                 description += (
-                    "\n\n──────────\n\n*You enter the back room of the Crown & Anchor Tavern and the light fades to a dim glow. There, waiting in the darkness, is a figure dressed richly in a vest and suit that gleam almost tyrian. Winding shapes that branch and twist up the undershirt in black seem to be moving of their own accord.*\n\n"
+                    "\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n*You enter the back room of the Crown & Anchor Tavern and the light fades to a dim glow. There, waiting in the darkness, is a figure dressed richly in a vest and suit that gleam almost tyrian. Winding shapes that branch and twist up the undershirt in black seem to be moving of their own accord.*\n\n"
                     "*In a raspy voice, it utters, \"I... am... Mr... Bones...\" and a hand that looks startlingly skeletal beckons you to play. You could swear there's a smile hidden in those shadows.*"
                 )
             elif user_lower == "easy":
@@ -380,7 +380,7 @@ class Adventures(commands.Cog):
                 difficulty = Difficulty.Easy
                 use_luck = False
                 description += (
-                    "\n\n──────────\n\n*The Crown & Anchor Tavern is bustling this evening and, as always, good ol' \"Tavern\" Tim sits at the bar playing Knucklebones with his friends. You suspect, based on his reputation, that he's losing, but he certainly doesn't seem to mind.*\n\n"
+                    "\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n*The Crown & Anchor Tavern is bustling this evening and, as always, good ol' \"Tavern\" Tim sits at the bar playing Knucklebones with his friends. You suspect, based on his reputation, that he's losing, but he certainly doesn't seem to mind.*\n\n"
                     "\"Awright, how urr ye? Wanna speil a gam or twa haha!\""
                 )
             elif user_lower == "medium":
@@ -388,7 +388,7 @@ class Adventures(commands.Cog):
                 difficulty = Difficulty.Medium
                 use_luck = False
                 description += (
-                    "\n\n──────────\n\n*It's an average night in the tavern, with people drinking, eating, and celebrating the end of a hard day's labors. Talking with Quinan at a table is her father, Alleus, who you know to be a retired spice trader renowned for travelling the world.*\n\n"
+                    "\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n*It's an average night in the tavern, with people drinking, eating, and celebrating the end of a hard day's labors. Talking with Quinan at a table is her father, Alleus, who you know to be a retired spice trader renowned for travelling the world.*\n\n"
                     "\"A challenger approaches! And I'm never one to turn down a good game. Let's play.\""
                 )
             elif user_lower == "hard":
@@ -396,7 +396,7 @@ class Adventures(commands.Cog):
                 difficulty = Difficulty.Hard
                 use_luck = False
                 description += (
-                    "\n\n──────────\n\n*It's a quieter night than most in the tavern this evening. Waiting at a table in the corner of the bar, you can see Yenna. She doesn't have a drink, but is enjoying a nice meal -- something special based on the look of it prepared by Quinan. She makes eye contact with you as you enter and holds up a set of dice made of bone.*"
+                    "\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n*It's a quieter night than most in the tavern this evening. Waiting at a table in the corner of the bar, you can see Yenna. She doesn't have a drink, but is enjoying a nice meal -- something special based on the look of it prepared by Quinan. She makes eye contact with you as you enter and holds up a set of dice made of bone.*"
                 )
 
         if author_player.get_inventory().get_coins() < amount:

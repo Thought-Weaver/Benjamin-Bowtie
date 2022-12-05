@@ -288,7 +288,7 @@ class TrainerView(discord.ui.View):
             description = f"Acquired {purchased_ability.get_icon_and_name()}! You can equip it from the main menu."
         else:
             if self._current_ability is not None:
-                description = f"──────────\n{self._current_ability}\n\n**Price: {self._current_ability.get_purchase_cost()}**{self._get_next_level()}\n──────────\n\n"
+                description = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._current_ability}\n\n**Price: {self._current_ability.get_purchase_cost()}**{self._get_next_level()}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
             description += f"You have {player.get_inventory().get_coins_str()}.\n\nChoose an ability to learn more."
 
         if self._current_class == ExpertiseClass.Fisher:
@@ -596,7 +596,7 @@ class EquipAbilitiesView(discord.ui.View):
         ability_strs = []
         for i in range(self._NUM_PER_PAGE):
             if i <= len(page_slots) - 1:
-                ability_strs.append(f"──────────\n{page_slots[i]}\n──────────")
+                ability_strs.append(f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{page_slots[i]}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆")
         
         just_equipped_str = f"\n\n{ability_just_equipped.get_icon_and_name()} equipped!" if ability_just_equipped is not None else ""
         formatted_additional_info_str = f"\n\n{self._additional_info_str}" if self._additional_info_str != "" else ""

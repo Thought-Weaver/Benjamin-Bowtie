@@ -232,7 +232,7 @@ class BlacksmithView(discord.ui.View):
             title="Browse Wares",
             description=(
                 f"You have {player.get_inventory().get_coins_str()}.\n\n"
-                f"──────────\n{self._selected_item}\n\n**Price: {actual_cost_str}**\n──────────\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n\n**Price: {actual_cost_str}**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
                 "Navigate through available wares using the Prev and Next buttons."
             )
         )
@@ -330,7 +330,7 @@ class BlacksmithView(discord.ui.View):
             title="Browse Patterns",
             description=(
                 f"You have {player.get_inventory().get_coins_str()}.\n\n"
-                f"──────────\n{self._selected_pattern.get_name_and_icon()}\n\n**Price: {actual_cost_str}**\n──────────\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_pattern.get_name_and_icon()}\n\n**Price: {actual_cost_str}**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
                 "Navigate through available recipes using the Prev and Next buttons."
             )
         )

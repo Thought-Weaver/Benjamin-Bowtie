@@ -461,7 +461,7 @@ class StudyView(discord.ui.View):
         inventory_slots: List[Item] = player.get_inventory().get_inventory_slots()
         if self._selected_item is None or inventory_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Chest (Storing)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Chest (Storing)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def select_storage_item(self, index: int, item: Item):
         self._selected_item = item
@@ -473,7 +473,7 @@ class StudyView(discord.ui.View):
         storage_slots: List[Item] = player.get_house().workshop_storage.get_inventory_slots()
         if self._selected_item is None or storage_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
-        return Embed(title="Chest (Retrieving)", description=f"──────────\n{self._selected_item}\n──────────\n\nNavigate through the items using the Prev and Next buttons.")
+        return Embed(title="Chest (Retrieving)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def retrieve(self):
         player: Player = self._get_player()
@@ -596,7 +596,7 @@ class StudyView(discord.ui.View):
         self._intent = Intent.SelectSocket
 
         self._get_socket_buttons()
-        return Embed(title="Select Socket", description=f"──────────\n{self._selected_item}\n──────────\n\nChoose a socket to add or remove a gem.")
+        return Embed(title="Select Socket", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose a socket to add or remove a gem.")
 
     def select_gem(self, index: int, item: Item):
         player: Player = self._get_player()
