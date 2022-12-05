@@ -2610,7 +2610,7 @@ class BidedAttackI(Ability):
             icon="\u23F3",
             name="Bided Attack I",
             class_key=ExpertiseClass.Guardian,
-            description="Prepare your attack, gaining +2 Strength for 1 turn.",
+            description="Prepare your attack, gaining +5 Strength for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -2623,7 +2623,7 @@ class BidedAttackI(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         str_buff = StrBuff(
             turns_remaining=1,
-            value=3,
+            value=5,
             source_str=self.get_icon_and_name()
         )
 
@@ -2648,7 +2648,7 @@ class BidedAttackII(Ability):
             icon="\u23F3",
             name="Bided Attack II",
             class_key=ExpertiseClass.Guardian,
-            description="Prepare your attack, gaining +4 Strength for 1 turn.",
+            description="Prepare your attack, gaining +10 Strength for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -2661,7 +2661,7 @@ class BidedAttackII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         str_buff = StrBuff(
             turns_remaining=1,
-            value=4,
+            value=10,
             source_str=self.get_icon_and_name()
         )
 
@@ -2686,7 +2686,7 @@ class BidedAttackIII(Ability):
             icon="\u23F3",
             name="Bided Attack III",
             class_key=ExpertiseClass.Guardian,
-            description="Prepare your attack, gaining +5 Strength for 1 turn.",
+            description="Prepare your attack, gaining +15 Strength for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -2699,7 +2699,7 @@ class BidedAttackIII(Ability):
     def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
         str_buff = StrBuff(
             turns_remaining=1,
-            value=4,
+            value=15,
             source_str=self.get_icon_and_name()
         )
 
