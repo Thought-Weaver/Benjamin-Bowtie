@@ -2,7 +2,7 @@
     "key": "items/consumable/food/cooked_minnow",
     "icon": "\uD83D\uDC1F",
     "name": "Cooked Minnow",
-    "value": 8,
+    "value": 5,
     "rarity": "Common",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",

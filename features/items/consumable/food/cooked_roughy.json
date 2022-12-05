@@ -2,7 +2,7 @@
     "key": "items/consumable/food/cooked_roughy",
     "icon": "\uD83D\uDC20",
     "name": "Cooked Roughy",
-    "value": 10,
+    "value": 6,
     "rarity": "Common",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",
