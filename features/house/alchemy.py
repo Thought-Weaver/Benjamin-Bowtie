@@ -736,7 +736,8 @@ class AlchemyChamberView(discord.ui.View):
         for xp_class, xp in self._selected_recipe.xp_reward_for_use.items():
             final_xp = player.get_expertise().add_xp_to_class(xp, xp_class, player.get_equipment())
             xp_strs.append(f"*(+{final_xp} {xp_class} xp)*")
-        xp_display = '\n'.join(xp_strs)
+        xp_strs_joined = '\n'.join(xp_strs)
+        xp_display = f"\n{xp_strs_joined}" if len(xp_strs) > 0 else ""
 
         stats: Stats = player.get_stats()
 
@@ -762,7 +763,7 @@ class AlchemyChamberView(discord.ui.View):
                 stats.crafting.artifact_items_alchemized += 1
         output_display = '\n'.join(output_strs)
 
-        return Embed(title="Recipes", description=f"alchemizing successful! You received:\n\n{output_display}\n{xp_display}\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
+        return Embed(title="Recipes", description=f"alchemizing successful! You received:\n\n{output_display}{xp_display}\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
 
     def try_alchemizing(self):
         if len(self._current_alchemizing.items()) == 0:
