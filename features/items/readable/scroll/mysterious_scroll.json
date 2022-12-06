@@ -3,7 +3,7 @@
     "icon": "\uD83D\uDCDC",
     "name": "Mysterious Scroll",
     "value": 30,
-    "rarity": "Rare",
+    "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
     "class_tags": ["Readable", "Scroll", "Needs_Identification"],
