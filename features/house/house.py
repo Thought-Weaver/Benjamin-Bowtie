@@ -72,9 +72,9 @@ class House():
                     neighbors.append(self.garden_plots[i - size - 1])
                 if i - size + 1 >= 0 and (i + 1) % size != 0:
                     neighbors.append(self.garden_plots[i - size + 1])
-                if i + size - 1 < size and i % size != 0:
+                if i + size - 1 < size * size and i % size != 0:
                     neighbors.append(self.garden_plots[i + size - 1])
-                if i + size + 1 < size and (i + 1) % size != 0:
+                if i + size + 1 < size * size and (i + 1) % size != 0:
                     neighbors.append(self.garden_plots[i + size + 1])
         
                 plant_keys = [(neighbor_plot.seed_data.result if (
