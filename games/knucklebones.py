@@ -218,9 +218,7 @@ class Knucklebones(discord.ui.View):
 
     def _roll(self):
         if self._use_luck:
-            player_luck: int = self._turn.get_expertise().luck
-            equipment_luck: int = self._turn.get_equipment().get_total_attribute_mods().luck
-            total_luck: int = player_luck + equipment_luck
+            total_luck: int = self._turn.get_combined_attributes().luck
             self._current_roll = choices(
                 [1, 2, 3, 4, 5, 6], k=1, 
                 weights=[
