@@ -424,12 +424,18 @@ class ArmorStats():
 
 
 class WeaponStats():
-    def __init__(self, min_damage=0, max_damage=0):
+    def __init__(self, min_damage=0, max_damage=0, num_targets=1):
         self._min_damage = min_damage
         self._max_damage = max_damage
+        self._num_targets = num_targets
     
     def get_range_str(self):
         return f"{self._min_damage}-{self._max_damage} base damage"
+
+    def get_num_targets_str(self):
+        if self._num_targets == 1:
+            return ""
+        return f"({self._num_targets} targets)"
 
     def get_random_damage(self, attacker_attrs: Attributes, item_effects: ItemEffects | None, level_diff: int):
         damage = randint(self._min_damage, self._max_damage)
@@ -444,12 +450,16 @@ class WeaponStats():
     def get_max_damage(self):
         return self._max_damage
 
+    def get_num_targets(self):
+        return self._num_targets
+
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
         self._min_damage = state.get("min_damage", 0)
         self._max_damage = state.get("max_damage", 0)
+        self._num_targets = state.get("num_targets", 1)
 
 
 class ConsumableStats():
@@ -620,12 +630,9 @@ class Item():
     def get_level_requirement(self) -> int:
         return self._level_requirement
 
-    def get_item_effects(self) -> (ItemEffects | None):
-        if self._item_effects is None:
-            return None
-
+    def get_item_effects(self) -> ItemEffects:
         # Start with this item's base effects
-        combined_effects = self._item_effects
+        combined_effects = self._item_effects if self._item_effects is not None else ItemEffects()
 
         # Add in everything from items that are altering it
         for item_key in self._altering_item_keys:
@@ -667,7 +674,7 @@ class Item():
 
         if self._weapon_stats is not None:
             has_any_stats = True
-            display_string += f"{self._weapon_stats.get_range_str()}\n"
+            display_string += f"{self._weapon_stats.get_range_str()} {self._weapon_stats.get_num_targets_str()}\n"
 
         if self._consumable_stats is not None:
             has_any_stats = True
