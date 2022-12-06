@@ -108,7 +108,6 @@ class ItemEffectCategory(StrEnum):
 # PRIORITY DICT
 # -----------------------------------------------------------------------------
 
-# TODO: Finish this and figure out the ordering
 EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
     EffectType.ConMod: 0,
     EffectType.StrMod: 1,

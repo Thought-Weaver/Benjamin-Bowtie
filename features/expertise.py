@@ -354,8 +354,8 @@ class ExpertiseView(discord.ui.View):
         expertise.update_stats(self.get_player().get_combined_attributes())
         armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level)
 
-        # TODO: Also need to account for status effect attribute mods here and elsewhere in Expertise
-        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(equipment.get_total_attribute_mods(), armor_str))
+        attr_mods = equipment.get_total_attribute_mods() + self.get_player().get_dueling().get_combined_attribute_mods()
+        return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(attr_mods, armor_str))
 
     def _get_current_buttons(self):
         self.clear_items()
