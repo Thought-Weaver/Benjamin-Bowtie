@@ -66,7 +66,7 @@ class House():
                     neighbors.append(self.garden_plots[i - 1])
                 if (i + 1) % size != 0:
                     neighbors.append(self.garden_plots[i + 1])
-                if i + size < size:
+                if i + size < size * size:
                     neighbors.append(self.garden_plots[i + size])
                 if i - size - 1 >= 0 and i % size != 0:
                     neighbors.append(self.garden_plots[i - size - 1])
