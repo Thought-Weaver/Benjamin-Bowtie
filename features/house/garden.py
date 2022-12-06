@@ -226,11 +226,12 @@ class GardenPlot():
 
     def __str__(self):
         if self.seed is None or self.seed_data is None:
-            may_mutate_string = ""
-            if self.seed is None and self.seed_data is None and self.may_mutate:
-                may_mutate_string = "*This plot might mutate into a new plant next tick!*\n"
-            
             soil_str = f"\n**{self.soil.get_full_name()}:** {self.soil.get_description()}" if self.soil is not None else ""
+
+            may_mutate_string = "" if soil_str == "" else "\n"
+            if self.seed is None and self.seed_data is None and self.may_mutate:
+                may_mutate_string += "*This plot might mutate into a new plant next tick!*\n"
+            
             result_str = f"\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆{soil_str}\n{may_mutate_string}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if (soil_str != "" or may_mutate_string != "") else ""
             return result_str
         
