@@ -228,9 +228,9 @@ class GardenPlot():
         if self.seed is None or self.seed_data is None:
             soil_str = f"\n**{self.soil.get_full_name()}:** {self.soil.get_description()}" if self.soil is not None else ""
 
-            may_mutate_string = "" if soil_str == "" else "\n"
+            may_mutate_string = ""
             if self.seed is None and self.seed_data is None and self.may_mutate:
-                may_mutate_string += "*This plot might mutate into a new plant next tick!*\n"
+                may_mutate_string = ("" if soil_str == "" else "\n") + "*This plot might mutate into a new plant next tick!*\n"
             
             result_str = f"\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆{soil_str}\n{may_mutate_string}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" if (soil_str != "" or may_mutate_string != "") else ""
             return result_str
@@ -755,7 +755,6 @@ class GardenView(discord.ui.View):
         self._page += 1
         self._selected_item = None
         self._selected_item_index = -1
-        self._selected_plot = None
 
         if self._intent == Intent.PlantSeed:
             self._get_plant_seed_buttons()
@@ -768,7 +767,6 @@ class GardenView(discord.ui.View):
         self._page = max(0, self._page - 1)
         self._selected_item = None
         self._selected_item_index = -1
-        self._selected_plot = None
 
         if self._intent == Intent.PlantSeed:
             self._get_plant_seed_buttons()
