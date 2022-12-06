@@ -114,6 +114,9 @@ class House():
 
     def tick(self):
         self.tick_garden()
+        # Update again to account for plants that just matured and therefore could
+        # mutate into empty plots (just for display purposes)
+        self.tick_garden(True)
 
     def __getstate__(self):
         return self.__dict__
