@@ -801,8 +801,9 @@ class KitchenView(discord.ui.View):
             index = inventory.search_by_key(input_key)
             # Make experimenting a risk-and-reward situation rather than always consuming the items
             for _ in range(quantity):
-                if found_recipe is None and random() < 0.5:
-                    inventory.remove_item(index, 1)
+                if found_recipe is None:
+                    if random() < 0.5:
+                        inventory.remove_item(index, 1)
                 else:
                     inventory.remove_item(index, 1)
 
