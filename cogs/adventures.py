@@ -511,11 +511,12 @@ class Adventures(commands.Cog):
         story: UnderworldStory = self._get_story(context.guild.id, Story.Underworld)
 
         # TODO: Need to redo this analysis with all the new gemstone possibilities
-        # E(X) = 0.995 * -1 + 0.0021 * 150 = -0.68 every 5 seconds -> -489.6 per hour
+        # E(X) = 0.995 * -1 + 0.0021 * 100 = -0.68 every 5 seconds -> -489.6 per hour
         # Luck Effect:
-        #   1  -> E(X) = 0.994 * -1 + 0.0021 * 150 -> -488.88 per hour
-        #   10 -> E(X) = 0.985 * -1 + 0.00585 * 150 -> -77.4 per hour
-        #   20 -> E(X) = 0.975 * -1 + 0.0096 * 150 -> 334.8 per hour
+        #   1  -> E(X) = 0.994 * -1 + 0.0021 * 125 -> -527 per hour
+        #   10 -> E(X) = 0.985 * -1 + 0.00585 * 125 -> -183 per hour
+        #   20 -> E(X) = 0.975 * -1 + 0.0096 * 125 -> 162 per hour
+        #   50 -> E(X) = 0.945 * -1 + 0.0115 * 125 -> 355 per hour
 
         LUCK_MOD = 0.001 # Luck adjusts total bias by 0.1% per point
         total_luck: int = author_player.get_combined_attributes().luck
@@ -526,6 +527,7 @@ class Adventures(commands.Cog):
                 #   1  -> 99.4%, 0.33%, 0.2475%, 0.0225%
                 #   10 -> 98.5%, 0.78%, 0.585%, 0.135%
                 #   20 -> 97.5%, 1.28%, 0.96%, 0.26%
+                #   50 -> 94.5%, 2.78%, 1.15%, 0.32%
                 0.9950 - LUCK_MOD * total_luck,
                 0.0028 + 4 * (LUCK_MOD * total_luck) / 8,
                 0.0021 + 3 * (LUCK_MOD * total_luck) / 8,
@@ -542,8 +544,8 @@ class Adventures(commands.Cog):
             await context.send(embed=embed)
         # 0.21% base chance of getting 150 coins
         if rand_val == 1:
-            author_player.get_inventory().add_coins(150)
-            player_stats.wishingwell.coins_received += 150
+            author_player.get_inventory().add_coins(125)
+            player_stats.wishingwell.coins_received += 125
             embed = Embed(
                 title="You toss the coin in...",
                 description="It plummets into the darkness below and you feel a sense of duplication. One becoming many."

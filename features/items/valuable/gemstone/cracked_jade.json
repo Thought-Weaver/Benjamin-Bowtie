@@ -2,7 +2,7 @@
     "key": "items/valuable/gemstone/cracked_jade",
     "icon": "\uD83D\uDC8E",
     "name": "Cracked Jade",
-    "value": 15,
+    "value": 50,
     "rarity": "Uncommon",
     "description": "Can be socketed into armor or an item in your hand.",
     "flavor_text": "",
