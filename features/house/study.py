@@ -629,6 +629,10 @@ class StudyView(discord.ui.View):
         altering_item_keys[self._selected_socket] = item.get_key()
         inventory.add_item(new_item)
 
+        # When there's more than one item in your inventory, the index may change after altering
+        # it, so make sure the index is updated.
+        self._selected_item_index = inventory.get_item_index(new_item)
+
         self._get_gem_buttons()
 
         return self.get_embed_for_intent(f"\n\n*{item.get_full_name()} has been socketed into socket {self._selected_socket + 1}*")
@@ -650,7 +654,11 @@ class StudyView(discord.ui.View):
         altering_item_keys[self._selected_socket] = ""
         item = LOADED_ITEMS.get_new_item(key)
         inventory.add_item(item)
-        
+
+        # When there's more than one item in your inventory, the index may change after altering
+        # it, so make sure the index is updated.
+        self._selected_item_index = inventory.get_item_index(item)
+
         self._get_gem_buttons()
 
         return self.get_embed_for_intent(f"\n\n*{item.get_full_name()} has been unsocketed from socket {self._selected_socket}*")

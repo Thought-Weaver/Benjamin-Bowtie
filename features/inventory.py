@@ -73,6 +73,12 @@ class Inventory():
                 return i
         return -1
 
+    def get_item_index(self, item_to_find: Item):
+        for i, item in enumerate(self._inventory_slots):
+            if item == item_to_find:
+                return i
+        return -1
+
     def add_item(self, item: Item | None):
         if item is None:
             self._organize_inventory_slots()
