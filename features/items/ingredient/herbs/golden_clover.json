@@ -1,7 +1,7 @@
 {
     "key": "items/ingredient/herbs/golden_clover",
     "icon": "\uD83C\uDF40",
-    "name": "Golden Glover",
+    "name": "Golden Clover",
     "value": 75,
     "rarity": "Epic",
     "description": "",

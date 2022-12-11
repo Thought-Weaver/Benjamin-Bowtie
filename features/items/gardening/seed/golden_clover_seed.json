@@ -1,7 +1,7 @@
 {
     "key": "items/gardening/seed/golden_clover_seed",
     "icon": "\uD83C\uDF40",
-    "name": "Golden Glover Seed",
+    "name": "Golden Clover Seed",
     "value": 25,
     "rarity": "Epic",
     "description": "When planted, grows a golden clover plant.",
