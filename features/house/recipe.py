@@ -29,6 +29,7 @@ class RecipeKey(StrEnum):
     VegetableFritter = "recipes/consumable/food/vegetable_fritter"
 
     # Potions
+    CleansingPotion = "recipes/consumable/potions/cleansing_potion"
     ConstitutionPotion = "recipes/consumable/potions/constitution_potion"
     DexterityPotion = "recipes/consumable/potions/dexterity_potion"
     FortitudePotion = "recipes/consumable/potions/fortitude_potion"

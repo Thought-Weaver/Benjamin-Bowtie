@@ -89,6 +89,7 @@ class ItemKey(StrEnum):
     VegetableFritter = "items/consumable/food/vegetable_fritter"
 
     # Potions
+    CleansingPotion = "items/consumable/potions/cleansing_potion"
     ConstitutionPotion = "items/consumable/potions/constitution_potion"
     DexterityPotion = "items/consumable/potions/dexterity_potion"
     FortitudePotion = "items/consumable/potions/fortitude_potion"
@@ -484,22 +485,22 @@ class ConsumableStats():
 class Item():
     def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], state_tags: List[StateTag]=[], count=1, level_requirement=0, item_effects: ItemEffects | None=None, altering_item_keys: List[ItemKey]=[], armor_stats: ArmorStats | None=None, weapon_stats: WeaponStats | None=None, consumable_stats: ConsumableStats | None=None):
         self._key: ItemKey = key
-        self._icon = icon
-        self._name = name
-        self._value = value
-        self._rarity = rarity
-        self._description = description
-        self._flavor_text = flavor_text
-        self._class_tags = class_tags
-        self._state_tags = state_tags
-        self._count = count
-        self._level_requirement = level_requirement
-        self._item_effects = item_effects
-        self._altering_item_keys = altering_item_keys
+        self._icon: str = icon
+        self._name: str = name
+        self._value: int = value
+        self._rarity: Rarity = rarity
+        self._description: str = description
+        self._flavor_text: str = flavor_text
+        self._class_tags: List[ClassTag] = class_tags
+        self._state_tags: List[StateTag] = state_tags
+        self._count: int = count
+        self._level_requirement: int = level_requirement
+        self._item_effects: ItemEffects | None = item_effects
+        self._altering_item_keys: List[ItemKey] = altering_item_keys
 
-        self._armor_stats = armor_stats
-        self._weapon_stats = weapon_stats
-        self._consumable_stats = consumable_stats
+        self._armor_stats: ArmorStats | None = armor_stats
+        self._weapon_stats: WeaponStats | None = weapon_stats
+        self._consumable_stats: ConsumableStats | None = consumable_stats
 
     @staticmethod
     def load_from_state(item_data: dict):
@@ -663,10 +664,30 @@ class Item():
     def set_altering_item_keys(self, keys: List[ItemKey]) -> None:
         self._altering_item_keys = keys
 
+    def get_str_for_slot(self, slot: ClassTag.Equipment):
+        if slot == ClassTag.Equipment.ChestArmor:
+            return "Chest Armor"
+        if slot == ClassTag.Equipment.MainHand:
+            return "Main Hand"
+        if slot == ClassTag.Equipment.OffHand:
+            return "Off Hand"
+        return slot
+
     def __str__(self):
-        display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*" + (" (Unique)" if ClassTag.Misc.IsUnique in self._class_tags else "") + "\n\n"
+        display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*" + (" / *Unique*" if ClassTag.Misc.IsUnique in self._class_tags else "")
         
         has_any_stats: bool = False
+
+        if ClassTag.Equipment.Equipment in self._class_tags:
+            equipment_tags = []
+            possible_tags = set(item.value for item in ClassTag.Equipment if item != ClassTag.Equipment.Equipment)
+            for class_tag in self._class_tags:
+                if class_tag in possible_tags:
+                    mapped_str = self.get_str_for_slot(class_tag)
+                    equipment_tags.append(f"*{mapped_str}*")
+            display_string += " / " + ", ".join(equipment_tags)
+
+        display_string += "\n\n"
 
         if self._armor_stats is not None:
             has_any_stats = True

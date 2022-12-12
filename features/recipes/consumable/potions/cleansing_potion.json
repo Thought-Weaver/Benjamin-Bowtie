@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/cleansing_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Cleansing Potion",
+    "value": 470,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/wanderweed": 2,
+        "items/ingredient/herbs/seaclover": 3
+    },
+"outputs": {
+        "items/consumable/potions/cleansing_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}
