@@ -64,35 +64,35 @@ class SeedData():
 
 SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
     ItemKey.AsptongueSeed: SeedData(2, 4, 20, ItemKey.Asptongue, 0.75, 1, "\uD83C\uDF31", 4),
-    ItemKey.BlazeClusterSpores: SeedData(5, 5, 12, ItemKey.BlazeCluster, 0.15, 4, "\uD83C\uDF31", 6),
+    ItemKey.BlazeClusterSpores: SeedData(5, 5, 12, ItemKey.BlazeCluster, 0.2, 3, "\uD83C\uDF31", 6),
     ItemKey.BloodcrownSpores: SeedData(2, 2, 8, ItemKey.Bloodcrown, 0.85, 3, "\uD83C\uDF31", 1),
     ItemKey.BramblefrondSeed: SeedData(1, 2, 7, ItemKey.Bramblefrond, 0.8, 1, "\uD83C\uDF31", 1),
     ItemKey.DawnsGlorySeed: SeedData(2, 4, 8, ItemKey.DawnsGlory, 0.65, 1, "\uD83C\uDF31", 4),
     ItemKey.DragonsTeethSeed: SeedData(10, 25, 30, ItemKey.DragonsTeeth, 0.02, 1, "\uD83C\uDF31", 156),
     ItemKey.DreamMakerSeed: SeedData(3, 6, 16, ItemKey.DreamMaker, 0.4, 1, "\uD83C\uDF31", 9),
-    ItemKey.FissureleafSeed: SeedData(1, 3, 12, ItemKey.Fissureleaf, 0.75, 2, "\uD83C\uDF31", 2),
+    ItemKey.FissureleafSeed: SeedData(1, 3, 12, ItemKey.Fissureleaf, 0.7, 2, "\uD83C\uDF31", 2),
     ItemKey.FoolsDelightSpores: SeedData(5, 5, 20, ItemKey.FoolsDelight, 0.4, 2, "\uD83C\uDF31", 6),
     ItemKey.ForgottenTearsSeed: SeedData(8, 15, 50, ItemKey.ForgottenTears, 0.05, 1, "\uD83C\uDF31", 56),
-    ItemKey.FrostwortSeed: SeedData(2, 3, 10, ItemKey.Frostwort, 0.6, 4, "\uD83C\uDF31", 2),
+    ItemKey.FrostwortSeed: SeedData(2, 3, 10, ItemKey.Frostwort, 0.6, 3, "\uD83C\uDF31", 2),
     ItemKey.GoldenCloverSeed: SeedData(1, 3, 5, ItemKey.GoldenClover, 0.1, 1, "\uD83C\uDF31", 2),
     ItemKey.GraspleafSeed: SeedData(1, 3, 18, ItemKey.Graspleaf, 0.85, 2, "\uD83C\uDF31", 2),
     ItemKey.GraveMossSpores: SeedData(4, 4, 12, ItemKey.GraveMoss, 0.6, 3, "\uD83C\uDF31", 4),
     ItemKey.HushvineSeed: SeedData(5, 10, 20, ItemKey.Hushvine, 0.5, 2, "\uD83C\uDF31", 25),
     ItemKey.LichbloomSeed: SeedData(24, 64, 2400, ItemKey.Lichbloom, 0.01, 1, "\uD83C\uDF31", 256),
     ItemKey.MagesBaneSeed: SeedData(5, 12, 16, ItemKey.MagesBane, 0.2, 2, "\uD83C\uDF31", 36),
-    ItemKey.ManabloomSeed: SeedData(3, 5, 15, ItemKey.Riverblossom, 0.3, 2, "\uD83C\uDF31", 6),
+    ItemKey.ManabloomSeed: SeedData(3, 5, 15, ItemKey.Manabloom, 0.4, 2, "\uD83C\uDF31", 6),
     ItemKey.MeddlespreadSpores: SeedData(1, 1, 30, ItemKey.Meddlespread, 0.9, 6, "\uD83C\uDF31", 1),
-    ItemKey.RazorgrassSeed: SeedData(1, 2, 14, ItemKey.Razorgrass, 0.8, 2, "\uD83C\uDF31", 1),
+    ItemKey.RazorgrassSeed: SeedData(1, 2, 14, ItemKey.Razorgrass, 0.6, 2, "\uD83C\uDF31", 1),
     ItemKey.RiverblossomSeed: SeedData(1, 3, 10, ItemKey.Riverblossom, 0.8, 1, "\uD83C\uDF31", 2),
     ItemKey.RotstalkSeed: SeedData(3, 10, 40, ItemKey.Rotstalk, 0.1, 1, "\uD83C\uDF31", 25),
     ItemKey.SeacloverSeed: SeedData(1, 2, 10, ItemKey.Seaclover, 0.75, 5, "\uD83C\uDF31", 1),
     ItemKey.ShellflowerSeed: SeedData(4, 6, 14, ItemKey.Shellflower, 0.5, 1, "\uD83C\uDF31", 9),
-    ItemKey.ShelterfoilSeed: SeedData(3, 4, 20, ItemKey.Shelterfoil, 0.9, 2, "\uD83C\uDF31", 4),
+    ItemKey.ShelterfoilSeed: SeedData(3, 4, 20, ItemKey.Shelterfoil, 0.4, 2, "\uD83C\uDF31", 4),
     ItemKey.ShiverrootSeed: SeedData(2, 3, 15, ItemKey.Shiverroot, 0.6, 1, "\uD83C\uDF31", 2),
     ItemKey.SirensKissSeed: SeedData(5, 10, 15, ItemKey.SirensKiss, 0.1, 2, "\uD83C\uDF31", 25),
     ItemKey.SnowdewSeed: SeedData(1, 2, 6, ItemKey.Snowdew, 0.9, 1, "\uD83C\uDF31", 1),
-    ItemKey.SpeckledCapSpores: SeedData(2, 2, 6, ItemKey.SpeckledCap, 0.8, 3, "\uD83C\uDF31", 1),
-    ItemKey.SpidersGroveSpores: SeedData(7, 7, 24, ItemKey.SpidersGrove, 0.3, 5, "\uD83C\uDF31", 12),
+    ItemKey.SpeckledCapSpores: SeedData(2, 2, 6, ItemKey.SpeckledCap, 0.5, 3, "\uD83C\uDF31", 1),
+    ItemKey.SpidersGroveSpores: SeedData(7, 7, 24, ItemKey.SpidersGrove, 0.1, 2, "\uD83C\uDF31", 12),
     ItemKey.SungrainSeed: SeedData(1, 2, 20, ItemKey.Sungrain, 0.7, 2, "\uD83C\uDF31", 1),
     ItemKey.WanderweedSeed: SeedData(2, 6, 9, ItemKey.Wanderweed, 0.25, 3, "\uD83C\uDF31", 9),
     ItemKey.WitherheartSeed: SeedData(12, 24, 26, ItemKey.Witherheart, 0.03, 1, "\uD83C\uDF31", 144)
@@ -374,9 +374,13 @@ class SelectItemButton(discord.ui.Button):
 
 
 class GardenPlotButton(discord.ui.Button):
-    def __init__(self, plot: GardenPlot, row: int):
+    def __init__(self, plot: GardenPlot, row: int, is_selected: bool):
         icon = plot.get_icon()
-        super().__init__(style=discord.ButtonStyle.secondary, row=row, label=" " if icon is None else None, emoji=icon)
+        super().__init__(
+            style=discord.ButtonStyle.secondary if not is_selected else discord.ButtonStyle.blurple, 
+            row=row, label=" " if icon is None else None,
+            emoji=icon
+        )
         
         self._plot = plot
 
@@ -494,7 +498,7 @@ class GardenView(discord.ui.View):
             return Embed(title="Plant Seed", description="Choose a seed to plant in this plot.\n\nNavigate through the items using the Prev and Next buttons." + additional)
         if self._intent == Intent.UseItem:
             return Embed(title="Use Item", description="Choose an item to use on this plot.\n\nNavigate through the items using the Prev and Next buttons." + additional)
-        return Embed(title="Garden", description="You enter the garden, where you can plant seeds and harvest crops. The garden plots update every hour." + additional)
+        return Embed(title="Garden", description="You enter the garden, where you can plant seeds and harvest crops. The garden plots tick every hour." + additional)
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -516,7 +520,7 @@ class GardenView(discord.ui.View):
         
         num_per_row = int(sqrt(len(house.garden_plots)))
         for i, plot in enumerate(house.garden_plots):
-            self.add_item(GardenPlotButton(plot, int(i / num_per_row)))
+            self.add_item(GardenPlotButton(plot, int(i / num_per_row), plot == self._selected_plot))
 
         if self._selected_plot is not None:
             self.add_item(HarvestButton(min(4, num_per_row)))

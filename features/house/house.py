@@ -83,6 +83,7 @@ class House():
                     )
                 ) else "") for neighbor_plot in neighbors]
 
+                self.garden_plots[i].may_mutate = False
                 mutation_adjustment = 2 if plot.soil is not None and plot.soil.get_key() == ItemKey.Ash else 0
                 min_prob = 1
                 min_prob_result = None
