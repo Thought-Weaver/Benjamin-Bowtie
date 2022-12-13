@@ -1,5 +1,6 @@
 from __future__ import annotations
 import random
+from uuid import uuid4
 
 import discord
 
@@ -8,13 +9,15 @@ from strenum import StrEnum
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
-from features.npcs.npc import NPC, NPCRoles
+from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, ContractWealthForPowerIII, PreparePotionsII, SilkspeakingI
 from features.shared.item import LOADED_ITEMS, Item, ItemKey, Rarity
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
 from typing import TYPE_CHECKING, Dict, List
+
+from features.stats import Stats
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
@@ -322,16 +325,16 @@ class RandomItemMerchantView(discord.ui.View):
 
 class RandomItemMerchant(NPC):
     def __init__(self):
-        super().__init__("Viktor", NPCRoles.RandomItemMerchant)
+        super().__init__("Viktor", NPCRoles.RandomItemMerchant, NPCDuelingPersonas.Rogue, {})
 
         self._setup_npc_params()
 
     def tick(self):
         possible_items = list(filter(lambda x: x.get_rarity() < Rarity.Artifact, [LOADED_ITEMS.get_new_item(key) for key in ItemKey]))
         prob_map: Dict[Rarity, float] = {
-            Rarity.Common: 0.6,
-            Rarity.Uncommon: 0.3,
-            Rarity.Rare: 0.075,
+            Rarity.Common: 0.7,
+            Rarity.Uncommon: 0.22,
+            Rarity.Rare: 0.055,
             Rarity.Epic: 0.02,
             Rarity.Legendary: 0.005,
             Rarity.Artifact: 0,
@@ -395,8 +398,10 @@ class RandomItemMerchant(NPC):
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        self._name = state.get("_name", "Viktor")
-        self._role = state.get("_role", NPCRoles.RandomItemMerchant)
+        self._id = state.get("_id", str(uuid4()))
+        self._name = "Viktor"
+        self._role = NPCRoles.RandomItemMerchant
+        self._dueling_persona = NPCDuelingPersonas.Rogue
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
@@ -417,6 +422,10 @@ class RandomItemMerchant(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
             self._setup_abilities()
+
+        self._stats: Stats | None = state.get("_stats")
+        if self._stats is None:
+            self._stats = Stats()
 
         self._current_wares = state.get("_current_wares", [])
         self._cost_adjust = state.get("_cost_adjust", 1.5)

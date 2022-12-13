@@ -148,7 +148,7 @@ class Expertise():
     def add_xp_to_class(self, xp: int, expertise_class: ExpertiseClass, equipment: Equipment):
         levels_gained: int = 0
 
-        xp_adjustment = 0
+        xp_adjustment: float = 0
         for item in equipment.get_all_equipped_items():
             item_effects = item.get_item_effects()
             if item_effects is not None:

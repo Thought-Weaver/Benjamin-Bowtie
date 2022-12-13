@@ -5,17 +5,15 @@ from dataclasses import dataclass
 from math import ceil
 from random import randint, random
 
-from typing import List, TYPE_CHECKING
-from features.dueling import Dueling
 from features.equipment import Equipment
-
 from features.expertise import ExpertiseClass
-from features.shared.constants import DEX_DODGE_SCALE, INT_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
+from features.shared.constants import BLEED_PERCENT_HP, DEX_DODGE_SCALE, INT_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, POISONED_PERCENT_HP, STR_DMG_SCALE
 from features.shared.effect import EffectType, ItemEffectCategory
 from features.shared.enums import ClassTag
 from features.shared.item import WeaponStats
 from features.shared.statuseffect import *
 
+from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.npcs.npc import NPC
     from features.player import Player
@@ -51,6 +49,9 @@ class Ability():
         # Turns remaining until it can be used again
         # If this is -1, then it's a once-per-duel ability that's already been used
         self._cur_cooldown = 0
+        # For the player, it makes more sense for CDs to be in terms of "turns after you end your current turn"
+        # so this accounts for displaying CDs correctly in code and to the player.
+        self._turn_after_lapsed = False
 
     def get_icon_and_name(self):
         return f"{self._icon} {self._name}"
@@ -82,15 +83,25 @@ class Ability():
     def get_class_key(self):
         return self._class_key
 
+    def get_turn_after_lapsed(self):
+        return self._turn_after_lapsed
+    
+    def set_turn_after_lapsed(self, value: bool):
+        self._turn_after_lapsed = value
+
     def reset_cd(self):
         self._cur_cooldown = 0
+        self._turn_after_lapsed = True
 
     def decrement_cd(self):
-        if self._cur_cooldown != -1:
+        if self._turn_after_lapsed and self._cur_cooldown != -1:
             self._cur_cooldown = max(0, self._cur_cooldown - 1)
 
+        if not self._turn_after_lapsed:
+            self._turn_after_lapsed = True
+
     @abstractmethod
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         pass
 
     def remove_mana_and_set_cd(self, caster: Player | NPC):
@@ -126,7 +137,7 @@ class Ability():
             # Can't adjust -1 time cooldowns
             self._cur_cooldown = self._cooldown
 
-    def _use_damage_ability(self, caster: Player, targets: List[Player | NPC], dmg_range: range) -> List[NegativeAbilityResult]:
+    def _use_damage_ability(self, caster: Player | NPC, targets: List[Player | NPC], dmg_range: range) -> List[NegativeAbilityResult]:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -212,7 +223,7 @@ class Ability():
 
         return results
 
-    def _use_negative_status_effect_ability(self, caster: Player, targets: List[Player | NPC], status_effects: List[StatusEffect]) -> List[NegativeAbilityResult]:
+    def _use_negative_status_effect_ability(self, caster: Player | NPC, targets: List[Player | NPC], status_effects: List[StatusEffect]) -> List[NegativeAbilityResult]:
         results: List[NegativeAbilityResult] = []
         status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
 
@@ -247,7 +258,7 @@ class Ability():
 
         return results
 
-    def _use_damage_and_effect_ability(self, caster: Player, targets: List[Player | NPC], dmg_range: range, status_effects: List[StatusEffect]) -> List[NegativeAbilityResult]:
+    def _use_damage_and_effect_ability(self, caster: Player | NPC, targets: List[Player | NPC], dmg_range: range, status_effects: List[StatusEffect]) -> List[NegativeAbilityResult]:
         results = self._use_damage_ability(caster, targets, dmg_range)
         status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
 
@@ -259,7 +270,7 @@ class Ability():
         
         return results
 
-    def _use_positive_status_effect_ability(self, caster: Player, targets: List[Player | NPC], status_effects: List[StatusEffect]) -> List[str]:
+    def _use_positive_status_effect_ability(self, caster: Player | NPC, targets: List[Player | NPC], status_effects: List[StatusEffect]) -> List[str]:
         results: List[str] = []
         status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
 
@@ -287,7 +298,7 @@ class Ability():
 
         return results
 
-    def _use_heal_ability(self, caster: Player, targets: List[Player | NPC], heal_range: range) -> List[str]:
+    def _use_heal_ability(self, caster: Player | NPC, targets: List[Player | NPC], heal_range: range) -> List[str]:
         results: List[str] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -393,6 +404,7 @@ class Ability():
         self._cur_cooldown = state.get("_cur_cooldown", 0)
         self._target_own_group = state.get("_target_own_group", False)
         self._purchase_cost = state.get("_purchase_cost", 0)
+        self._turn_after_lapsed = state.get("_turn_after_lapsed", False)
 
 # -----------------------------------------------------------------------------
 # FISHER ABILITIES
@@ -416,7 +428,7 @@ class SeaSprayI(Ability):
             purchase_cost=50
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(1, 3))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -450,7 +462,7 @@ class SeaSprayII(Ability):
             purchase_cost=100
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 5))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -482,7 +494,7 @@ class SeaSprayIII(Ability):
             purchase_cost=200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(3, 6))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -514,7 +526,7 @@ class SeaSprayIV(Ability):
             purchase_cost=400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(4, 7))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -546,7 +558,7 @@ class SeaSprayV(Ability):
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(5, 8))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -581,7 +593,7 @@ class CurseOfTheSeaI(Ability):
             purchase_cost=200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_debuff = ConDebuff(
             turns_remaining=2,
             value=-1,
@@ -631,7 +643,7 @@ class CurseOfTheSeaII(Ability):
             purchase_cost=400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_debuff = ConDebuff(
             turns_remaining=2,
             value=-2,
@@ -681,7 +693,7 @@ class CurseOfTheSeaIII(Ability):
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_debuff = ConDebuff(
             turns_remaining=2,
             value=-3,
@@ -734,7 +746,7 @@ class HookI(Ability):
             purchase_cost=200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
             turns_remaining=3,
             value=-5,
@@ -772,7 +784,7 @@ class HookII(Ability):
             purchase_cost=400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
             turns_remaining=3,
             value=-10,
@@ -810,7 +822,7 @@ class HookIII(Ability):
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
             turns_remaining=3,
             value=-15,
@@ -841,7 +853,7 @@ class WrathOfTheWavesI(Ability):
             icon="\uD83C\uDF0A",
             name="Wrath of the Waves I",
             class_key=ExpertiseClass.Fisher,
-            description="Call forth tidal waves to crash against up to 3 enemies, dealing 5-10 damage each. They take 50% more damage if they have a Dexterity debuff.",
+            description="Call forth tidal waves to crash against up to 3 enemies, dealing 5-10 damage each. They take 30% more damage if they have a Dexterity debuff.",
             flavor_text="",
             mana_cost=35,
             cooldown=1,
@@ -851,7 +863,7 @@ class WrathOfTheWavesI(Ability):
             purchase_cost=400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -869,7 +881,7 @@ class WrathOfTheWavesI(Ability):
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
-            bonus_dmg_boost = 1.5 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
+            bonus_dmg_boost = 1.3 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
@@ -941,7 +953,7 @@ class WrathOfTheWavesII(Ability):
             icon="\uD83C\uDF0A",
             name="Wrath of the Waves II",
             class_key=ExpertiseClass.Fisher,
-            description="Call forth tidal waves to crash against up to 3 enemies, dealing 6-12 damage each. They take 80% more damage if they have a Dexterity debuff.",
+            description="Call forth tidal waves to crash against up to 3 enemies, dealing 6-12 damage each. They take 60% more damage if they have a Dexterity debuff.",
             flavor_text="",
             mana_cost=35,
             cooldown=1,
@@ -951,7 +963,7 @@ class WrathOfTheWavesII(Ability):
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -969,7 +981,7 @@ class WrathOfTheWavesII(Ability):
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
-            bonus_dmg_boost = 1.8 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
+            bonus_dmg_boost = 1.6 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
@@ -1041,7 +1053,7 @@ class WrathOfTheWavesIII(Ability):
             icon="\uD83C\uDF0A",
             name="Wrath of the Waves III",
             class_key=ExpertiseClass.Fisher,
-            description="Call forth tidal waves to crash against up to 3 enemies, dealing 10-15 damage each. They take 110% more damage if they have a Dexterity debuff.",
+            description="Call forth tidal waves to crash against up to 3 enemies, dealing 10-15 damage each. They take 90% more damage if they have a Dexterity debuff.",
             flavor_text="",
             mana_cost=35,
             cooldown=1,
@@ -1051,7 +1063,7 @@ class WrathOfTheWavesIII(Ability):
             purchase_cost=1600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -1069,7 +1081,7 @@ class WrathOfTheWavesIII(Ability):
                 continue
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
-            bonus_dmg_boost = 2.1 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
+            bonus_dmg_boost = 1.9 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
@@ -1147,14 +1159,14 @@ class HighTideI(Ability):
             description="Raise a protective wall of water, reducing all damage you take next turn by 25%.",
             flavor_text="",
             mana_cost=20,
-            cooldown=2,
+            cooldown=1,
             num_targets=0,
             level_requirement=12,
             target_own_group=True,
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dmg_reduction = DmgReduction(
             turns_remaining=1,
             value=0.25,
@@ -1185,14 +1197,14 @@ class HighTideII(Ability):
             description="Raise a protective wall of water, reducing all damage you take next turn by 35%.",
             flavor_text="",
             mana_cost=20,
-            cooldown=2,
+            cooldown=1,
             num_targets=0,
             level_requirement=15,
             target_own_group=True,
             purchase_cost=1600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dmg_reduction = DmgReduction(
             turns_remaining=1,
             value=0.35,
@@ -1223,14 +1235,14 @@ class HighTideIII(Ability):
             description="Raise a protective wall of water, reducing all damage you take next turn by 45%.",
             flavor_text="",
             mana_cost=20,
-            cooldown=2,
+            cooldown=1,
             num_targets=0,
             level_requirement=18,
             target_own_group=True,
             purchase_cost=3200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dmg_reduction = DmgReduction(
             turns_remaining=1,
             value=0.45,
@@ -1264,14 +1276,14 @@ class ThunderingTorrentI(Ability):
             description="Conjure a raging current against up to 2 enemies, dealing 10-15 damage and half that again next turn.",
             flavor_text="",
             mana_cost=20,
-            cooldown=1,
+            cooldown=2,
             num_targets=2,
             level_requirement=14,
             target_own_group=False,
             purchase_cost=500
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -1384,14 +1396,14 @@ class ThunderingTorrentII(Ability):
             description="Conjure a raging current against up to 2 enemies, dealing 12-18 damage and half that again next turn.",
             flavor_text="",
             mana_cost=20,
-            cooldown=1,
+            cooldown=2,
             num_targets=2,
             level_requirement=16,
             target_own_group=False,
             purchase_cost=1000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -1504,14 +1516,14 @@ class ThunderingTorrentIII(Ability):
             description="Conjure a raging current against up to 2 enemies, dealing 15-20 damage and half that again next turn.",
             flavor_text="",
             mana_cost=20,
-            cooldown=1,
+            cooldown=2,
             num_targets=2,
             level_requirement=18,
             target_own_group=False,
             purchase_cost=2000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -1634,7 +1646,7 @@ class DrownInTheDeepI(Ability):
             purchase_cost=1200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -1723,7 +1735,7 @@ class DrownInTheDeepII(Ability):
             purchase_cost=2400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -1812,7 +1824,7 @@ class DrownInTheDeepIII(Ability):
             purchase_cost=4800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -1904,7 +1916,7 @@ class WhirlpoolI(Ability):
             purchase_cost=1000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -2020,7 +2032,7 @@ class WhirlpoolII(Ability):
             purchase_cost=2000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -2136,7 +2148,7 @@ class WhirlpoolIII(Ability):
             purchase_cost=4000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         results: List[NegativeAbilityResult] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -2255,7 +2267,7 @@ class ShatteringStormI(Ability):
             purchase_cost=5000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         skip_debuff = TurnSkipChance(
             turns_remaining=1,
             value=0.15,
@@ -2293,7 +2305,7 @@ class ShatteringStormII(Ability):
             purchase_cost=10000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         skip_debuff = TurnSkipChance(
             turns_remaining=1,
             value=0.25,
@@ -2331,7 +2343,7 @@ class ShatteringStormIII(Ability):
             purchase_cost=20000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         skip_debuff = TurnSkipChance(
             turns_remaining=1,
             value=0.35,
@@ -2367,14 +2379,14 @@ class WhirlwindI(Ability):
             description="Swing your weapon around you, dealing 50% of your weapon damage to all enemies.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=2,
             num_targets=-1,
             level_requirement=2,
             target_own_group=False,
             purchase_cost=200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_equipment: Equipment = caster.get_equipment()
         caster_attrs = caster.get_combined_attributes()
 
@@ -2413,14 +2425,14 @@ class WhirlwindII(Ability):
             description="Swing your weapon around you, dealing 60% of your weapon damage to all enemies.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=2,
             num_targets=-1,
             level_requirement=5,
             target_own_group=False,
             purchase_cost=400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_equipment: Equipment = caster.get_equipment()
         caster_attrs = caster.get_combined_attributes()
         
@@ -2459,14 +2471,14 @@ class WhirlwindIII(Ability):
             description="Swing your weapon around you, dealing 70% of your weapon damage to all enemies.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=2,
             num_targets=-1,
             level_requirement=8,
             target_own_group=False,
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_equipment: Equipment = caster.get_equipment()
         caster_attrs = caster.get_combined_attributes()
 
@@ -2515,7 +2527,7 @@ class SecondWindI(Ability):
             purchase_cost=300
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.25)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2549,7 +2561,7 @@ class SecondWindII(Ability):
             purchase_cost=600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.5)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2583,7 +2595,7 @@ class SecondWindIII(Ability):
             purchase_cost=1200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.75)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -2613,14 +2625,14 @@ class BidedAttackI(Ability):
             description="Prepare your attack, gaining +5 Strength for 1 turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=1,
             num_targets=0,
             level_requirement=4,
             target_own_group=True,
             purchase_cost=200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         str_buff = StrBuff(
             turns_remaining=1,
             value=5,
@@ -2651,14 +2663,14 @@ class BidedAttackII(Ability):
             description="Prepare your attack, gaining +10 Strength for 1 turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=1,
             num_targets=0,
             level_requirement=7,
             target_own_group=True,
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         str_buff = StrBuff(
             turns_remaining=1,
             value=10,
@@ -2689,14 +2701,14 @@ class BidedAttackIII(Ability):
             description="Prepare your attack, gaining +15 Strength for 1 turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=1,
             num_targets=0,
             level_requirement=10,
             target_own_group=True,
             purchase_cost=1600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         str_buff = StrBuff(
             turns_remaining=1,
             value=15,
@@ -2727,7 +2739,7 @@ class ScarArmorI(Ability):
             icon="\u2620\uFE0F",
             name="Scar Armor I",
             class_key=ExpertiseClass.Guardian,
-            description="Whenever you're attacked over the next 3 turns, increase your Constitution by 1 until the end of the duel.",
+            description="Whenever you're damaged over the next 3 turns, increase your Constitution by 1 until the end of the duel.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -2737,7 +2749,7 @@ class ScarArmorI(Ability):
             purchase_cost=400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         on_damage_buff = AttrBuffOnDamage(
             turns_remaining=3,
             on_being_hit_buffs=[ConBuff(
@@ -2769,7 +2781,7 @@ class ScarArmorII(Ability):
             icon="\u2620\uFE0F",
             name="Scar Armor II",
             class_key=ExpertiseClass.Guardian,
-            description="Whenever you're attacked over the next 6 turns, increase your Constitution by 1 until the end of the duel.",
+            description="Whenever you're damaged over the next 6 turns, increase your Constitution by 1 until the end of the duel.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -2779,7 +2791,7 @@ class ScarArmorII(Ability):
             purchase_cost=1200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         on_damage_buff = AttrBuffOnDamage(
             turns_remaining=6,
             on_being_hit_buffs=[ConBuff(
@@ -2824,7 +2836,7 @@ class UnbreakingI(Ability):
             purchase_cost=600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_buff = ConBuff(
             turns_remaining=-1,
             value=caster.get_equipment().get_num_slots_unequipped(),
@@ -2862,7 +2874,7 @@ class UnbreakingII(Ability):
             purchase_cost=2400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_buff = ConBuff(
             turns_remaining=-1,
             value=2 * caster.get_equipment().get_num_slots_unequipped(),
@@ -2903,7 +2915,7 @@ class CounterstrikeI(Ability):
             purchase_cost=700
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
@@ -2949,7 +2961,7 @@ class CounterstrikeII(Ability):
             purchase_cost=1400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
@@ -2995,7 +3007,7 @@ class CounterstrikeIII(Ability):
             purchase_cost=2800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_expertise = caster.get_expertise()
         caster_attrs = caster.get_combined_attributes()
 
@@ -3037,14 +3049,14 @@ class TauntI(Ability):
             description="Force an enemy to attack you next turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=1,
             num_targets=1,
             level_requirement=12,
             target_own_group=False,
             purchase_cost=2500
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         taunt = Taunted(
             turns_remaining=1,
             forced_to_attack=caster,
@@ -3085,7 +3097,7 @@ class PiercingStrikeI(Ability):
             purchase_cost=1000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
@@ -3143,7 +3155,7 @@ class PiercingStrikeII(Ability):
             purchase_cost=2000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
@@ -3201,7 +3213,7 @@ class PiercingStrikeIII(Ability):
             purchase_cost=4000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
@@ -3262,7 +3274,7 @@ class PressTheAdvantageI(Ability):
             purchase_cost=8000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         # Adding one because actions_remaining are reduced when pressing Continue
         caster.get_dueling().actions_remaining += 3
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -3295,7 +3307,7 @@ class EvadeI(Ability):
             purchase_cost=2000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=1,
             value=200,
@@ -3333,7 +3345,7 @@ class EvadeII(Ability):
             purchase_cost=4000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=1,
             value=300,
@@ -3371,7 +3383,7 @@ class EvadeIII(Ability):
             purchase_cost=8000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=1,
             value=400,
@@ -3412,7 +3424,7 @@ class HeavySlamI(Ability):
             purchase_cost=2500
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
@@ -3457,7 +3469,7 @@ class HeavySlamII(Ability):
             purchase_cost=5000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
@@ -3502,7 +3514,7 @@ class HeavySlamIII(Ability):
             purchase_cost=10000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         caster_attrs = caster.get_combined_attributes()
 
         main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
@@ -3542,7 +3554,7 @@ class ContractWealthForPowerI(Ability):
             icon="\uD83D\uDCDC",
             name="Contract: Wealth for Power I",
             class_key=ExpertiseClass.Merchant,
-            description="Summon a binding contract, exchanging 50 coins for +1 Intelligence, +1 Strength, and +1 Dexterity until the end of the duel. If you can't pay, you instead receive -1 to those attributes.",
+            description="Summon a binding contract, exchanging 15 coins for +1 Intelligence, +1 Strength, and +1 Dexterity until the end of the duel. If you can't pay, you instead receive -1 to those attributes.",
             flavor_text="",
             mana_cost=10,
             cooldown=-1,
@@ -3552,10 +3564,10 @@ class ContractWealthForPowerI(Ability):
             purchase_cost=50
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
 
-        if caster.get_inventory().get_coins() < 50:
+        if caster.get_inventory().get_coins() < 15:
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-1,
@@ -3577,7 +3589,7 @@ class ContractWealthForPowerI(Ability):
             results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
             result_str += "\n".join(list(map(lambda x: x.target_str, results)))
         else:
-            caster.get_inventory().remove_coins(50)
+            caster.get_inventory().remove_coins(15)
 
             int_buff = IntBuff(
                 turns_remaining=-1,
@@ -3616,7 +3628,7 @@ class ContractWealthForPowerII(Ability):
             icon="\uD83D\uDCDC",
             name="Contract: Wealth for Power II",
             class_key=ExpertiseClass.Merchant,
-            description="Summon a binding contract, exchanging 50 coins for +3 Intelligence, +3 Strength, and +3 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
+            description="Summon a binding contract, exchanging 15 coins for +3 Intelligence, +3 Strength, and +3 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
             flavor_text="",
             mana_cost=10,
             cooldown=-1,
@@ -3626,10 +3638,10 @@ class ContractWealthForPowerII(Ability):
             purchase_cost=100
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
 
-        if caster.get_inventory().get_coins() < 50:
+        if caster.get_inventory().get_coins() < 15:
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-3,
@@ -3651,7 +3663,7 @@ class ContractWealthForPowerII(Ability):
             results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
             result_str += "\n".join(list(map(lambda x: x.target_str, results)))
         else:
-            caster.get_inventory().remove_coins(50)
+            caster.get_inventory().remove_coins(15)
 
             int_buff = IntBuff(
                 turns_remaining=-1,
@@ -3690,7 +3702,7 @@ class ContractWealthForPowerIII(Ability):
             icon="\uD83D\uDCDC",
             name="Contract: Wealth for Power III",
             class_key=ExpertiseClass.Merchant,
-            description="Summon a binding contract, exchanging 50 coins for +5 Intelligence, +5 Strength, and +5 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
+            description="Summon a binding contract, exchanging 15 coins for +5 Intelligence, +5 Strength, and +5 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
             flavor_text="",
             mana_cost=10,
             cooldown=-1,
@@ -3700,10 +3712,10 @@ class ContractWealthForPowerIII(Ability):
             purchase_cost=200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
 
-        if caster.get_inventory().get_coins() < 50:
+        if caster.get_inventory().get_coins() < 15:
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-5,
@@ -3725,7 +3737,7 @@ class ContractWealthForPowerIII(Ability):
             results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
             result_str += "\n".join(list(map(lambda x: x.target_str, results)))
         else:
-            caster.get_inventory().remove_coins(50)
+            caster.get_inventory().remove_coins(15)
 
             int_buff = IntBuff(
                 turns_remaining=-1,
@@ -3770,14 +3782,14 @@ class BoundToGetLuckyI(Ability):
             description="Gain +10 Luck for the next 2 turns.",
             flavor_text="",
             mana_cost=15,
-            cooldown=4,
+            cooldown=3,
             num_targets=0,
             level_requirement=4,
             target_own_group=True,
             purchase_cost=100
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
             turns_remaining=2,
             value=10,
@@ -3808,14 +3820,14 @@ class BoundToGetLuckyII(Ability):
             description="Gain +30 Luck for the next 2 turns.",
             flavor_text="",
             mana_cost=15,
-            cooldown=4,
+            cooldown=3,
             num_targets=0,
             level_requirement=6,
             target_own_group=True,
             purchase_cost=200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
             turns_remaining=2,
             value=30,
@@ -3846,14 +3858,14 @@ class BoundToGetLuckyIII(Ability):
             description="Gain +50 Luck for the next 2 turns.",
             flavor_text="",
             mana_cost=15,
-            cooldown=4,
+            cooldown=3,
             num_targets=0,
             level_requirement=8,
             target_own_group=True,
             purchase_cost=400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
             turns_remaining=2,
             value=50,
@@ -3894,7 +3906,7 @@ class SilkspeakingI(Ability):
             purchase_cost=1000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         cannot_target = CannotTarget(
             turns_remaining=1,
             cant_target=caster,
@@ -3935,7 +3947,7 @@ class ATidySumI(Ability):
             purchase_cost=300
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         generating = Generating(
             turns_remaining=3,
             value=5,
@@ -3973,7 +3985,7 @@ class ATidySumII(Ability):
             purchase_cost=600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         generating = Generating(
             turns_remaining=3,
             value=10,
@@ -4011,7 +4023,7 @@ class ATidySumIII(Ability):
             purchase_cost=1200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         generating = Generating(
             turns_remaining=3,
             value=15,
@@ -4052,7 +4064,7 @@ class CursedCoinsI(Ability):
             purchase_cost=300
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         tarnished = Tarnished(
             turns_remaining=3,
             value=0.25,
@@ -4090,7 +4102,7 @@ class CursedCoinsII(Ability):
             purchase_cost=600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         tarnished = Tarnished(
             turns_remaining=3,
             value=0.5,
@@ -4128,7 +4140,7 @@ class CursedCoinsIII(Ability):
             purchase_cost=1200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         tarnished = Tarnished(
             turns_remaining=3,
             value=0.75,
@@ -4169,7 +4181,7 @@ class UnseenRichesI(Ability):
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
         caster.get_inventory().add_coins(int(0.25 * coins_to_add))
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
@@ -4201,7 +4213,7 @@ class UnseenRichesII(Ability):
             purchase_cost=1600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
         caster.get_inventory().add_coins(int(0.5 * coins_to_add))
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
@@ -4233,7 +4245,7 @@ class UnseenRichesIII(Ability):
             purchase_cost=3200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
         caster.get_inventory().add_coins(int(0.75 * coins_to_add))
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
@@ -4261,14 +4273,14 @@ class ContractManaToBloodI(Ability):
             description="All of your abilities that use Mana instead take 70% of their cost in HP next turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=2,
+            cooldown=1,
             num_targets=0,
             level_requirement=14,
             target_own_group=True,
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         mana_to_hp = ManaToHP(
             turns_remaining=1,
             value=0.7,
@@ -4299,14 +4311,14 @@ class ContractManaToBloodII(Ability):
             description="All of your abilities that use Mana instead take 50% of their cost in HP next turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=2,
+            cooldown=1,
             num_targets=0,
             level_requirement=16,
             target_own_group=True,
             purchase_cost=1600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         mana_to_hp = ManaToHP(
             turns_remaining=1,
             value=0.5,
@@ -4337,14 +4349,14 @@ class ContractManaToBloodIII(Ability):
             description="All of your abilities that use Mana instead take 30% of their cost in HP next turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=2,
+            cooldown=1,
             num_targets=0,
             level_requirement=18,
             target_own_group=True,
             purchase_cost=3200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         mana_to_hp = ManaToHP(
             turns_remaining=1,
             value=0.3,
@@ -4385,7 +4397,7 @@ class ContractBloodForBloodI(Ability):
             purchase_cost=1500
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         current_health: int = caster.get_expertise().hp
         damage: int = int(0.15 * 0.5 * current_health)
 
@@ -4420,7 +4432,7 @@ class ContractBloodForBloodII(Ability):
             purchase_cost=3000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         current_health: int = caster.get_expertise().hp
         damage: int = int(0.1 * current_health)
 
@@ -4455,7 +4467,7 @@ class ContractBloodForBloodIII(Ability):
             purchase_cost=6000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         current_health: int = caster.get_expertise().hp
         damage: int = int(3 * 0.05 * current_health)
 
@@ -4493,8 +4505,8 @@ class DeepPocketsI(Ability):
             purchase_cost=8000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        damage: int = max(100, int(0.01 * caster.get_inventory().get_coins()))
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        damage: int = min(100, int(0.01 * caster.get_inventory().get_coins()))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4517,7 +4529,7 @@ class DeepPocketsII(Ability):
             icon="\uD83E\uDDFE",
             name="Deep Pockets II",
             class_key=ExpertiseClass.Merchant,
-            description="Deal damage equal to 1% of your current coins (up to 100 damage) and lose that many coins.",
+            description="Deal damage equal to 1% of your current coins (up to 150 damage) and lose that many coins.",
             flavor_text="",
             mana_cost=80,
             cooldown=2,
@@ -4527,8 +4539,8 @@ class DeepPocketsII(Ability):
             purchase_cost=16000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        damage: int = max(150, int(0.01 * caster.get_inventory().get_coins()))
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        damage: int = min(150, int(0.01 * caster.get_inventory().get_coins()))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4551,7 +4563,7 @@ class DeepPocketsIII(Ability):
             icon="\uD83E\uDDFE",
             name="Deep Pockets III",
             class_key=ExpertiseClass.Merchant,
-            description="Deal damage equal to 1% of your current coins (up to 100 damage) and lose that many coins.",
+            description="Deal damage equal to 1% of your current coins (up to 200 damage) and lose that many coins.",
             flavor_text="",
             mana_cost=80,
             cooldown=2,
@@ -4561,8 +4573,8 @@ class DeepPocketsIII(Ability):
             purchase_cost=32000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
-        damage: int = max(200, int(0.01 * caster.get_inventory().get_coins()))
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        damage: int = min(200, int(0.01 * caster.get_inventory().get_coins()))
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4600,7 +4612,7 @@ class IncenseI(Ability):
             purchase_cost=100
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(2, 4))
         result_str += "\n".join(results)
@@ -4632,7 +4644,7 @@ class IncenseII(Ability):
             purchase_cost=200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(5, 7))
         result_str += "\n".join(results)
@@ -4664,7 +4676,7 @@ class IncenseIII(Ability):
             purchase_cost=400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(7, 9))
         result_str += "\n".join(results)
@@ -4699,7 +4711,7 @@ class PreparePotionsI(Ability):
             purchase_cost=150
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         prep_potions_buff = PotionBuff(
             turns_remaining=3,
             value=0.15,
@@ -4737,7 +4749,7 @@ class PreparePotionsII(Ability):
             purchase_cost=150
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         prep_potions_buff = PotionBuff(
             turns_remaining=3,
             value=0.25,
@@ -4775,7 +4787,7 @@ class PreparePotionsIII(Ability):
             purchase_cost=150
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         prep_potions_buff = PotionBuff(
             turns_remaining=3,
             value=0.25,
@@ -4806,17 +4818,17 @@ class VitalityTransferI(Ability):
             icon="\uD83D\uDC9E",
             name="Vitality Transfer I",
             class_key=ExpertiseClass.Alchemist,
-            description="Take 15% of your max health as damage and restore that much of an ally's health.",
+            description="Take 15% of your max health as damage and restore that much health to an ally.",
             flavor_text="",
             mana_cost=10,
-            cooldown=3,
+            cooldown=2,
             num_targets=1,
             level_requirement=5,
             target_own_group=True,
             purchase_cost=300
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         damage_amount = ceil(caster.get_expertise().max_hp * 0.15)
         caster.get_expertise().damage(damage_amount, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
 
@@ -4843,17 +4855,17 @@ class VitalityTransferII(Ability):
             icon="\uD83D\uDC9E",
             name="Vitality Transfer II",
             class_key=ExpertiseClass.Alchemist,
-            description="Take 25% of your max health as damage and restore that much of an ally's health.",
+            description="Take 25% of your max health as damage and restore that much health to an ally.",
             flavor_text="",
             mana_cost=10,
-            cooldown=3,
+            cooldown=2,
             num_targets=1,
             level_requirement=8,
             target_own_group=True,
             purchase_cost=600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         damage_amount = ceil(caster.get_expertise().max_hp * 0.25)
         caster.get_expertise().damage(damage_amount, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
 
@@ -4880,17 +4892,17 @@ class VitalityTransferIII(Ability):
             icon="\uD83D\uDC9E",
             name="Vitality Transfer III",
             class_key=ExpertiseClass.Alchemist,
-            description="Take 35% of your max health as damage and restore that much of an ally's health.",
+            description="Take 35% of your max health as damage and restore that much health to an ally.",
             flavor_text="",
             mana_cost=10,
-            cooldown=3,
+            cooldown=2,
             num_targets=1,
             level_requirement=11,
             target_own_group=True,
             purchase_cost=1200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         damage_amount = ceil(caster.get_expertise().max_hp * 0.35)
         caster.get_expertise().damage(damage_amount, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
 
@@ -4930,7 +4942,7 @@ class CleanseI(Ability):
             purchase_cost=1600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
         results: List[str] = []
@@ -4963,14 +4975,14 @@ class ToxicCloudI(Ability):
             description="Create a miasma that deals 1-3 damage to all enemies with a 30% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
             flavor_text="",
             mana_cost=5,
-            cooldown=3,
+            cooldown=2,
             num_targets=-1,
             level_requirement=9,
             target_own_group=False,
             purchase_cost=400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(1, 3))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -5009,14 +5021,14 @@ class ToxicCloudII(Ability):
             description="Create a miasma that deals 2-4 damage to all enemies with a 50% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
             flavor_text="",
             mana_cost=5,
-            cooldown=3,
+            cooldown=2,
             num_targets=-1,
             level_requirement=12,
             target_own_group=False,
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 4))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -5055,14 +5067,14 @@ class ToxicCloudIII(Ability):
             description="Create a miasma that deals 3-5 damage to all enemies with a 70% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
             flavor_text="",
             mana_cost=5,
-            cooldown=3,
+            cooldown=2,
             num_targets=-1,
             level_requirement=15,
             target_own_group=False,
             purchase_cost=1600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 4))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -5111,7 +5123,7 @@ class SmokescreenI(Ability):
             purchase_cost=600
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=1,
             value=25,
@@ -5149,7 +5161,7 @@ class SmokescreenII(Ability):
             purchase_cost=1200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=1,
             value=50,
@@ -5187,7 +5199,7 @@ class SmokescreenIII(Ability):
             purchase_cost=2400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=1,
             value=75,
@@ -5228,7 +5240,7 @@ class EmpowermentI(Ability):
             purchase_cost=2800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
         results: List[str] = []
@@ -5268,7 +5280,7 @@ class FesteringVaporI(Ability):
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         filtered_targets = [target for target in targets if any(se.key == StatusEffectKey.Poisoned for se in target.get_dueling().status_effects)]
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -5304,7 +5316,7 @@ class FesteringVaporII(Ability):
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         filtered_targets = [target for target in targets if any(se.key == StatusEffectKey.Poisoned for se in target.get_dueling().status_effects)]
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -5340,7 +5352,7 @@ class FesteringVaporIII(Ability):
             purchase_cost=800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         filtered_targets = [target for target in targets if any(se.key == StatusEffectKey.Poisoned for se in target.get_dueling().status_effects)]
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -5379,7 +5391,7 @@ class PoisonousSkinI(Ability):
             purchase_cost=3000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         poison_heals_buff = PoisonHeals(
             turns_remaining=-1,
             value=1,
@@ -5420,7 +5432,7 @@ class RegenerationI(Ability):
             purchase_cost=1200
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         regenerating = RegenerateHP(
             turns_remaining=2,
             value=0.05,
@@ -5458,7 +5470,7 @@ class RegenerationII(Ability):
             purchase_cost=2400
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         regenerating = RegenerateHP(
             turns_remaining=2,
             value=0.08,
@@ -5496,7 +5508,7 @@ class RegenerationIII(Ability):
             purchase_cost=4800
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         regenerating = RegenerateHP(
             turns_remaining=2,
             value=0.1,
@@ -5537,7 +5549,7 @@ class ParalyzingFumesI(Ability):
             purchase_cost=5000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         faltering = TurnSkipChance(
             turns_remaining=1,
             value=0.5,
@@ -5568,7 +5580,7 @@ class QuickAccessI(Ability):
             icon="\uD83D\uDCBC",
             name="Quick Access I",
             class_key=ExpertiseClass.Alchemist,
-            description="With deft hands, you are able to use 3 items this turn.",
+            description="With deft hands, you're able to use 3 items this turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -5578,7 +5590,7 @@ class QuickAccessI(Ability):
             purchase_cost=8000
         )
 
-    def use_ability(self, caster: Player, targets: List[Player | NPC]) -> str:
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         # Adding one because actions_remaining are reduced when pressing Continue
         caster.get_dueling().actions_remaining += 4
         caster.get_stats().dueling.alchemist_abilities_used += 1

@@ -9,13 +9,6 @@ if TYPE_CHECKING:
     from features.player import Player
 
 # -----------------------------------------------------------------------------
-# CONSTANTS
-# -----------------------------------------------------------------------------
-
-BLEED_PERCENT_HP = 0.01
-POISONED_PERCENT_HP = 0.01
-
-# -----------------------------------------------------------------------------
 # ENUMS
 # -----------------------------------------------------------------------------
 
@@ -66,6 +59,28 @@ class StatusEffectKey(StrEnum):
     DmgBuff = "DmgBuff"
 
 # -----------------------------------------------------------------------------
+# CONSTANTS
+# -----------------------------------------------------------------------------
+
+POSITIVE_STATUS_EFFECTS_ON_SELF: List[StatusEffectKey] = [
+    StatusEffectKey.ConBuff,
+    StatusEffectKey.StrBuff,
+    StatusEffectKey.DexBuff,
+    StatusEffectKey.IntBuff,
+    StatusEffectKey.LckBuff,
+    StatusEffectKey.MemBuff,
+    StatusEffectKey.AttrBuffOnDamage,
+    StatusEffectKey.Generating,
+    StatusEffectKey.Tarnished,
+    StatusEffectKey.ManaToHP,
+    StatusEffectKey.PotionBuff,
+    StatusEffectKey.PoisonHeals,
+    StatusEffectKey.RegenerateHP,
+    StatusEffectKey.RestrictedToItems, # Since this can only happen with Quick Access
+    StatusEffectKey.DmgBuff
+]
+
+# -----------------------------------------------------------------------------
 # CLASSES
 # -----------------------------------------------------------------------------
 
@@ -109,7 +124,7 @@ class Bleeding(StatusEffect):
         super().__init__(turns_remaining, value, "Bleeding", StatusEffectKey.Bleeding, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Lose {self.value}% health every turn for {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Take {round(self.value * 100, 2)}% max health as damage every turn for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -122,7 +137,7 @@ class Poisoned(StatusEffect):
         super().__init__(turns_remaining, value, "Poisoned", StatusEffectKey.Poisoned, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Lose {self.value}% health every turn for {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Take {round(self.value * 100, 2)}% max health as damage every turn for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

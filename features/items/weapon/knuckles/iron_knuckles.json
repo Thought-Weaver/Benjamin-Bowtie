@@ -11,18 +11,8 @@
     "count": 1,
     "level_requirement": 15,
     "weapon_stats": {
-        "min_damage": 3,
-        "max_damage": 6
-    },
-    "item_effects": {
-        "permanent": [
-            {
-                "effect_type": "StrMod",
-                "effect_value": 1,
-                "effect_time": -1,
-                "conditions": [],
-                "condition_values": []
-            }
-        ]
+        "min_damage": 2,
+        "max_damage": 4,
+        "num_targets": 2
     }
 }

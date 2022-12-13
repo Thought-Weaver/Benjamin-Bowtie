@@ -17,7 +17,7 @@ class ClassTag(Enum):
         Leggings = "Leggings"
         MainHand = "Main_Hand"
         OffHand = "Off_Hand"
-
+    
     # Weapon types that can be generated
     @skip
     class Weapon(StrEnum):

@@ -13,7 +13,9 @@ if TYPE_CHECKING:
 
 
 class Player():
-    def __init__(self):
+    def __init__(self, id: str):
+        self._id = id
+
         self._inventory: Inventory = Inventory()
         self._mailbox: List[Mail] = []
         self._stats: Stats = Stats()
@@ -21,6 +23,13 @@ class Player():
         self._equipment: Equipment = Equipment()
         self._dueling: Dueling = Dueling()
         self._house: House = House()
+
+    def get_id(self):
+        return self._id
+    
+    def set_id(self, id: str):
+        if self._id is None or self._id == "":
+            self._id = id
 
     def get_combined_attributes(self):
         return self._expertise.get_all_attributes() + self._equipment.get_total_attribute_mods() + self._dueling.get_combined_attribute_mods()
@@ -50,6 +59,7 @@ class Player():
         return self.__dict__
 
     def __setstate__(self, state: dict):
+        self._id = state.get("_id", "")
         self._inventory = state.get("_inventory", Inventory())
         self._mailbox = state.get("_mailbox", [])
         self._stats = state.get("_stats", Stats())

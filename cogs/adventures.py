@@ -12,7 +12,7 @@ from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
-from features.dueling import GroupPlayerVsPlayerDuelView, PlayerVsPlayerDuelView
+from features.dueling import GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
 from features.house.alchemy import AlchemyChamberView
@@ -84,11 +84,21 @@ class Adventures(commands.Cog):
             if self._database[guild_id_str]["npcs"].get(NPCRoles.RandomItemMerchant) is None:
                 self._database[guild_id_str]["npcs"][NPCRoles.RandomItemMerchant] = RandomItemMerchant()
 
+        def validate_user_ids(guild_id_str: str):
+            if self._database[guild_id_str].get("members") is None:
+                self._database[guild_id_str]["members"] = {}
+            for user_id in self._database[guild_id_str]["members"].keys():
+                player: Player = self._database[guild_id_str]["members"][user_id]
+                if player.get_id() is None or player.get_id() == "":
+                    player.set_id(str(user_id))
+
         if specific_guild_id_str is not None:
             create_stories_and_npcs(specific_guild_id_str)
+            validate_user_ids(specific_guild_id_str)
         else:
             for guild_id_str in self._database.keys():
                 create_stories_and_npcs(guild_id_str)
+                validate_user_ids(guild_id_str)
 
     def _check_member_and_guild_existence(self, guild_id: int, user_id: int):
         guild_id_str: str = str(guild_id)
@@ -100,13 +110,31 @@ class Adventures(commands.Cog):
             self._database_npc_and_story_setup(guild_id_str)
         
         if self._database[guild_id_str]["members"].get(user_id_str) is None:
-            self._database[guild_id_str]["members"][user_id_str] = Player()
+            self._database[guild_id_str]["members"][user_id_str] = Player(user_id_str)
 
     def _get_player(self, guild_id: int, user_id: int) -> Player:
         return self._database[str(guild_id)]["members"][str(user_id)]
 
     def _get_story(self, guild_id: int, story_key: Story):
         return self._database[str(guild_id)]["stories"][story_key]
+
+    def _map_name_to_new_npc(self, users: commands.Greedy[User | str]):
+        mapped: List[User | NPC] = []
+        for user in users:
+            if isinstance(user, str):
+                if user.lower() == "yenna":
+                    mapped.append(Yenna())
+                elif user.lower() == "mrbones":
+                    mapped.append(MrBones())
+                elif user.lower() == "abarra":
+                    mapped.append(Blacksmith())
+                elif user.lower() == "viktor":
+                    mapped.append(RandomItemMerchant())
+                elif user.lower() == "copperbroad":
+                    mapped.append(Chef())
+            else:
+                mapped.append(user)
+        return mapped
 
     @tasks.loop(time=[datetime.time(hour=i) for i in range(24)])
     async def tick(self):
@@ -143,6 +171,8 @@ class Adventures(commands.Cog):
     @commands.is_owner()
     @commands.command(name="endduel", help="Ends combat for specific members", hidden=True)
     async def end_duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+        assert(context.guild is not None)
+
         if users is None:
             await context.send("You need to @ a member to use b!endduel.")
             return
@@ -172,6 +202,8 @@ class Adventures(commands.Cog):
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items", aliases=["ghoti"])
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def fish_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         rand_val = random.random()
         
@@ -294,6 +326,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="knucklebones", help="Face another player in a game of knucklebones")
     async def knucklebones_handler(self, context: commands.Context, user: Union[User, str, None]=None, amount: int=0):
+        assert(context.guild is not None)
+
         if user is None:
             await context.send("You need to @ a member to use b!knucklebones.")
             return
@@ -409,6 +443,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="mail", help="Send another player a gift")
     async def mail_handler(self, context: commands.Context, giftee: User=None):
+        assert(context.guild is not None)
+
         if giftee is None:
             await context.send("You need to @ a member to use b!mail")
             return
@@ -436,6 +472,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="inventory", help="Check your inventory", aliases=["inv"])
     async def inventory_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         player: Player = self._get_player(context.guild.id, context.author.id)
         coins_str = player.get_inventory().get_coins_str()
@@ -447,6 +485,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="market", help="Sell and buy items at the marketplace", aliases=["marketplace"])
     async def market_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -463,6 +503,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="mailbox", help="Open mail you've received from others", aliases=["inbox"], hidden=True)
     async def mailbox_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -479,6 +521,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="stats", help="See your stats")
     async def stats_handler(self, context: commands.Context, user: User | None=None, stat_category_name:StatCategory | None=None):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         display_user = context.author
@@ -493,6 +537,8 @@ class Adventures(commands.Cog):
     @commands.command(name="wishingwell", help="Toss a coin into the wishing well", aliases=["ww"])
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def wishing_well_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -598,6 +644,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="expertise", help="See your level progress and attributes", aliases=["me", "xp"])
     async def expertise_handler(self, context: commands.Context, user: User | None=None):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         display_user = context.author
@@ -614,6 +662,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="equipment", help="See your equipment and equip items", aliases=["equip"])
     async def equipment_handler(self, context: commands.Context, user: User | None=None):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         display_user = context.author
@@ -629,7 +679,9 @@ class Adventures(commands.Cog):
         await context.send(embed=embed, view=equipment_view)
 
     @commands.command(name="duel", help="Challenge another player to a duel")
-    async def duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+    async def duel_handler(self, context: commands.Context, users: commands.Greedy[User | str]=None):
+        assert(context.guild is not None)
+
         if users is None:
             await context.send("You need to @ a member to use b!duel.")
             return
@@ -642,7 +694,7 @@ class Adventures(commands.Cog):
             await context.send("You can't challenge yourself to a duel.")
             return
             
-        if any(user.bot for user in users):
+        if any((isinstance(user, User) and user.bot) for user in users):
             await context.send("You can't challenge a bot to a duel.")
             return
 
@@ -652,25 +704,36 @@ class Adventures(commands.Cog):
 
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         for user in users:
-            self._check_member_and_guild_existence(context.guild.id, user.id)
+            if isinstance(user, User):
+                self._check_member_and_guild_existence(context.guild.id, user.id)
 
         author_player: Player = self._get_player(context.guild.id, context.author.id)
         author_dueling: Dueling = author_player.get_dueling()
         if author_dueling.is_in_combat:
-            await context.send(f"You're in a duel and can't start another.")
+            await context.send("You're in a duel and can't start another.")
             return
 
-        challenged_players: List[Player] = [self._get_player(context.guild.id, user.id) for user in users]
+        # Rather than using the existing NPCs (since multiple duels can happen at once), a player-started duel should
+        # use a new copy of the NPC.
+        mapped_users = self._map_name_to_new_npc(users)
+
+        if len(mapped_users) == 0:
+            await context.send("That NPC name wasn't valid.")
+            return
+
+        challenged_players: List[Player | NPC] = [(self._get_player(context.guild.id, user.id) if isinstance(user, User) else user) for user in mapped_users]
         if any(player.get_dueling().is_in_combat for player in challenged_players):
-            await context.send(f"At least one of those players is already in a duel.")
+            await context.send("At least one of those players is already in a duel.")
             return
 
-        pvp_duel = PlayerVsPlayerDuelView(self._bot, self._database, context.guild.id, context.author, users)
+        pvp_duel = PlayerVsPlayerOrNPCDuelView(self._bot, self._database, context.guild.id, context.author, mapped_users)
 
         await context.send(embed=pvp_duel.get_info_embed(), view=pvp_duel)
 
     @commands.command(name="glossary", help="Shows a list of adventure-related words and their definitions")
     async def glossary_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         description = (
@@ -726,6 +789,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="train", help="Visit trainers to acquire new abilities and equip them", aliases=["abilities"])
     async def train_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -740,6 +805,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="groupduel", help="Gather players to choose teams for a duel")
     async def group_duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+        assert(context.guild is not None)
+
         if users is None:
             await context.send("You need to @ a member to use b!groupduel.")
             return
@@ -781,6 +848,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="tutorial", help="Explains the basics of how to get started!")
     async def tutorial_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
 
         description = (
@@ -801,6 +870,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="house", help="Visit your house in the village", aliases=["home"])
     async def house_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -814,6 +885,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="garden", help="Visit your home's garden", hidden=True)
     async def garden_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -828,6 +901,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="study", help="Enter your home's study", hidden=True)
     async def study_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -842,6 +917,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="workshop", help="Enter your home's workshop", hidden=True)
     async def workshop_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -856,6 +933,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="alchemychamber", help="Enter your home's alchemy chamber", aliases=["alchemy"], hidden=True)
     async def alchemy_chamber_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -870,6 +949,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="kitchen", help="Enter your home's kitchen", hidden=True)
     async def kitchen_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         
         author_player: Player = self._get_player(context.guild.id, context.author.id)
@@ -884,6 +965,8 @@ class Adventures(commands.Cog):
 
     @commands.command(name="storage", help="Enter your home's storage", hidden=True)
     async def storage_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
         self._check_member_and_guild_existence(context.guild.id, context.author.id)
         
         author_player: Player = self._get_player(context.guild.id, context.author.id)

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from uuid import uuid4
 
 import discord
 
@@ -9,13 +10,15 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.house.house import House
 from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
-from features.npcs.npc import NPC, NPCRoles
+from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, CounterstrikeIII, EvadeIII, HeavySlamII, PiercingStrikeIII, PressTheAdvantageI, ScarArmorII, SecondWindIII, WhirlwindIII
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
 from typing import TYPE_CHECKING, List
+
+from features.stats import Stats
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
@@ -473,7 +476,7 @@ class BlacksmithView(discord.ui.View):
 
 class Blacksmith(NPC):
     def __init__(self):
-        super().__init__("Abarra", NPCRoles.Blacksmith)
+        super().__init__("Abarra", NPCRoles.Blacksmith, NPCDuelingPersonas.Bruiser, {})
 
         # Inventory Setup
         self._restock_items = []
@@ -515,9 +518,12 @@ class Blacksmith(NPC):
 
     def __setstate__(self, state: dict):
         # TODO: Make each of these setup portions a private function in the class so I don't have
-        # to duplicate everything between init and setstate. 
-        self._name = state.get("_name", "Abarra")
-        self._role = state.get("_role", NPCRoles.Blacksmith)
+        # to duplicate everything between init and setstate.
+        self._id = state.get("_id", str(uuid4()))
+        self._name = "Abarra"
+        self._role = NPCRoles.Blacksmith
+        self._dueling_persona = NPCDuelingPersonas.Bruiser
+        self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
@@ -562,3 +568,7 @@ class Blacksmith(NPC):
                 ScarArmorII(), CounterstrikeIII(), PressTheAdvantageI(),
                 EvadeIII(), HeavySlamII(), BoundToGetLuckyIII()
             ]
+
+        self._stats: Stats | None = state.get("_stats")
+        if self._stats is None:
+            self._stats = Stats()

@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from uuid import uuid4
 from strenum import StrEnum
 from random import randint, random
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
-from features.npcs.npc import NPC, NPCRoles
+from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import ATidySumIII, BoundToGetLuckyIII, ContractBloodForBloodIII, ContractManaToBloodIII, ContractWealthForPowerIII, CursedCoinsIII, DeepPocketsIII, SecondWindIII, SilkspeakingI, UnseenRichesIII
 
 from typing import TYPE_CHECKING, Callable, List
@@ -31,7 +32,7 @@ class Difficulty(StrEnum):
 
 class MrBones(NPC):
     def __init__(self):
-        super().__init__("Mr. Bones", NPCRoles.KnucklebonesPatron)
+        super().__init__("Mr. Bones", NPCRoles.KnucklebonesPatron, NPCDuelingPersonas.Mage, {})
 
         # Inventory Setup
         self._base_items = []
@@ -48,9 +49,9 @@ class MrBones(NPC):
         self._expertise.points_to_spend = 0
         
         self._expertise.constitution = 35
-        self._expertise.intelligence = 20
+        self._expertise.intelligence = 25
         self._expertise.dexterity = 10
-        self._expertise.strength = 10
+        self._expertise.strength = 5
         self._expertise.luck = 40
         self._expertise.memory = 10
 
@@ -171,9 +172,12 @@ class MrBones(NPC):
 
     def __setstate__(self, state: dict):
         # TODO: Make each of these setup portions a private function in the class so I don't have
-        # to duplicate everything between init and setstate. 
-        self._name = state.get("_name", "Mr. Bones")
-        self._role = state.get("_role", NPCRoles.KnucklebonesPatron)
+        # to duplicate everything between init and setstate.
+        self._id = state.get("_id", str(uuid4()))
+        self._name = "Mr. Bones"
+        self._role = NPCRoles.KnucklebonesPatron
+        self._dueling_persona = NPCDuelingPersonas.Mage
+        self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
@@ -200,9 +204,9 @@ class MrBones(NPC):
             self._expertise.points_to_spend = 0
                 
             self._expertise.constitution = 35
-            self._expertise.intelligence = 20
+            self._expertise.intelligence = 25
             self._expertise.dexterity = 10
-            self._expertise.strength = 10
+            self._expertise.strength = 5
             self._expertise.luck = 40
             self._expertise.memory = 10
 

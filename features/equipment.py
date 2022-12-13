@@ -156,8 +156,7 @@ class Equipment():
         mods: Attributes = Attributes(0, 0, 0, 0, 0, 0)
         for item in self.get_all_equipped_items():
             item_effects = item.get_item_effects()
-            if item_effects is not None:
-                mods += item_effects.get_permanent_attribute_mods()
+            mods += item_effects.get_permanent_attribute_mods()
         return mods
 
     def _get_total_armor(self):

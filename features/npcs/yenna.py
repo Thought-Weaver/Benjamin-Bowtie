@@ -1,4 +1,5 @@
 from __future__ import annotations
+from uuid import uuid4
 
 import discord
 import re
@@ -10,7 +11,7 @@ from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
-from features.npcs.npc import NPC, NPCRoles
+from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, SilkspeakingI, VitalityTransferIII
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
@@ -827,7 +828,7 @@ class YennaView(discord.ui.View):
 
 class Yenna(NPC):
     def __init__(self):
-        super().__init__("Yenna", NPCRoles.FortuneTeller)
+        super().__init__("Yenna", NPCRoles.FortuneTeller, NPCDuelingPersonas.Healer, {})
 
         # Inventory Setup
         self._restock_items = []
@@ -838,13 +839,13 @@ class Yenna(NPC):
             self._inventory.add_item(item)
         
         # Expertise Setup
-        # TODO: When Alchemy is implemented, add XP to that class to get to Level 50
         self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
         self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
-        
+        self._expertise.add_xp_to_class(22000, ExpertiseClass.Alchemist, self._equipment) # Level 30
+
         self._expertise.points_to_spend = 0
         
-        self._expertise.constitution = 10
+        self._expertise.constitution = 15
         self._expertise.intelligence = 30
         self._expertise.dexterity = 10
         self._expertise.strength = 3
@@ -1020,10 +1021,13 @@ class Yenna(NPC):
 
     def __setstate__(self, state: dict):
         # TODO: Make each of these setup portions a private function in the class so I don't have
-        # to duplicate everything between init and setstate. 
-        self._name = state.get("_name", "Yenna")
-        self._role = state.get("_role", NPCRoles.FortuneTeller)
-        
+        # to duplicate everything between init and setstate.
+        self._id = state.get("_id", str(uuid4()))
+        self._name = "Yenna"
+        self._role = NPCRoles.FortuneTeller
+        self._dueling_persona = NPCDuelingPersonas.Healer
+        self._dueling_rewards = {}
+
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
             self._inventory = Inventory()
@@ -1048,7 +1052,7 @@ class Yenna(NPC):
             
             self._expertise.points_to_spend = 0
             
-            self._expertise.constitution = 10
+            self._expertise.constitution = 15
             self._expertise.intelligence = 30
             self._expertise.dexterity = 10
             self._expertise.strength = 3

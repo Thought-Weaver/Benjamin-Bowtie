@@ -18,6 +18,8 @@ if TYPE_CHECKING:
 class EffectType(StrEnum):
     Unknown = "Unknown"
 
+    CleanseStatusEffects = "CleanseStatusEffects"
+
     ConMod = "ConMod"
     StrMod = "StrMod"
     DexMod = "DexMod"
@@ -76,8 +78,8 @@ class EffectType(StrEnum):
     AdjustedManaCosts = "AdjustedManaCosts"
     HealingAbilityBuff = "HealingAbilityBuff"
     AdditionalXP = "AdditionalXP"
-    PotionMod = "PotionMod" # TODO: Implement this
-
+    PotionMod = "PotionMod"
+    
     ResurrectOnce = "ResurrectOnce"
 
 
@@ -109,64 +111,66 @@ class ItemEffectCategory(StrEnum):
 # -----------------------------------------------------------------------------
 
 EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
-    EffectType.ConMod: 0,
-    EffectType.StrMod: 1,
-    EffectType.DexMod: 2,
-    EffectType.IntMod: 3,
-    EffectType.LckMod: 4,
-    EffectType.MemMod: 5,
+    EffectType.CleanseStatusEffects: 0,
 
-    EffectType.DmgReflect: 6,
-    EffectType.DmgResist: 7,
-    EffectType.DmgBuff: 8,
-    EffectType.DmgBuffSelfMaxHealth: 9,
-    EffectType.DmgBuffSelfRemainingHealth: 10,
-    EffectType.DmgBuffOtherMaxHealth: 11,
-    EffectType.DmgBuffOtherRemainingHealth: 12,
-    EffectType.DmgBuffLegends: 13,
-    EffectType.DmgBuffPoisoned: 14,
-    EffectType.DmgBuffBleeding: 15,
-    EffectType.DmgBuffFromDex: 16,
-    EffectType.DmgBuffFromInt: 17,
+    EffectType.ConMod: 1,
+    EffectType.StrMod: 2,
+    EffectType.DexMod: 3,
+    EffectType.IntMod: 4,
+    EffectType.LckMod: 5,
+    EffectType.MemMod: 6,
 
-    EffectType.RestoreArmor: 18,
-    EffectType.RestorePercentArmor: 19,
+    EffectType.DmgReflect: 7,
+    EffectType.DmgResist: 8,
+    EffectType.DmgBuff: 9,
+    EffectType.DmgBuffSelfMaxHealth: 10,
+    EffectType.DmgBuffSelfRemainingHealth: 11,
+    EffectType.DmgBuffOtherMaxHealth: 12,
+    EffectType.DmgBuffOtherRemainingHealth: 13,
+    EffectType.DmgBuffLegends: 14,
+    EffectType.DmgBuffPoisoned: 15,
+    EffectType.DmgBuffBleeding: 16,
+    EffectType.DmgBuffFromDex: 17,
+    EffectType.DmgBuffFromInt: 18,
+
+    EffectType.RestoreArmor: 19,
+    EffectType.RestorePercentArmor: 20,
     
-    EffectType.PiercingDmg: 20,
-    EffectType.PiercingPercentDmg: 21,
-    EffectType.SplashDmg: 22,
-    EffectType.SplashPercentMaxDmg: 23,
+    EffectType.PiercingDmg: 21,
+    EffectType.PiercingPercentDmg: 22,
+    EffectType.SplashDmg: 23,
+    EffectType.SplashPercentMaxDmg: 24,
 
-    EffectType.CritDmgBuff: 24,
-    EffectType.CritDmgReduction: 25,
+    EffectType.CritDmgBuff: 25,
+    EffectType.CritDmgReduction: 26,
 
-    EffectType.HealthSteal: 26,
-    EffectType.ManaSteal: 27,
+    EffectType.HealthSteal: 27,
+    EffectType.ManaSteal: 28,
 
-    EffectType.AdjustedCDs: 28,
+    EffectType.AdjustedCDs: 29,
 
-    EffectType.ChancePoisoned: 29,
-    EffectType.ResistPoisoned: 30,
-    EffectType.ChanceBleeding: 31,
-    EffectType.ResistBleeding: 32,
-    EffectType.ChanceFaltering: 33,
-    EffectType.ResistFaltering: 34,
-    EffectType.ChanceTaunted: 35,
-    EffectType.ResistTaunted: 36,
-    EffectType.ChanceConvinced: 37,
-    EffectType.ResistConvinced: 38,
+    EffectType.ChancePoisoned: 30,
+    EffectType.ResistPoisoned: 31,
+    EffectType.ChanceBleeding: 32,
+    EffectType.ResistBleeding: 33,
+    EffectType.ChanceFaltering: 34,
+    EffectType.ResistFaltering: 35,
+    EffectType.ChanceTaunted: 36,
+    EffectType.ResistTaunted: 37,
+    EffectType.ChanceConvinced: 38,
+    EffectType.ResistConvinced: 39,
 
-    EffectType.RestoreHealth: 39,
-    EffectType.RestorePercentHealth: 40,
-    EffectType.RestoreMana: 41,
-    EffectType.RestorePercentMana: 42,
+    EffectType.RestoreHealth: 40,
+    EffectType.RestorePercentHealth: 41,
+    EffectType.RestoreMana: 42,
+    EffectType.RestorePercentMana: 43,
 
-    EffectType.AdjustedManaCosts: 43,
-    EffectType.HealingAbilityBuff: 44,
-    EffectType.AdditionalXP: 45,
-    EffectType.PotionMod: 46,
+    EffectType.AdjustedManaCosts: 44,
+    EffectType.HealingAbilityBuff: 45,
+    EffectType.AdditionalXP: 46,
+    EffectType.PotionMod: 47,
 
-    EffectType.ResurrectOnce: 47
+    EffectType.ResurrectOnce: 48
 })
 
 # -----------------------------------------------------------------------------
@@ -217,6 +221,9 @@ class Effect():
 
     def __str__(self):
         display_string = ""
+
+        if self.effect_type == EffectType.CleanseStatusEffects:
+            display_string += f"Cleanses Status Effects"
 
         if self.effect_type == EffectType.ConMod:
             if self.effect_value > 0:
@@ -462,12 +469,12 @@ class ItemEffects():
         return sorted(effects, key=lambda effect: EFFECT_PRIORITY[effect.effect_type])
 
     def get_socket_str(self, condition_type: ConditionType):
-        def filter_by_condition(effect_lst: List[Effect], ct: ConditionType):
-            return [effect for effect in effect_lst if ct in effect.conditions]
+        def filter_by_condition(effect_lst: List[Effect], ct: ConditionType | None):
+            return [effect for effect in effect_lst if (ct is None or ct in effect.conditions)]
         
         return str(
             ItemEffects(
-                filter_by_condition(self.permanent, condition_type),
+                filter_by_condition(self.permanent, None),
                 filter_by_condition(self.on_turn_start, condition_type),
                 filter_by_condition(self.on_turn_end, condition_type),
                 filter_by_condition(self.on_damaged, condition_type),
