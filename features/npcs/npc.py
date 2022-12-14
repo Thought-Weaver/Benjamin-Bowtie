@@ -116,10 +116,10 @@ class NPC():
         self_expertise = self.get_expertise()
 
         fitness_score: float = 0
-        # The Rogue should heavily weight actions that increase dexterity
-        fitness_score += (self.get_combined_attributes().dexterity // 10) ** (1 + (1 - org_self.get_expertise().hp / org_self.get_expertise().max_hp) + self_expertise.hp / self_expertise.max_hp - org_self.get_expertise().hp / org_self.get_expertise().max_hp) - (self.get_combined_attributes().dexterity // 10)
-        # The Rogue should focus on buffing luck for better crit chance
-        fitness_score += self.get_combined_attributes().luck / 10
+        # The Rogue should heavily weight actions that heal itself at low health, but care less when at high health
+        fitness_score += 2.5 ** (1 + (1 - org_self.get_expertise().hp / org_self.get_expertise().max_hp) + self_expertise.hp / self_expertise.max_hp - org_self.get_expertise().hp / org_self.get_expertise().max_hp) - 2.5
+        # The Rogue should focus on buffing luck for better crit chance and Dex for damage and dodge chance
+        fitness_score += (self.get_combined_attributes().luck + self.get_combined_attributes().dexterity) / 10
         # The Rogue should strongly consider the damage it dealt to enemies
         fitness_score += 3 * sum(
             (1 - 
@@ -157,8 +157,15 @@ class NPC():
         # The Specialist should simply look at the average count of status effects
         fitness_score += sum([len(ally.get_dueling().status_effects) for ally in allies]) / len(allies)
         fitness_score += sum([len(enemy.get_dueling().status_effects) for enemy in enemies]) / len(enemies)
+        # The Specialist should slightly consider the damage it dealt to enemies
+        fitness_score += sum(
+            (1 - 
+                (enemy.get_expertise().hp + enemy.get_dueling().armor) / 
+                (enemy.get_expertise().max_hp + enemy.get_equipment().get_total_reduced_armor(enemy.get_expertise().level)))
+            for enemy in enemies
+        ) / len(enemies)
         # The Specialist should heavily weight actions that restore mana when low
-        fitness_score += 2.5 ** (1 + self_expertise.mana / self_expertise.max_mana) - 2.5
+        fitness_score += ((1 + (1 - org_self.get_expertise().mana / org_self.get_expertise().max_mana) + self_expertise.mana / self_expertise.max_mana - org_self.get_expertise().mana / org_self.get_expertise().max_mana) ** 10 - 1) / (18 ** 2 - 1)
 
         return fitness_score
 
