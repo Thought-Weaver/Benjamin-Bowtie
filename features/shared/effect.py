@@ -219,7 +219,7 @@ class Effect():
                 )
         return conditions_met
 
-    def __str__(self):
+    def __str__(self, filter_condition: ConditionType | None=None):
         display_string = ""
 
         if self.effect_type == EffectType.CleanseStatusEffects:
@@ -383,27 +383,27 @@ class Effect():
         if self.effect_time > 0:
             display_string += f" for {self.effect_time} turns"
 
-        if len(self.conditions) > 0:
-            display_string += " when "
-        
         # TODO: This does assume all conditions are conjunctive. I should devise a
         # neat way to do disjunctive conditions in the future.
         conditions_strs = []
         for i, condition in enumerate(self.conditions):
-            if condition == ConditionType.IsAbovePercentHealth:
-                conditions_strs.append(f"above {round(self.condition_values[i] * 100, 2)}% health")
-            if condition == ConditionType.IsBelowPercentHealth:
-                conditions_strs.append(f"below {round(self.condition_values[i] * 100, 2)}% health")
-            if condition == ConditionType.IsFullHealth:
-                conditions_strs.append("at full health")
-            if condition == ConditionType.IsItemArmor:
-                conditions_strs.append("socketed in armor")
-            if condition == ConditionType.IsItemInHand:
-                conditions_strs.append("socketed in a main-hand or off-hand item")
-            
-            if len(self.conditions) > 1 and i == len(self.conditions) - 1:
+            if condition != filter_condition:
+                if condition == ConditionType.IsAbovePercentHealth:
+                    conditions_strs.append(f"above {round(self.condition_values[i] * 100, 2)}% health")
+                if condition == ConditionType.IsBelowPercentHealth:
+                    conditions_strs.append(f"below {round(self.condition_values[i] * 100, 2)}% health")
+                if condition == ConditionType.IsFullHealth:
+                    conditions_strs.append("at full health")
+                if condition == ConditionType.IsItemArmor:
+                    conditions_strs.append("socketed in armor")
+                if condition == ConditionType.IsItemInHand:
+                    conditions_strs.append("socketed in a main-hand or off-hand item")
+                
+            if len(conditions_strs) > 1 and i == len(self.conditions) - 1:
                 conditions_strs[-1] = "and " + conditions_strs[-1]
-        display_string += ", ".join(conditions_strs)
+
+        if len(conditions_strs) > 0:
+            display_string += " when " + ", ".join(conditions_strs)
 
         return display_string
 
@@ -469,21 +469,33 @@ class ItemEffects():
         return sorted(effects, key=lambda effect: EFFECT_PRIORITY[effect.effect_type])
 
     def get_socket_str(self, condition_type: ConditionType):
-        def filter_by_condition(effect_lst: List[Effect], ct: ConditionType | None):
-            return [effect for effect in effect_lst if (ct is None or ct in effect.conditions)]
-        
-        return str(
-            ItemEffects(
-                filter_by_condition(self.permanent, None),
-                filter_by_condition(self.on_turn_start, condition_type),
-                filter_by_condition(self.on_turn_end, condition_type),
-                filter_by_condition(self.on_damaged, condition_type),
-                filter_by_condition(self.on_successful_ability_used, condition_type),
-                filter_by_condition(self.on_successful_attack, condition_type),
-                filter_by_condition(self.on_attacked, condition_type),
-                filter_by_condition(self.on_ability_used_against, condition_type),
-            )
-        )
+        def filter_by_condition(effect_lst: List[Effect], ct: ConditionType):
+            return [effect for effect in effect_lst if (ct in effect.conditions or len(effect.conditions) == 0)]
+
+        display_string = ""
+
+        permanent_effects_strs = [effect.__str__(condition_type) for effect in filter_by_condition(self.permanent, condition_type)]
+        display_string += "\n".join(permanent_effects_strs) + ("\n" if len(permanent_effects_strs) > 0 else "")
+
+        on_turn_start_strs = [effect.__str__(condition_type) + " at the start of your turn" for effect in filter_by_condition(self.on_turn_start, condition_type)]
+        display_string += "\n".join(on_turn_start_strs) + ("\n" if len(on_turn_start_strs) > 0 else "")
+
+        on_turn_end_strs = [effect.__str__(condition_type) + " at the end of your turn" for effect in filter_by_condition(self.on_turn_end, condition_type)]
+        display_string += "\n".join(on_turn_end_strs) + ("\n" if len(on_turn_end_strs) > 0 else "")
+
+        on_successful_ability_strs = [effect.__str__(condition_type) + " when you successfully use an ability" for effect in filter_by_condition(self.on_successful_ability_used, condition_type)]
+        display_string += "\n".join(on_successful_ability_strs) + ("\n" if len(on_successful_ability_strs) > 0 else "")
+
+        on_successful_attack_strs = [effect.__str__(condition_type) + " when you successfully attack" for effect in filter_by_condition(self.on_successful_attack, condition_type)]
+        display_string += "\n".join(on_successful_attack_strs) + ("\n" if len(on_successful_attack_strs) > 0 else "")
+
+        on_attacked_strs = [effect.__str__(condition_type) + " when you're attacked" for effect in filter_by_condition(self.on_attacked, condition_type)]
+        display_string += "\n".join(on_attacked_strs) + ("\n" if len(on_attacked_strs) > 0 else "")
+
+        on_ability_used_against_strs = [effect.__str__(condition_type) + " when an ability is used on you" for effect in filter_by_condition(self.on_ability_used_against, condition_type)]
+        display_string += "\n".join(on_ability_used_against_strs) + ("\n" if len(on_ability_used_against_strs) > 0 else "")
+
+        return display_string
 
     def __add__(self, other: ItemEffects):
         return ItemEffects(
