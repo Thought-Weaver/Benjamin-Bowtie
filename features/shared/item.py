@@ -290,6 +290,7 @@ class ItemKey(StrEnum):
     MythrilPlateCuirass = "items/equipment/chest_armor/mythril_plate_cuirass"
     OrichalcumCuirass = "items/equipment/chest_armor/orichalcum_cuirass"
     OrichalcumPlateCuirass = "items/equipment/chest_armor/orichalcum_plate_cuirass"
+    RobeOfTheEyelessSeer = "items/equipment/chest_armor/robe_of_the_eyeless_seer"
     SilverCuirass = "items/equipment/chest_armor/silver_cuirass"
     SilverPlateCuirass = "items/equipment/chest_armor/silver_plate_cuirass"
     SpidersilkRobe = "items/equipment/chest_armor/spidersilk_robe"
@@ -338,11 +339,14 @@ class ItemKey(StrEnum):
     SilverPlateLeggings = "items/equipment/leggings/silver_plate_leggings"
 
     # Offhand
+    DeckOfFate = "items/equipment/offhand/deck_of_fate"
     WoodenBuckler = "items/equipment/offhand/wooden_buckler"
 
     # Rings
+    BandOfGreaterRestoration = "items/equipment/ring/band_of_greater_restoration"
     CopperRing = "items/equipment/ring/copper_ring"
     GoldRing = "items/equipment/ring/gold_ring"
+    MrBonesRing = "items/equipment/ring/mr_bones_ring"
     SilverRing = "items/equipment/ring/silver_ring"
 
     # Gardening
@@ -386,6 +390,7 @@ class ItemKey(StrEnum):
     IronDagger = "items/weapon/dagger/iron_dagger"
 
     # Greatswords
+    AbarrasGreatsword = "items/weapon/greatsword/abarras_greatsword"
     IronGreatsword = "items/weapon/greatsword/iron_greatsword"
 
     # Knuckles
@@ -397,9 +402,13 @@ class ItemKey(StrEnum):
     # Staves
     LithewoodStaff = "items/weapon/staff/lithewood_staff"
     WrathbarkStaff = "items/weapon/staff/wrathbark_staff"
-    
+    YennasStaff = "items/weapon/staff/yennas_staff"
+
     # Swords
     IronSword = "items/weapon/sword/iron_sword"
+
+    # Misc Weapons
+    CopperbroadsFryingPan = "items/weapon/misc/copperbroads_frying_pan"
 
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"

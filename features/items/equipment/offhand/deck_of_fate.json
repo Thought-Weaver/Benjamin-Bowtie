@@ -1,0 +1,23 @@
+{
+    "key": "items/equipment/offhand/deck_of_fate",
+    "icon": "\uD83C\uDCCF",
+    "name": "Deck of Fate",
+    "value": 250,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "Pick a card! Any card!",
+    "class_tags": ["Equipment", "Off_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "LckMod",
+                "effect_value": 5,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

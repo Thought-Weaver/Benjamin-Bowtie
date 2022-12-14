@@ -12,6 +12,7 @@ from features.house.house import House
 from features.house.recipe import LOADED_RECIPES, RecipeKey
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import ATidySumII, BoundToGetLuckyIII, CursedCoinsI, HookII, SeaSprayV
+from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -477,8 +478,11 @@ class Chef(NPC):
         super().__init__("Copperbroad", NPCRoles.Chef, NPCDuelingPersonas.Mage, {})
 
         # Inventory Setup
-        self._restock_items = []
-        self._restock_coins = 5000
+        dumplings = LOADED_ITEMS.get_new_item(ItemKey.Dumpling)
+        dumplings.add_amount(4)
+
+        self._restock_items = [dumplings]
+        self._restock_coins = 500
 
         self._inventory.add_coins(self._restock_coins)
         for item in self._restock_items:
@@ -500,8 +504,12 @@ class Chef(NPC):
         self._expertise.memory = 5
 
         # Equipment Setup
-        # TODO: Add items when they've been created
-        # self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, None)
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.CopperbroadsFryingPan))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.IronLeggings))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.IronGreaves))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -527,7 +535,10 @@ class Chef(NPC):
         if self._inventory is None:
             self._inventory = Inventory()
 
-            self._restock_items = []
+            dumplings = LOADED_ITEMS.get_new_item(ItemKey.Dumpling)
+            dumplings.add_amount(4)
+
+            self._restock_items = [dumplings]
             self._restock_coins = 5000
 
             self._inventory.add_coins(self._restock_coins)
@@ -537,6 +548,12 @@ class Chef(NPC):
         self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.CopperbroadsFryingPan))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.IronLeggings))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.IronGreaves))
 
         self._expertise: Expertise | None = state.get("_expertise")
         if self._expertise is None:

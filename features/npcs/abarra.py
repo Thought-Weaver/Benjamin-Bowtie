@@ -12,6 +12,7 @@ from features.house.house import House
 from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, CounterstrikeIII, EvadeIII, HeavySlamII, PiercingStrikeIII, PressTheAdvantageI, ScarArmorII, SecondWindIII, WhirlwindIII
+from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -480,7 +481,7 @@ class Blacksmith(NPC):
 
         # Inventory Setup
         self._restock_items = []
-        self._restock_coins = 5000
+        self._restock_coins = 150
 
         self._inventory.add_coins(self._restock_coins)
         for item in self._restock_items:
@@ -501,8 +502,12 @@ class Blacksmith(NPC):
         self._expertise.memory = 9
 
         # Equipment Setup
-        # TODO: Add items when they've been created
-        # self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, None)
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.AbarrasGreatsword))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.IronLeggings))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.IronGreaves))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -539,6 +544,12 @@ class Blacksmith(NPC):
         self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.AbarrasGreatsword))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.IronLeggings))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.IronGreaves))
 
         self._expertise: Expertise | None = state.get("_expertise")
         if self._expertise is None:

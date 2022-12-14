@@ -1,0 +1,44 @@
+{
+    "key": "items/weapon/staff/yennas_staff",
+    "icon": "\uD83E\uDE84",
+    "name": "Yenna's Staff",
+    "value": 3500,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "A powerful gift. Use it well.",
+    "class_tags": ["Equipment", "Weapon", "Staff", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 75,
+    "weapon_stats": {
+        "min_damage": 10,
+        "max_damage": 15
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromInt",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "IntMod",
+                "effect_value": 3,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ],
+        "on_successful_attack": [
+            {
+                "effect_type": "ManaSteal",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

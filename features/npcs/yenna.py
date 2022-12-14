@@ -831,7 +831,12 @@ class Yenna(NPC):
         super().__init__("Yenna", NPCRoles.FortuneTeller, NPCDuelingPersonas.Healer, {})
 
         # Inventory Setup
-        self._restock_items = []
+        health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
+        health_potions.add_amount(2)
+        sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
+        sapping_potions.add_amount(1)
+
+        self._restock_items = [health_potions, sapping_potions]
         self._restock_coins = 5000
 
         self._inventory.add_coins(self._restock_coins)
@@ -853,8 +858,13 @@ class Yenna(NPC):
         self._expertise.memory = 12
 
         # Equipment Setup
-        # TODO: Add items when they've been created
-        # self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, None)
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.MothsilkCowl))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.MothsilkGloves))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.BandOfGreaterRestoration))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.RobeOfTheEyelessSeer))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.YennasStaff))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.OffHand, LOADED_ITEMS.get_new_item(ItemKey.DeckOfFate))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.MothsilkBoots))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -1032,8 +1042,13 @@ class Yenna(NPC):
         if self._inventory is None:
             self._inventory = Inventory()
 
-            self._restock_items = []
-            self._restock_coins = 5000
+            health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
+            health_potions.add_amount(2)
+            sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
+            sapping_potions.add_amount(1)
+
+            self._restock_items = [health_potions, sapping_potions]
+            self._restock_coins = 1500
 
             self._inventory.add_coins(self._restock_coins)
             for item in self._restock_items:
@@ -1042,6 +1057,13 @@ class Yenna(NPC):
         self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.MothsilkCowl))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.MothsilkGloves))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.BandOfGreaterRestoration))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.RobeOfTheEyelessSeer))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.YennasStaff))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.OffHand, LOADED_ITEMS.get_new_item(ItemKey.DeckOfFate))
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.MothsilkBoots))
 
         self._expertise: Expertise | None = state.get("_expertise")
         if self._expertise is None:

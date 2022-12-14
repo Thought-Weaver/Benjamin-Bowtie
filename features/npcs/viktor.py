@@ -11,6 +11,7 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, ContractWealthForPowerIII, PreparePotionsII, SilkspeakingI
+from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey, Rarity
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -350,6 +351,18 @@ class RandomItemMerchant(NPC):
     def _setup_inventory(self):
         self.tick()
 
+        health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
+        health_potions.add_amount(2)
+        sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
+        sapping_potions.add_amount(1)
+        greater_dex_potion = LOADED_ITEMS.get_new_item(ItemKey.GreaterDexterityPotion)
+        luck_potion = LOADED_ITEMS.get_new_item(ItemKey.LuckPotion)
+
+        self._inventory.add_item(health_potions)
+        self._inventory.add_item(sapping_potions)
+        self._inventory.add_item(greater_dex_potion)
+        self._inventory.add_item(luck_potion)
+
     def get_current_wares(self):
         return self._current_wares
     
@@ -379,7 +392,7 @@ class RandomItemMerchant(NPC):
         self._expertise.update_stats(self.get_combined_attributes())
 
     def _setup_equipment(self):
-        pass
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.IronDagger))
 
     def _setup_abilities(self):
         # Dueling Setup

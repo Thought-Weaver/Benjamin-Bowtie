@@ -1,0 +1,35 @@
+{
+    "key": "items/equipment/chest_armor/robe_of_the_eyeless_seer",
+    "icon": "\uD83D\uDC58",
+    "name": "Robe of the Eyeless Seer",
+    "value": 5000,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "If found, return to the Fellowship of the Eyeless.",
+    "class_tags": ["Equipment", "Chest_Armor"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 80,
+    "altering_item_keys": ["", "", ""],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "AdjustedManaCosts",
+                "effect_value": -0.1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "CritDmgReduction",
+                "effect_value": 0.35,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    },
+    "armor_stats": {
+        "armor_amount": 75
+    }
+}

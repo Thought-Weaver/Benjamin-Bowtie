@@ -11,6 +11,8 @@ from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import ATidySumIII, BoundToGetLuckyIII, ContractBloodForBloodIII, ContractManaToBloodIII, ContractWealthForPowerIII, CursedCoinsIII, DeepPocketsIII, SecondWindIII, SilkspeakingI, UnseenRichesIII
 
 from typing import TYPE_CHECKING, Callable, List
+from features.shared.enums import ClassTag
+from features.shared.item import LOADED_ITEMS, ItemKey
 
 from features.stats import Stats
 if TYPE_CHECKING:
@@ -56,8 +58,7 @@ class MrBones(NPC):
         self._expertise.memory = 10
 
         # Equipment Setup
-        # TODO: Add items when they've been created
-        # self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, None)
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.MrBonesRing))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -193,6 +194,7 @@ class MrBones(NPC):
         self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
+            self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.MrBonesRing))
 
         self._expertise: Expertise | None = state.get("_expertise")
         if self._expertise is None:
