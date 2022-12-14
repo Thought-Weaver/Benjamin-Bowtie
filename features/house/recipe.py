@@ -4,12 +4,13 @@ import json
 
 from strenum import StrEnum
 from features.expertise import ExpertiseClass
-from features.inventory import Inventory
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
 from types import MappingProxyType
 
-from typing import Dict, List
+from typing import TYPE_CHECKING, Dict, List
+if TYPE_CHECKING:
+    from features.inventory import Inventory
 
 # -----------------------------------------------------------------------------
 # ENUMS

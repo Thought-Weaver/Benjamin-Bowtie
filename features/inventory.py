@@ -3,6 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord.embeds import Embed
+from features.house.recipe import LOADED_RECIPES
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
@@ -108,7 +109,7 @@ class Inventory():
     def get_inventory_slots(self):
         return self._inventory_slots
     
-    def filter_inventory_slots(self, tags: List[ClassTag], player_level: int | None=None, require_enchantable_equipment=False):
+    def filter_inventory_slots(self, tags: List[ClassTag], player_level: int | None=None, require_enchantable_equipment=False, require_craftable=False):
         item_indices: List[int] = []
         for i, item in enumerate(self._inventory_slots):
             item_class_tags: List[ClassTag] = item.get_class_tags()
@@ -117,6 +118,15 @@ class Inventory():
                     continue
                 if require_enchantable_equipment and ClassTag.Equipment.Equipment in item.get_class_tags() and len(item.get_altering_item_keys()) == 0:
                     continue
+                if require_craftable:
+                    found = False
+                    for recipe_key in LOADED_RECIPES.get_all_keys():
+                        recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
+                        if len(recipe.outputs.items()) == 1 and list(recipe.outputs.values())[0] == 1 and list(recipe.outputs.keys())[0] == item.get_key():
+                            found = True
+                            break
+                    if not found:
+                        continue
                 item_indices.append(i)
         return item_indices
 

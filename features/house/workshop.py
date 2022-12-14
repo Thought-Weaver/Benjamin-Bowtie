@@ -9,12 +9,11 @@ from features.shared.enums import ClassTag, HouseRoom
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
 from strenum import StrEnum
 
-from typing import TYPE_CHECKING, Dict, List
 from features.shared.nextbutton import NextButton
-
 from features.shared.prevbutton import PrevButton
 from features.stats import Stats
 
+from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.house.house import House, HouseView
@@ -580,7 +579,7 @@ class WorkshopView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Equipment.Equipment])
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Equipment.Equipment], require_craftable=True)
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]

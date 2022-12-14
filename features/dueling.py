@@ -2170,7 +2170,7 @@ class DuelView(discord.ui.View):
     def do_action_on_selected_targets(self, is_finished=False):
         # I'm using a boolean for that case at the moment rather than setting self._targets_remaining to 0, just to
         # make a clear distinction about this case in the code.
-        if self._targets_remaining == 0 or self._targets_remaining == -1 or is_finished:
+        if self._targets_remaining <= 0 or is_finished:
             self._page = 0
             self.clear_items()
             self.add_item(ContinueToNextActionButton())
@@ -2355,6 +2355,10 @@ class DuelView(discord.ui.View):
                     self._selected_targets = self._allies
                 return self.do_action_on_selected_targets()
 
+            if self._targets_remaining == -2:
+                self._selected_targets = self._turn_order
+                return self.do_action_on_selected_targets()
+
             self._page = 0
             self._selecting_targets = True
             return self.show_targets(target_own_group)
@@ -2379,6 +2383,10 @@ class DuelView(discord.ui.View):
                     self._selected_targets = self._enemies
                 elif (entity in self._enemies and not target_own_group) or (entity in self._allies and target_own_group):
                     self._selected_targets = self._allies
+                return self.do_action_on_selected_targets()
+
+            if self._targets_remaining == -2:
+                self._selected_targets = self._turn_order
                 return self.do_action_on_selected_targets()
 
             self._page = 0
@@ -2505,10 +2513,17 @@ class DuelView(discord.ui.View):
                 fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
 
                 update_optimal_fitness(fitness_score, Intent.Attack, None, -1, None, -1, [cur_npc])
-            elif self._targets_remaining == -1:
+            elif self._targets_remaining < 0:
                 dueling_copy: DuelView = self.create_copy()
-                enemy_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), enemies)))
-                dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(enemy_ids)
+
+                targets = []
+                if self._targets_remaining == -1:
+                    targets = self._enemies
+                elif self._targets_remaining == -2:
+                    targets = self._turn_order
+                
+                target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                 dueling_copy.attack_selected_targets()
 
                 copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
@@ -2539,13 +2554,17 @@ class DuelView(discord.ui.View):
 
                 self._targets_remaining = ability.get_num_targets()
 
-                if self._targets_remaining == -1:
+                if self._targets_remaining < 0:
                     dueling_copy: DuelView = self.create_copy()
 
                     dueling_copy._selected_ability = dueling_copy._turn_order[dueling_copy._turn_index].get_dueling().abilities[i]
                     dueling_copy._selected_ability_index = i
 
-                    targets = self._allies if cur_npc in self._enemies else self._enemies
+                    targets = []
+                    if self._targets_remaining == -1:
+                        targets = self._allies if cur_npc in self._enemies else self._enemies
+                    elif self._targets_remaining == -2:
+                        targets = self._turn_order
                     target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.use_ability_on_selected_targets()
@@ -2605,13 +2624,17 @@ class DuelView(discord.ui.View):
             
             self._targets_remaining = consumable_stats.get_num_targets()
 
-            if self._targets_remaining == -1:
+            if self._targets_remaining < 0:
                 dueling_copy: DuelView = self.create_copy()
 
                 dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
                 dueling_copy._selected_item_index = i
 
-                targets = self._allies if cur_npc in self._enemies else self._enemies
+                targets = []
+                if self._targets_remaining == -1:
+                    targets = self._allies if cur_npc in self._enemies else self._enemies
+                elif self._targets_remaining == -2:
+                    targets = self._turn_order
                 target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
                 dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                 dueling_copy.use_item_on_selected_targets()

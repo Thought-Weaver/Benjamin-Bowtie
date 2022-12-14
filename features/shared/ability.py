@@ -10,7 +10,7 @@ from features.expertise import ExpertiseClass
 from features.shared.constants import BLEED_PERCENT_HP, DEX_DODGE_SCALE, INT_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, POISONED_PERCENT_HP, STR_DMG_SCALE
 from features.shared.effect import EffectType, ItemEffectCategory
 from features.shared.enums import ClassTag
-from features.shared.item import WeaponStats
+from features.shared.item import ItemKey, WeaponStats
 from features.shared.statuseffect import *
 
 from typing import List, TYPE_CHECKING
@@ -354,6 +354,8 @@ class Ability():
 
     def __str__(self):
         target_str: str = ""
+        if self._num_targets == -2:
+            target_str = "Targets All"
         if self._num_targets == -1:
             target_str = "Targets All"
         if self._num_targets == 0:
@@ -561,6 +563,117 @@ class SeaSprayV(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(5, 8))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# CRABNADO
+# -----------------------------------------------------------------------------
+
+class CrabnadoI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDD80",
+            name="Crabnado I",
+            class_key=ExpertiseClass.Fisher,
+            description="If you have a Crab in your off-hand, deal 1-8 damage to EVERYONE (including yourself)",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=-2,
+            level_requirement=3,
+            target_own_group=False,
+            purchase_cost=75
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
+        if off_hand_item is None or off_hand_item.get_key() == ItemKey.Crab:
+            return "You don't have a crab equipped!"
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(1, 8))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CrabnadoII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDD80",
+            name="Crabnado II",
+            class_key=ExpertiseClass.Fisher,
+            description="If you have a Crab in your off-hand, deal 2-10 damage to EVERYONE (including yourself)",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=-2,
+            level_requirement=6,
+            target_own_group=False,
+            purchase_cost=150
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
+        if off_hand_item is None or off_hand_item.get_key() == ItemKey.Crab:
+            return "You don't have a crab equipped!"
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 10))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CrabnadoIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDD80",
+            name="Crabnado III",
+            class_key=ExpertiseClass.Fisher,
+            description="If you have a Crab in your off-hand, deal 3-12 damage to EVERYONE (including yourself)",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=-2,
+            level_requirement=9,
+            target_own_group=False,
+            purchase_cost=300
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
+        if off_hand_item is None or off_hand_item.get_key() == ItemKey.Crab:
+            return "You don't have a crab equipped!"
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(3, 12))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
