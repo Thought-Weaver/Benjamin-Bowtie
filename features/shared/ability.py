@@ -3237,7 +3237,7 @@ class PiercingStrikeI(Ability):
             if not results[i].dodged and random() < 0.2:
                 targets[i].get_dueling().status_effects.append(bleed)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-            results[i].target_str += f" and is now {bleed.name}"
+                results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -3295,7 +3295,7 @@ class PiercingStrikeII(Ability):
             if not results[i].dodged and random() < 0.25:
                 targets[i].get_dueling().status_effects.append(bleed)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-            results[i].target_str += f" and is now {bleed.name}"
+                results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -3353,7 +3353,7 @@ class PiercingStrikeIII(Ability):
             if not results[i].dodged and random() < 0.3:
                 targets[i].get_dueling().status_effects.append(bleed)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-            results[i].target_str += f" and is now {bleed.name}"
+                results[i].target_str += f" and is now {bleed.name}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -5110,7 +5110,7 @@ class ToxicCloudI(Ability):
             if not results[i].dodged and random() < 0.3:
                 targets[i].get_dueling().status_effects.append(poisoned)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-            results[i].target_str += f" and is now {poisoned.name}"
+                results[i].target_str += f" and is now {poisoned.name}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
@@ -5156,7 +5156,7 @@ class ToxicCloudII(Ability):
             if not results[i].dodged and random() < 0.5:
                 targets[i].get_dueling().status_effects.append(poisoned)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-            results[i].target_str += f" and is now {poisoned.name}"
+                results[i].target_str += f" and is now {poisoned.name}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
@@ -5202,7 +5202,7 @@ class ToxicCloudIII(Ability):
             if not results[i].dodged and random() < 0.7:
                 targets[i].get_dueling().status_effects.append(poisoned)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-            results[i].target_str += f" and is now {poisoned.name}"
+                results[i].target_str += f" and is now {poisoned.name}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
