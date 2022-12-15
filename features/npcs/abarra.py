@@ -478,6 +478,8 @@ class BlacksmithView(discord.ui.View):
 class Blacksmith(NPC):
     def __init__(self):
         super().__init__("Abarra", NPCRoles.Blacksmith, NPCDuelingPersonas.Bruiser, {})
+
+        self._setup_npc_params()
             
     def _setup_inventory(self):
         items_to_add = []

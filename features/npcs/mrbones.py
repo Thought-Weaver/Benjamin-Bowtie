@@ -36,6 +36,8 @@ class MrBones(NPC):
     def __init__(self):
         super().__init__("Mr. Bones", NPCRoles.KnucklebonesPatron, NPCDuelingPersonas.Mage, {})
 
+        self._setup_npc_params()
+
     def _try_move(self, player_board: List[List[int]], npc_board: List[List[int]], pos: int, current_roll: int, compute_points_in_col: Callable[[List[List[int]], int], int], actual_move: bool):
         cur_player_board: List[List[int]] = deepcopy(player_board) if not actual_move else player_board
         cur_npc_board: List[List[int]] = deepcopy(npc_board) if not actual_move else npc_board

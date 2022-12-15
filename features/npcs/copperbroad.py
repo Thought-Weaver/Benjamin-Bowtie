@@ -477,6 +477,8 @@ class Chef(NPC):
     def __init__(self):
         super().__init__("Copperbroad", NPCRoles.Chef, NPCDuelingPersonas.Mage, {})
 
+        self._setup_npc_params()
+
     def _setup_inventory(self):
         dumplings = LOADED_ITEMS.get_new_item(ItemKey.Dumpling)
         dumplings.add_amount(4)
