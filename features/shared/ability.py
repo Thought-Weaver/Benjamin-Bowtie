@@ -4308,7 +4308,7 @@ class UnseenRichesI(Ability):
         if tarnished_value != 0:
             cursed_coins_damage += int(tarnished_value * adjusted_coins)
 
-        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {adjusted_coins} coins."
 
         if cursed_coins_damage != 0:
             for target in targets:
@@ -4361,7 +4361,7 @@ class UnseenRichesII(Ability):
         if tarnished_value != 0:
             cursed_coins_damage += int(tarnished_value * adjusted_coins)
 
-        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {adjusted_coins} coins."
 
         if cursed_coins_damage != 0:
             for target in targets:
@@ -4414,7 +4414,7 @@ class UnseenRichesIII(Ability):
         if tarnished_value != 0:
             cursed_coins_damage += int(tarnished_value * adjusted_coins)
 
-        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {adjusted_coins} coins."
 
         if cursed_coins_damage != 0:
             for target in targets:
