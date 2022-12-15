@@ -3892,10 +3892,10 @@ class BoundToGetLuckyI(Ability):
             icon="\uD83C\uDF40",
             name="Bound to Get Lucky I",
             class_key=ExpertiseClass.Merchant,
-            description="Gain +10 Luck for the next 2 turns.",
+            description="Gain +10 Luck for the next 3 turns.",
             flavor_text="",
             mana_cost=15,
-            cooldown=3,
+            cooldown=4,
             num_targets=0,
             level_requirement=4,
             target_own_group=True,
@@ -3904,7 +3904,7 @@ class BoundToGetLuckyI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
-            turns_remaining=2,
+            turns_remaining=3,
             value=10,
             source_str=self.get_icon_and_name()
         )
@@ -3930,10 +3930,10 @@ class BoundToGetLuckyII(Ability):
             icon="\uD83C\uDF40",
             name="Bound to Get Lucky II",
             class_key=ExpertiseClass.Merchant,
-            description="Gain +30 Luck for the next 2 turns.",
+            description="Gain +30 Luck for the next 3 turns.",
             flavor_text="",
             mana_cost=15,
-            cooldown=3,
+            cooldown=4,
             num_targets=0,
             level_requirement=6,
             target_own_group=True,
@@ -3942,7 +3942,7 @@ class BoundToGetLuckyII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
-            turns_remaining=2,
+            turns_remaining=3,
             value=30,
             source_str=self.get_icon_and_name()
         )
@@ -3968,10 +3968,10 @@ class BoundToGetLuckyIII(Ability):
             icon="\uD83C\uDF40",
             name="Bound to Get Lucky III",
             class_key=ExpertiseClass.Merchant,
-            description="Gain +50 Luck for the next 2 turns.",
+            description="Gain +50 Luck for the next 3 turns.",
             flavor_text="",
             mana_cost=15,
-            cooldown=3,
+            cooldown=4,
             num_targets=0,
             level_requirement=8,
             target_own_group=True,
@@ -3980,7 +3980,7 @@ class BoundToGetLuckyIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
-            turns_remaining=2,
+            turns_remaining=3,
             value=50,
             source_str=self.get_icon_and_name()
         )
@@ -4563,7 +4563,7 @@ class ContractBloodForBloodI(Ability):
             icon="\uD83E\uDE78",
             name="Contract: Blood for Blood I",
             class_key=ExpertiseClass.Merchant,
-            description="Create a binding contract that exchanges 15% of your current health and deals 0.5 times that damage against up to 3 targets.",
+            description="Create a binding contract that exchanges 15% of your current health and deals 50% of that damage against up to 3 targets.",
             flavor_text="",
             mana_cost=75,
             cooldown=5,
@@ -4598,7 +4598,7 @@ class ContractBloodForBloodII(Ability):
             icon="\uD83E\uDE78",
             name="Contract: Blood for Blood II",
             class_key=ExpertiseClass.Merchant,
-            description="Create a binding contract that exchanges 10% of your current health and deals 1 times that damage against up to 3 targets.",
+            description="Create a binding contract that exchanges 10% of your current health and deals 100% of that damage against up to 3 targets.",
             flavor_text="",
             mana_cost=75,
             cooldown=5,
@@ -4633,7 +4633,7 @@ class ContractBloodForBloodIII(Ability):
             icon="\uD83E\uDE78",
             name="Contract: Blood for Blood III",
             class_key=ExpertiseClass.Merchant,
-            description="Create a binding contract that exchanges 5% of your current health and deals 3 times that damage against up to 3 targets.",
+            description="Create a binding contract that exchanges 5% of your current health and deals 300% of that damage against up to 3 targets.",
             flavor_text="",
             mana_cost=75,
             cooldown=5,
@@ -5444,6 +5444,47 @@ class EmpowermentI(Ability):
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
 
+
+class EmpowermentII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2728",
+            name="Empowerment II",
+            class_key=ExpertiseClass.Alchemist,
+            description="Choose an ally. They regain Mana equal to double their Intelligence.",
+            flavor_text="",
+            mana_cost=25,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=13,
+            target_own_group=True,
+            purchase_cost=2800
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+
+        results: List[str] = []
+        for i, target in enumerate(targets):
+            mana_to_restore: int = 2 * target.get_expertise().intelligence
+            target.get_expertise().restore_mana(mana_to_restore)
+            results.append("{" + f"{i + 1}" + "}" + f" regained {mana_to_restore} mana")
+        result_str += "\n".join(results)
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # FESTERING VAPOR
 # -----------------------------------------------------------------------------
@@ -5606,7 +5647,7 @@ class RegenerationI(Ability):
             icon="\u267B\uFE0F",
             name="Regeneration I",
             class_key=ExpertiseClass.Alchemist,
-            description="Choose up to 3 allies. For the next 2 turns, they regain 5% of their max health at the start of each turn.",
+            description="Choose up to 3 allies. For the next 2 turns, they regain 15% of their max health at the start of each turn.",
             flavor_text="",
             mana_cost=75,
             cooldown=3,
@@ -5644,7 +5685,7 @@ class RegenerationII(Ability):
             icon="\u267B\uFE0F",
             name="Regeneration II",
             class_key=ExpertiseClass.Alchemist,
-            description="Choose up to 3 allies. For the next 2 turns, they regain 8% of their max health at the start of each turn.",
+            description="Choose up to 3 allies. For the next 2 turns, they regain 20% of their max health at the start of each turn.",
             flavor_text="",
             mana_cost=75,
             cooldown=3,
@@ -5682,7 +5723,7 @@ class RegenerationIII(Ability):
             icon="\u267B\uFE0F",
             name="Regeneration III",
             class_key=ExpertiseClass.Alchemist,
-            description="Choose up to 3 allies. For the next 2 turns, they regain 10% of their max health at the start of each turn.",
+            description="Choose up to 3 allies. For the next 2 turns, they regain 25% of their max health at the start of each turn.",
             flavor_text="",
             mana_cost=75,
             cooldown=3,
