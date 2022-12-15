@@ -34,7 +34,7 @@
         "on_successful_attack": [
             {
                 "effect_type": "ManaSteal",
-                "effect_value": 0.05,
+                "effect_value": 0.1,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
