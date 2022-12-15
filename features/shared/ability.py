@@ -4167,7 +4167,7 @@ class CursedCoinsI(Ability):
             icon="\uD83E\uDE99",
             name="Cursed Coins I",
             class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain coins, deal 0.25 times that much damage to all enemies.",
+            description="For the next 3 turns, whenever you gain coins, deal 25% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
@@ -4205,7 +4205,7 @@ class CursedCoinsII(Ability):
             icon="\uD83E\uDE99",
             name="Cursed Coins II",
             class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain coins, deal 0.5 times that much damage to all enemies.",
+            description="For the next 3 turns, whenever you gain coins, deal 50% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
@@ -4243,7 +4243,7 @@ class CursedCoinsIII(Ability):
             icon="\uD83E\uDE99",
             name="Cursed Coins III",
             class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain coins, deal 0.75 times that much damage to all enemies.",
+            description="For the next 3 turns, whenever you gain coins, deal 75% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
@@ -4284,21 +4284,42 @@ class UnseenRichesI(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches I",
             class_key=ExpertiseClass.Merchant,
-            description="Gain coins equal to 0.25 times your current Luck.",
+            description="Gain coins equal to 25% of your total Luck.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
-            num_targets=0,
+            num_targets=-1,
             level_requirement=11,
-            target_own_group=True,
+            target_own_group=False,
             purchase_cost=800
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
-        caster.get_inventory().add_coins(int(0.25 * coins_to_add))
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+        adjusted_coins: int = int(0.25 * coins_to_add)
+        caster.get_inventory().add_coins(adjusted_coins)
+        
+        tarnished_value = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.Tarnished:
+                tarnished_value = se.value
+        
+        cursed_coins_damage = 0
+        if tarnished_value != 0:
+            cursed_coins_damage += int(tarnished_value * adjusted_coins)
 
+        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+
+        if cursed_coins_damage != 0:
+            for target in targets:
+                target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_reduct=0, ignore_armor=True)
+                target.get_stats().dueling.damage_dealt += cursed_coins_damage
+            result_str += "{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+        
         caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
@@ -4316,20 +4337,41 @@ class UnseenRichesII(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches II",
             class_key=ExpertiseClass.Merchant,
-            description="Gain coins equal to 0.5 times your current Luck.",
+            description="Gain coins equal to 50% of your total Luck.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
-            num_targets=0,
+            num_targets=-1,
             level_requirement=13,
-            target_own_group=True,
+            target_own_group=False,
             purchase_cost=1600
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
-        caster.get_inventory().add_coins(int(0.5 * coins_to_add))
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+        adjusted_coins: int = int(0.5 * coins_to_add)
+        caster.get_inventory().add_coins(adjusted_coins)
+
+        tarnished_value = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.Tarnished:
+                tarnished_value = se.value
+        
+        cursed_coins_damage = 0
+        if tarnished_value != 0:
+            cursed_coins_damage += int(tarnished_value * adjusted_coins)
+
+        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+
+        if cursed_coins_damage != 0:
+            for target in targets:
+                target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_reduct=0, ignore_armor=True)
+                target.get_stats().dueling.damage_dealt += cursed_coins_damage
+            result_str += "{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
 
         caster.get_stats().dueling.merchant_abilities_used += 1
 
@@ -4348,20 +4390,41 @@ class UnseenRichesIII(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches III",
             class_key=ExpertiseClass.Merchant,
-            description="Gain coins equal to 0.75 times your current Luck.",
+            description="Gain coins equal to 75% of your total Luck.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
-            num_targets=0,
+            num_targets=-1,
             level_requirement=15,
-            target_own_group=True,
+            target_own_group=False,
             purchase_cost=3200
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
-        caster.get_inventory().add_coins(int(0.75 * coins_to_add))
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+        adjusted_coins: int = int(0.75 * coins_to_add)
+        caster.get_inventory().add_coins(adjusted_coins)
+        
+        tarnished_value = 0
+        for se in caster.get_dueling().status_effects:
+            if se.key == StatusEffectKey.Tarnished:
+                tarnished_value = se.value
+        
+        cursed_coins_damage = 0
+        if tarnished_value != 0:
+            cursed_coins_damage += int(tarnished_value * adjusted_coins)
+
+        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {coins_to_add} coins."
+
+        if cursed_coins_damage != 0:
+            for target in targets:
+                target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_reduct=0, ignore_armor=True)
+                target.get_stats().dueling.damage_dealt += cursed_coins_damage
+            result_str += "{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
 
         caster.get_stats().dueling.merchant_abilities_used += 1
 
@@ -4383,10 +4446,10 @@ class ContractManaToBloodI(Ability):
             icon="\u2728",
             name="Contract: Mana to Blood I",
             class_key=ExpertiseClass.Merchant,
-            description="All of your abilities that use Mana instead take 70% of their cost in HP next turn.",
+            description="All of your abilities that use Mana instead take 90% of their cost in HP for the next 3 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=1,
+            cooldown=4,
             num_targets=0,
             level_requirement=14,
             target_own_group=True,
@@ -4395,7 +4458,7 @@ class ContractManaToBloodI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         mana_to_hp = ManaToHP(
-            turns_remaining=1,
+            turns_remaining=3,
             value=0.7,
             source_str=self.get_icon_and_name()
         )
@@ -4421,10 +4484,10 @@ class ContractManaToBloodII(Ability):
             icon="\u2728",
             name="Contract: Mana to Blood II",
             class_key=ExpertiseClass.Merchant,
-            description="All of your abilities that use Mana instead take 50% of their cost in HP next turn.",
+            description="All of your abilities that use Mana instead take 70% of their cost in HP for the next 3 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=1,
+            cooldown=4,
             num_targets=0,
             level_requirement=16,
             target_own_group=True,
@@ -4433,7 +4496,7 @@ class ContractManaToBloodII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         mana_to_hp = ManaToHP(
-            turns_remaining=1,
+            turns_remaining=3,
             value=0.5,
             source_str=self.get_icon_and_name()
         )
@@ -4459,7 +4522,7 @@ class ContractManaToBloodIII(Ability):
             icon="\u2728",
             name="Contract: Mana to Blood III",
             class_key=ExpertiseClass.Merchant,
-            description="All of your abilities that use Mana instead take 30% of their cost in HP next turn.",
+            description="All of your abilities that use Mana instead take 50% of their cost in HP for the next 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
@@ -4471,7 +4534,7 @@ class ContractManaToBloodIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         mana_to_hp = ManaToHP(
-            turns_remaining=1,
+            turns_remaining=3,
             value=0.3,
             source_str=self.get_icon_and_name()
         )
@@ -5065,6 +5128,10 @@ class CleanseI(Ability):
             results.append("{" + f"{i + 1}" + "}" + f" has had their status effects removed")
         result_str += "\n".join(results)
 
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
         return result_str
@@ -5362,6 +5429,10 @@ class EmpowermentI(Ability):
             target.get_expertise().restore_mana(mana_to_restore)
             results.append("{" + f"{i + 1}" + "}" + f" regained {mana_to_restore} mana")
         result_str += "\n".join(results)
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
