@@ -623,9 +623,17 @@ class EquipAbilitiesView(discord.ui.View):
         
         self.add_item(BackButton(min(4, len(page_slots))))
 
-        just_equipped_str = f"\n\n{ability_just_unequipped.get_icon_and_name()} unequipped!" if ability_just_unequipped is not None else ""
+        ability_strs = []
+        for i in range(self._NUM_PER_PAGE):
+            if i <= len(page_slots) - 1:
+                ability_strs.append(f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{page_slots[i]}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆")
 
-        return Embed(title="Unequip an Ability", description="Choose an ability to unequip." + just_equipped_str)
+        just_unequipped_str = f"\n\n{ability_just_unequipped.get_icon_and_name()} unequipped!" if ability_just_unequipped is not None else ""
+        formatted_additional_info_str = f"\n\n{self._additional_info_str}" if self._additional_info_str != "" else ""
+
+        description = "\n".join(ability_strs) + just_unequipped_str + formatted_additional_info_str
+
+        return Embed(title="Unequip an Ability", description=description)
 
     def next_page(self):
         self._page += 1
