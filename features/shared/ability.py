@@ -3667,7 +3667,7 @@ class ContractWealthForPowerI(Ability):
             icon="\uD83D\uDCDC",
             name="Contract: Wealth for Power I",
             class_key=ExpertiseClass.Merchant,
-            description="Summon a binding contract, exchanging 15 coins for +1 Intelligence, +1 Strength, and +1 Dexterity until the end of the duel. If you can't pay, you instead receive -1 to those attributes.",
+            description="Summon a binding contract, exchanging 50 coins for +1 Intelligence, +1 Strength, and +1 Dexterity until the end of the duel. If you can't pay, you instead receive -1 to those attributes.",
             flavor_text="",
             mana_cost=10,
             cooldown=-1,
@@ -3680,7 +3680,7 @@ class ContractWealthForPowerI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
 
-        if caster.get_inventory().get_coins() < 15:
+        if caster.get_inventory().get_coins() < 50:
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-1,
@@ -3702,7 +3702,7 @@ class ContractWealthForPowerI(Ability):
             results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
             result_str += "\n".join(list(map(lambda x: x.target_str, results)))
         else:
-            caster.get_inventory().remove_coins(15)
+            caster.get_inventory().remove_coins(50)
 
             int_buff = IntBuff(
                 turns_remaining=-1,
@@ -3741,7 +3741,7 @@ class ContractWealthForPowerII(Ability):
             icon="\uD83D\uDCDC",
             name="Contract: Wealth for Power II",
             class_key=ExpertiseClass.Merchant,
-            description="Summon a binding contract, exchanging 15 coins for +3 Intelligence, +3 Strength, and +3 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
+            description="Summon a binding contract, exchanging 50 coins for +3 Intelligence, +3 Strength, and +3 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
             flavor_text="",
             mana_cost=10,
             cooldown=-1,
@@ -3754,7 +3754,7 @@ class ContractWealthForPowerII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
 
-        if caster.get_inventory().get_coins() < 15:
+        if caster.get_inventory().get_coins() < 50:
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-3,
@@ -3776,7 +3776,7 @@ class ContractWealthForPowerII(Ability):
             results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
             result_str += "\n".join(list(map(lambda x: x.target_str, results)))
         else:
-            caster.get_inventory().remove_coins(15)
+            caster.get_inventory().remove_coins(50)
 
             int_buff = IntBuff(
                 turns_remaining=-1,
@@ -3815,7 +3815,7 @@ class ContractWealthForPowerIII(Ability):
             icon="\uD83D\uDCDC",
             name="Contract: Wealth for Power III",
             class_key=ExpertiseClass.Merchant,
-            description="Summon a binding contract, exchanging 15 coins for +5 Intelligence, +5 Strength, and +5 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
+            description="Summon a binding contract, exchanging 50 coins for +5 Intelligence, +5 Strength, and +5 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
             flavor_text="",
             mana_cost=10,
             cooldown=-1,
@@ -3828,7 +3828,7 @@ class ContractWealthForPowerIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
 
-        if caster.get_inventory().get_coins() < 15:
+        if caster.get_inventory().get_coins() < 50:
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-5,
@@ -3850,7 +3850,7 @@ class ContractWealthForPowerIII(Ability):
             results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
             result_str += "\n".join(list(map(lambda x: x.target_str, results)))
         else:
-            caster.get_inventory().remove_coins(15)
+            caster.get_inventory().remove_coins(50)
 
             int_buff = IntBuff(
                 turns_remaining=-1,
