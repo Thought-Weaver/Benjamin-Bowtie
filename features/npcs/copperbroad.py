@@ -477,18 +477,17 @@ class Chef(NPC):
     def __init__(self):
         super().__init__("Copperbroad", NPCRoles.Chef, NPCDuelingPersonas.Mage, {})
 
-        # Inventory Setup
+    def _setup_inventory(self):
         dumplings = LOADED_ITEMS.get_new_item(ItemKey.Dumpling)
         dumplings.add_amount(4)
 
-        self._restock_items = [dumplings]
-        self._restock_coins = 500
+        items_to_add = [dumplings]
 
-        self._inventory.add_coins(self._restock_coins)
-        for item in self._restock_items:
+        self._inventory.add_coins(500)
+        for item in items_to_add:
             self._inventory.add_item(item)
-        
-        # Expertise Setup
+
+    def _setup_xp(self):
         self._expertise.add_xp_to_class(3500, ExpertiseClass.Fisher, self._equipment) # Level 10
         self._expertise.add_xp_to_class(1750, ExpertiseClass.Merchant, self._equipment) # Level 10
         self._expertise.add_xp_to_class(750, ExpertiseClass.Guardian, self._equipment) # Level 5
@@ -503,7 +502,7 @@ class Chef(NPC):
         self._expertise.luck = 5
         self._expertise.memory = 5
 
-        # Equipment Setup
+    def _setup_equipment(self):
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
@@ -513,18 +512,22 @@ class Chef(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-        # Dueling Setup
+    def _setup_abilities(self):
         self._dueling.abilities = [
             SeaSprayV(), HookII(), BoundToGetLuckyIII(),
             ATidySumII(), CursedCoinsI()
         ]
 
+    def _setup_npc_params(self):
+        self._setup_inventory()
+        self._setup_equipment()
+        self._setup_xp()
+        self._setup_abilities()
+
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        # TODO: Make each of these setup portions a private function in the class so I don't have
-        # to duplicate everything between init and setstate.
         self._id = state.get("_id", str(uuid4()))
         self._name = "Copperbroad"
         self._role = NPCRoles.Chef
@@ -534,55 +537,22 @@ class Chef(NPC):
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
             self._inventory = Inventory()
-
-            dumplings = LOADED_ITEMS.get_new_item(ItemKey.Dumpling)
-            dumplings.add_amount(4)
-
-            self._restock_items = [dumplings]
-            self._restock_coins = 5000
-
-            self._inventory.add_coins(self._restock_coins)
-            for item in self._restock_items:
-                self._inventory.add_item(item)
+            self._setup_inventory()
 
         self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.CopperbroadsFryingPan))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.IronLeggings))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.IronGreaves))
+            self._setup_equipment()
 
         self._expertise: Expertise | None = state.get("_expertise")
         if self._expertise is None:
             self._expertise = Expertise()
-
-            self._expertise.add_xp_to_class(3500, ExpertiseClass.Fisher, self._equipment) # Level 10
-            self._expertise.add_xp_to_class(1750, ExpertiseClass.Merchant, self._equipment) # Level 10
-            self._expertise.add_xp_to_class(750, ExpertiseClass.Guardian, self._equipment) # Level 5
-            self._expertise.add_xp_to_class(600, ExpertiseClass.Alchemist, self._equipment) # Level 5
-
-            self._expertise.points_to_spend = 0
-            
-            self._expertise.constitution = 10
-            self._expertise.intelligence = 5
-            self._expertise.dexterity = 0
-            self._expertise.strength = 5
-            self._expertise.luck = 5
-            self._expertise.memory = 5
-
-            self._expertise.update_stats(self.get_combined_attributes())
+            self._setup_xp()
 
         self._dueling: Dueling | None = state.get("_dueling")
         if self._dueling is None:
             self._dueling = Dueling()
-
-            self._dueling.abilities = [
-                SeaSprayV(), HookII(), BoundToGetLuckyIII(),
-                ATidySumII(), CursedCoinsI()
-            ]
+            self._setup_abilities()
 
         self._stats: Stats | None = state.get("_stats")
         if self._stats is None:

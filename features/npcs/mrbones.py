@@ -36,40 +36,6 @@ class MrBones(NPC):
     def __init__(self):
         super().__init__("Mr. Bones", NPCRoles.KnucklebonesPatron, NPCDuelingPersonas.Mage, {})
 
-        # Inventory Setup
-        self._base_items = []
-        self._base_coins = 100000
-
-        self._inventory.add_coins(self._base_coins)
-        for item in self._base_items:
-            self._inventory.add_item(item)
-        
-        # Expertise Setup
-        self._expertise.add_xp_to_class(1748260, ExpertiseClass.Merchant, self._equipment) # Level 100
-        self._expertise.add_xp_to_class(20150, ExpertiseClass.Guardian, self._equipment) # Level 25
-        
-        self._expertise.points_to_spend = 0
-        
-        self._expertise.constitution = 35
-        self._expertise.intelligence = 25
-        self._expertise.dexterity = 10
-        self._expertise.strength = 5
-        self._expertise.luck = 40
-        self._expertise.memory = 10
-
-        # Equipment Setup
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.MrBonesRing))
-
-        self._expertise.update_stats(self.get_combined_attributes())
-
-        # Dueling Setup
-        self._dueling.abilities = [
-            BoundToGetLuckyIII(), SecondWindIII(), SilkspeakingI(),
-            ContractWealthForPowerIII(), ATidySumIII(), CursedCoinsIII(),
-            UnseenRichesIII(), ContractBloodForBloodIII(), DeepPocketsIII(),
-            ContractManaToBloodIII()
-        ]
-
     def _try_move(self, player_board: List[List[int]], npc_board: List[List[int]], pos: int, current_roll: int, compute_points_in_col: Callable[[List[List[int]], int], int], actual_move: bool):
         cur_player_board: List[List[int]] = deepcopy(player_board) if not actual_move else player_board
         cur_npc_board: List[List[int]] = deepcopy(npc_board) if not actual_move else npc_board
@@ -168,12 +134,49 @@ class MrBones(NPC):
 
         return f"{npc_name} has skipped their turn."
 
+    def _setup_inventory(self):
+        items_to_add = []
+
+        self._inventory.add_coins(100000)
+        for item in items_to_add:
+            self._inventory.add_item(item)
+
+    def _setup_xp(self):
+        self._expertise.add_xp_to_class(1748260, ExpertiseClass.Merchant, self._equipment) # Level 100
+        self._expertise.add_xp_to_class(20150, ExpertiseClass.Guardian, self._equipment) # Level 25
+        
+        self._expertise.points_to_spend = 0
+        
+        self._expertise.constitution = 35
+        self._expertise.intelligence = 25
+        self._expertise.dexterity = 10
+        self._expertise.strength = 5
+        self._expertise.luck = 40
+        self._expertise.memory = 10
+
+    def _setup_equipment(self):
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.MrBonesRing))
+
+        self._expertise.update_stats(self.get_combined_attributes())
+
+    def _setup_abilities(self):
+        self._dueling.abilities = [
+            BoundToGetLuckyIII(), SecondWindIII(), SilkspeakingI(),
+            ContractWealthForPowerIII(), ATidySumIII(), CursedCoinsIII(),
+            UnseenRichesIII(), ContractBloodForBloodIII(), DeepPocketsIII(),
+            ContractManaToBloodIII()
+        ]
+
+    def _setup_npc_params(self):
+        self._setup_inventory()
+        self._setup_equipment()
+        self._setup_xp()
+        self._setup_abilities()
+
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        # TODO: Make each of these setup portions a private function in the class so I don't have
-        # to duplicate everything between init and setstate.
         self._id = state.get("_id", str(uuid4()))
         self._name = "Mr. Bones"
         self._role = NPCRoles.KnucklebonesPatron
@@ -183,47 +186,22 @@ class MrBones(NPC):
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
             self._inventory = Inventory()
-
-            self._base_items = []
-            self._base_coins = 100000
-
-            self._inventory.add_coins(self._base_coins)
-            for item in self._base_items:
-                self._inventory.add_item(item)
+            self._setup_inventory()
 
         self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.MrBonesRing))
+            self._setup_equipment()
 
         self._expertise: Expertise | None = state.get("_expertise")
         if self._expertise is None:
             self._expertise = Expertise()
-
-            self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
-            self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
-            
-            self._expertise.points_to_spend = 0
-                
-            self._expertise.constitution = 35
-            self._expertise.intelligence = 25
-            self._expertise.dexterity = 10
-            self._expertise.strength = 5
-            self._expertise.luck = 40
-            self._expertise.memory = 10
-
-            self._expertise.update_stats(self.get_combined_attributes())
+            self._setup_xp()
 
         self._dueling: Dueling | None = state.get("_dueling")
         if self._dueling is None:
             self._dueling = Dueling()
-
-            self._dueling.abilities = [
-                BoundToGetLuckyIII(), SecondWindIII(), SilkspeakingI(),
-                ContractWealthForPowerIII(), ATidySumIII(), CursedCoinsIII(),
-                UnseenRichesIII(), ContractBloodForBloodIII(), DeepPocketsIII(),
-                ContractManaToBloodIII()
-            ]
+            self._setup_abilities()
 
         self._stats: Stats | None = state.get("_stats")
         if self._stats is None:

@@ -478,16 +478,15 @@ class BlacksmithView(discord.ui.View):
 class Blacksmith(NPC):
     def __init__(self):
         super().__init__("Abarra", NPCRoles.Blacksmith, NPCDuelingPersonas.Bruiser, {})
+            
+    def _setup_inventory(self):
+        items_to_add = []
 
-        # Inventory Setup
-        self._restock_items = []
-        self._restock_coins = 150
-
-        self._inventory.add_coins(self._restock_coins)
-        for item in self._restock_items:
+        self._inventory.add_coins(150)
+        for item in items_to_add:
             self._inventory.add_item(item)
-        
-        # Expertise Setup
+
+    def _setup_xp(self):
         self._expertise.add_xp_to_class(1000, ExpertiseClass.Fisher, self._equipment) # Level 5
         self._expertise.add_xp_to_class(3976, ExpertiseClass.Merchant, self._equipment) # Level 15
         self._expertise.add_xp_to_class(7000, ExpertiseClass.Guardian, self._equipment) # Level 25
@@ -501,7 +500,7 @@ class Blacksmith(NPC):
         self._expertise.luck = 0
         self._expertise.memory = 9
 
-        # Equipment Setup
+    def _setup_equipment(self):
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
@@ -511,19 +510,23 @@ class Blacksmith(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-        # Dueling Setup
+    def _setup_abilities(self):
         self._dueling.abilities = [
             WhirlwindIII(), SecondWindIII(), PiercingStrikeIII(),
             ScarArmorII(), CounterstrikeIII(), PressTheAdvantageI(),
             EvadeIII(), HeavySlamII(), BoundToGetLuckyIII()
         ]
+    
+    def _setup_npc_params(self):
+        self._setup_inventory()
+        self._setup_equipment()
+        self._setup_xp()
+        self._setup_abilities()
 
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        # TODO: Make each of these setup portions a private function in the class so I don't have
-        # to duplicate everything between init and setstate.
         self._id = state.get("_id", str(uuid4()))
         self._name = "Abarra"
         self._role = NPCRoles.Blacksmith
@@ -533,52 +536,22 @@ class Blacksmith(NPC):
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
             self._inventory = Inventory()
-
-            self._restock_items = []
-            self._restock_coins = 5000
-
-            self._inventory.add_coins(self._restock_coins)
-            for item in self._restock_items:
-                self._inventory.add_item(item)
+            self._setup_inventory()
 
         self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.AbarrasGreatsword))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.IronLeggings))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.IronGreaves))
+            self._setup_equipment()
 
         self._expertise: Expertise | None = state.get("_expertise")
         if self._expertise is None:
             self._expertise = Expertise()
-
-            self._expertise.add_xp_to_class(1000, ExpertiseClass.Fisher, self._equipment) # Level 5
-            self._expertise.add_xp_to_class(3976, ExpertiseClass.Merchant, self._equipment) # Level 15
-            self._expertise.add_xp_to_class(7000, ExpertiseClass.Guardian, self._equipment) # Level 25
-            
-            self._expertise.points_to_spend = 0
-            
-            self._expertise.constitution = 20
-            self._expertise.intelligence = 0
-            self._expertise.dexterity = 0
-            self._expertise.strength = 16
-            self._expertise.luck = 0
-            self._expertise.memory = 9
-
-            self._expertise.update_stats(self.get_combined_attributes())
+            self._setup_xp()
 
         self._dueling: Dueling | None = state.get("_dueling")
         if self._dueling is None:
             self._dueling = Dueling()
-
-            self._dueling.abilities = [
-                WhirlwindIII(), SecondWindIII(), PiercingStrikeIII(),
-                ScarArmorII(), CounterstrikeIII(), PressTheAdvantageI(),
-                EvadeIII(), HeavySlamII(), BoundToGetLuckyIII()
-            ]
+            self._setup_abilities()
 
         self._stats: Stats | None = state.get("_stats")
         if self._stats is None:

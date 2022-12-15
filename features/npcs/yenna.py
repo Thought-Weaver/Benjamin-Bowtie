@@ -830,67 +830,7 @@ class Yenna(NPC):
     def __init__(self):
         super().__init__("Yenna", NPCRoles.FortuneTeller, NPCDuelingPersonas.Healer, {})
 
-        # Inventory Setup
-        health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
-        health_potions.add_amount(2)
-        sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
-        sapping_potions.add_amount(1)
-
-        self._restock_items = [health_potions, sapping_potions]
-        self._restock_coins = 5000
-
-        self._inventory.add_coins(self._restock_coins)
-        for item in self._restock_items:
-            self._inventory.add_item(item)
-        
-        # Expertise Setup
-        self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
-        self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
-        self._expertise.add_xp_to_class(22000, ExpertiseClass.Alchemist, self._equipment) # Level 30
-
-        self._expertise.points_to_spend = 0
-        
-        self._expertise.constitution = 15
-        self._expertise.intelligence = 30
-        self._expertise.dexterity = 10
-        self._expertise.strength = 3
-        self._expertise.luck = 10
-        self._expertise.memory = 12
-
-        # Equipment Setup
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.MothsilkCowl))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.MothsilkGloves))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.BandOfGreaterRestoration))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.RobeOfTheEyelessSeer))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.YennasStaff))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.OffHand, LOADED_ITEMS.get_new_item(ItemKey.DeckOfFate))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.MothsilkBoots))
-
-        self._expertise.update_stats(self.get_combined_attributes())
-
-        # Dueling Setup
-        # TODO: Also add fate-bending abilities
-        self._dueling.abilities = [
-            BoundToGetLuckyIII(), SecondWindI(), SilkspeakingI(),
-            ParalyzingFumesI(), RegenerationIII(), QuickAccessI(),
-            PreparePotionsIII(), VitalityTransferIII(), EmpowermentI(),
-            IncenseIII(), ContractManaToBloodIII(), ContractWealthForPowerIII()
-        ]
-
-        # Story Variables
-        self._scroll_text: str = "You walk on chains with your eyes. Push the fingers through the surface into the void. The trees are talking now. Through a maze you are rewarded in chaos. They are in the dreaming, in the wanting, in the knowing. Beware the red hexagons. It is the world in the mirror of ocean's make. How do you walk? Repeat it. The name of the sound. We build it until nothing remains. Don't you want these waves to drag you away? Come hither to us, Fisher King. You can almost hear us now. Your throne is waiting."
-        self._words_identified: List[str] = []
-        self._last_to_identify_scroll: str = ""
-        self._num_fish_maybe_identified: int = 0
-        self._NUM_FISH_PER_RESULT: int = 5 # Theoretically this could scale with the number of active players
-
-    @tasks.loop(hours=24)
-    async def restock(self):
-        # At the moment, just restock coins in anticipation of being involved in duels or potentially for
-        # using for a more realistic economy. Sold items are being managed by the view rather than the NPC
-        # entity -- the items in her inventory are basically just for duels.
-        coins_to_restock: int = max(0, self._restock_coins - self._inventory.get_coins())
-        self._inventory.add_coins(coins_to_restock)
+        self._setup_npc_params()
 
     def identify_scroll(self, player: Player, selected_item_index: int, display_name: str, identify_cost: int):
         inventory = player.get_inventory()
@@ -1026,12 +966,70 @@ class Yenna(NPC):
         self._num_fish_maybe_identified += 1
         return result
 
+    def _setup_inventory(self):
+        health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
+        health_potions.add_amount(2)
+        sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
+        sapping_potions.add_amount(1)
+
+        items_to_add = [health_potions, sapping_potions]
+
+        self._inventory.add_coins(5000)
+        for item in items_to_add:
+            self._inventory.add_item(item)
+
+    def _setup_xp(self):
+        self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
+        self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
+        self._expertise.add_xp_to_class(22000, ExpertiseClass.Alchemist, self._equipment) # Level 30
+
+        self._expertise.points_to_spend = 0
+        
+        self._expertise.constitution = 15
+        self._expertise.intelligence = 30
+        self._expertise.dexterity = 10
+        self._expertise.strength = 3
+        self._expertise.luck = 10
+        self._expertise.memory = 12
+
+    def _setup_equipment(self):
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.MothsilkCowl))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.MothsilkGloves))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.BandOfGreaterRestoration))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.RobeOfTheEyelessSeer))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.YennasStaff))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.OffHand, LOADED_ITEMS.get_new_item(ItemKey.DeckOfFate))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.MothsilkBoots))
+
+        self._expertise.update_stats(self.get_combined_attributes())
+
+    def _setup_abilities(self):
+        # TODO: Also add fate-bending abilities
+        self._dueling.abilities = [
+            BoundToGetLuckyIII(), SecondWindI(), SilkspeakingI(),
+            ParalyzingFumesI(), RegenerationIII(), QuickAccessI(),
+            PreparePotionsIII(), VitalityTransferIII(), EmpowermentI(),
+            IncenseIII(), ContractManaToBloodIII(), ContractWealthForPowerIII()
+        ]
+
+    def _setup_story_variables(self):
+        self._scroll_text: str = "You walk on chains with your eyes. Push the fingers through the surface into the void. The trees are talking now. Through a maze you are rewarded in chaos. They are in the dreaming, in the wanting, in the knowing. Beware the red hexagons. It is the world in the mirror of ocean's make. How do you walk? Repeat it. The name of the sound. We build it until nothing remains. Don't you want these waves to drag you away? Come hither to us, Fisher King. You can almost hear us now. Your throne is waiting."
+        self._words_identified: List[str] = []
+        self._last_to_identify_scroll: str = ""
+        self._num_fish_maybe_identified: int = 0
+        self._NUM_FISH_PER_RESULT: int = 5 # Theoretically this could scale with the number of active players
+
+    def _setup_npc_params(self):
+        self._setup_inventory()
+        self._setup_equipment()
+        self._setup_xp()
+        self._setup_abilities()
+        self._setup_story_variables()
+
     def __getstate__(self):
         return self.__dict__
 
     def __setstate__(self, state: dict):
-        # TODO: Make each of these setup portions a private function in the class so I don't have
-        # to duplicate everything between init and setstate.
         self._id = state.get("_id", str(uuid4()))
         self._name = "Yenna"
         self._role = NPCRoles.FortuneTeller
@@ -1041,65 +1039,25 @@ class Yenna(NPC):
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
             self._inventory = Inventory()
-
-            health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
-            health_potions.add_amount(2)
-            sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
-            sapping_potions.add_amount(1)
-
-            self._restock_items = [health_potions, sapping_potions]
-            self._restock_coins = 1500
-
-            self._inventory.add_coins(self._restock_coins)
-            for item in self._restock_items:
-                self._inventory.add_item(item)
+            self._setup_inventory()
 
         self._equipment: Equipment | None = state.get("_equipment")
         if self._equipment is None:
             self._equipment = Equipment()
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.MothsilkCowl))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.MothsilkGloves))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.BandOfGreaterRestoration))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.RobeOfTheEyelessSeer))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.YennasStaff))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.OffHand, LOADED_ITEMS.get_new_item(ItemKey.DeckOfFate))
-            self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.MothsilkBoots))
+            self._setup_equipment()
 
         self._expertise: Expertise | None = state.get("_expertise")
         if self._expertise is None:
             self._expertise = Expertise()
-
-            self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
-            self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
-            
-            self._expertise.points_to_spend = 0
-            
-            self._expertise.constitution = 15
-            self._expertise.intelligence = 30
-            self._expertise.dexterity = 10
-            self._expertise.strength = 3
-            self._expertise.luck = 10
-            self._expertise.memory = 12
-
-            self._expertise.update_stats(self.get_combined_attributes())
+            self._setup_xp()
 
         self._dueling: Dueling | None = state.get("_dueling")
         if self._dueling is None:
             self._dueling = Dueling()
-
-            self._dueling.abilities = [
-                BoundToGetLuckyIII(), SecondWindI(), SilkspeakingI(),
-                ParalyzingFumesI(), RegenerationIII(), QuickAccessI(),
-                PreparePotionsIII(), VitalityTransferIII(), EmpowermentI(),
-                IncenseIII(), ContractManaToBloodIII(), ContractWealthForPowerIII()
-            ]
+            self._setup_abilities()
 
         self._stats: Stats | None = state.get("_stats")
         if self._stats is None:
             self._stats = Stats()
-
-        self._scroll_text = "You walk on chains with your eyes. Push the fingers through the surface into the void. The trees are talking now. Through a maze you are rewarded in chaos. They are in the dreaming, in the wanting, in the knowing. Beware the red hexagons. It is the world in the mirror of ocean's make. How do you walk? Repeat it. The name of the sound. We build it until nothing remains. Don't you want these waves to drag you away? Come hither to us, Fisher King. You can almost hear us now. Your throne is waiting."
-        self._words_identified = state.get("_words_identified", [])
-        self._last_to_identify_scroll = state.get("_last_to_identify_scroll", "")
-        self._num_fish_maybe_identified = state.get("_num_fish_maybe_identified", 0)
-        self._NUM_FISH_PER_RESULT = 5 # Theoretically this could scale with the number of active players
+        
+        self._setup_story_variables()
