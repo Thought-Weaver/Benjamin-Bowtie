@@ -413,16 +413,13 @@ class StorageView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.Ingredient])
-        filtered_items = [inventory_slots[i] for i in filtered_indices]
-
-        page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
+        page_slots = inventory_slots[self._page * self._NUM_PER_PAGE:min(len(inventory_slots), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
-            exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
+            exact_item_index: int = i + (self._page * self._NUM_PER_PAGE)
             self.add_item(SelectInventoryItemButton(exact_item_index, item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
+        if len(inventory_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
         if self._selected_item_index != -1 and self._selected_item is not None:
             self.add_item(StoreItemButton(min(4, len(page_slots))))
