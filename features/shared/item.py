@@ -779,7 +779,8 @@ class Item():
         # doesn't exist, but it should ideally somehow make this None instead of an Item,
         # though an Item with everything default will work too because it should
         # be cleaned up by the inventory automatically. I'll need to figure that out
-        # at some point in the future.
+        # at some point in the future. Custom param that indicates deletion and have
+        # Inventory do it?
         if state.get("_key", "") not in LOADED_ITEMS.get_all_keys():
             return
         

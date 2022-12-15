@@ -47,7 +47,6 @@ class StatusEffectKey(StrEnum):
 
     ManaToHP = "ManaToHP"
 
-    # TODO: Implement this on item usage
     PotionBuff = "PotionBuff"
 
     PoisonHeals = "PoisonHeals"

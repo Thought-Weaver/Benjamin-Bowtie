@@ -1656,7 +1656,6 @@ class DuelView(discord.ui.View):
                 description="A hard-fought battle resulting in a tie. Neither side emerges truly victorious and yet both have defeated their enemies."
             )
         
-        # TODO: Implement what happens when an NPC group wins/loses.
         losers = self._allies if duel_result.winners == self._enemies else self._enemies
 
         for winner in duel_result.winners:
@@ -2601,8 +2600,6 @@ class DuelView(discord.ui.View):
                         dueling_copy._selected_ability_index = i
 
                         target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
-                        # TODO: Looking up by ID doesn't work because I compare the Player object from the database -- is it finally
-                        # time to give Player objects IDs?
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.use_ability_on_selected_targets()
 
