@@ -524,7 +524,8 @@ class GardenView(discord.ui.View):
 
         if self._selected_plot is not None:
             self.add_item(HarvestButton(min(4, num_per_row)))
-            self.add_item(PlantSeedButton(min(4, num_per_row)))
+            if self._selected_plot.seed is None:
+                self.add_item(PlantSeedButton(min(4, num_per_row)))
             self.add_item(UseItemButton(min(4, num_per_row)))
         if int(sqrt(len(player.get_house().garden_plots))) < MAX_GARDEN_SIZE:
             self.add_item(ExpandButton(self._PLOT_COST, min(4, num_per_row)))
