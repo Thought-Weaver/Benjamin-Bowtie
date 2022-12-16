@@ -5256,7 +5256,53 @@ class ToxicCloudIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 4))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(3, 5))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        poisoned = Poisoned(
+            turns_remaining=2,
+            value=POISONED_PERCENT_HP,
+            source_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged and random() < 0.7:
+                targets[i].get_dueling().status_effects.append(poisoned)
+                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
+                results[i].target_str += f" and is now {poisoned.name}"
+        
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        # This is a bit of a hack to ignore the state being passed in and
+        # use the defaults in init since no state vars are ever needed.
+        self.__init__() # type: ignore
+
+
+class ToxicCloudIV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF2B",
+            name="Toxic Cloud IV",
+            class_key=ExpertiseClass.Alchemist,
+            description="Create a miasma that deals 4-6 damage to all enemies with a 90% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=2,
+            num_targets=-1,
+            level_requirement=18,
+            target_own_group=False,
+            purchase_cost=3200
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(4, 6))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         poisoned = Poisoned(
