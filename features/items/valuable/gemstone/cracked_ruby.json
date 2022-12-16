@@ -2,8 +2,8 @@
     "key": "items/valuable/gemstone/cracked_ruby",
     "icon": "\uD83D\uDC8E",
     "name": "Cracked Ruby",
-    "value": 80,
-    "rarity": "Rare",
+    "value": 800,
+    "rarity": "Epic",
     "description": "Can be socketed into armor or an item in your hand.",
     "flavor_text": "",
     "class_tags": ["Valuable", "Gemstone"],
@@ -13,7 +13,7 @@
         "on_successful_attack": [
             {
                 "effect_type": "RestorePercentHealth",
-                "effect_value": 0.01,
+                "effect_value": 0.05,
                 "effect_time": -1,
                 "conditions": ["IsItemInHand"],
                 "condition_values": [0]
