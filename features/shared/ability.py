@@ -5456,9 +5456,9 @@ class EmpowermentII(Ability):
             mana_cost=25,
             cooldown=2,
             num_targets=1,
-            level_requirement=13,
+            level_requirement=18,
             target_own_group=True,
-            purchase_cost=2800
+            purchase_cost=5600
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
