@@ -4274,6 +4274,44 @@ class CursedCoinsIII(Ability):
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
 
+
+class CursedCoinsIV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDE99",
+            name="Cursed Coins IV",
+            class_key=ExpertiseClass.Merchant,
+            description="For the next 3 turns, whenever you gain coins, deal 100% of that as damage to all enemies.",
+            flavor_text="",
+            mana_cost=25,
+            cooldown=4,
+            num_targets=0,
+            level_requirement=16,
+            target_own_group=True,
+            purchase_cost=2400
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        tarnished = Tarnished(
+            turns_remaining=3,
+            value=1,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [tarnished])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
 # -----------------------------------------------------------------------------
 # UNSEEN RICHES
 # -----------------------------------------------------------------------------
@@ -4449,7 +4487,7 @@ class ContractManaToBloodI(Ability):
             description="All of your abilities that use Mana instead take 90% of their cost in HP for the next 3 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=4,
+            cooldown=3,
             num_targets=0,
             level_requirement=14,
             target_own_group=True,
@@ -4487,7 +4525,7 @@ class ContractManaToBloodII(Ability):
             description="All of your abilities that use Mana instead take 70% of their cost in HP for the next 3 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=4,
+            cooldown=3,
             num_targets=0,
             level_requirement=16,
             target_own_group=True,
@@ -4525,7 +4563,7 @@ class ContractManaToBloodIII(Ability):
             description="All of your abilities that use Mana instead take 50% of their cost in HP for the next 3 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=1,
+            cooldown=3,
             num_targets=0,
             level_requirement=18,
             target_own_group=True,
@@ -5543,7 +5581,7 @@ class FesteringVaporI(Ability):
             class_key=ExpertiseClass.Alchemist,
             description="Deal 10-20 damage to all enemies that are Poisoned.",
             flavor_text="",
-            mana_cost=15,
+            mana_cost=40,
             cooldown=3,
             num_targets=-1,
             level_requirement=15,
@@ -5579,7 +5617,7 @@ class FesteringVaporII(Ability):
             class_key=ExpertiseClass.Alchemist,
             description="Deal 20-30 damage to all enemies that are Poisoned.",
             flavor_text="",
-            mana_cost=15,
+            mana_cost=40,
             cooldown=3,
             num_targets=-1,
             level_requirement=15,
@@ -5615,7 +5653,7 @@ class FesteringVaporIII(Ability):
             class_key=ExpertiseClass.Alchemist,
             description="Deal 30-40 damage to all enemies that are Poisoned.",
             flavor_text="",
-            mana_cost=15,
+            mana_cost=40,
             cooldown=3,
             num_targets=-1,
             level_requirement=15,
@@ -5810,7 +5848,7 @@ class ParalyzingFumesI(Ability):
             icon="\uD83D\uDCAB",
             name="Paralyzing Fumes I",
             class_key=ExpertiseClass.Alchemist,
-            description="Apply Faltering to all enemies, giving them a 50% chance to lose their next turn.",
+            description="Apply Faltering to all enemies, giving them a 75% chance to lose their next turn.",
             flavor_text="",
             mana_cost=40,
             cooldown=6,
@@ -5823,7 +5861,7 @@ class ParalyzingFumesI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         faltering = TurnSkipChance(
             turns_remaining=1,
-            value=0.5,
+            value=0.75,
             source_str=self.get_icon_and_name()
         )
 
