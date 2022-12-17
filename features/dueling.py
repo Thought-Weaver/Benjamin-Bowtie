@@ -1511,6 +1511,8 @@ class DuelView(discord.ui.View):
         
         item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnEnd, previous_entity, previous_entity, 0)
         
+        self._additional_info_string_data = ""
+
         for result_str in item_status_effects:
             formatted_str = result_str.format(self.get_name(previous_entity))
             self._additional_info_string_data += formatted_str    
@@ -1578,6 +1580,11 @@ class DuelView(discord.ui.View):
         if random() < max_should_skip_chance:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
             self._additional_info_string_data += f"{self.get_name(entity)}'s turn was skipped!"
+            for se in entity.get_dueling().status_effects:
+                # This is a special case to make sure that Faltering doesn't always skip the entity; if it triggers,
+                # then it has to be decremented to avoid potentially skipping their turn forever
+                if se.key == StatusEffectKey.TurnSkipChance:
+                    se.decrement_turns_remaining()
 
         duel_result = self.check_for_win()
         if duel_result.game_won:
@@ -1613,7 +1620,8 @@ class DuelView(discord.ui.View):
 
         player_name = self.get_user_for_current_turn().display_name
 
-        return info_str + f"\n*It's {player_name}'s turn!*"
+        additional_info_str = f"\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{self._additional_info_string_data}" if self._additional_info_string_data != "" else ""
+        return info_str + f"\n*It's {player_name}'s turn!*{additional_info_str}"
 
     def get_selected_entity_full_duel_info_str(self):
         if self._current_target is None:
@@ -2705,7 +2713,8 @@ class DuelView(discord.ui.View):
         self.clear_items()
         self.add_item(ContinueToNextActionButton())
 
-        return Embed(title=f"{cur_npc.get_name()} {action_str}", description=optimal_result_str)
+        additional_info_str = f"\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{self._additional_info_string_data}" if self._additional_info_string_data != "" else ""
+        return Embed(title=f"{cur_npc.get_name()} {action_str}", description=f"{optimal_result_str}{additional_info_str}")
 
     def create_copy(self):
         copied_allies: List[Player | NPC] = jsonpickle.decode(jsonpickle.encode(self._allies, make_refs=False)) # type: ignore
