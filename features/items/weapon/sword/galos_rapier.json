@@ -1,0 +1,35 @@
+{
+    "key": "items/weapon/sword/galos_rapier",
+    "icon": "\u2694\uFE0F",
+    "name": "Galos' Rapier",
+    "value": 1000,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Sword", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 40,
+    "weapon_stats": {
+        "min_damage": 4,
+        "max_damage": 6
+    },
+    "item_effects": {
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceBleeding",
+                "effect_value": 0.5,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "DmgBuffBleeding",
+                "effect_value": 0.5,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

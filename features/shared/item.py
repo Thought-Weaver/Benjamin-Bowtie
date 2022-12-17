@@ -406,6 +406,7 @@ class ItemKey(StrEnum):
 
     # Swords
     IronSword = "items/weapon/sword/iron_sword"
+    GalosRapier = "items/weapon/sword/galos_rapier"
 
     # Misc Weapons
     CopperbroadsFryingPan = "items/weapon/misc/copperbroads_frying_pan"

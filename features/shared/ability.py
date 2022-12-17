@@ -2735,10 +2735,10 @@ class BidedAttackI(Ability):
             icon="\u23F3",
             name="Bided Attack I",
             class_key=ExpertiseClass.Guardian,
-            description="Prepare your attack, gaining +5 Strength for 1 turn.",
+            description="Prepare your attack, gaining +5 Strength for 2 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=1,
+            cooldown=2,
             num_targets=0,
             level_requirement=4,
             target_own_group=True,
@@ -2747,7 +2747,7 @@ class BidedAttackI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         str_buff = StrBuff(
-            turns_remaining=1,
+            turns_remaining=2,
             value=5,
             source_str=self.get_icon_and_name()
         )
@@ -2773,10 +2773,10 @@ class BidedAttackII(Ability):
             icon="\u23F3",
             name="Bided Attack II",
             class_key=ExpertiseClass.Guardian,
-            description="Prepare your attack, gaining +10 Strength for 1 turn.",
+            description="Prepare your attack, gaining +10 Strength for 2 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=1,
+            cooldown=2,
             num_targets=0,
             level_requirement=7,
             target_own_group=True,
@@ -2785,7 +2785,7 @@ class BidedAttackII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         str_buff = StrBuff(
-            turns_remaining=1,
+            turns_remaining=2,
             value=10,
             source_str=self.get_icon_and_name()
         )
@@ -2811,10 +2811,10 @@ class BidedAttackIII(Ability):
             icon="\u23F3",
             name="Bided Attack III",
             class_key=ExpertiseClass.Guardian,
-            description="Prepare your attack, gaining +15 Strength for 1 turn.",
+            description="Prepare your attack, gaining +15 Strength for 2 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=1,
+            cooldown=2,
             num_targets=0,
             level_requirement=10,
             target_own_group=True,
@@ -2823,7 +2823,7 @@ class BidedAttackIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         str_buff = StrBuff(
-            turns_remaining=1,
+            turns_remaining=2,
             value=15,
             source_str=self.get_icon_and_name()
         )
@@ -3388,11 +3388,16 @@ class PressTheAdvantageI(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        # Adding one because actions_remaining are reduced when pressing Continue
-        caster.get_dueling().actions_remaining += 3
+        caster.get_dueling().actions_remaining += 2
         caster.get_stats().dueling.guardian_abilities_used += 1
 
-        return "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 2 actions available."
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 2 actions available."
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+
+        return result_str
 
     def __getstate__(self):
         return self.__dict__
@@ -5900,8 +5905,7 @@ class QuickAccessI(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        # Adding one because actions_remaining are reduced when pressing Continue
-        caster.get_dueling().actions_remaining += 4
+        caster.get_dueling().actions_remaining += 3
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
         restriction = RestrictedToItems(

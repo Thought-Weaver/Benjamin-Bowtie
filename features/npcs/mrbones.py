@@ -9,12 +9,11 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import ATidySumIII, BoundToGetLuckyIII, ContractBloodForBloodIII, ContractManaToBloodIII, ContractWealthForPowerIII, CursedCoinsIII, DeepPocketsIII, SecondWindIII, SilkspeakingI, UnseenRichesIII
-
-from typing import TYPE_CHECKING, Callable, List
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-
 from features.stats import Stats
+
+from typing import TYPE_CHECKING, Callable, List
 if TYPE_CHECKING:
     from features.inventory import Inventory
 
@@ -137,6 +136,9 @@ class MrBones(NPC):
         return f"{npc_name} has skipped their turn."
 
     def _setup_inventory(self):
+        if self._inventory is None:
+            self._inventory = Inventory()
+        
         items_to_add = []
 
         self._inventory.add_coins(100000)
@@ -144,6 +146,11 @@ class MrBones(NPC):
             self._inventory.add_item(item)
 
     def _setup_xp(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
         self._expertise.add_xp_to_class(1748260, ExpertiseClass.Merchant, self._equipment) # Level 100
         self._expertise.add_xp_to_class(20150, ExpertiseClass.Guardian, self._equipment) # Level 25
         
@@ -157,11 +164,19 @@ class MrBones(NPC):
         self._expertise.memory = 10
 
     def _setup_equipment(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+        
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.MrBonesRing))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
     def _setup_abilities(self):
+        if self._dueling is None:
+            self._dueling = Dueling()
+
         self._dueling.abilities = [
             BoundToGetLuckyIII(), SecondWindIII(), SilkspeakingI(),
             ContractWealthForPowerIII(), ATidySumIII(), CursedCoinsIII(),

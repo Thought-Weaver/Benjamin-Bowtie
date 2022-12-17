@@ -16,10 +16,9 @@ from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
+from features.stats import Stats
 
 from typing import TYPE_CHECKING, List
-
-from features.stats import Stats
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.house.recipe import Recipe
@@ -480,6 +479,9 @@ class Chef(NPC):
         self._setup_npc_params()
 
     def _setup_inventory(self):
+        if self._inventory is None:
+            self._inventory = Inventory()
+        
         dumplings = LOADED_ITEMS.get_new_item(ItemKey.Dumpling)
         dumplings.add_amount(4)
 
@@ -490,6 +492,11 @@ class Chef(NPC):
             self._inventory.add_item(item)
 
     def _setup_xp(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
         self._expertise.add_xp_to_class(3500, ExpertiseClass.Fisher, self._equipment) # Level 10
         self._expertise.add_xp_to_class(1750, ExpertiseClass.Merchant, self._equipment) # Level 10
         self._expertise.add_xp_to_class(750, ExpertiseClass.Guardian, self._equipment) # Level 5
@@ -505,6 +512,11 @@ class Chef(NPC):
         self._expertise.memory = 5
 
     def _setup_equipment(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
@@ -515,6 +527,9 @@ class Chef(NPC):
         self._expertise.update_stats(self.get_combined_attributes())
 
     def _setup_abilities(self):
+        if self._dueling is None:
+            self._dueling = Dueling()
+        
         self._dueling.abilities = [
             SeaSprayV(), HookII(), BoundToGetLuckyIII(),
             ATidySumII(), CursedCoinsI()

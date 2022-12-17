@@ -332,7 +332,7 @@ class Dueling():
                 additional_dmg = int(damage_dealt * item_effect.effect_value)
                 return (
                     damage_dealt + additional_dmg,
-                    f"+{additional_dmg} damage from {item.get_full_name()}"
+                    f"+{additional_dmg} damage on Poisoned target from {item.get_full_name()}"
                 )
 
         if item_effect.effect_type == EffectType.DmgBuffBleeding:
@@ -340,7 +340,7 @@ class Dueling():
                 additional_dmg = int(damage_dealt * item_effect.effect_value)
                 return (
                     damage_dealt + additional_dmg,
-                    f"+{additional_dmg} damage from {item.get_full_name()}"
+                    f"+{additional_dmg} damage on Bleeding target from {item.get_full_name()}"
                 )
 
         if item_effect.effect_type == EffectType.RestoreArmor:
@@ -2443,8 +2443,9 @@ class DuelView(discord.ui.View):
                 return self.get_victory_screen(duel_result)
         
         next_entity: Player | NPC = self._turn_order[self._turn_index]
-        next_entity_dueling: Dueling = next_entity.get_dueling()
-        next_entity_dueling.actions_remaining = next_entity_dueling.init_actions_remaining
+        if next_entity != cur_entity:
+            next_entity_dueling: Dueling = next_entity.get_dueling()
+            next_entity_dueling.actions_remaining = next_entity_dueling.init_actions_remaining
         if isinstance(next_entity, Player):
             return self.show_actions()
         else:
@@ -2828,6 +2829,8 @@ class PlayerVsPlayerOrNPCDuelView(discord.ui.View):
                     npc_introduction_strs.append("The air itself seems to dim as shadows gather where Mr. Bones stands in the dueling grounds. The world fills with raspy laughter and a sense of dread as a bony, almost skeletal hand beckons you forth.")
                 elif opponent.get_name() == "Viktor":
                     npc_introduction_strs.append("Viktor comes bounding into the dueling grounds, a wild look in his eye. You can't help but wonder what he's got flailing around in his hand. \"A KNIFE!\" he says, confirming your worst fear.")
+                elif opponent.get_name() == "Galos":
+                    npc_introduction_strs.append("Galos, as usual, is ready and practicing against the training dummy at the dueling grounds. As you approach, he looks towards you and smiles. \"Practice makes perfect. Here for a spar?\"")
         npc_intro_str = ("\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n" + "\n\n".join(npc_introduction_strs) + "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆") if len(npc_introduction_strs) > 0 else ""
 
         return Embed(title="PvP Duel", description=(

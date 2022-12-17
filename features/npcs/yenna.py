@@ -967,6 +967,9 @@ class Yenna(NPC):
         return result
 
     def _setup_inventory(self):
+        if self._inventory is None:
+            self._inventory = Inventory()
+
         health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
         health_potions.add_amount(2)
         sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
@@ -979,6 +982,11 @@ class Yenna(NPC):
             self._inventory.add_item(item)
 
     def _setup_xp(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
         self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
         self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
         self._expertise.add_xp_to_class(22000, ExpertiseClass.Alchemist, self._equipment) # Level 30
@@ -993,6 +1001,11 @@ class Yenna(NPC):
         self._expertise.memory = 12
 
     def _setup_equipment(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.MothsilkCowl))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.MothsilkGloves))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.BandOfGreaterRestoration))
@@ -1004,6 +1017,9 @@ class Yenna(NPC):
         self._expertise.update_stats(self.get_combined_attributes())
 
     def _setup_abilities(self):
+        if self._dueling is None:
+            self._dueling = Dueling()
+
         # TODO: Also add fate-bending abilities
         self._dueling.abilities = [
             BoundToGetLuckyIII(), SecondWindI(), SilkspeakingI(),

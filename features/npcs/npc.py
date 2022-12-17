@@ -25,6 +25,7 @@ class NPCRoles(StrEnum):
     KnucklebonesPatron = "KnucklebonesPatron"
     Chef = "Chef"
     RandomItemMerchant = "RandomItemMerchant"
+    DuelingTrainer = "DuelingTrainer"
 
 
 class NPCDuelingPersonas(StrEnum):
@@ -73,6 +74,8 @@ class NPC():
         # The Bruiser should slightly consider the positive status effects it has active
         if len(self.get_dueling().status_effects) > 0:
             fitness_score += sum([1 if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF else 0 for se in self.get_dueling().status_effects]) / len(self.get_dueling().status_effects)
+        # Any action that gives an NPC additional actions should be weighted very heavily
+        fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
 
         return fitness_score
 
@@ -86,6 +89,8 @@ class NPC():
         fitness_score += self.get_combined_attributes().intelligence / 10
         # The Healer should score the average of allies' health strongly since it wants to heal
         fitness_score += 4 * sum((ally.get_expertise().hp / ally.get_expertise().max_hp) for ally in allies) / len(allies)
+        # Any action that gives an NPC additional actions should be weighted very heavily
+        fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
 
         return fitness_score
 
@@ -109,6 +114,8 @@ class NPC():
         # The Mage should slightly consider the positive status effects it has active
         if len(self.get_dueling().status_effects) > 0:
             fitness_score += sum([1 if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF else 0 for se in self.get_dueling().status_effects]) / len(self.get_dueling().status_effects)
+        # Any action that gives an NPC additional actions should be weighted very heavily
+        fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
 
         return fitness_score
 
@@ -130,6 +137,8 @@ class NPC():
         # The Rogue should slightly consider the positive status effects it has active
         if len(self.get_dueling().status_effects) > 0:
             fitness_score += sum([1 if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF else 0 for se in self.get_dueling().status_effects]) / len(self.get_dueling().status_effects)
+        # Any action that gives an NPC additional actions should be weighted very heavily
+        fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
 
         return fitness_score
 
@@ -166,6 +175,8 @@ class NPC():
         ) / len(enemies)
         # The Specialist should heavily weight actions that restore mana when low
         fitness_score += ((1 + (1 - org_self.get_expertise().mana / org_self.get_expertise().max_mana) + self_expertise.mana / self_expertise.max_mana - org_self.get_expertise().mana / org_self.get_expertise().max_mana) ** 10 - 1) / (18 ** 2 - 1)
+        # Any action that gives an NPC additional actions should be weighted very heavily
+        fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
 
         return fitness_score
 
@@ -187,7 +198,9 @@ class NPC():
                     assert(isinstance(se, Taunted))
                     if se.forced_to_attack == self:
                         fitness_score += 1
-
+        # Any action that gives an NPC additional actions should be weighted very heavily
+        fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
+        
         return fitness_score
 
     def get_fitness_for_persona(self, org_self: NPC, allies: List[Player | NPC], enemies: List[Player | NPC]):

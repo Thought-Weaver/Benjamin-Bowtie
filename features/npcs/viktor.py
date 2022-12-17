@@ -15,10 +15,9 @@ from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey, Rarity
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
+from features.stats import Stats
 
 from typing import TYPE_CHECKING, Dict, List
-
-from features.stats import Stats
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
@@ -351,6 +350,9 @@ class RandomItemMerchant(NPC):
     def _setup_inventory(self):
         self.tick()
 
+        if self._inventory is None:
+            self._inventory = Inventory()
+
         health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
         health_potions.add_amount(2)
         sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
@@ -376,7 +378,11 @@ class RandomItemMerchant(NPC):
         return self._purchased_this_tick.get(id_str, 0)
 
     def _setup_xp(self):
-        # Expertise Setup
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
         self._expertise.add_xp_to_class(1750, ExpertiseClass.Merchant, self._equipment) # Level 10
         self._expertise.add_xp_to_class(600, ExpertiseClass.Alchemist, self._equipment) # Level 5
         
@@ -392,10 +398,17 @@ class RandomItemMerchant(NPC):
         self._expertise.update_stats(self.get_combined_attributes())
 
     def _setup_equipment(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
         self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.IronDagger))
 
     def _setup_abilities(self):
-        # Dueling Setup
+        if self._dueling is None:
+            self._dueling = Dueling()
+
         self._dueling.abilities = [
             ContractWealthForPowerIII(), PreparePotionsII(),
             BoundToGetLuckyIII(), SilkspeakingI()

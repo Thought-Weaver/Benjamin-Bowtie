@@ -16,10 +16,9 @@ from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
+from features.stats import Stats
 
 from typing import TYPE_CHECKING, List
-
-from features.stats import Stats
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
@@ -482,6 +481,9 @@ class Blacksmith(NPC):
         self._setup_npc_params()
             
     def _setup_inventory(self):
+        if self._inventory is None:
+            self._inventory = Inventory()
+        
         items_to_add = []
 
         self._inventory.add_coins(150)
@@ -489,6 +491,11 @@ class Blacksmith(NPC):
             self._inventory.add_item(item)
 
     def _setup_xp(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
         self._expertise.add_xp_to_class(1000, ExpertiseClass.Fisher, self._equipment) # Level 5
         self._expertise.add_xp_to_class(3976, ExpertiseClass.Merchant, self._equipment) # Level 15
         self._expertise.add_xp_to_class(7000, ExpertiseClass.Guardian, self._equipment) # Level 25
@@ -503,6 +510,11 @@ class Blacksmith(NPC):
         self._expertise.memory = 9
 
     def _setup_equipment(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
@@ -513,6 +525,9 @@ class Blacksmith(NPC):
         self._expertise.update_stats(self.get_combined_attributes())
 
     def _setup_abilities(self):
+        if self._dueling is None:
+            self._dueling = Dueling()
+        
         self._dueling.abilities = [
             WhirlwindIII(), SecondWindIII(), PiercingStrikeIII(),
             ScarArmorII(), CounterstrikeIII(), PressTheAdvantageI(),

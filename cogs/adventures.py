@@ -27,6 +27,7 @@ from features.mail import Mail, MailView, MailboxView
 from features.market import MarketView
 from features.npcs.abarra import Blacksmith
 from features.npcs.copperbroad import Chef
+from features.npcs.galos import Galos
 from features.npcs.mrbones import Difficulty, MrBones
 from features.npcs.npc import NPCRoles
 from features.npcs.viktor import RandomItemMerchant
@@ -132,6 +133,8 @@ class Adventures(commands.Cog):
                     mapped.append(RandomItemMerchant())
                 elif user.lower() == "copperbroad":
                     mapped.append(Chef())
+                elif user.lower() == "galos":
+                    mapped.append(Galos())
             else:
                 mapped.append(user)
         return mapped
