@@ -14,7 +14,7 @@
             {
                 "effect_type": "ChanceFaltering",
                 "effect_value": 0.01,
-                "effect_time": -1,
+                "effect_time": 1,
                 "conditions": ["IsItemInHand"],
                 "condition_values": [0]
             }
@@ -23,7 +23,7 @@
             {
                 "effect_type": "ChanceFaltering",
                 "effect_value": 0.01,
-                "effect_time": -1,
+                "effect_time": 1,
                 "conditions": ["IsItemArmor"],
                 "condition_values": [0]
             }

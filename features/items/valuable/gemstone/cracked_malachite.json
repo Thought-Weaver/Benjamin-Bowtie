@@ -14,7 +14,7 @@
             {
                 "effect_type": "ChancePoisoned",
                 "effect_value": 0.05,
-                "effect_time": -1,
+                "effect_time": 1,
                 "conditions": ["IsItemInHand"],
                 "condition_values": [0]
             }

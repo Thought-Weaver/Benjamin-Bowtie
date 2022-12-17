@@ -663,7 +663,7 @@ class Dueling():
                 value=POISONED_PERCENT_HP
             )
             target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_poisoned}")
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_poisoned} turns")
 
         if random() < chance_bleeding:
             status_effect = Bleeding(
@@ -671,7 +671,7 @@ class Dueling():
                 value=BLEED_PERCENT_HP
             )
             target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_bleeding}")
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_bleeding} turns")
 
         if random() < chance_faltering:
             status_effect = TurnSkipChance(
@@ -679,7 +679,7 @@ class Dueling():
                 value=1
             )
             target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_faltering}")
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_faltering} turns")
 
         if random() < chance_taunted:
             status_effect = Taunted(
@@ -687,7 +687,7 @@ class Dueling():
                 forced_to_attack=self_entity
             )
             target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_taunted}")
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_taunted} turns")
 
         if random() < chance_convinced:
             status_effect = CannotTarget(
@@ -695,7 +695,7 @@ class Dueling():
                 cant_target=self_entity
             )
             target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_convinced}")
+            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_convinced} turns")
 
         return result_strs
 
@@ -2008,7 +2008,7 @@ class DuelView(discord.ui.View):
             # Doing these after damage computation because the player doesn't get an indication the effect occurred
             # until the Continue screen, so it feels slightly more natural to have them not affect damage dealt. I
             # may reverse this decision later.
-            result_strs += [s.format(target_name) for s in attacker.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAttack, target, attacker, i + 1)]
+            result_strs += [s.format(target_name) for s in attacker.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAttack, target, attacker, 0)]
 
             for item in attacker_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
