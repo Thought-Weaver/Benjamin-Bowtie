@@ -1553,21 +1553,22 @@ class DuelView(discord.ui.View):
         heals_from_poison: bool = any(se.key == StatusEffectKey.PoisonHeals for se in entity.get_dueling().status_effects)
 
         for se in entity.get_dueling().status_effects:
-            if se.key == StatusEffectKey.FixedDmgTick:
-                start_damage += int(se.value)
-            if se.key == StatusEffectKey.Bleeding:
-                start_damage += int(entity.get_expertise().max_hp * se.value)
-            if se.key == StatusEffectKey.Poisoned:
-                if heals_from_poison:
-                    start_heals += int(entity.get_expertise().max_hp * se.value)
-                else:
+            if se.turns_remaining > 0 or se.turns_remaining == -1:
+                if se.key == StatusEffectKey.FixedDmgTick:
+                    start_damage += int(se.value)
+                if se.key == StatusEffectKey.Bleeding:
                     start_damage += int(entity.get_expertise().max_hp * se.value)
-            if se.key == StatusEffectKey.RegenerateHP:
-                start_heals += int(entity.get_expertise().max_hp * se.value)
-            # Only take the largest chance to skip the turn
-            if se.key == StatusEffectKey.TurnSkipChance:
-                max_should_skip_chance = max(se.value, max_should_skip_chance)
-        
+                if se.key == StatusEffectKey.Poisoned:
+                    if heals_from_poison:
+                        start_heals += int(entity.get_expertise().max_hp * se.value)
+                    else:
+                        start_damage += int(entity.get_expertise().max_hp * se.value)
+                if se.key == StatusEffectKey.RegenerateHP:
+                    start_heals += int(entity.get_expertise().max_hp * se.value)
+                # Only take the largest chance to skip the turn
+                if se.key == StatusEffectKey.TurnSkipChance:
+                    max_should_skip_chance = max(se.value, max_should_skip_chance)
+            
         # Fixed damage is taken directly, no reduction
         entity.get_expertise().damage(start_damage, entity.get_dueling(), percent_reduct=0, ignore_armor=True)
         if start_damage > 0:
