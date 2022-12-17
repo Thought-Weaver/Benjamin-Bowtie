@@ -2713,8 +2713,8 @@ class DuelView(discord.ui.View):
         self.clear_items()
         self.add_item(ContinueToNextActionButton())
 
-        additional_info_str = f"\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{self._additional_info_string_data}" if self._additional_info_string_data != "" else ""
-        return Embed(title=f"{cur_npc.get_name()} {action_str}", description=f"{optimal_result_str}{additional_info_str}")
+        additional_info_str = f"{self._additional_info_string_data}\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if self._additional_info_string_data != "" else ""
+        return Embed(title=f"{cur_npc.get_name()} {action_str}", description=f"{additional_info_str}{optimal_result_str}")
 
     def create_copy(self):
         copied_allies: List[Player | NPC] = jsonpickle.decode(jsonpickle.encode(self._allies, make_refs=False)) # type: ignore
