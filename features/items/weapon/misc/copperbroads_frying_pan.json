@@ -15,7 +15,7 @@
         "max_damage": 10
     },
     "item_effects": {
-        "permanent": [
+        "on_successful_attack": [
             {
                 "effect_type": "ChanceFaltering",
                 "effect_value": 0.1,
