@@ -301,7 +301,7 @@ class SelectMaterialButton(discord.ui.Button):
 
 class ConfirmPatternButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.green, label=f"Confirm", row=row)
+        super().__init__(style=discord.ButtonStyle.green, label=f"Craft", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -310,6 +310,20 @@ class ConfirmPatternButton(discord.ui.Button):
         view: WorkshopView = self.view
         if interaction.user == view.get_user():
             response = view.use_pattern()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class ConfirmPatternAllButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.green, label=f"Craft All", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: WorkshopView = self.view
+        if interaction.user == view.get_user():
+            response = view.use_pattern(make_all=True)
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -563,6 +577,7 @@ class WorkshopView(discord.ui.View):
             self.add_item(NextButton(min(4, len(page_slots))))
         if self._selected_recipe is not None:
             self.add_item(ConfirmPatternButton(min(4, len(page_slots))))
+            self.add_item(ConfirmPatternAllButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
 
     def enter_patterns(self):
@@ -784,7 +799,7 @@ class WorkshopView(discord.ui.View):
         current_crafting_display = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{current_crafting_str}᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if current_crafting_str != "" else ""
         return Embed(title="Craft", description=f"{current_crafting_display}Use materials from your inventory and attempt to craft something.\n\nNavigate through the items using the Prev and Next buttons.")
 
-    def use_pattern(self):
+    def use_pattern(self, make_all: bool=False):
         if self._selected_recipe is None:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that pattern changed or it's no longer available.*")
 
@@ -795,6 +810,8 @@ class WorkshopView(discord.ui.View):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
 
+        num_to_make = 1 if not make_all else self._selected_recipe.num_can_be_made(self._get_player().get_inventory())
+
         # Validation before continuing, slightly slower but avoids having to remove and then return items when something goes wrong
         for input_key, quantity in self._selected_recipe.inputs.items():
             index = inventory.search_by_key(input_key)
@@ -802,16 +819,16 @@ class WorkshopView(discord.ui.View):
                 return self.get_embed_for_intent(error="\n\n*Error: You don't have one of the items for that pattern.*")
         
             item = inventory.get_inventory_slots()[index]
-            if item.get_count() < quantity:
+            if item.get_count() < quantity * num_to_make:
                 return self.get_embed_for_intent(error="\n\n*Error: You don't have enough of one of those items.*")
 
         for input_key, quantity in self._selected_recipe.inputs.items():
             index = inventory.search_by_key(input_key)
-            inventory.remove_item(index, quantity)
+            inventory.remove_item(index, quantity * num_to_make)
 
         xp_strs = []
         for xp_class, xp in self._selected_recipe.xp_reward_for_use.items():
-            final_xp = player.get_expertise().add_xp_to_class(xp, xp_class, player.get_equipment())
+            final_xp = player.get_expertise().add_xp_to_class(xp * num_to_make, xp_class, player.get_equipment())
             xp_strs.append(f"*(+{final_xp} {xp_class} xp)*")
         xp_strs_joined = '\n'.join(xp_strs)
         xp_display = f"\n{xp_strs_joined}" if len(xp_strs) > 0 else ""
@@ -822,22 +839,22 @@ class WorkshopView(discord.ui.View):
         for output_key, quantity in self._selected_recipe.outputs.items():
             new_item = LOADED_ITEMS.get_new_item(output_key)
             # There's one by default, so add any extra as needed
-            new_item.add_amount(quantity - 1)
+            new_item.add_amount((quantity * num_to_make) - 1)
             inventory.add_item(new_item)
-            output_strs.append(f"{new_item.get_full_name()} (x{quantity})\n")
+            output_strs.append(f"{new_item.get_full_name()} (x{quantity * num_to_make})\n")
 
             if new_item.get_rarity() == Rarity.Common:
-                stats.crafting.common_items_crafted += 1
+                stats.crafting.common_items_crafted += num_to_make
             if new_item.get_rarity() == Rarity.Uncommon:
-                stats.crafting.uncommon_items_crafted += 1
+                stats.crafting.uncommon_items_crafted += num_to_make
             if new_item.get_rarity() == Rarity.Rare:
-                stats.crafting.rare_items_crafted += 1
+                stats.crafting.rare_items_crafted += num_to_make
             if new_item.get_rarity() == Rarity.Epic:
-                stats.crafting.epic_items_crafted += 1
+                stats.crafting.epic_items_crafted += num_to_make
             if new_item.get_rarity() == Rarity.Legendary:
-                stats.crafting.legendary_items_crafted += 1
+                stats.crafting.legendary_items_crafted += num_to_make
             if new_item.get_rarity() == Rarity.Artifact:
-                stats.crafting.artifact_items_crafted += 1
+                stats.crafting.artifact_items_crafted += num_to_make
         output_display = '\n'.join(output_strs)
         
         return Embed(title="Patterns", description=f"Crafting successful! You received:\n\n{output_display}{xp_display}\n\nChoose a pattern you've acquired or discovered to craft.\n\nNavigate through your patterns using the Prev and Next buttons.")
