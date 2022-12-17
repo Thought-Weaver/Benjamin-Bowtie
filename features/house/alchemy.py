@@ -827,7 +827,6 @@ class AlchemyChamberView(discord.ui.View):
                     inventory.remove_item(index, 1)
 
         if found_recipe is None:
-            self._current_cooking = {}
             self._get_alchemize_buttons()
             return Embed(title="Alchemize", description=f"You attempt to mix these ingredients together, but nothing happens.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nMix together ingredients from your inventory and attempt to create a potion.\n\nNavigate through your recipes using the Prev and Next buttons.")
             

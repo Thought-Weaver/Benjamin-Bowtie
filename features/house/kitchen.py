@@ -825,7 +825,6 @@ class KitchenView(discord.ui.View):
                     inventory.remove_item(index, 1)
 
         if found_recipe is None:
-            self._current_cooking = {}
             self._get_cook_buttons()
             return Embed(title="Cook", description=f"You attempt to mix these ingredients together, but nothing happens.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through your recipes using the Prev and Next buttons.")
             

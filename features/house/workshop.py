@@ -904,7 +904,6 @@ class WorkshopView(discord.ui.View):
                     inventory.remove_item(index, 1)
 
         if found_recipe is None:
-            self._current_cooking = {}
             self._get_craft_buttons()
             return Embed(title="Craft", description=f"You attempt to combine these materials together, but nothing happens.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nUse materials from your inventory and attempt to craft something.\n\nNavigate through your patterns using the Prev and Next buttons.")
 
