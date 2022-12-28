@@ -1621,12 +1621,12 @@ class DuelView(discord.ui.View):
             formatted_str = result_str.format(self.get_name(previous_entity))
             self._additional_info_string_data += formatted_str    
 
-        for item in previous_entity.get_equipment().get_all_equipped_items():
+        for item in entity.get_equipment().get_all_equipped_items():
             item_effects = item.get_item_effects()
             if item_effects is None:
                 continue
             for item_effect in item_effects.on_turn_start:
-                result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity))
+                result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity))
                 if result_str != "":
                     self._additional_info_string_data += result_str + " "
         
@@ -1655,14 +1655,20 @@ class DuelView(discord.ui.View):
         # Fixed damage is taken directly, no reduction
         entity.get_expertise().damage(start_damage, entity.get_dueling(), percent_reduct=0, ignore_armor=True)
         if start_damage > 0:
+            if self._additional_info_string_data != "":
+                self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)} took {start_damage} damage! "
 
         entity.get_expertise().heal(start_heals)
         if start_heals > 0:
+            if self._additional_info_string_data != "":
+                self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)} had {start_heals} health restored! "
 
         if random() < max_should_skip_chance:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
+            if self._additional_info_string_data != "":
+                self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)}'s turn was skipped!"
             for se in entity.get_dueling().status_effects:
                 # This is a special case to make sure that Faltering doesn't always skip the entity; if it triggers,
@@ -2051,9 +2057,9 @@ class DuelView(discord.ui.View):
         splash_dmg = 0
         splash_percent_dmg = 0
         for item in attacker_equipment.get_all_equipped_items():
-            item_effects = item.get_item_effects()
-            if item_effects is not None:
-                for item_effect in item_effects.permanent:
+            other_item_effects = item.get_item_effects()
+            if other_item_effects is not None:
+                for item_effect in other_item_effects.permanent:
                     if item_effect.effect_type == EffectType.SplashDmg:
                         splash_dmg += int(item_effect.effect_value)
                     if item_effect.effect_type == EffectType.SplashPercentMaxDmg:
@@ -2083,9 +2089,9 @@ class DuelView(discord.ui.View):
             piercing_percent_dmg = 0
             critical_hit_dmg_buff = 0
             for item in attacker_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is not None:
-                    for item_effect in item_effects.permanent:
+                other_item_effects = item.get_item_effects()
+                if other_item_effects is not None:
+                    for item_effect in other_item_effects.permanent:
                         if not item_effect.meets_conditions(attacker, item):
                             continue
 
@@ -2109,10 +2115,10 @@ class DuelView(discord.ui.View):
             result_strs += [s.format(target_name) for s in attacker.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAttack, target, attacker, 0)]
 
             for item in attacker_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
+                other_item_effects = item.get_item_effects()
+                if other_item_effects is None:
                     continue
-                for item_effect in item_effects.on_successful_attack:
+                for item_effect in other_item_effects.on_successful_attack:
                     damage, result_str = attacker.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, attacker, target, i + 1, damage)
                     if result_str != "":
                         result_strs.append(result_str.format(attacker_name, target_name))
@@ -2120,10 +2126,10 @@ class DuelView(discord.ui.View):
             result_strs += [s.format(attacker_name) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAttacked, attacker, target, 0)]
 
             for item in target_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
+                other_item_effects = item.get_item_effects()
+                if other_item_effects is None:
                     continue
-                for item_effect in item_effects.on_attacked:
+                for item_effect in other_item_effects.on_attacked:
                     damage, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, i + 1, damage)
                     if result_str != "":
                         result_strs.append(result_str.format(target_name, attacker_name))
@@ -2137,10 +2143,10 @@ class DuelView(discord.ui.View):
             if actual_damage_dealt > 0:
                 result_strs += [s.format(attacker_name) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, attacker, target, 0)]
                 for item in target_equipment.get_all_equipped_items():
-                    item_effects = item.get_item_effects()
-                    if item_effects is None:
+                    other_item_effects = item.get_item_effects()
+                    if other_item_effects is None:
                         continue
-                    for item_effect in item_effects.on_damaged:
+                    for item_effect in other_item_effects.on_damaged:
                         _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, i + 1, actual_damage_dealt)
                         if result_str != "":
                             result_strs.append(result_str.format(target_name, attacker_name))
