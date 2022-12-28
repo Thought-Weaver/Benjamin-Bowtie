@@ -211,10 +211,19 @@ class Ability():
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
+
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
 
         result_str = self.remove_mana_and_set_cd(caster)
@@ -1036,12 +1045,21 @@ class WrathOfTheWavesI(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
+
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
+
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
             results.append(NegativeAbilityResult(mana_and_cd_str, False))
@@ -1136,12 +1154,21 @@ class WrathOfTheWavesII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
+
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
+
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
             results.append(NegativeAbilityResult(mana_and_cd_str, False))
@@ -1236,12 +1263,21 @@ class WrathOfTheWavesIII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
+
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
+
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
             results.append(NegativeAbilityResult(mana_and_cd_str, False))
@@ -1307,7 +1343,7 @@ class HighTideII(Ability):
             icon="\uD83C\uDF0A",
             name="High Tide II",
             class_key=ExpertiseClass.Fisher,
-            description="Raise a protective wall of water, reducing all damage you take next turn by 35%.",
+            description="Raise a protective wall of water, reducing all damage you take next turn by 45%.",
             flavor_text="",
             mana_cost=20,
             cooldown=1,
@@ -1320,7 +1356,7 @@ class HighTideII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dmg_reduction = DmgReduction(
             turns_remaining=1,
-            value=0.35,
+            value=0.45,
             source_str=self.get_icon_and_name()
         )
 
@@ -1345,7 +1381,7 @@ class HighTideIII(Ability):
             icon="\uD83C\uDF0A",
             name="High Tide III",
             class_key=ExpertiseClass.Fisher,
-            description="Raise a protective wall of water, reducing all damage you take next turn by 45%.",
+            description="Raise a protective wall of water, reducing all damage you take next turn by 65%.",
             flavor_text="",
             mana_cost=20,
             cooldown=1,
@@ -1358,7 +1394,45 @@ class HighTideIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dmg_reduction = DmgReduction(
             turns_remaining=1,
-            value=0.45,
+            value=0.65,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dmg_reduction])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class HighTideIV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF0A",
+            name="High Tide IV",
+            class_key=ExpertiseClass.Fisher,
+            description="Raise a protective wall of water, reducing all damage you take next turn by 85%.",
+            flavor_text="",
+            mana_cost=20,
+            cooldown=1,
+            num_targets=0,
+            level_requirement=21,
+            target_own_group=True,
+            purchase_cost=6400
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        dmg_reduction = DmgReduction(
+            turns_remaining=1,
+            value=0.85,
             source_str=self.get_icon_and_name()
         )
 
@@ -1472,16 +1546,25 @@ class ThunderingTorrentI(Ability):
 
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
-                value=int(actual_damage_dealt / 2),
+                value=int(damage / 2),
                 source_str=self.get_icon_and_name()
             ))
+
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
+
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
             results.append(NegativeAbilityResult(mana_and_cd_str, False))
@@ -1592,16 +1675,25 @@ class ThunderingTorrentII(Ability):
 
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
-                value=int(actual_damage_dealt / 2),
+                value=int(damage / 2),
                 source_str=self.get_icon_and_name()
             ))
+
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
+
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
             results.append(NegativeAbilityResult(mana_and_cd_str, False))
@@ -1712,16 +1804,25 @@ class ThunderingTorrentIII(Ability):
 
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
-                value=int(actual_damage_dealt / 2),
+                value=int(damage / 2),
                 source_str=self.get_icon_and_name()
             ))
+
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
+
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
             results.append(NegativeAbilityResult(mana_and_cd_str, False))
@@ -2105,12 +2206,21 @@ class WhirlpoolI(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
+
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
+
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
             results.append(NegativeAbilityResult(mana_and_cd_str, False))
@@ -2221,12 +2331,21 @@ class WhirlpoolII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
+
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
+
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
             results.append(NegativeAbilityResult(mana_and_cd_str, False))
@@ -2337,12 +2456,21 @@ class WhirlpoolIII(Ability):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
+            se_str: str = ""
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
+                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+            target.get_expertise().update_stats(target.get_combined_attributes())
+
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
+            results.append(NegativeAbilityResult(se_str, False))
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
-        
+
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
             results.append(NegativeAbilityResult(mana_and_cd_str, False))
@@ -2604,6 +2732,52 @@ class WhirlwindIII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.7)
+        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class WhirlwindIV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF2A\uFE0F",
+            name="Whirlwind IV",
+            class_key=ExpertiseClass.Guardian,
+            description="Swing your weapon around you, dealing 80% of your weapon damage to all enemies.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=2,
+            num_targets=-1,
+            level_requirement=11,
+            target_own_group=False,
+            purchase_cost=1600
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        caster_equipment: Equipment = caster.get_equipment()
+        caster_attrs = caster.get_combined_attributes()
+
+        main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
+        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
+
+        unarmed_strength_bonus = int(caster_attrs.strength / 2)
+        weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
+        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
+
+        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        damage = ceil(base_damage * 0.8)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3157,16 +3331,92 @@ class TauntI(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDCCF",
-            name="Taunt",
+            name="Taunt I",
             class_key=ExpertiseClass.Guardian,
-            description="Force an enemy to attack you next turn.",
+            description="Force an enemy to attack you on their next turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
             num_targets=1,
+            level_requirement=6,
+            target_own_group=False,
+            purchase_cost=500
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        taunt = Taunted(
+            turns_remaining=1,
+            forced_to_attack=caster,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [taunt])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class TauntII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDCCF",
+            name="Taunt II",
+            class_key=ExpertiseClass.Guardian,
+            description="Force up to 3 enemies to attack you on their next turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=1,
+            num_targets=3,
+            level_requirement=9,
+            target_own_group=False,
+            purchase_cost=1000
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        taunt = Taunted(
+            turns_remaining=1,
+            forced_to_attack=caster,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [taunt])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class TauntIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDCCF",
+            name="Taunt III",
+            class_key=ExpertiseClass.Guardian,
+            description="Force up to 5 enemies to attack you on their next turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=1,
+            num_targets=5,
             level_requirement=12,
             target_own_group=False,
-            purchase_cost=2500
+            purchase_cost=2000
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5853,7 +6103,7 @@ class ParalyzingFumesI(Ability):
             icon="\uD83D\uDCAB",
             name="Paralyzing Fumes I",
             class_key=ExpertiseClass.Alchemist,
-            description="Apply Faltering to all enemies, giving them a 75% chance to lose their next turn.",
+            description="Release a dangerous gas that has a 75% chance to Falter all enemies at the start of their next turns.",
             flavor_text="",
             mana_cost=40,
             cooldown=6,
@@ -5866,6 +6116,44 @@ class ParalyzingFumesI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         faltering = TurnSkipChance(
             turns_remaining=1,
+            value=0.75,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [faltering])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class ParalyzingFumesII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDCAB",
+            name="Paralyzing Fumes I",
+            class_key=ExpertiseClass.Alchemist,
+            description="Release a dangerous gas that has a 75% chance to Falter all enemies at the start of their next 2 turns.",
+            flavor_text="",
+            mana_cost=40,
+            cooldown=6,
+            num_targets=-1,
+            level_requirement=24,
+            target_own_group=False,
+            purchase_cost=10000
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        faltering = TurnSkipChance(
+            turns_remaining=2,
             value=0.75,
             source_str=self.get_icon_and_name()
         )

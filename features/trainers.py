@@ -4,7 +4,7 @@ import discord
 
 from discord import Embed
 from features.expertise import Expertise, ExpertiseClass
-from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CrabnadoI, CrabnadoII, CrabnadoIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CursedCoinsI, CursedCoinsII, CursedCoinsIII, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EmpowermentII, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HookI, HookII, HookIII, IncenseI, IncenseII, IncenseIII, ParalyzingFumesI, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV, UnbreakingI, UnbreakingII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlwindI, WhirlwindII, WhirlwindIII, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
+from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CrabnadoI, CrabnadoII, CrabnadoIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CursedCoinsI, CursedCoinsII, CursedCoinsIII, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EmpowermentII, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HighTideIV, HookI, HookII, HookIII, IncenseI, IncenseII, IncenseIII, ParalyzingFumesI, ParalyzingFumesII, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, TauntII, TauntIII, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV, UnbreakingI, UnbreakingII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -152,7 +152,7 @@ class TrainerView(discord.ui.View):
             [CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII],
             [HookI, HookII, HookIII],
             [WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII],
-            [HighTideI, HighTideII, HighTideIII],
+            [HighTideI, HighTideII, HighTideIII, HighTideIV],
             [ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII],
             [DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII],
             [WhirlpoolI, WhirlpoolII, WhirlpoolIII],
@@ -160,13 +160,13 @@ class TrainerView(discord.ui.View):
         ]
 
         self._guardian_abilities: List[List[type]] = [
-            [WhirlwindI, WhirlwindII, WhirlwindIII],
+            [WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV],
             [SecondWindI, SecondWindII, SecondWindIII],
             [ScarArmorI, ScarArmorII],
             [UnbreakingI, UnbreakingII],
             [CounterstrikeI, CounterstrikeII, CounterstrikeIII],
             [BidedAttackI, BidedAttackII, BidedAttackIII],
-            [TauntI],
+            [TauntI, TauntII, TauntIII],
             [PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII],
             [PressTheAdvantageI],
             [EvadeI, EvadeII, EvadeIII],
@@ -196,7 +196,7 @@ class TrainerView(discord.ui.View):
             [FesteringVaporI, FesteringVaporII, FesteringVaporIII],
             [PoisonousSkinI],
             [RegenerationI, RegenerationII, RegenerationIII],
-            [ParalyzingFumesI],
+            [ParalyzingFumesI, ParalyzingFumesII],
             [QuickAccessI]
         ]
 

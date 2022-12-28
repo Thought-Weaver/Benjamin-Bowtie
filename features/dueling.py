@@ -837,6 +837,89 @@ class Dueling():
             self.status_effects.append(status_effect)
             return f"{entity_name} is now {status_effect.name} from {item.get_full_name()}"
 
+        chance_poisoned = 0
+        turns_poisoned = 0
+        chance_bleeding = 0
+        turns_bleeding = 0
+        chance_faltering = 0
+        turns_faltering = 0
+
+        for other_item in entity.get_equipment().get_all_equipped_items():
+            item_effects = other_item.get_item_effects()
+            if item_effects is not None:
+                item_effects_arr: List[Effect] = self.map_item_effect_cat_to_arr(item_effects, ItemEffectCategory.Permanent)
+
+                for other_item_effect in item_effects_arr:
+                    if not other_item_effect.meets_conditions(entity, item):
+                        continue
+
+                    if other_item_effect.effect_type == EffectType.ResistPoisoned:
+                        chance_poisoned -= other_item_effect.effect_value
+                    if other_item_effect.effect_type == EffectType.ResistBleeding:
+                        chance_bleeding -= other_item_effect.effect_value
+                    if other_item_effect.effect_type == EffectType.ResistFaltering:
+                        chance_faltering -= other_item_effect.effect_value
+
+        if item_effect.effect_type == EffectType.ChancePoisoned:
+            chance_poisoned += item_effect.effect_value
+            turns_poisoned = max(turns_poisoned, int(item_effect.effect_time))
+        if item_effect.effect_type == EffectType.ResistPoisoned:
+            chance_poisoned -= item_effect.effect_value
+        if item_effect.effect_type == EffectType.ChanceBleeding:
+            chance_bleeding += item_effect.effect_value
+            turns_bleeding = max(turns_bleeding, int(item_effect.effect_time))
+        if item_effect.effect_type == EffectType.ResistBleeding:
+            chance_bleeding -= item_effect.effect_value
+        if item_effect.effect_type == EffectType.ChanceFaltering:
+            chance_faltering += item_effect.effect_value
+            turns_faltering = max(turns_faltering, int(item_effect.effect_time))
+        if item_effect.effect_type == EffectType.ResistFaltering:
+            chance_faltering -= item_effect.effect_value
+
+        if random() < chance_poisoned:
+            status_effect = Poisoned(
+                turns_remaining=turns_poisoned,
+                value=POISONED_PERCENT_HP
+            )
+            entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} for {turns_poisoned}"
+
+        if random() < chance_bleeding:
+            status_effect = Bleeding(
+                turns_remaining=turns_bleeding,
+                value=BLEED_PERCENT_HP
+            )
+            entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} for {turns_bleeding}"
+        
+        if random() < chance_faltering:
+            status_effect = TurnSkipChance(
+                turns_remaining=turns_faltering,
+                value=1
+            )
+            entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} for {turns_faltering}"
+
+        if item_effect.effect_type == EffectType.RestoreHealth:
+            healing = int(item_effect.effect_value)
+            entity.get_expertise().heal(healing)
+            return f"Healed {healing} HP from {item.get_full_name()}"
+        
+        if item_effect.effect_type == EffectType.RestorePercentHealth:
+            healing = ceil(item_effect.effect_value * entity.get_expertise().max_hp)
+            entity.get_expertise().heal(healing)
+            return f"Healed {healing} HP from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.RestoreMana:
+            restoration = int(item_effect.effect_value)
+            entity.get_expertise().restore_mana(restoration)
+            return f"Restored {restoration} mana from {item.get_full_name()}"
+        
+        if item_effect.effect_type == EffectType.RestorePercentMana:
+            restoration = ceil(item_effect.effect_value * entity.get_expertise().max_mana)
+            entity.get_expertise().restore_mana(restoration)
+            return f"Restored {restoration} mana from {item.get_full_name()}"
+
         if item_effect.effect_type == EffectType.RestoreArmor:
             max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
             to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - entity.get_dueling().armor))
@@ -845,7 +928,7 @@ class Dueling():
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
             max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
-            armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
+            armor_from_effect: int = ceil(max_reduced_armor * item_effect.effect_value)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - entity.get_dueling().armor))
             entity.get_dueling().armor += to_restore
             return f"Restored {to_restore} Armor using {item.get_full_name()}"
@@ -871,13 +954,13 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = ConBuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
@@ -888,13 +971,13 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = StrBuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
@@ -905,13 +988,13 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = DexBuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
@@ -922,13 +1005,13 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = IntBuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
@@ -939,13 +1022,13 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = LckBuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
@@ -956,13 +1039,13 @@ class Dueling():
             if item_effect.effect_value >= 0:
                 attr_mod = MemBuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
-                    int(item_effect.effect_value * potion_effect_mod),
+                    ceil(item_effect.effect_value * potion_effect_mod),
                     source_str=f"{item.get_full_name()}"
                 )
             self.status_effects.append(attr_mod)
@@ -1093,46 +1176,46 @@ class Dueling():
 
         if item_effect.effect_type == EffectType.RestoreArmor:
             max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
-            to_restore = min(int(item_effect.effect_value * potion_effect_mod), max(0, max_reduced_armor - self_entity.get_dueling().armor))
+            to_restore = min(ceil(item_effect.effect_value * potion_effect_mod), max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
             return f"Restored {to_restore} Armor using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
             max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
-            armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value * potion_effect_mod)
+            armor_from_effect: int = ceil(max_reduced_armor * item_effect.effect_value * potion_effect_mod)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
             return f"Restored {to_restore} Armor using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.HealthSteal:
-            health_steal = int(item_effect.effect_value * potion_effect_mod * target_entity.get_expertise().hp)
+            health_steal = ceil(item_effect.effect_value * potion_effect_mod * target_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
             target_entity.get_expertise().damage(health_steal, target_entity.get_dueling(), percent_reduct=0, ignore_armor=True)
             return f"Stole {health_steal} HP from " + "{1}" + f" using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.ManaSteal:
-            mana_steal = int(item_effect.effect_value * potion_effect_mod * target_entity.get_expertise().mana)
+            mana_steal = ceil(item_effect.effect_value * potion_effect_mod * target_entity.get_expertise().mana)
             self_entity.get_expertise().restore_mana(mana_steal)
             target_entity.get_expertise().remove_mana(mana_steal)
             return f"Stole {mana_steal} mana from " + "{1}" + f" using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestoreHealth:
-            healing = int(item_effect.effect_value * potion_effect_mod)
+            healing = ceil(item_effect.effect_value * potion_effect_mod)
             self_entity.get_expertise().heal(healing)
             return f"Healed {healing} HP from {item.get_full_name()}"
         
         if item_effect.effect_type == EffectType.RestorePercentHealth:
-            healing = int(item_effect.effect_value * potion_effect_mod * self_entity.get_expertise().max_hp)
+            healing = ceil(item_effect.effect_value * potion_effect_mod * self_entity.get_expertise().max_hp)
             self_entity.get_expertise().heal(healing)
             return f"Healed {healing} HP from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestoreMana:
-            restoration = int(item_effect.effect_value * potion_effect_mod)
+            restoration = ceil(item_effect.effect_value * potion_effect_mod)
             self_entity.get_expertise().restore_mana(restoration)
             return f"Restored {restoration} mana from {item.get_full_name()}"
         
         if item_effect.effect_type == EffectType.RestorePercentMana:
-            restoration = int(item_effect.effect_value * potion_effect_mod * self_entity.get_expertise().max_mana)
+            restoration = ceil(item_effect.effect_value * potion_effect_mod * self_entity.get_expertise().max_mana)
             self_entity.get_expertise().restore_mana(restoration)
             return f"Restored {restoration} mana from {item.get_full_name()}"
 
@@ -1557,14 +1640,14 @@ class DuelView(discord.ui.View):
                 if se.key == StatusEffectKey.FixedDmgTick:
                     start_damage += int(se.value)
                 if se.key == StatusEffectKey.Bleeding:
-                    start_damage += int(entity.get_expertise().max_hp * se.value)
+                    start_damage += ceil(entity.get_expertise().max_hp * se.value)
                 if se.key == StatusEffectKey.Poisoned:
                     if heals_from_poison:
-                        start_heals += int(entity.get_expertise().max_hp * se.value)
+                        start_heals += ceil(entity.get_expertise().max_hp * se.value)
                     else:
-                        start_damage += int(entity.get_expertise().max_hp * se.value)
+                        start_damage += ceil(entity.get_expertise().max_hp * se.value)
                 if se.key == StatusEffectKey.RegenerateHP:
-                    start_heals += int(entity.get_expertise().max_hp * se.value)
+                    start_heals += ceil(entity.get_expertise().max_hp * se.value)
                 # Only take the largest chance to skip the turn
                 if se.key == StatusEffectKey.TurnSkipChance:
                     max_should_skip_chance = max(se.value, max_should_skip_chance)
@@ -1968,7 +2051,7 @@ class DuelView(discord.ui.View):
                     if item_effect.effect_type == EffectType.SplashDmg:
                         splash_dmg += int(item_effect.effect_value)
                     if item_effect.effect_type == EffectType.SplashPercentMaxDmg:
-                        splash_percent_dmg += int(weapon_stats.get_max_damage() * item_effect.effect_value)
+                        splash_percent_dmg += ceil(weapon_stats.get_max_damage() * item_effect.effect_value)
 
         result_strs = [f"{attacker_name} attacked using {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'}!\n"]
         for i, target in enumerate(self._selected_targets):
@@ -2011,7 +2094,7 @@ class DuelView(discord.ui.View):
                         
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1 
             base_damage = weapon_stats.get_random_damage(attacker_attrs, item_effects, max(0, level_req - attacker.get_expertise().level))
-            damage = int(base_damage * critical_hit_final)
+            damage = ceil(base_damage * critical_hit_final)
             damage += min(int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), damage)
 
             # Doing these after damage computation because the player doesn't get an indication the effect occurred
@@ -2073,7 +2156,7 @@ class DuelView(discord.ui.View):
                 generating_string = f" and gained {generating_value} coins"
 
                 if tarnished_value != 0:
-                    cursed_coins_damage += int(tarnished_value * generating_value)
+                    cursed_coins_damage += ceil(tarnished_value * generating_value)
             
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
