@@ -9,6 +9,7 @@ from features.npcs.abarra import BlacksmithView
 from features.npcs.copperbroad import ChefView
 from features.npcs.viktor import RandomItemMerchantView
 from features.npcs.yenna import YennaView
+from features.shared.item import Rarity
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from math import floor
@@ -67,6 +68,7 @@ class SellModal(discord.ui.Modal):
         amount_to_sell: int = int(self._count_input.value)
         inventory.remove_item(self._item_index, amount_to_sell)
         item_value: int = self._item.get_value()
+        item_rarity: Rarity = self._item.get_rarity()
         total_amount: int = item_value * amount_to_sell
         inventory.add_coins(total_amount)
 
@@ -75,7 +77,21 @@ class SellModal(discord.ui.Modal):
         player_stats.market.coins_made += item_value * amount_to_sell
 
         player_xp: Expertise = player.get_expertise()
-        xp_to_add: int = floor(item_value * amount_to_sell / 4)
+        base_xp: int = 0
+        if item_rarity == Rarity.Common:
+            base_xp = 1
+        if item_rarity == Rarity.Uncommon:
+            base_xp = 2
+        if item_rarity == Rarity.Rare:
+            base_xp = 4
+        if item_rarity == Rarity.Epic:
+            base_xp = 8
+        if item_rarity == Rarity.Legendary:
+            base_xp = 16
+        if item_rarity == Rarity.Artifact:
+            base_xp = 32
+
+        xp_to_add: int = amount_to_sell * base_xp
         xp_to_add = player_xp.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant, player.get_equipment())
     
         amount_str: str = ""
