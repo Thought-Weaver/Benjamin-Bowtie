@@ -344,7 +344,7 @@ class RandomItemMerchant(NPC):
         new_items = random.choices(possible_items, k=8, weights=weights)
         
         self._current_wares = new_items
-        self._cost_adjust = random.randint(125, 225) / 100.0
+        self._cost_adjust = random.randint(100, 225) / 100.0
         self._purchased_this_tick: Dict[str, int] = {}
 
     def _setup_inventory(self):
