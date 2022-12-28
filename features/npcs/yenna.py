@@ -635,6 +635,7 @@ class YennaView(discord.ui.View):
 
         if self._get_player().get_inventory().get_coins() >= self._TAROT_COST:
             self._get_player().get_expertise().reset_points()
+            self._get_player().get_dueling().abilities = []
             self._get_player().get_inventory().remove_coins(self._TAROT_COST)
 
         return Embed(
