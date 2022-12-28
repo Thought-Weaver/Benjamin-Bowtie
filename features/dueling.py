@@ -1999,6 +1999,12 @@ class DuelView(discord.ui.View):
             ally_or_op_str = "ally" if target_own_group else "opponent"
             description += f"{selected_targets_str}Choose an {ally_or_op_str}. {self._targets_remaining} {target_str} remaining."
         
+        for se in cur_turn_entity.get_dueling().status_effects:
+            if se.key == StatusEffectKey.CannotTarget:
+                assert(isinstance(se, CannotTarget))
+                if se.cant_target in targets:
+                    targets.remove(se.cant_target)
+
         all_targets = targets[self._page * self._NUM_PER_PAGE:min(len(targets), (self._page + 1) * self._NUM_PER_PAGE)]
         filtered_targets = list(filter(lambda target: target.get_expertise().hp > 0, all_targets)) if not self._target_own_group else all_targets
         page_slots = sorted(filtered_targets, key=lambda target: self.get_turn_index(target))
@@ -2587,7 +2593,8 @@ class DuelView(discord.ui.View):
         for se in npc_dueling.status_effects:
             if se.key == StatusEffectKey.CannotTarget:
                 assert(isinstance(se, CannotTarget))
-                enemies.remove(se.cant_target)
+                if se.cant_target in enemies:
+                    enemies.remove(se.cant_target)
 
         # Step 1: Try attacking all enemies
         if not restricted_to_items:
