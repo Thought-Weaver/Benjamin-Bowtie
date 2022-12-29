@@ -1058,15 +1058,14 @@ class WrathOfTheWavesI(Ability):
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult(se_str, False))
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1167,15 +1166,14 @@ class WrathOfTheWavesII(Ability):
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult(se_str, False))
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1276,15 +1274,14 @@ class WrathOfTheWavesIII(Ability):
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult(se_str, False))
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1563,15 +1560,14 @@ class ThunderingTorrentI(Ability):
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult(se_str, False))
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1692,15 +1688,14 @@ class ThunderingTorrentII(Ability):
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult(se_str, False))
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -1821,15 +1816,14 @@ class ThunderingTorrentIII(Ability):
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult(se_str, False))
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -2219,15 +2213,14 @@ class WhirlpoolI(Ability):
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult(se_str, False))
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -2344,15 +2337,14 @@ class WhirlpoolII(Ability):
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult(se_str, False))
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -2469,15 +2461,14 @@ class WhirlpoolIII(Ability):
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}\n"
+                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
-            results.append(NegativeAbilityResult(se_str, False))
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage", False))
+            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
