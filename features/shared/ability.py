@@ -121,7 +121,13 @@ class Ability():
                         mana_cost_adjustment = max(mana_cost_adjustment + effect.effect_value, -1)
                     if effect.effect_type == EffectType.AdjustedCDs:
                         cd_adjustment += int(effect.effect_value)
-        
+
+        if self._cooldown >= 0:
+            self._cur_cooldown = max(self._cooldown + cd_adjustment, 0)
+        else:
+            # Can't adjust -1 time cooldowns
+            self._cur_cooldown = self._cooldown
+
         final_mana_cost = self.get_mana_cost() + int(self.get_mana_cost() * mana_cost_adjustment)
         if mana_to_blood_percent == 0:
             caster.get_expertise().remove_mana(final_mana_cost)
@@ -139,12 +145,6 @@ class Ability():
                 caster.get_expertise().update_stats(caster.get_combined_attributes())
 
                 return f"You took {damage} damage to cast this from Contract: Mana to Blood" + result_str
-            
-        if self._cooldown >= 0:
-            self._cur_cooldown = max(self._cooldown + cd_adjustment, 0)
-        else:
-            # Can't adjust -1 time cooldowns
-            self._cur_cooldown = self._cooldown
 
     def _use_damage_ability(self, caster: Player | NPC, targets: List[Player | NPC], dmg_range: range) -> List[NegativeAbilityResult]:
         results: List[NegativeAbilityResult] = []
