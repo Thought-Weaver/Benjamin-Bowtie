@@ -1029,11 +1029,11 @@ class Yenna(NPC):
             IncenseIII(), ContractManaToBloodIII(), ContractWealthForPowerIII()
         ]
 
-    def _setup_story_variables(self):
+    def _setup_story_variables(self, state: dict):
         self._scroll_text: str = "You walk on chains with your eyes. Push the fingers through the surface into the void. The trees are talking now. Through a maze you are rewarded in chaos. They are in the dreaming, in the wanting, in the knowing. Beware the red hexagons. It is the world in the mirror of ocean's make. How do you walk? Repeat it. The name of the sound. We build it until nothing remains. Don't you want these waves to drag you away? Come hither to us, Fisher King. You can almost hear us now. Your throne is waiting."
-        self._words_identified: List[str] = []
-        self._last_to_identify_scroll: str = ""
-        self._num_fish_maybe_identified: int = 0
+        self._words_identified: List[str] = state.get("_words_identified", [])
+        self._last_to_identify_scroll: str = state.get("_last_to_identify_scroll", "")
+        self._num_fish_maybe_identified: int = state.get("_num_fish_maybe_identified", 0)
         self._NUM_FISH_PER_RESULT: int = 5 # Theoretically this could scale with the number of active players
 
     def _setup_npc_params(self):
@@ -1041,7 +1041,7 @@ class Yenna(NPC):
         self._setup_equipment()
         self._setup_xp()
         self._setup_abilities()
-        self._setup_story_variables()
+        self._setup_story_variables(state={})
 
     def __getstate__(self):
         return self.__dict__
@@ -1077,4 +1077,4 @@ class Yenna(NPC):
         if self._stats is None:
             self._stats = Stats()
         
-        self._setup_story_variables()
+        self._setup_story_variables(state)
