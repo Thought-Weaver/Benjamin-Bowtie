@@ -15,7 +15,7 @@
         "permanent": [
             {
                 "effect_type": "AdjustedManaCosts",
-                "effect_value": -0.1,
+                "effect_value": -0.25,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
@@ -23,6 +23,15 @@
             {
                 "effect_type": "CritDmgReduction",
                 "effect_value": 0.35,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ],
+        "on_turn_start": [
+            {
+                "effect_type": "RestoreHealth",
+                "effect_value": 5,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
