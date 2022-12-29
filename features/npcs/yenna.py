@@ -1025,7 +1025,7 @@ class Yenna(NPC):
         self._dueling.abilities = [
             BoundToGetLuckyIII(), SecondWindI(), SilkspeakingI(),
             ParalyzingFumesI(), RegenerationIII(), ThunderingTorrentIII(),
-            PreparePotionsIII(), VitalityTransferIII(), EmpowermentI(),
+            PreparePotionsIII(), EmpowermentI(),
             IncenseIII(), ContractManaToBloodIII(), ContractWealthForPowerIII()
         ]
 
