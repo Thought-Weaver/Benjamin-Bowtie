@@ -1765,7 +1765,7 @@ class DuelView(discord.ui.View):
         if all(isinstance(entity, Player) for entity in self._turn_order):
             # This should only happen in a PvP duel
             winner_str = ""
-            winner_xp = ceil(1.25 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
+            winner_xp = ceil(1.1 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
                 winner_expertise = winner.get_expertise()
                 winner_dueling = winner.get_dueling()
@@ -1807,7 +1807,7 @@ class DuelView(discord.ui.View):
             return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\nPractice for the journeys yet to come.")
         elif all(isinstance(entity, NPC) for entity in self._enemies):
             winner_str = ""
-            winner_xp = ceil(1.15 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
+            winner_xp = ceil(0.5 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
                 if isinstance(winner, Player):
                     winner_expertise = winner.get_expertise()
@@ -1876,7 +1876,7 @@ class DuelView(discord.ui.View):
                 return Embed(title="Duel Finished", description=f"You have been vanquished!")
         else: # In a completely mixed duel
             winner_str = ""
-            winner_xp = ceil(1.15 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
+            winner_xp = ceil(0.5 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
                 if isinstance(winner, Player):
                     winner_expertise = winner.get_expertise()
@@ -2138,7 +2138,6 @@ class DuelView(discord.ui.View):
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
-            cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
                 result_strs += [s.format(attacker_name) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, attacker, target, 0)]
@@ -2172,7 +2171,7 @@ class DuelView(discord.ui.View):
             
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
-            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
+            armor_str = f" ({target_dueling.armor - org_armor} Armor)" if target_dueling.armor - org_armor < 0 else ""
 
             result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage to {target_name}{generating_string}")
         
@@ -2181,29 +2180,47 @@ class DuelView(discord.ui.View):
         if cursed_coins_damage != 0:
             if attacker in self._enemies:
                 for other in self._allies:
-                    other.get_expertise().damage(cursed_coins_damage, other.get_dueling(), percent_reduct=0, ignore_armor=True)
-                    attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
-                
-                names_str = ", ".join([self.get_name(other) for other in self._allies])
-                result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} damage to {names_str}")
+                    org_armor = other.get_dueling().armor
+                    percent_dmg_reduct = other.get_dueling().get_total_percent_dmg_reduct()
+                    actual_cc_damage = other.get_expertise().damage(cursed_coins_damage, other.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+
+                    armor_str = f" ({other.get_dueling().armor - org_armor} Armor)" if other.get_dueling().armor - org_armor < 0 else ""
+
+                    attacker.get_stats().dueling.damage_dealt += actual_cc_damage
+                    other.get_stats().dueling.damage_taken += actual_cc_damage
+
+                    result_strs.append(f"{attacker_name} dealt {actual_cc_damage}{armor_str} damage to {self.get_name(other)} using Cursed Coins")
             elif attacker in self._allies:
                 for other in self._enemies:
-                    other.get_expertise().damage(cursed_coins_damage, other.get_dueling(), percent_reduct=0, ignore_armor=True)
-                    attacker.get_stats().dueling.damage_dealt += cursed_coins_damage
-                
-                names_str = ", ".join([self.get_name(other) for other in self._enemies])
-                result_strs.append(f"{attacker_name} dealt {cursed_coins_damage} damage to {names_str} using Cursed Coins")
+                    org_armor = other.get_dueling().armor
+                    percent_dmg_reduct = other.get_dueling().get_total_percent_dmg_reduct()
+                    actual_cc_damage = other.get_expertise().damage(cursed_coins_damage, other.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+
+                    armor_str = f" ({other.get_dueling().armor - org_armor} Armor)" if other.get_dueling().armor - org_armor < 0 else ""
+
+                    attacker.get_stats().dueling.damage_dealt += actual_cc_damage
+                    other.get_stats().dueling.damage_taken += actual_cc_damage
+
+                    result_strs.append(f"{attacker_name} dealt {actual_cc_damage}{armor_str} damage to {self.get_name(other)} using Cursed Coins")
 
         if splash_dmg > 0 or splash_percent_dmg > 0:
             if attacker in self._enemies:
                 for target in self._allies:
                     percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
                     damage_dealt = target.get_expertise().damage(splash_dmg + splash_percent_dmg, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+
+                    attacker.get_stats().dueling.damage_dealt += damage_dealt
+                    target.get_stats().dueling.damage_taken += damage_dealt
+
                     result_strs.append(f"{attacker_name} dealt {damage_dealt} splash damage to {self.get_name(target)}")
             else:
                 for target in self._enemies:
                     percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
                     damage_dealt = target.get_expertise().damage(splash_dmg + splash_percent_dmg, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+
+                    attacker.get_stats().dueling.damage_dealt += damage_dealt
+                    target.get_stats().dueling.damage_taken += damage_dealt
+
                     result_strs.append(f"{attacker_name} dealt {damage_dealt} splash damage to {self.get_name(target)}")
 
         return "\n".join(result_strs)

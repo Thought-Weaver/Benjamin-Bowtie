@@ -4603,10 +4603,17 @@ class UnseenRichesI(Ability):
         result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {adjusted_coins} coins."
 
         if cursed_coins_damage != 0:
-            for target in targets:
-                target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_reduct=0, ignore_armor=True)
-                target.get_stats().dueling.damage_dealt += cursed_coins_damage
-            result_str += "\n{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
+            for i, target in enumerate(targets):
+                org_armor = target.get_dueling().armor
+                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                actual_cc_damage = target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+
+                armor_str = f" ({target.get_dueling().armor - org_armor} Armor)" if target.get_dueling().armor - org_armor < 0 else ""
+
+                caster.get_stats().dueling.damage_dealt += actual_cc_damage
+                target.get_stats().dueling.damage_taken += actual_cc_damage
+
+                result_str += "\n{0}" + f" dealt {actual_cc_damage}{armor_str} damage to " + "{" + f"{i + 1}" + "} using Cursed Coins"
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -4656,10 +4663,17 @@ class UnseenRichesII(Ability):
         result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {adjusted_coins} coins."
 
         if cursed_coins_damage != 0:
-            for target in targets:
-                target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_reduct=0, ignore_armor=True)
-                target.get_stats().dueling.damage_dealt += cursed_coins_damage
-            result_str += "\n{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
+            for i, target in enumerate(targets):
+                org_armor = target.get_dueling().armor
+                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                actual_cc_damage = target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+
+                armor_str = f" ({target.get_dueling().armor - org_armor} Armor)" if target.get_dueling().armor - org_armor < 0 else ""
+
+                caster.get_stats().dueling.damage_dealt += actual_cc_damage
+                target.get_stats().dueling.damage_taken += actual_cc_damage
+
+                result_str += "\n{0}" + f" dealt {actual_cc_damage}{armor_str} damage to " + "{" + f"{i + 1}" + "} using Cursed Coins"
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -4709,10 +4723,17 @@ class UnseenRichesIII(Ability):
         result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {adjusted_coins} coins."
 
         if cursed_coins_damage != 0:
-            for target in targets:
-                target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_reduct=0, ignore_armor=True)
-                target.get_stats().dueling.damage_dealt += cursed_coins_damage
-            result_str += "\n{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
+            for i, target in enumerate(targets):
+                org_armor = target.get_dueling().armor
+                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                actual_cc_damage = target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+
+                armor_str = f" ({target.get_dueling().armor - org_armor} Armor)" if target.get_dueling().armor - org_armor < 0 else ""
+
+                caster.get_stats().dueling.damage_dealt += actual_cc_damage
+                target.get_stats().dueling.damage_taken += actual_cc_damage
+
+                result_str += "\n{0}" + f" dealt {actual_cc_damage}{armor_str} damage to " + "{" + f"{i + 1}" + "} using Cursed Coins"
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
