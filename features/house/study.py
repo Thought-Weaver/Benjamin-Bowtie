@@ -556,7 +556,7 @@ class StudyView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
-        if self._selected_item is not None and self._selected_item.get_altering_item_keys()[self._selected_socket] != "":
+        if self._selected_item is not None and len(self._selected_item.get_altering_item_keys()) > 0 and self._selected_item.get_altering_item_keys()[self._selected_socket] != "":
             self.add_item(RemoveGemButton(min(4, len(page_slots))))
         self.add_item(ExitWithIntentButton(min(4, len(page_slots))))
 
@@ -632,6 +632,7 @@ class StudyView(discord.ui.View):
         # When there's more than one item in your inventory, the index may change after altering
         # it, so make sure the index is updated.
         self._selected_item_index = inventory.get_item_index(new_item)
+        self._selected_item = new_item
 
         self._get_gem_buttons()
 
@@ -646,11 +647,12 @@ class StudyView(discord.ui.View):
             return self.get_embed_for_intent(error="\n\n*Error: Something about the item you want to enchant changed or it's no longer available.*")
 
         altering_item_keys = self._selected_item.get_altering_item_keys()
-        if not (0 <= self._selected_socket < len(altering_item_keys)):
+        key = altering_item_keys[self._selected_socket]
+
+        if not (0 <= self._selected_socket < len(altering_item_keys)) or key == "":
             self.exit_with_intent()
             return self.get_embed_for_intent(error="\n\n*Error: That's not a valid socket.*")
         
-        key = altering_item_keys[self._selected_socket]
         altering_item_keys[self._selected_socket] = ""
         item = LOADED_ITEMS.get_new_item(key)
         inventory.add_item(item)
@@ -658,6 +660,7 @@ class StudyView(discord.ui.View):
         # When there's more than one item in your inventory, the index may change after altering
         # it, so make sure the index is updated.
         self._selected_item_index = inventory.get_item_index(item)
+        self._selected_item = item
 
         self._get_gem_buttons()
 
