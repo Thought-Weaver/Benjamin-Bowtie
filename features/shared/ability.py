@@ -4751,7 +4751,7 @@ class ContractManaToBloodI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         mana_to_hp = ManaToHP(
             turns_remaining=3,
-            value=0.7,
+            value=0.9,
             source_str=self.get_icon_and_name()
         )
 
@@ -4789,7 +4789,7 @@ class ContractManaToBloodII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         mana_to_hp = ManaToHP(
             turns_remaining=3,
-            value=0.5,
+            value=0.7,
             source_str=self.get_icon_and_name()
         )
 
@@ -4827,7 +4827,7 @@ class ContractManaToBloodIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         mana_to_hp = ManaToHP(
             turns_remaining=3,
-            value=0.3,
+            value=0.5,
             source_str=self.get_icon_and_name()
         )
 
