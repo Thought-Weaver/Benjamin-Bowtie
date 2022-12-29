@@ -4355,7 +4355,7 @@ class ATidySumII(Ability):
             flavor_text="",
             mana_cost=25,
             cooldown=5,
-            num_targets=1,
+            num_targets=0,
             level_requirement=10,
             target_own_group=True,
             purchase_cost=600
@@ -4393,7 +4393,7 @@ class ATidySumIII(Ability):
             flavor_text="",
             mana_cost=25,
             cooldown=5,
-            num_targets=1,
+            num_targets=0,
             level_requirement=12,
             target_own_group=True,
             purchase_cost=1200
@@ -4615,7 +4615,7 @@ class UnseenRichesI(Ability):
             for target in targets:
                 target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_reduct=0, ignore_armor=True)
                 target.get_stats().dueling.damage_dealt += cursed_coins_damage
-            result_str += "{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
+            result_str += "\n{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -4668,7 +4668,7 @@ class UnseenRichesII(Ability):
             for target in targets:
                 target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_reduct=0, ignore_armor=True)
                 target.get_stats().dueling.damage_dealt += cursed_coins_damage
-            result_str += "{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
+            result_str += "\n{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -4721,7 +4721,7 @@ class UnseenRichesIII(Ability):
             for target in targets:
                 target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_reduct=0, ignore_armor=True)
                 target.get_stats().dueling.damage_dealt += cursed_coins_damage
-            result_str += "{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
+            result_str += "\n{0}" + f" dealt {cursed_coins_damage} damage to " + ", ".join(["{" + f"{i + 1}" + "}" for i in range(len(targets))])
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -5453,7 +5453,7 @@ class ToxicCloudI(Ability):
             icon="\uD83C\uDF2B",
             name="Toxic Cloud I",
             class_key=ExpertiseClass.Alchemist,
-            description="Create a miasma that deals 1-3 damage to all enemies with a 30% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
+            description="Create a miasma that deals 1-3 damage to all enemies with a 30% chance to Poison them for 5% of their max health taken as damage every turn for the next 2 turns.",
             flavor_text="",
             mana_cost=5,
             cooldown=2,
@@ -5499,7 +5499,7 @@ class ToxicCloudII(Ability):
             icon="\uD83C\uDF2B",
             name="Toxic Cloud II",
             class_key=ExpertiseClass.Alchemist,
-            description="Create a miasma that deals 2-4 damage to all enemies with a 50% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
+            description="Create a miasma that deals 2-4 damage to all enemies with a 50% chance to Poison them for 5% of their max health taken as damage every turn for the next 2 turns.",
             flavor_text="",
             mana_cost=5,
             cooldown=2,
@@ -5545,7 +5545,7 @@ class ToxicCloudIII(Ability):
             icon="\uD83C\uDF2B",
             name="Toxic Cloud III",
             class_key=ExpertiseClass.Alchemist,
-            description="Create a miasma that deals 3-5 damage to all enemies with a 70% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
+            description="Create a miasma that deals 3-5 damage to all enemies with a 70% chance to Poison them for 5% of their max health taken as damage every turn for the next 2 turns.",
             flavor_text="",
             mana_cost=5,
             cooldown=2,
@@ -5591,7 +5591,7 @@ class ToxicCloudIV(Ability):
             icon="\uD83C\uDF2B",
             name="Toxic Cloud IV",
             class_key=ExpertiseClass.Alchemist,
-            description="Create a miasma that deals 4-6 damage to all enemies with a 90% chance to Poison them for 1% of their max health taken as damage every turn for the next 2 turns.",
+            description="Create a miasma that deals 4-6 damage to all enemies with a 90% chance to Poison them for 5% of their max health taken as damage every turn for the next 2 turns.",
             flavor_text="",
             mana_cost=5,
             cooldown=2,
