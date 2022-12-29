@@ -19,7 +19,7 @@ from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, WeaponStats
 from features.shared.statuseffect import *
 
-from typing import Dict, List, TYPE_CHECKING, Tuple
+from typing import List, TYPE_CHECKING, Tuple
 if TYPE_CHECKING:
     from features.shared.effect import Effect
     from features.expertise import Expertise
@@ -2158,7 +2158,7 @@ class DuelView(discord.ui.View):
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
-                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != attacker), se.on_being_hit_buffs))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target != attacker), se.on_being_hit_buffs))
                     result_strs.append(f"{target_name} gained {se.get_buffs_str()}")
             target.get_expertise().update_stats(target.get_combined_attributes())
 

@@ -129,7 +129,16 @@ class Ability():
             damage = int(mana_to_blood_percent * final_mana_cost)
             if damage > 0:
                 caster.get_expertise().damage(damage, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
-                return f"You took {damage} damage to cast this from Contract: Mana to Blood"
+                
+                result_str = ""
+                for se in caster.get_dueling().status_effects:
+                    if se.key == StatusEffectKey.AttrBuffOnDamage:
+                        assert(isinstance(se, AttrBuffOnDamage))
+                        caster.get_dueling().status_effects += list(map(lambda s: s.set_trigger_first_turn(False), se.on_being_hit_buffs))
+                        result_str = "\n{0}" + f"gained {se.get_buffs_str()}"
+                caster.get_expertise().update_stats(caster.get_combined_attributes())
+
+                return f"You took {damage} damage to cast this from Contract: Mana to Blood" + result_str
             
         if self._cooldown >= 0:
             self._cur_cooldown = max(self._cooldown + cd_adjustment, 0)
@@ -605,7 +614,7 @@ class CrabnadoI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
-        if off_hand_item is None or off_hand_item.get_key() == ItemKey.Crab:
+        if off_hand_item is None or off_hand_item.get_key() != ItemKey.Crab:
             return "You don't have a crab equipped!"
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -641,7 +650,7 @@ class CrabnadoII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
-        if off_hand_item is None or off_hand_item.get_key() == ItemKey.Crab:
+        if off_hand_item is None or off_hand_item.get_key() != ItemKey.Crab:
             return "You don't have a crab equipped!"
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -677,7 +686,7 @@ class CrabnadoIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
-        if off_hand_item is None or off_hand_item.get_key() == ItemKey.Crab:
+        if off_hand_item is None or off_hand_item.get_key() != ItemKey.Crab:
             return "You don't have a crab equipped!"
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
