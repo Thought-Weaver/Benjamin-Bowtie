@@ -6196,7 +6196,7 @@ class QuickAccessI(Ability):
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
         restriction = RestrictedToItems(
-            turns_remaining=3,
+            turns_remaining=1,
             value=0,
             source_str=self.get_icon_and_name()
         )

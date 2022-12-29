@@ -2667,7 +2667,11 @@ class DuelView(discord.ui.View):
 
                     targets = []
                     if self._targets_remaining == -1:
-                        targets = self._allies if cur_npc in self._enemies else self._enemies
+                        target_own_group = dueling_copy._selected_ability.get_target_own_group()
+                        if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
+                            targets = self._enemies
+                        elif (cur_npc in self._enemies and not target_own_group) or (cur_npc in self._allies and target_own_group):
+                            targets = self._allies
                     elif self._targets_remaining == -2:
                         targets = self._turn_order
                     target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
@@ -2698,7 +2702,14 @@ class DuelView(discord.ui.View):
 
                     update_optimal_fitness(fitness_score, Intent.Ability, ability, i, None, -1, targets)
                 else:
-                    combinations = list(itertools.combinations(enemies, self._targets_remaining))
+                    targets = []
+                    target_own_group = ability.get_target_own_group()
+                    if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
+                        targets = self._enemies
+                    elif (cur_npc in self._enemies and not target_own_group) or (cur_npc in self._allies and target_own_group):
+                        targets = self._allies
+
+                    combinations = list(itertools.combinations(targets, self._targets_remaining))
                     for targets in combinations:
                         dueling_copy: DuelView = self.create_copy()
 
@@ -2735,7 +2746,11 @@ class DuelView(discord.ui.View):
 
                 targets = []
                 if self._targets_remaining == -1:
-                    targets = self._allies if cur_npc in self._enemies else self._enemies
+                    target_own_group = consumable_stats.get_target_own_group()
+                    if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
+                        targets = self._enemies
+                    elif (cur_npc in self._enemies and not target_own_group) or (cur_npc in self._allies and target_own_group):
+                        targets = self._allies
                 elif self._targets_remaining == -2:
                     targets = self._turn_order
                 target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
@@ -2766,6 +2781,13 @@ class DuelView(discord.ui.View):
 
                 update_optimal_fitness(fitness_score, Intent.Item, None, -1, item, i, targets)
             else:
+                targets = []
+                target_own_group = consumable_stats.get_target_own_group()
+                if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
+                    targets = self._enemies
+                elif (cur_npc in self._enemies and not target_own_group) or (cur_npc in self._allies and target_own_group):
+                    targets = self._allies
+                
                 combinations = list(itertools.combinations(enemies, self._targets_remaining))
                 for targets in combinations:
                     dueling_copy: DuelView = self.create_copy()
