@@ -83,13 +83,13 @@ class SellModal(discord.ui.Modal):
         if item_rarity == Rarity.Uncommon:
             base_xp = 2
         if item_rarity == Rarity.Rare:
-            base_xp = 4
+            base_xp = 3
         if item_rarity == Rarity.Epic:
-            base_xp = 8
+            base_xp = 5
         if item_rarity == Rarity.Legendary:
-            base_xp = 16
+            base_xp = 8
         if item_rarity == Rarity.Artifact:
-            base_xp = 32
+            base_xp = 13
 
         xp_to_add: int = amount_to_sell * base_xp
         xp_to_add = player_xp.add_xp_to_class(xp_to_add, ExpertiseClass.Merchant, player.get_equipment())
