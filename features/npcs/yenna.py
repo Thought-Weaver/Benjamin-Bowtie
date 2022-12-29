@@ -12,7 +12,7 @@ from features.equipment import Equipment
 from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, SilkspeakingI, VitalityTransferIII
+from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, SilkspeakingI, ThunderingTorrentIII, VitalityTransferIII
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
@@ -1024,7 +1024,7 @@ class Yenna(NPC):
         # TODO: Also add fate-bending abilities
         self._dueling.abilities = [
             BoundToGetLuckyIII(), SecondWindI(), SilkspeakingI(),
-            ParalyzingFumesI(), RegenerationIII(), QuickAccessI(),
+            ParalyzingFumesI(), RegenerationIII(), ThunderingTorrentIII(),
             PreparePotionsIII(), VitalityTransferIII(), EmpowermentI(),
             IncenseIII(), ContractManaToBloodIII(), ContractWealthForPowerIII()
         ]
