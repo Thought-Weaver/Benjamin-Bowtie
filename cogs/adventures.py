@@ -729,6 +729,10 @@ class Adventures(commands.Cog):
             await context.send("At least one of those players is already in a duel.")
             return
 
+        if any(player.get_expertise().hp != player.get_expertise().max_hp for player in challenged_players) or author_player.get_expertise().hp != author_player.get_expertise().max_hp:
+            await context.send("At least one of those players isn't at full health.")
+            return
+
         pvp_duel = PlayerVsPlayerOrNPCDuelView(self._bot, self._database, context.guild.id, context.author, mapped_users)
 
         await context.send(embed=pvp_duel.get_info_embed(), view=pvp_duel)
@@ -843,6 +847,10 @@ class Adventures(commands.Cog):
         challenged_players: List[Player] = [self._get_player(context.guild.id, user.id) for user in users]
         if any(player.get_dueling().is_in_combat for player in challenged_players):
             await context.send(f"At least one of those players is already in a duel.")
+            return
+
+        if any(player.get_expertise().hp != player.get_expertise().max_hp for player in challenged_players) or author_player.get_expertise().hp != author_player.get_expertise().max_hp:
+            await context.send("At least one of those players isn't at full health.")
             return
 
         pvp_duel = GroupPlayerVsPlayerDuelView(self._bot, self._database, context.guild.id, [context.author, *users])
