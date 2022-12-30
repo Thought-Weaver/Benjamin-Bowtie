@@ -3191,7 +3191,7 @@ class CounterstrikeI(Ability):
             icon="\uD83D\uDD04",
             name="Counterstrike I",
             class_key=ExpertiseClass.Guardian,
-            description="Strike back at an enemy dealing 75% of your weapon damage + 10% of your missing health as damage.",
+            description="Strike back at an enemy dealing 75% of your weapon damage + 10% of your missing health as damage (up to your base weapon damage).",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -3213,8 +3213,9 @@ class CounterstrikeI(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = min(ceil(0.75 * base_damage + 0.1 * (caster_expertise.max_hp - caster_expertise.hp)), base_damage)
+        damage = ceil(0.75 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(0.1 * (caster_expertise.max_hp - caster_expertise.hp), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3237,7 +3238,7 @@ class CounterstrikeII(Ability):
             icon="\uD83D\uDD04",
             name="Counterstrike II",
             class_key=ExpertiseClass.Guardian,
-            description="Strike back at an enemy dealing 80% of your weapon damage + 20% of your missing health as damage.",
+            description="Strike back at an enemy dealing 80% of your weapon damage + 20% of your missing health as damage (up to your 3x weapon damage).",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -3259,8 +3260,9 @@ class CounterstrikeII(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = min(ceil(0.8 * base_damage + 0.2 * (caster_expertise.max_hp - caster_expertise.hp)), base_damage)
+        damage = ceil(0.8 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(0.2 * (caster_expertise.max_hp - caster_expertise.hp), 3 * damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3283,7 +3285,7 @@ class CounterstrikeIII(Ability):
             icon="\uD83D\uDD04",
             name="Counterstrike III",
             class_key=ExpertiseClass.Guardian,
-            description="Strike back at an enemy dealing 85% of your weapon damage + 30% of your missing health as damage.",
+            description="Strike back at an enemy dealing 85% of your weapon damage + 30% of your missing health as damage (up to 5x base weapon damage).",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -3305,8 +3307,9 @@ class CounterstrikeIII(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = min(ceil(0.85 * base_damage + 0.3 * (caster_expertise.max_hp - caster_expertise.hp)), base_damage)
+        damage = ceil(0.85 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(0.3 * (caster_expertise.max_hp - caster_expertise.hp), 5 * damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4888,12 +4891,15 @@ class ContractBloodForBloodI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         current_health: int = caster.get_expertise().hp
+        percent_health: int = ceil(0.15 * current_health)
         damage: int = int(0.15 * 0.5 * current_health)
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
-        results += self._use_damage_ability(caster, [caster], range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        damage_dealt = caster.get_expertise().damage(percent_health, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
+        result_str += "\n{0} took " + f"{damage_dealt} damage to cast Blood for Blood"
 
         caster.get_stats().dueling.merchant_abilities_used += 1
 
@@ -4924,12 +4930,15 @@ class ContractBloodForBloodII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         current_health: int = caster.get_expertise().hp
-        damage: int = int(0.1 * current_health)
+        percent_health: int = ceil(0.1 * current_health)
+        damage: int = int(percent_health)
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
-        results += self._use_damage_ability(caster, [caster], range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        damage_dealt = caster.get_expertise().damage(percent_health, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
+        result_str += "\n{0} took " + f"{damage_dealt} damage to cast Blood for Blood"
 
         caster.get_stats().dueling.merchant_abilities_used += 1
 
@@ -4960,12 +4969,15 @@ class ContractBloodForBloodIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         current_health: int = caster.get_expertise().hp
-        damage: int = int(3 * 0.05 * current_health)
+        percent_health: int = ceil(0.05 * current_health)
+        damage: int = int(3 * percent_health)
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
-        results += self._use_damage_ability(caster, [caster], range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        damage_dealt = caster.get_expertise().damage(percent_health, caster.get_dueling(), percent_reduct=0, ignore_armor=True)
+        result_str += "\n{0} took " + f"{damage_dealt} damage to cast Blood for Blood"
 
         caster.get_stats().dueling.merchant_abilities_used += 1
 
