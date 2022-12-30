@@ -4892,6 +4892,7 @@ class ContractBloodForBloodI(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        results += self._use_damage_ability(caster, [caster], range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.merchant_abilities_used += 1
@@ -4927,6 +4928,7 @@ class ContractBloodForBloodII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        results += self._use_damage_ability(caster, [caster], range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.merchant_abilities_used += 1
@@ -4962,6 +4964,7 @@ class ContractBloodForBloodIII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        results += self._use_damage_ability(caster, [caster], range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.merchant_abilities_used += 1
