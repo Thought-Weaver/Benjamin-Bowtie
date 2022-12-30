@@ -13,7 +13,7 @@
         "on_successful_attack": [
             {
                 "effect_type": "RestorePercentHealth",
-                "effect_value": 0.1,
+                "effect_value": 0.02,
                 "effect_time": -1,
                 "conditions": ["IsItemInHand"],
                 "condition_values": [0]
@@ -22,7 +22,7 @@
         "on_turn_start": [
             {
                 "effect_type": "RestoreHealth",
-                "effect_value": 4,
+                "effect_value": 2,
                 "effect_time": -1,
                 "conditions": ["IsItemArmor"],
                 "condition_values": [0]
