@@ -436,10 +436,10 @@ class WorkshopView(discord.ui.View):
         if HouseRoom.Workshop in self._get_player().get_house().house_rooms:
             self.add_item(EnterPatternsButton(0))
             self.add_item(EnterCraftButton(1))
-            self.add_item(DeconstructButton(2))
-            self.add_item(EnterStorageButton(3))
+            # self.add_item(DeconstructButton(2))
+            self.add_item(EnterStorageButton(2))
             if self._house_view is not None:
-                self.add_item(ExitToHouseButton(4))
+                self.add_item(ExitToHouseButton(3))
         else:
             self.add_item(PurchaseWorkshopButton(self._PURCHASE_COST, 0))
             if self._house_view is not None:
