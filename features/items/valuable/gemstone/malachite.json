@@ -12,20 +12,22 @@
     "item_effects": {
         "on_successful_attack": [
             {
-                "effect_type": "ChancePoisoned",
+                "effect_type": "ChanceStatusEffect",
                 "effect_value": 0.08,
                 "effect_time": 1,
                 "conditions": ["IsItemInHand"],
-                "condition_values": [0]
+                "condition_values": [0],
+                "associated_status_effect": "Poisoned"
             }
         ],
         "permanent": [
             {
-                "effect_type": "ResistPoisoned",
+                "effect_type": "ResistStatusEffect",
                 "effect_value": 0.05,
                 "effect_time": -1,
                 "conditions": ["IsItemArmor"],
-                "condition_values": [0]
+                "condition_values": [0],
+                "associated_status_effect": "Poisoned"
             }
         ]
     }

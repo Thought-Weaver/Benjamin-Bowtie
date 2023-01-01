@@ -684,7 +684,7 @@ class Item():
         return slot
 
     def __str__(self):
-        display_string = f"**{self.get_full_name()}**\n*{self._rarity} Item*" + (" / *Unique*" if ClassTag.Misc.IsUnique in self._class_tags else "")
+        display_string = f"**{self.get_full_name_and_count()}**\n*{self._rarity} Item*" + (" / *Unique*" if ClassTag.Misc.IsUnique in self._class_tags else "")
         
         has_any_stats: bool = False
 
@@ -699,6 +699,9 @@ class Item():
 
         display_string += "\n\n"
 
+        if ClassTag.Misc.NeedsIdentification in self._class_tags:
+            display_string += "???\n\n*Needs Identification*"
+        
         if self._armor_stats is not None:
             has_any_stats = True
             display_string += f"{self._armor_stats.get_armor_amount()} Armor\n"
@@ -730,9 +733,6 @@ class Item():
         if has_any_stats:
             display_string += "\n"
 
-        if ClassTag.Misc.NeedsIdentification in self._class_tags:
-            display_string += "*Needs Identification*\n\n"
-
         if len(self._altering_item_keys) > 0:
             for altering_item_key in self._altering_item_keys:
                 if altering_item_key == "":
@@ -751,9 +751,6 @@ class Item():
             display_string += f"{self._description}\n\n"
         if self._flavor_text != "":
             display_string += f"*{self._flavor_text}*\n\n"
-
-        if self._count > 1:
-            display_string += f"Quantity: *{self._count}*\n"
         
         display_string += f"Value: *{self.get_value()}* each\n"
         display_string += f"Level Requirement: {self._level_requirement}"

@@ -332,6 +332,11 @@ class Ability():
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
 
+            decaying_adjustment: float = 0
+            for se in caster.get_dueling().status_effects:
+                if se.key == StatusEffectKey.Decaying:
+                    decaying_adjustment += se.value
+
             critical_hit_buff = 0
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -356,8 +361,10 @@ class Ability():
             heal_amount = int(base_heal * critical_hit_final)
             heal_amount += int(heal_amount * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             heal_amount += int(heal_amount * healing_adjustment)
+            if decaying_adjustment != 0:
+                heal_amount *= decaying_adjustment
 
-            target_expertise.heal(heal_amount)
+            target_expertise.heal(int(heal_amount))
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
 

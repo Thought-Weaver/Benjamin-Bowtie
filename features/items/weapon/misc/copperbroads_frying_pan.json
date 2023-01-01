@@ -17,11 +17,12 @@
     "item_effects": {
         "on_successful_attack": [
             {
-                "effect_type": "ChanceFaltering",
+                "effect_type": "ChanceStatusEffect",
                 "effect_value": 0.1,
                 "effect_time": 1,
                 "conditions": [],
-                "condition_values": []
+                "condition_values": [],
+                "associated_status_effect": "TurnSkipChance"
             }
         ]
     }

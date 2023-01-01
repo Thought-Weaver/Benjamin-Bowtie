@@ -56,6 +56,12 @@ class StatusEffectKey(StrEnum):
     RestrictedToItems = "RestrictedToItems"
 
     DmgBuff = "DmgBuff"
+    DmgDebuff = "DmgDebuff"
+
+    Charmed = "Charmed"
+    CannotAttack = "CannotAttack"
+    Sleeping = "Sleeping"
+    Decaying = "Decaying"
 
 # -----------------------------------------------------------------------------
 # CONSTANTS
@@ -517,10 +523,62 @@ class DmgBuff(StatusEffect):
 
 class DmgDebuff(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
-        super().__init__(turns_remaining, value, "Diminished", StatusEffectKey.DmgBuff, source_str, trigger_first_turn)
+        super().__init__(turns_remaining, value, "Diminished", StatusEffectKey.DmgDebuff, source_str, trigger_first_turn)
 
     def __str__(self):
         display_str = f"{self.name}: Deal {self.value * 100}% less damage for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class Charmed(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Charmed", StatusEffectKey.Charmed, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: Your enemies are your allies and vice versa for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class CannotAttack(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Atrophied", StatusEffectKey.CannotAttack, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: You can't attack for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class Sleeping(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Sleeping", StatusEffectKey.Sleeping, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: You can't take actions for {self.get_turns_remaining_str()} (this status effect is removed after taking damage)"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class Decaying(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Decaying", StatusEffectKey.Decaying, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: Healing effects damage you instead for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

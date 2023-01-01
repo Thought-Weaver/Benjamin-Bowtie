@@ -12,6 +12,8 @@ from features.shared.constants import BASE_HP, BASE_MANA, CON_HEALTH_SCALE, INT_
 from features.shared.effect import EffectType
 
 from typing import TYPE_CHECKING
+
+from features.shared.statuseffect import StatusEffectKey
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.dueling import Dueling
@@ -187,7 +189,7 @@ class Expertise():
         self.mana = int(percent_mana * self.max_mana)
 
     def heal(self, heal_amount: int):
-        self.hp = min(self.max_hp, self.hp + heal_amount)
+        self.hp = max(min(self.max_hp, self.hp + heal_amount), 0)
 
     def damage(self, damage: int, dueling: Dueling, percent_reduct: float, ignore_armor: bool):
         damage_to_health = damage - int(damage * percent_reduct)
@@ -195,7 +197,10 @@ class Expertise():
         if not ignore_armor:
             damage_to_health = dueling.damage_armor(damage_to_health)
 
-        self.hp = max(0, self.hp - damage_to_health)
+        if damage > 0:
+            dueling.status_effects = list(filter(lambda se: se.key != StatusEffectKey.Sleeping, dueling.status_effects))
+
+        self.hp = min(max(0, self.hp - damage_to_health), self.max_hp)
         return damage_to_health
 
     def restore_mana(self, restore_amount: int):

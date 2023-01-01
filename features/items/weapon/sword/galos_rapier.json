@@ -17,18 +17,20 @@
     "item_effects": {
         "on_successful_attack": [
             {
-                "effect_type": "ChanceBleeding",
+                "effect_type": "ChanceStatusEffect",
                 "effect_value": 0.5,
                 "effect_time": 1,
                 "conditions": [],
-                "condition_values": []
+                "condition_values": [],
+                "associated_status_effect": "Bleeding"
             },
             {
-                "effect_type": "DmgBuffBleeding",
+                "effect_type": "ResistStatusEffect",
                 "effect_value": 0.5,
                 "effect_time": -1,
                 "conditions": [],
-                "condition_values": []
+                "condition_values": [],
+                "associated_status_effect": "Bleeding"
             }
         ]
     }

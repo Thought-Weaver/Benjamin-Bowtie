@@ -16,11 +16,12 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "ChancePoisoned",
+                "effect_type": "ChanceStatusEffect",
                 "effect_value": 1,
                 "effect_time": 2,
                 "conditions": [],
-                "condition_values": []
+                "condition_values": [],
+                "associated_status_effect": "Poisoned"
             }
         ]
     }

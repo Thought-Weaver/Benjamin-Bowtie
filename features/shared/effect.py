@@ -6,6 +6,8 @@ from types import MappingProxyType
 from strenum import StrEnum
 
 from typing import List, TYPE_CHECKING
+
+from features.shared.statuseffect import StatusEffectKey
 if TYPE_CHECKING:
     from features.shared.item import Item
     from features.npcs.npc import NPC
@@ -58,16 +60,8 @@ class EffectType(StrEnum):
     AdjustedCDs = "AdjustedCDs"
 
     # Everything in this group is associated with percent effect values
-    ChancePoisoned = "ChancePoisoned"
-    ResistPoisoned = "ResistPoisoned"
-    ChanceBleeding = "ChanceBleeding"
-    ResistBleeding = "ResistBleeding"
-    ChanceFaltering = "ChanceFaltering"
-    ResistFaltering = "ResistFaltering"
-    ChanceTaunted = "ChanceTaunted"
-    ResistTaunted = "ResistTaunted"
-    ChanceConvinced = "ChanceConvinced"
-    ResistConvinced = "ResistConvinced"
+    ChanceStatusEffect = "ChanceStatusEffect"
+    ResistStatusEffect = "ResistStatusEffect"
 
     RestoreHealth = "RestoreHealth"
     RestorePercentHealth = "RestorePercentHealth"
@@ -149,16 +143,8 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
 
     EffectType.AdjustedCDs: 29,
 
-    EffectType.ChancePoisoned: 30,
-    EffectType.ResistPoisoned: 31,
-    EffectType.ChanceBleeding: 32,
-    EffectType.ResistBleeding: 33,
-    EffectType.ChanceFaltering: 34,
-    EffectType.ResistFaltering: 35,
-    EffectType.ChanceTaunted: 36,
-    EffectType.ResistTaunted: 37,
-    EffectType.ChanceConvinced: 38,
-    EffectType.ResistConvinced: 39,
+    EffectType.ChanceStatusEffect: 30,
+    EffectType.ResistStatusEffect: 31,
 
     EffectType.RestoreHealth: 40,
     EffectType.RestorePercentHealth: 41,
@@ -178,12 +164,13 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
 # -----------------------------------------------------------------------------
 
 class Effect():
-    def __init__(self, effect_type: EffectType, effect_value: int | float, effect_time: int, conditions: List[ConditionType], condition_values: List[int | float]):
+    def __init__(self, effect_type: EffectType, effect_value: int | float, effect_time: int, conditions: List[ConditionType], condition_values: List[int | float], associated_status_effect: StatusEffectKey | None=None):
         self.effect_type = effect_type
         self.effect_value = effect_value
         self.effect_time = effect_time
         self.conditions = conditions
         self.condition_values = condition_values
+        self.associated_status_effect = associated_status_effect
 
     @staticmethod
     def load_from_state(effect_data: dict):
@@ -192,7 +179,8 @@ class Effect():
             effect_data.get("effect_value", 0),
             effect_data.get("effect_time", 0),
             effect_data.get("conditions", []),
-            effect_data.get("condition_values", [])
+            effect_data.get("condition_values", []),
+            effect_data.get("associated_status_effect", None)
         )
 
     def meets_conditions(self, entity: Player | NPC, item: Item):
@@ -331,26 +319,30 @@ class Effect():
                 display_string += "+"
             display_string += f"{int(self.effect_value)} {turn_str} on Ability Cooldowns"
         
-        if self.effect_type == EffectType.ChancePoisoned:
-            display_string += f"{round(self.effect_value * 100, 2)}% Poisoned Chance"
-        if self.effect_type == EffectType.ResistPoisoned:
-            display_string += f"{round(self.effect_value * 100, 2)}% Resist Poisoned Chance"
-        if self.effect_type == EffectType.ChanceBleeding:
-            display_string += f"{round(self.effect_value * 100, 2)}% Bleeding Chance"
-        if self.effect_type == EffectType.ResistBleeding:
-            display_string += f"{round(self.effect_value * 100, 2)}% Resist Bleeding Chance"
-        if self.effect_type == EffectType.ChanceFaltering:
-            display_string += f"{round(self.effect_value * 100, 2)}% Faltering Chance"
-        if self.effect_type == EffectType.ResistFaltering:
-            display_string += f"{round(self.effect_value * 100, 2)}% Resist Faltering Chance"
-        if self.effect_type == EffectType.ChanceTaunted:
-            display_string += f"{round(self.effect_value * 100, 2)}% Taunted Chance"
-        if self.effect_type == EffectType.ResistTaunted:
-            display_string += f"{round(self.effect_value * 100, 2)}% Resist Taunted Chance"
-        if self.effect_type == EffectType.ChanceConvinced:
-            display_string += f"{round(self.effect_value * 100, 2)}% Convinced Chance"
-        if self.effect_type == EffectType.ResistConvinced:
-            display_string += f"{round(self.effect_value * 100, 2)}% Resist Convinced Chance"
+        if self.effect_type == EffectType.ChanceStatusEffect:
+            se_key: StatusEffectKey | None = self.associated_status_effect
+            if se_key == StatusEffectKey.Poisoned:
+                display_string += f"{round(self.effect_value * 100, 2)}% Poisoned Chance"
+            elif se_key == StatusEffectKey.Bleeding:
+                display_string += f"{round(self.effect_value * 100, 2)}% Bleeding Chance"
+            elif se_key == StatusEffectKey.TurnSkipChance:
+                display_string += f"{round(self.effect_value * 100, 2)}% Faltering Chance"
+            elif se_key == StatusEffectKey.Taunted:
+                display_string += f"{round(self.effect_value * 100, 2)}% Taunted Chance"
+            elif se_key == StatusEffectKey.CannotTarget:
+                display_string += f"{round(self.effect_value * 100, 2)}% Convinced Chance"
+        if self.effect_type == EffectType.ResistStatusEffect:
+            se_key: StatusEffectKey | None = self.associated_status_effect
+            if se_key == StatusEffectKey.Poisoned:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Poisoned Chance"
+            if se_key == StatusEffectKey.Bleeding:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Bleeding Chance"
+            if se_key == StatusEffectKey.TurnSkipChance:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Convinced Chance"
+            if se_key == StatusEffectKey.Taunted:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Taunted Chance"
+            if se_key == StatusEffectKey.CannotTarget:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Convinced Chance"
 
         if self.effect_type == EffectType.RestoreHealth:
             display_string += f"Restore {int(self.effect_value)} Health"
@@ -416,6 +408,7 @@ class Effect():
         self.effect_time = state.get("effect_time", 0)
         self.conditions = state.get("conditions", [])
         self.condition_values = state.get("condition_values", [])
+        self.associated_status_effect = state.get("associated_status_effect", None)
 
 # -----------------------------------------------------------------------------
 # ITEM EFFECTS CLASS
