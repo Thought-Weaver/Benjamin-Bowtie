@@ -101,6 +101,33 @@ class Dueling():
                 remaining_effects.append(status_effect)
         self.status_effects = remaining_effects
 
+    def add_status_effect_with_resist(self, status_effect: StatusEffect, target: Player | NPC, target_index: int, item_effect_cat: ItemEffectCategory | None=None, resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]] | None=None) -> str:
+        if resist_status_effect is None:
+            resist_status_effect = {}
+        
+            for item in target.get_equipment().get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is not None:
+                    item_effects_arr: List[Effect] = self.map_item_effect_cat_to_arr(item_effects, item_effect_cat) if item_effect_cat is not None else self.map_item_effect_cat_to_arr(item_effects, ItemEffectCategory.Permanent)
+
+                    for item_effect in item_effects_arr:
+                        if not item_effect.meets_conditions(target, item):
+                            continue
+
+                        if item_effect.effect_type == EffectType.ResistStatusEffect:
+                            se_key: StatusEffectKey | None = item_effect.associated_status_effect
+                            if se_key is not None:
+                                current_resist_info = resist_status_effect.get(se_key, (0, []))
+                                resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
+
+        chance_resist, resist_item_strs = resist_status_effect.get(status_effect.key, (0, []))
+        if random() >= chance_resist:
+            self.status_effects.append(status_effect)
+            return "{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {status_effect.turns_remaining} turns"
+        else:
+            items_str = ", ".join(resist_item_strs)
+            return "{" + f"{target_index}" + "}" + f" resisted {status_effect.name} using {items_str}"
+
     def ability_exists(self, ability: Ability):
         for i, dueling_ability in enumerate(self.abilities):
             if dueling_ability == ability:
@@ -649,7 +676,9 @@ class Dueling():
         # The first element in the tuple is the percent chance of receiving the effect and the
         # second element is the time it'll last.
         chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]] = {}
-        resist_status_effect: Dict[StatusEffectKey, float] = {}
+        # The first element in the tuple is the percent chance of resisting the effect and the
+        # second element is the list of item names that contributed to resisting.
+        resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]] = {}
 
         for item in self_entity.get_equipment().get_all_equipped_items():
             item_effects = item.get_item_effects()
@@ -668,88 +697,80 @@ class Dueling():
                     elif item_effect.effect_type == EffectType.ResistStatusEffect:
                         se_key: StatusEffectKey | None = item_effect.associated_status_effect
                         if se_key is not None:
-                            resist_status_effect[se_key] = resist_status_effect.get(se_key, 0) + item_effect.effect_value
+                            current_resist_info = resist_status_effect.get(se_key, (0, []))
+                            resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
 
         chance_poisoned, turns_poisoned = chance_status_effect.get(StatusEffectKey.Poisoned, (0, 0))
-        if random() < chance_poisoned and random() >= resist_status_effect.get(StatusEffectKey.Poisoned, 0):
+        if random() < chance_poisoned:
             status_effect = Poisoned(
                 turns_remaining=turns_poisoned,
                 value=POISONED_PERCENT_HP
             )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_poisoned} turns")
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         chance_bleeding, turns_bleeding = chance_status_effect.get(StatusEffectKey.Bleeding, (0, 0))
-        if random() < chance_bleeding and random() >= resist_status_effect.get(StatusEffectKey.Bleeding, 0):
+        if random() < chance_bleeding:
             status_effect = Bleeding(
                 turns_remaining=turns_bleeding,
                 value=BLEED_PERCENT_HP
             )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_bleeding} turns")
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         chance_faltering, turns_faltering = chance_status_effect.get(StatusEffectKey.TurnSkipChance, (0, 0))
-        if random() < chance_faltering and random() >= resist_status_effect.get(StatusEffectKey.TurnSkipChance, 0):
+        if random() < chance_faltering:
             status_effect = TurnSkipChance(
                 turns_remaining=turns_faltering,
                 value=1
             )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_faltering} turns")
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         chance_taunted, turns_taunted = chance_status_effect.get(StatusEffectKey.Taunted, (0, 0))
-        if random() < chance_taunted and random() >= resist_status_effect.get(StatusEffectKey.Taunted, 0):
+        if random() < chance_taunted:
             status_effect = Taunted(
                 turns_remaining=turns_taunted,
                 forced_to_attack=self_entity
             )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_taunted} turns")
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         chance_convinced, turns_convinced = chance_status_effect.get(StatusEffectKey.CannotTarget, (0, 0))
-        if random() < chance_convinced and random() >= resist_status_effect.get(StatusEffectKey.CannotTarget, 0):
+        if random() < chance_convinced:
             status_effect = CannotTarget(
                 turns_remaining=turns_convinced,
                 cant_target=self_entity
             )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_convinced} turns")
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         chance_charmed, turns_charmed = chance_status_effect.get(StatusEffectKey.Charmed, (0, 0))
-        if random() < chance_charmed and random() >= resist_status_effect.get(StatusEffectKey.Charmed, 0):
+        if random() < chance_charmed:
             status_effect = Charmed(
                 turns_remaining=turns_charmed,
                 value=1
             )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_charmed} turns")
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         chance_atrophied, turns_atrophied = chance_status_effect.get(StatusEffectKey.CannotAttack, (0, 0))
-        if random() < chance_atrophied and random() >= resist_status_effect.get(StatusEffectKey.CannotAttack, 0):
+        if random() < chance_atrophied:
             status_effect = CannotAttack(
                 turns_remaining=turns_atrophied,
                 value=1
             )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_atrophied} turns")
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         chance_sleeping, turns_sleeping = chance_status_effect.get(StatusEffectKey.Sleeping, (0, 0))
-        if random() < chance_sleeping and random() >= resist_status_effect.get(StatusEffectKey.Sleeping, 0):
+        if random() < chance_sleeping:
             status_effect = Sleeping(
                 turns_remaining=turns_sleeping,
                 value=1
             )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_sleeping} turns")
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         chance_decaying, turns_decaying = chance_status_effect.get(StatusEffectKey.Decaying, (0, 0))
-        if random() < chance_decaying and random() >= resist_status_effect.get(StatusEffectKey.Decaying, 0):
+        if random() < chance_decaying:
             status_effect = Decaying(
                 turns_remaining=turns_decaying,
                 value=1
             )
-            target.get_dueling().status_effects.append(status_effect)
-            result_strs.append("{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {turns_decaying} turns")
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         return result_strs
 

@@ -3494,9 +3494,9 @@ class PiercingStrikeI(Ability):
 
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.2:
-                targets[i].get_dueling().status_effects.append(bleed)
+                se_str = targets[i].get_dueling().add_status_effect_with_resist(bleed, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and is now {bleed.name}"
+                results[i].target_str += f" and {se_str}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -3552,9 +3552,9 @@ class PiercingStrikeII(Ability):
 
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.25:
-                targets[i].get_dueling().status_effects.append(bleed)
+                se_str = targets[i].get_dueling().add_status_effect_with_resist(bleed, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and is now {bleed.name}"
+                results[i].target_str += f" and {se_str}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -3610,9 +3610,9 @@ class PiercingStrikeIII(Ability):
 
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.3:
-                targets[i].get_dueling().status_effects.append(bleed)
+                se_str = targets[i].get_dueling().add_status_effect_with_resist(bleed, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and is now {bleed.name}"
+                results[i].target_str += f" and {se_str}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -5510,9 +5510,9 @@ class ToxicCloudI(Ability):
 
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.3:
-                targets[i].get_dueling().status_effects.append(poisoned)
+                se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and is now {poisoned.name}"
+                results[i].target_str += f" and {se_str}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
@@ -5556,9 +5556,9 @@ class ToxicCloudII(Ability):
 
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.5:
-                targets[i].get_dueling().status_effects.append(poisoned)
+                se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and is now {poisoned.name}"
+                results[i].target_str += f" and {se_str}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
@@ -5602,9 +5602,9 @@ class ToxicCloudIII(Ability):
 
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.7:
-                targets[i].get_dueling().status_effects.append(poisoned)
+                se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and is now {poisoned.name}"
+                results[i].target_str += f" and {se_str}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
@@ -5648,9 +5648,9 @@ class ToxicCloudIV(Ability):
 
         for i in range(len(results)):
             if not results[i].dodged and random() < 0.7:
-                targets[i].get_dueling().status_effects.append(poisoned)
+                se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and is now {poisoned.name}"
+                results[i].target_str += f" and {se_str}"
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
