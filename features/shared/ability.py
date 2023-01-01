@@ -3222,7 +3222,7 @@ class CounterstrikeI(Ability):
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.75 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
-        damage += min(0.1 * (caster_expertise.max_hp - caster_expertise.hp), damage)
+        damage += ceil(min(0.1 * (caster_expertise.max_hp - caster_expertise.hp), damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3269,7 +3269,7 @@ class CounterstrikeII(Ability):
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.8 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
-        damage += min(0.2 * (caster_expertise.max_hp - caster_expertise.hp), 3 * damage)
+        damage += ceil(min(0.2 * (caster_expertise.max_hp - caster_expertise.hp), 3 * damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3316,7 +3316,7 @@ class CounterstrikeIII(Ability):
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.85 * base_damage)
         damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
-        damage += min(0.3 * (caster_expertise.max_hp - caster_expertise.hp), 5 * damage)
+        damage += ceil(min(0.3 * (caster_expertise.max_hp - caster_expertise.hp), 5 * damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
