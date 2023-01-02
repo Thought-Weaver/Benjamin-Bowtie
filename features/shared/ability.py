@@ -627,6 +627,8 @@ class CrabnadoI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
         if off_hand_item is None or off_hand_item.get_key() != ItemKey.Crab:
+            self.remove_mana_and_set_cd(caster)
+            caster.get_stats().dueling.fisher_abilities_used += 1
             return "You don't have a crab equipped!"
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -663,6 +665,8 @@ class CrabnadoII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
         if off_hand_item is None or off_hand_item.get_key() != ItemKey.Crab:
+            self.remove_mana_and_set_cd(caster)
+            caster.get_stats().dueling.fisher_abilities_used += 1
             return "You don't have a crab equipped!"
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
@@ -699,6 +703,8 @@ class CrabnadoIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
         if off_hand_item is None or off_hand_item.get_key() != ItemKey.Crab:
+            self.remove_mana_and_set_cd(caster)
+            caster.get_stats().dueling.fisher_abilities_used += 1
             return "You don't have a crab equipped!"
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
