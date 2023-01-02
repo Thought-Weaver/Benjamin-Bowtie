@@ -2208,7 +2208,7 @@ class DuelView(discord.ui.View):
         caster.get_stats().dueling.abilities_used += 1
         xp_str: str = ""
         if isinstance(caster, Player):
-            xp_to_add: int = int(self._selected_ability.get_level_requirement() / 2)
+            xp_to_add: int = int(self._selected_ability.get_level_requirement() / 4)
             class_key: ExpertiseClass = self._selected_ability.get_class_key()
             final_xp = caster.get_expertise().add_xp_to_class(xp_to_add, class_key, caster.get_equipment())
             xp_str = f"\n\n*You gained {final_xp} {class_key} xp!*"

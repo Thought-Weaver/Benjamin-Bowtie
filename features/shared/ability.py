@@ -627,9 +627,13 @@ class CrabnadoI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
         if off_hand_item is None or off_hand_item.get_key() != ItemKey.Crab:
-            self.remove_mana_and_set_cd(caster)
+            mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+            fail_str = "You don't have a crab equipped!"
+            if mana_and_cd_str is not None:
+                fail_str += f"\n\n{mana_and_cd_str}"
+            
             caster.get_stats().dueling.fisher_abilities_used += 1
-            return "You don't have a crab equipped!"
+            return fail_str
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(1, 8))
@@ -665,9 +669,13 @@ class CrabnadoII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
         if off_hand_item is None or off_hand_item.get_key() != ItemKey.Crab:
-            self.remove_mana_and_set_cd(caster)
+            mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+            fail_str = "You don't have a crab equipped!"
+            if mana_and_cd_str is not None:
+                fail_str += f"\n\n{mana_and_cd_str}"
+            
             caster.get_stats().dueling.fisher_abilities_used += 1
-            return "You don't have a crab equipped!"
+            return fail_str
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 10))
@@ -703,9 +711,13 @@ class CrabnadoIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         off_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.OffHand)
         if off_hand_item is None or off_hand_item.get_key() != ItemKey.Crab:
-            self.remove_mana_and_set_cd(caster)
+            mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+            fail_str = "You don't have a crab equipped!"
+            if mana_and_cd_str is not None:
+                fail_str += f"\n\n{mana_and_cd_str}"
+            
             caster.get_stats().dueling.fisher_abilities_used += 1
-            return "You don't have a crab equipped!"
+            return fail_str
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(3, 12))
