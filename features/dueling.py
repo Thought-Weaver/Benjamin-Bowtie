@@ -404,7 +404,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing = int(healing * decaying_adjustment)
+                healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{0}" + f" healed {healing} HP from {item.get_full_name()}")
@@ -418,7 +418,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing = int(healing * decaying_adjustment)
+                healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{0}" + f" healed {healing} HP from {item.get_full_name()}")
@@ -617,7 +617,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing = int(healing * decaying_adjustment)
+                healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {item.get_full_name()}")
@@ -631,7 +631,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing = int(healing * decaying_adjustment)
+                healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {item.get_full_name()}")
@@ -764,11 +764,13 @@ class Dueling():
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
-        chance_decaying, turns_decaying = chance_status_effect.get(StatusEffectKey.Decaying, (0, 0))
-        if random() < chance_decaying:
+        # Decaying is a special case because the amount of the effect varies, so the first
+        # element in the tuple represents the percent of decay.
+        percent_decaying, turns_decaying = chance_status_effect.get(StatusEffectKey.Decaying, (0, 0))
+        if percent_decaying != 0:
             status_effect = Decaying(
                 turns_remaining=turns_decaying,
-                value=1
+                value=percent_decaying
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -921,7 +923,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing = int(healing * decaying_adjustment)
+                healing += int(healing * decaying_adjustment)
 
             entity.get_expertise().heal(healing)
             return f"{entity_name} healed {healing} HP from {item.get_full_name()}"
@@ -935,7 +937,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing = int(healing * decaying_adjustment)
+                healing += int(healing * decaying_adjustment)
 
             entity.get_expertise().heal(healing)
             return f"{entity_name} healed {healing} HP from {item.get_full_name()}"
@@ -1141,7 +1143,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing = int(healing * decaying_adjustment)
+                healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return "{1}" + f" healed {healing} HP from {item.get_full_name()}"
@@ -1155,7 +1157,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing = int(healing * decaying_adjustment)
+                healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return "{1}" + f" healed {healing} HP from {item.get_full_name()}"
@@ -1961,7 +1963,7 @@ class DuelView(discord.ui.View):
         if self._current_target is not None:
             description += self.get_selected_entity_full_duel_info_str() + "\n\n"
 
-        charmed: bool = any(se.key == StatusEffectKey.Charmed for se in entity.get_dueling().status_effects)
+        charmed: bool = any(se.key == StatusEffectKey.Charmed for se in cur_turn_entity.get_dueling().status_effects)
             
         if (cur_turn_entity in self._enemies and target_own_group) or (cur_turn_entity in self._allies and not target_own_group):
             targets = self._enemies if not charmed else self._allies

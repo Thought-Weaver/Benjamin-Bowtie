@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/potions/lesser_charm_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Charm Potion",
+    "value": 630,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/witherheart": 1
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_charm_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

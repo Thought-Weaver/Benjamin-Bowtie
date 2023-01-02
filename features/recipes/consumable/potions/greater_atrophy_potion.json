@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/greater_atrophy_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Atrophy Potion",
+    "value": 375,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/graspleaf": 8,
+        "items/ingredient/herbs/razorgrass": 8
+    },
+    "outputs": {
+        "items/consumable/potions/greater_atrophy_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

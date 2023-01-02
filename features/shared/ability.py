@@ -264,7 +264,9 @@ class Ability():
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
-            target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
+            mapped_ses = list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
+            for se in mapped_ses:
+                target.get_dueling().add_status_effect_with_resist(se, target, i + 1)
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" is now {status_effects_str}", False))
@@ -281,7 +283,10 @@ class Ability():
 
         for i in range(len(results)):
             if not results[i].dodged:
-                targets[i].get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(targets[i] != caster), status_effects))
+                mapped_ses = list(map(lambda se: se.set_trigger_first_turn(targets[i] != caster), status_effects))
+                for se in mapped_ses:
+                    targets[i].get_dueling().add_status_effect_with_resist(se, targets[i], i + 1)
+
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and is now {status_effects_str}"
         

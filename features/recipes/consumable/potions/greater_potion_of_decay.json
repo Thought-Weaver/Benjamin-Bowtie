@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/greater_potion_of_decay",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Potion of Decay",
+    "value": 2200,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/mages_bane": 6,
+        "items/ingredient/herbs/grave_moss": 10
+    },
+    "outputs": {
+        "items/consumable/potions/greater_potion_of_decay": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

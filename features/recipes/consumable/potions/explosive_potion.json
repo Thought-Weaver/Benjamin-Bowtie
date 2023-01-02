@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/explosive_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Explosive Potion",
+    "value": 440,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/dawns_glory": 2,
+        "items/ingredient/herbs/fissureleaf": 2,
+        "items/ingredient/herbs/blaze_cluster": 1
+    },
+    "outputs": {
+        "items/consumable/potions/explosive_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

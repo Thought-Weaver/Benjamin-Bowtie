@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/potion_of_decay",
+    "icon": "\u2697\uFE0F",
+    "name": "Potion of Decay",
+    "value": 1100,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/mages_bane": 3,
+        "items/ingredient/herbs/grave_moss": 3
+    },
+    "outputs": {
+        "items/consumable/potions/potion_of_decay": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

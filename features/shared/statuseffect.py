@@ -578,7 +578,7 @@ class Decaying(StatusEffect):
         super().__init__(turns_remaining, value, "Decaying", StatusEffectKey.Decaying, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Healing effects damage you instead for {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Healing effects are {self.value * 100}% less effective instead for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

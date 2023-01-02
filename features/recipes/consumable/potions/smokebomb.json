@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/smokebomb",
+    "icon": "\u2697\uFE0F",
+    "name": "Smokebomb",
+    "value": 1250,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/dream_maker": 2,
+        "items/ingredient/herbs/shellflower": 3
+    },
+    "outputs": {
+        "items/consumable/potions/smokebomb": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

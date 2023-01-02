@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/charm_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Charm Potion",
+    "value": 1400,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/witherheart": 3,
+        "items/ingredient/herbs/fools_delight": 2
+    },
+    "outputs": {
+        "items/consumable/potions/charm_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

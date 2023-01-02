@@ -74,6 +74,8 @@ class EffectType(StrEnum):
     AdditionalXP = "AdditionalXP"
     PotionMod = "PotionMod"
     
+    Damage = "Damage"
+    
     ResurrectOnce = "ResurrectOnce"
 
 
@@ -156,7 +158,9 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
     EffectType.AdditionalXP: 46,
     EffectType.PotionMod: 47,
 
-    EffectType.ResurrectOnce: 48
+    EffectType.Damage: 48,
+
+    EffectType.ResurrectOnce: 49
 })
 
 # -----------------------------------------------------------------------------
@@ -331,18 +335,36 @@ class Effect():
                 display_string += f"{round(self.effect_value * 100, 2)}% Taunted Chance"
             elif se_key == StatusEffectKey.CannotTarget:
                 display_string += f"{round(self.effect_value * 100, 2)}% Convinced Chance"
+            elif se_key == StatusEffectKey.Charmed:
+                display_string += f"{round(self.effect_value * 100, 2)}% Charmed Chance"
+            elif se_key == StatusEffectKey.CannotAttack:
+                display_string += f"{round(self.effect_value * 100, 2)}% Atrophied Chance"
+            elif se_key == StatusEffectKey.Sleeping:
+                display_string += f"{round(self.effect_value * 100, 2)}% Sleeping Chance"
+            elif se_key == StatusEffectKey.Decaying:
+                # Guaranteed to happen; the effect value is the percent decrease for healing
+                # effectiveness
+                display_string += f"{round(-self.effect_value * 100, 2)}% Decaying"
         if self.effect_type == EffectType.ResistStatusEffect:
             se_key: StatusEffectKey | None = self.associated_status_effect
             if se_key == StatusEffectKey.Poisoned:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Poisoned Chance"
-            if se_key == StatusEffectKey.Bleeding:
+            elif se_key == StatusEffectKey.Bleeding:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Bleeding Chance"
-            if se_key == StatusEffectKey.TurnSkipChance:
+            elif se_key == StatusEffectKey.TurnSkipChance:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Convinced Chance"
-            if se_key == StatusEffectKey.Taunted:
+            elif se_key == StatusEffectKey.Taunted:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Taunted Chance"
-            if se_key == StatusEffectKey.CannotTarget:
+            elif se_key == StatusEffectKey.CannotTarget:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Convinced Chance"
+            elif se_key == StatusEffectKey.Charmed:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Charmed Chance"
+            elif se_key == StatusEffectKey.CannotAttack:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Atrophied Chance"
+            elif se_key == StatusEffectKey.Sleeping:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Sleeping Chance"
+            elif se_key == StatusEffectKey.Decaying:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Decaying"
 
         if self.effect_type == EffectType.RestoreHealth:
             display_string += f"Restore {int(self.effect_value)} Health"
@@ -369,6 +391,9 @@ class Effect():
             if self.effect_value > 0:
                 display_string += "+"
             display_string += f"{round(self.effect_value * 100, 2)}% Potion Effect"
+
+        if self.effect_type == EffectType.Damage:
+            display_string += f"Deals {int(self.effect_value)} Damage"
 
         # For now, specifically skip ResurrectOnce, since it's in the item description.
 

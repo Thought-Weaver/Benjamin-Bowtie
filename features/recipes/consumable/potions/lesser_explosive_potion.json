@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/lesser_explosive_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Explosive Potion",
+    "value": 255,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/dawns_glory": 1,
+        "items/ingredient/herbs/fissureleaf": 1
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_explosive_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 8
+    }
+}

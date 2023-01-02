@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/lesser_smokebomb",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Smokebomb",
+    "value": 420,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/dream_maker": 1,
+        "items/ingredient/herbs/shellflower": 1
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_smokebomb": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 8
+    }
+}

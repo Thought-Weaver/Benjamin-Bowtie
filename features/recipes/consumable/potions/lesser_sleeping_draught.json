@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/potions/lesser_sleeping_draught",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Sleeping Draught",
+    "value": 330,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/dream_maker": 1
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_sleeping_draught": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 8
+    }
+}

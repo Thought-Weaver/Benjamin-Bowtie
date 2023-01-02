@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/potions/lesser_atrophy_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Atrophy Potion",
+    "value": 60,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/graspleaf": 3
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_atrophy_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 5
+    }
+}
