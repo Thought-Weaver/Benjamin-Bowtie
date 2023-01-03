@@ -6,7 +6,7 @@
     "rarity": "Epic",
     "description": "When planted, grows a golden clover plant.",
     "flavor_text": "Though folk tales speak of golden clovers as covered in real gold, in truth it's simply that the veins have a shimmering golden hue, blending with an otherwise verdant leaf.",
-    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
+    "class_tags": ["Gardening", "Seed"],
     "state_tags": [],
     "count": 1
 }

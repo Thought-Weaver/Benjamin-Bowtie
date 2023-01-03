@@ -126,7 +126,6 @@ class ItemKey(StrEnum):
     LesserPotionOfDecay = "items/consumable/potions/lesser_potion_of_decay"
     LesserSleepingDraught = "items/consumable/potions/lesser_sleeping_draught"
     LesserSmokebomb = "items/consumable/potions/lesser_smokebomb"
-    LesserPoisonWithPufferfish = "items/consumable/potions/lesser_poison_with_pufferfish"
     LesserStrengthPotion = "items/consumable/potions/lesser_strength_potion"
     LuckPotion = "items/consumable/potions/luck_potion"
     ManaPotion = "items/consumable/potions/mana_potion"

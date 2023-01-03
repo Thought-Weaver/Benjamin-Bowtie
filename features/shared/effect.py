@@ -211,6 +211,130 @@ class Effect():
                 )
         return conditions_met
 
+    def get_descriptive_name(self) -> str:
+        match self.effect_type:
+            case EffectType.CleanseStatusEffects:
+                return "Cleanse Statuses"
+            case EffectType.ConMod:
+                return "Augment Constitution"
+            case EffectType.StrMod:
+                return "Augment Strength"
+            case EffectType.DexMod:
+                return "Augment Dexterity"
+            case EffectType.IntMod:
+                return "Augment Intelligence"
+            case EffectType.LckMod:
+                return "Augment Luck"
+            case EffectType.MemMod:
+                return "Augment Memory"
+            case EffectType.DmgReflect:
+                return "Damage Reflect"
+            case EffectType.DmgResist:
+                return "Damage Resist"
+            case EffectType.DmgBuff:
+                return "Damage Buff"
+            case EffectType.DmgBuffSelfMaxHealth:
+                return "Damage Buff (% Max Health)"
+            case EffectType.DmgBuffSelfRemainingHealth:
+                return "Damage Buff (% Remaining Health)"
+            case EffectType.DmgBuffOtherMaxHealth:
+                return "Damage Buff (% Enemy Max Health)"
+            case EffectType.DmgBuffOtherRemainingHealth:
+                return "Damage Buff (% Enemy Remaining Health)"
+            case EffectType.DmgBuffLegends:
+                return "Damage Buff (Against Legendaries)"
+            case EffectType.DmgBuffPoisoned:
+                return "Damage Buff (Against Poisoned)"
+            case EffectType.DmgBuffBleeding:
+                return "Damage Buff (Against Bleeding)"
+            case EffectType.DmgBuffFromDex:
+                return "Damage Scaling (Dex)"
+            case EffectType.DmgBuffFromInt:
+                return "Damage Scaling (Int)"
+            case EffectType.RestoreArmor:
+                return "Restore Armor"
+            case EffectType.RestorePercentArmor:
+                return "Restore % Armor"
+            case EffectType.PiercingDmg:
+                return "Piercing Damage"
+            case EffectType.PiercingPercentDmg:
+                return "% Piercing Damage"
+            case EffectType.SplashDmg:
+                return "Splash Damage"
+            case EffectType.SplashPercentMaxDmg:
+                return "% Splash Damage"
+            case EffectType.CritDmgBuff:
+                return "Augment Crit Effect"
+            case EffectType.CritDmgReduction:
+                return "Crit Damage Reduction"
+            case EffectType.HealthSteal:
+                return "Steal Health"
+            case EffectType.ManaSteal:
+                return "Steal Mana"
+            case EffectType.AdjustedCDs:
+                return "Augment Cooldowns"
+            case EffectType.ChanceStatusEffect:
+                se_key: StatusEffectKey | None = self.associated_status_effect
+                if se_key == StatusEffectKey.Poisoned:
+                    return "Poisoned Chance"
+                elif se_key == StatusEffectKey.Bleeding:
+                    return "Bleeding Chance"
+                elif se_key == StatusEffectKey.TurnSkipChance:
+                    return "Faltering Chance"
+                elif se_key == StatusEffectKey.Taunted:
+                    return "Taunted Chance"
+                elif se_key == StatusEffectKey.CannotTarget:
+                    return "Convinced Chance"
+                elif se_key == StatusEffectKey.Charmed:
+                    return "Charmed Chance"
+                elif se_key == StatusEffectKey.CannotAttack:
+                    return "Atrophied Chance"
+                elif se_key == StatusEffectKey.Sleeping:
+                    return "Sleeping Chance"
+                elif se_key == StatusEffectKey.Decaying:
+                    return "Decaying"
+            case EffectType.ResistStatusEffect:
+                se_key: StatusEffectKey | None = self.associated_status_effect
+                if se_key == StatusEffectKey.Poisoned:
+                    return "Resist Poisoned Chance"
+                elif se_key == StatusEffectKey.Bleeding:
+                    return "Resist Bleeding Chance"
+                elif se_key == StatusEffectKey.TurnSkipChance:
+                    return "Resist Faltering Chance"
+                elif se_key == StatusEffectKey.Taunted:
+                    return "Resist Taunted Chance"
+                elif se_key == StatusEffectKey.CannotTarget:
+                    return "Resist Convinced Chance"
+                elif se_key == StatusEffectKey.Charmed:
+                    return "Resist Charmed Chance"
+                elif se_key == StatusEffectKey.CannotAttack:
+                    return "Resist Atrophied Chance"
+                elif se_key == StatusEffectKey.Sleeping:
+                    return "Resist Sleeping Chance"
+                elif se_key == StatusEffectKey.Decaying:
+                    return "Resist Decaying Chance"
+            case EffectType.RestoreHealth:
+                return "Restore Health"
+            case EffectType.RestorePercentHealth:
+                return "Restore % Health"
+            case EffectType.RestoreMana:
+                return "Restore Mana"
+            case EffectType.RestorePercentMana:
+                return "Restore % Mana"
+            case EffectType.AdjustedManaCosts:
+                return "Augment Mana Costs"
+            case EffectType.HealingAbilityBuff:
+                return "Augment Healing Abilities"
+            case EffectType.AdditionalXP:
+                return "Additional XP"
+            case EffectType.PotionMod:
+                return "Augment Potion Effectiveness"
+            case EffectType.Damage:
+                return "Cause Damage"
+            case EffectType.ResurrectOnce:
+                return "Resurrect Once"
+        return "Unknown"
+
     def __str__(self, filter_condition: ConditionType | None=None):
         display_string = ""
 

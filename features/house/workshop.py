@@ -1,10 +1,10 @@
 from __future__ import annotations
-from random import random
+from random import choice, random
 
 import discord
 
 from discord.embeds import Embed
-from features.house.recipe import LOADED_RECIPES, Recipe
+from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.shared.enums import ClassTag, HouseRoom
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
 from strenum import StrEnum
@@ -897,15 +897,41 @@ class WorkshopView(discord.ui.View):
             index = inventory.search_by_key(input_key)
             # Make experimenting a risk-and-reward situation rather than always consuming the items
             for _ in range(quantity):
-                if found_recipe is None:
-                    if random() < 0.5:
-                        inventory.remove_item(index, 1)
-                else:
-                    inventory.remove_item(index, 1)
+                inventory.remove_item(index, 1)
 
         if found_recipe is None:
             self._get_craft_buttons()
-            return Embed(title="Craft", description=f"You attempt to combine these materials together, but nothing happens.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nUse materials from your inventory and attempt to craft something.\n\nNavigate through your patterns using the Prev and Next buttons.")
+
+            failed_info: str = ""
+            for input_key, quantity in self._current_crafting.items():
+                recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key)
+                if recipe_key is not None:                    
+                    recipe: Recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
+                    
+                    incorrect_recipe_type: bool = False
+                    for output_key in recipe.outputs.keys():
+                        output_item: Item = LOADED_ITEMS.get_new_item(output_key)
+                        if ClassTag.Equipment.Equipment not in output_item.get_class_tags():
+                            incorrect_recipe_type = True
+                    
+                    if incorrect_recipe_type:
+                        continue
+
+                    amount_adj_str: str = ""
+                    if recipe.inputs[input_key] - quantity == 0:
+                        amount_adj_str = "\u2705"
+                    elif recipe.inputs[input_key] - quantity > 0:
+                        amount_adj_str = "\u2B06\uFE0F"
+                    else:
+                        amount_adj_str = "\u2B07\uFE0F"
+
+                    input_item: Item = LOADED_ITEMS.get_new_item(input_key)
+                    failed_info += f"\n{input_item.get_full_name()} (x{quantity}): {recipe.get_name_and_icon()} {amount_adj_str}"
+
+            if failed_info != "":
+                failed_info = f"\n\nYou learned:\n{failed_info}"
+
+            return Embed(title="Craft", description=f"You attempt to combine these materials together, but nothing happens.{failed_info}\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nUse materials from your inventory and attempt to craft something.\n\nNavigate through your patterns using the Prev and Next buttons.")
 
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} pattern!*\n" if new_recipe else ""
 

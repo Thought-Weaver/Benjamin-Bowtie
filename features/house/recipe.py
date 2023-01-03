@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import random
 
 from strenum import StrEnum
 from features.expertise import ExpertiseClass
@@ -321,6 +322,18 @@ class LoadedRecipes():
     _states: MappingProxyType[RecipeKey, dict] = MappingProxyType({
         recipe_key.value: json.load(open(f"./features/{recipe_key.value}.json", "r")) for recipe_key in RecipeKey
     })
+
+    def get_random_recipe_using_item(self, item_key: ItemKey):
+        recipe_keys: List[RecipeKey] = []
+        for recipe_key, recipe_state in self._states.items():
+            input_quantity_needed: int = recipe_state["inputs"].get(item_key, 0)
+            if input_quantity_needed > 0:
+                recipe_keys.append(recipe_key)
+
+        if len(recipe_keys) == 0:
+            return None
+
+        return random.choice(recipe_keys)
 
     def get_all_keys(self):
         return self._states.keys()
