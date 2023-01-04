@@ -851,10 +851,19 @@ class AlchemyChamberView(discord.ui.View):
                         else:
                             amount_adj_str = "\u2B07\uFE0F"
 
+                        # This is a bit hacky
+                        effect_level: str = "Standard"
+                        if "superior" in item_key:
+                            effect_level = "Superior"
+                        elif "greater" in item_key:
+                            effect_level = "Greater"
+                        elif "lesser" in item_key:
+                            effect_level = "Lesser"
+
                         input_item: Item = LOADED_ITEMS.get_new_item(input_key)
                         # Consumable effects only exist on the permanent parameter
                         effect = choice(item_effects.permanent)
-                        alchemizing_failed_info += f"\n{input_item.get_full_name()} (x{quantity}): {effect.get_descriptive_name()} {amount_adj_str}"
+                        alchemizing_failed_info += f"\n{input_item.get_full_name()} (x{quantity}): {effect.get_descriptive_name()} ({effect_level}) {amount_adj_str}"
 
             if alchemizing_failed_info != "":
                 alchemizing_failed_info = f"\n\nYou learned:\n{alchemizing_failed_info}"
