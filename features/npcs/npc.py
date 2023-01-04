@@ -180,7 +180,7 @@ class NPC():
 
         return fitness_score
 
-    def _get_tank_fitness(self, allies: List[Player | NPC], enemies: List[Player | NPC]):
+    def _get_tank_fitness(self, org_self: NPC, allies: List[Player | NPC], enemies: List[Player | NPC]):
         self_expertise = self.get_expertise()
 
         fitness_score: float = 0
@@ -217,7 +217,7 @@ class NPC():
         elif self._dueling_persona == NPCDuelingPersonas.Specialist:
             return self._get_specialist_fitness(org_self, allies, enemies)
         elif self._dueling_persona == NPCDuelingPersonas.Tank:
-            return self._get_tank_fitness(allies, enemies)
+            return self._get_tank_fitness(org_self, allies, enemies)
         return 0
 
     def get_id(self):
