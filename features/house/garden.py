@@ -94,7 +94,7 @@ SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
     ItemKey.SpeckledCapSpores: SeedData(2, 2, 6, ItemKey.SpeckledCap, 0.5, 3, "\uD83C\uDF31", 1),
     ItemKey.SpidersGroveSpores: SeedData(7, 7, 24, ItemKey.SpidersGrove, 0.1, 2, "\uD83C\uDF31", 12),
     ItemKey.SungrainSeed: SeedData(1, 2, 20, ItemKey.Sungrain, 0.7, 2, "\uD83C\uDF31", 1),
-    ItemKey.WanderweedSeed: SeedData(2, 6, 9, ItemKey.Wanderweed, 0.2, 3, "\uD83C\uDF31", 9),
+    ItemKey.WanderweedSeed: SeedData(2, 6, 9, ItemKey.Wanderweed, 0.15, 3, "\uD83C\uDF31", 9),
     ItemKey.WitherheartSeed: SeedData(12, 24, 26, ItemKey.Witherheart, 0.03, 1, "\uD83C\uDF31", 144)
 })
 
