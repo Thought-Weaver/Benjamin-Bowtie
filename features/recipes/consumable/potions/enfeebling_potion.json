@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/enfeebling_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Enfeebling Potion",
+    "value": 1015,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/mages_bane": 3,
+        "items/ingredient/herbs/frostwort": 5
+    },
+    "outputs": {
+        "items/consumable/potions/enfeebling_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

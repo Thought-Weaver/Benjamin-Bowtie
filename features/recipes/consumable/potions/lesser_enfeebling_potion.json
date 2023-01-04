@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/potions/lesser_enfeebling_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Enfeebling Potion",
+    "value": 350,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/mages_bane": 1
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_enfeebling_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

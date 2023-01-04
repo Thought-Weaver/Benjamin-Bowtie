@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/greater_enfeebling_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Enfeebling Potion",
+    "value": 2000,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/mages_bane": 6,
+        "items/ingredient/herbs/frostwort": 10
+    },
+    "outputs": {
+        "items/consumable/potions/greater_enfeebling_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

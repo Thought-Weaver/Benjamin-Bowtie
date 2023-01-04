@@ -63,6 +63,7 @@ class StatusEffectKey(StrEnum):
     Sleeping = "Sleeping"
     Decaying = "Decaying"
     Undying = "Undying"
+    CannotUseAbilities = "CannotUseAbilities"
 
 # -----------------------------------------------------------------------------
 # CONSTANTS
@@ -83,7 +84,8 @@ POSITIVE_STATUS_EFFECTS_ON_SELF: List[StatusEffectKey] = [
     StatusEffectKey.PoisonHeals,
     StatusEffectKey.RegenerateHP,
     StatusEffectKey.RestrictedToItems, # Since this can only happen with Quick Access
-    StatusEffectKey.DmgBuff
+    StatusEffectKey.DmgBuff,
+    StatusEffectKey.Undying
 ]
 
 # -----------------------------------------------------------------------------
@@ -593,6 +595,19 @@ class Undying(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: You can't be reduced below 1 HP for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class CannotUseAbilities(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Enfeebled", StatusEffectKey.CannotUseAbilities, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: You can't use abilities for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
