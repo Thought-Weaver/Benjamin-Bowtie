@@ -320,7 +320,7 @@ class Ability():
 
         return results
 
-    def _use_heal_ability(self, caster: Player | NPC, targets: List[Player | NPC], heal_range: range) -> List[str]:
+    def _use_heal_ability(self, caster: Player | NPC, targets: List[Player | NPC], heal_range: range, max_heal_amount: int | None=None) -> List[str]:
         results: List[str] = []
         
         caster_attrs = caster.get_combined_attributes()
@@ -366,8 +366,12 @@ class Ability():
             heal_amount = int(base_heal * critical_hit_final)
             heal_amount += int(heal_amount * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
             heal_amount += int(heal_amount * healing_adjustment)
+
             if decaying_adjustment != 0:
                 heal_amount *= decaying_adjustment
+
+            if max_heal_amount is not None:
+                heal_amount = min(heal_amount, max_heal_amount)
 
             target_expertise.heal(int(heal_amount))
 
@@ -5369,7 +5373,7 @@ class VitalityTransferI(Ability):
         heal_amount = damage_amount
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and took {damage_amount} damage to cast it!\n\n"
-        results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
+        results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount), max_heal_amount=heal_amount)
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
@@ -5406,7 +5410,7 @@ class VitalityTransferII(Ability):
         heal_amount = damage_amount
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and took {damage_amount} damage to cast it!\n\n"
-        results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
+        results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount), max_heal_amount=heal_amount)
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
@@ -5443,7 +5447,7 @@ class VitalityTransferIII(Ability):
         heal_amount = damage_amount
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and took {damage_amount} damage to cast it!\n\n"
-        results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
+        results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount), max_heal_amount=heal_amount)
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
