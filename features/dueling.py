@@ -203,13 +203,15 @@ class Dueling():
                 attr_mod = ConBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -220,13 +222,15 @@ class Dueling():
                 attr_mod = StrBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -237,13 +241,15 @@ class Dueling():
                 attr_mod = DexBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -254,13 +260,15 @@ class Dueling():
                 attr_mod = IntBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -271,13 +279,15 @@ class Dueling():
                 attr_mod = LckBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -288,13 +298,15 @@ class Dueling():
                 attr_mod = MemBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -302,7 +314,8 @@ class Dueling():
         if item_effect.effect_type == EffectType.DmgResist:
             status_effect = DmgReduction(
                 item_effect.effect_time,
-                item_effect.effect_value
+                item_effect.effect_value,
+                trigger_first_turn=False
             )
             self.status_effects.append(status_effect)
             return (damage_dealt, "{0}" + f" is now {status_effect.name} from {item.get_full_name()}")
@@ -313,13 +326,15 @@ class Dueling():
                 status_effect = DmgBuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 status_effect = DmgDebuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(status_effect)
             return (damage_dealt, "{0}" + f" is now {status_effect.name} from {item.get_full_name()}")
@@ -451,13 +466,15 @@ class Dueling():
                 attr_mod = ConBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -468,13 +485,15 @@ class Dueling():
                 attr_mod = StrBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -485,13 +504,15 @@ class Dueling():
                 attr_mod = DexBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -502,13 +523,15 @@ class Dueling():
                 attr_mod = IntBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -519,13 +542,15 @@ class Dueling():
                 attr_mod = LckBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -536,13 +561,15 @@ class Dueling():
                 attr_mod = MemBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
@@ -551,7 +578,8 @@ class Dueling():
             status_effect = DmgReduction(
                 item_effect.effect_time,
                 item_effect.effect_value,
-                source_str=f"{item.get_full_name()}"
+                source_str=f"{item.get_full_name()}",
+                trigger_first_turn=False
             )
             self.status_effects.append(status_effect)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {item.get_full_name()}")
@@ -562,13 +590,15 @@ class Dueling():
                 status_effect = DmgBuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 status_effect = DmgDebuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(status_effect)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {item.get_full_name()}")
@@ -704,7 +734,8 @@ class Dueling():
         if random() < chance_poisoned:
             status_effect = Poisoned(
                 turns_remaining=turns_poisoned,
-                value=POISONED_PERCENT_HP
+                value=POISONED_PERCENT_HP,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -712,7 +743,8 @@ class Dueling():
         if random() < chance_bleeding:
             status_effect = Bleeding(
                 turns_remaining=turns_bleeding,
-                value=BLEED_PERCENT_HP
+                value=BLEED_PERCENT_HP,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -720,7 +752,8 @@ class Dueling():
         if random() < chance_faltering:
             status_effect = TurnSkipChance(
                 turns_remaining=turns_faltering,
-                value=1
+                value=1,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -728,7 +761,8 @@ class Dueling():
         if random() < chance_taunted:
             status_effect = Taunted(
                 turns_remaining=turns_taunted,
-                forced_to_attack=self_entity
+                forced_to_attack=self_entity,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -736,7 +770,8 @@ class Dueling():
         if random() < chance_convinced:
             status_effect = CannotTarget(
                 turns_remaining=turns_convinced,
-                cant_target=self_entity
+                cant_target=self_entity,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -744,7 +779,8 @@ class Dueling():
         if random() < chance_charmed:
             status_effect = Charmed(
                 turns_remaining=turns_charmed,
-                value=1
+                value=1,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -752,7 +788,8 @@ class Dueling():
         if random() < chance_atrophied:
             status_effect = CannotAttack(
                 turns_remaining=turns_atrophied,
-                value=1
+                value=1,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -760,7 +797,8 @@ class Dueling():
         if random() < chance_sleeping:
             status_effect = Sleeping(
                 turns_remaining=turns_sleeping,
-                value=1
+                value=1,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -770,7 +808,8 @@ class Dueling():
         if percent_decaying != 0:
             status_effect = Decaying(
                 turns_remaining=turns_decaying,
-                value=percent_decaying
+                value=percent_decaying,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -778,7 +817,8 @@ class Dueling():
         if random() < chance_undying:
             status_effect = Undying(
                 turns_remaining=turns_undying,
-                value=1
+                value=1,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
@@ -786,13 +826,14 @@ class Dueling():
         if random() < chance_enfeebled:
             status_effect = CannotUseAbilities(
                 turns_remaining=turns_enfeebled,
-                value=1
+                value=1,
+                trigger_first_turn=False
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         return result_strs
 
-    def apply_on_turn_start_or_end_effects(self, item: Item, item_effect: Effect, entity: Player | NPC, entity_name: str):
+    def apply_on_turn_start_or_end_effects(self, item: Item, item_effect: Effect, entity: Player | NPC, entity_name: str, is_turn_start: bool):
         # Note: Not all effects are listed here, since not all make sense to trigger
         # in this scenario.
         if not item_effect.meets_conditions(entity, item):
@@ -808,13 +849,15 @@ class Dueling():
                 attr_mod = ConBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
             return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
@@ -825,13 +868,15 @@ class Dueling():
                 attr_mod = StrBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
             return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
@@ -842,13 +887,15 @@ class Dueling():
                 attr_mod = DexBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
             return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
@@ -859,13 +906,15 @@ class Dueling():
                 attr_mod = IntBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
             return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
@@ -876,13 +925,15 @@ class Dueling():
                 attr_mod = LckBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
             return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
@@ -893,13 +944,15 @@ class Dueling():
                 attr_mod = MemBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
             return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
@@ -908,7 +961,8 @@ class Dueling():
             status_effect = DmgReduction(
                 item_effect.effect_time,
                 item_effect.effect_value,
-                source_str=f"{item.get_full_name()}"
+                source_str=f"{item.get_full_name()}",
+                trigger_first_turn=is_turn_start
             )
             self.status_effects.append(status_effect)
             return f"{entity_name} is now {status_effect.name} from {item.get_full_name()}"
@@ -919,13 +973,15 @@ class Dueling():
                 status_effect = DmgBuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             else:
                 status_effect = DmgDebuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(status_effect)
             return f"{entity_name} is now {status_effect.name} from {item.get_full_name()}"
@@ -1003,13 +1059,15 @@ class Dueling():
                 attr_mod = ConBuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -1020,13 +1078,15 @@ class Dueling():
                 attr_mod = StrBuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -1037,13 +1097,15 @@ class Dueling():
                 attr_mod = DexBuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -1054,13 +1116,15 @@ class Dueling():
                 attr_mod = IntBuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -1071,13 +1135,15 @@ class Dueling():
                 attr_mod = LckBuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -1088,13 +1154,15 @@ class Dueling():
                 attr_mod = MemBuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
                     ceil(item_effect.effect_value * potion_effect_mod),
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
@@ -1103,7 +1171,8 @@ class Dueling():
             status_effect = DmgReduction(
                 item_effect.effect_time,
                 item_effect.effect_value * potion_effect_mod,
-                source_str=f"{item.get_full_name()}"
+                source_str=f"{item.get_full_name()}",
+                trigger_first_turn=False
             )
             self.status_effects.append(status_effect)
             return "{1}" + f" is now {status_effect.name} from {item.get_full_name()}"
@@ -1114,13 +1183,15 @@ class Dueling():
                 status_effect = DmgBuff(
                     item_effect.effect_time,
                     item_effect.effect_value * potion_effect_mod,
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             else:
                 status_effect = DmgDebuff(
                     item_effect.effect_time,
                     item_effect.effect_value * potion_effect_mod,
-                    source_str=f"{item.get_full_name()}"
+                    source_str=f"{item.get_full_name()}",
+                    trigger_first_turn=False
                 )
             self.status_effects.append(status_effect)
             return "{1}" + f" is now {status_effect.name} from {item.get_full_name()}"
@@ -1574,7 +1645,7 @@ class DuelView(discord.ui.View):
             if item_effects is None:
                 continue
             for item_effect in item_effects.on_turn_end:
-                result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, previous_entity, self.get_name(previous_entity))
+                result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, previous_entity, self.get_name(previous_entity), is_turn_start=False)
                 if result_str != "":
                     self._additional_info_string_data += result_str + " "
 
@@ -1595,7 +1666,7 @@ class DuelView(discord.ui.View):
             if item_effects is None:
                 continue
             for item_effect in item_effects.on_turn_start:
-                result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity))
+                result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity), is_turn_start=True)
                 if result_str != "":
                     self._additional_info_string_data += result_str + " "
         
