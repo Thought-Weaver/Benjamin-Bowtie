@@ -774,6 +774,14 @@ class Dueling():
             )
             result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
+        chance_undying, turns_undying = chance_status_effect.get(StatusEffectKey.Undying, (0, 0))
+        if random() < chance_undying:
+            status_effect = Undying(
+                turns_remaining=turns_undying,
+                value=1
+            )
+            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
+
         return result_strs
 
     def apply_on_turn_start_or_end_effects(self, item: Item, item_effect: Effect, entity: Player | NPC, entity_name: str):

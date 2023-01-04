@@ -1,0 +1,28 @@
+{
+    "key": "items/consumable/potions/lesser_potion_of_death_resist",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Potion of Death Resist",
+    "value": 740,
+    "rarity": "Rare",
+    "description": "Can be used while dueling or outside duels.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 0,
+        "target_own_group": true
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Undying"
+            }
+        ]
+    }
+}

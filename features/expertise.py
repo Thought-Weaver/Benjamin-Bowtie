@@ -201,6 +201,12 @@ class Expertise():
             dueling.status_effects = list(filter(lambda se: se.key != StatusEffectKey.Sleeping, dueling.status_effects))
 
         self.hp = min(max(0, self.hp - damage_to_health), self.max_hp)
+
+        undying: bool = any(se.key == StatusEffectKey.Undying for se in dueling.status_effects)
+        if undying:
+            self.hp = max(1, self.hp)
+            return damage_to_health - 1
+
         return damage_to_health
 
     def restore_mana(self, restore_amount: int):

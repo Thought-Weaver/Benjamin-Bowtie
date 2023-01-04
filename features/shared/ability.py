@@ -5368,7 +5368,7 @@ class VitalityTransferI(Ability):
 
         heal_amount = damage_amount
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and took {damage_amount} damage to cast it!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
         result_str += "\n".join(results)
 
@@ -5405,7 +5405,7 @@ class VitalityTransferII(Ability):
 
         heal_amount = damage_amount
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and took {damage_amount} damage to cast it!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
         result_str += "\n".join(results)
 
@@ -5442,7 +5442,7 @@ class VitalityTransferIII(Ability):
 
         heal_amount = damage_amount
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and took {damage_amount} damage to cast it!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
         result_str += "\n".join(results)
 

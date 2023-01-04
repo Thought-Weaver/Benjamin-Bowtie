@@ -273,6 +273,8 @@ class Effect():
                 return "Steal Mana"
             case EffectType.AdjustedCDs:
                 return "Augment Cooldowns"
+            # TODO: Could abstract this to something shared between this function
+            # and the string formatter below
             case EffectType.ChanceStatusEffect:
                 se_key: StatusEffectKey | None = self.associated_status_effect
                 if se_key == StatusEffectKey.Poisoned:
@@ -293,6 +295,8 @@ class Effect():
                     return "Sleeping Chance"
                 elif se_key == StatusEffectKey.Decaying:
                     return "Decaying"
+                elif se_key == StatusEffectKey.Undying:
+                    return "Undying"
             case EffectType.ResistStatusEffect:
                 se_key: StatusEffectKey | None = self.associated_status_effect
                 if se_key == StatusEffectKey.Poisoned:
@@ -469,6 +473,8 @@ class Effect():
                 # Guaranteed to happen; the effect value is the percent decrease for healing
                 # effectiveness
                 display_string += f"{round(-self.effect_value * 100, 2)}% Decaying"
+            elif se_key == StatusEffectKey.Undying:
+                display_string += f"{round(self.effect_value * 100, 2)}% Undying Chance"
         if self.effect_type == EffectType.ResistStatusEffect:
             se_key: StatusEffectKey | None = self.associated_status_effect
             if se_key == StatusEffectKey.Poisoned:
@@ -488,7 +494,7 @@ class Effect():
             elif se_key == StatusEffectKey.Sleeping:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Sleeping Chance"
             elif se_key == StatusEffectKey.Decaying:
-                display_string += f"{round(self.effect_value * 100, 2)}% Resist Decaying"
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Decaying Chance"
 
         if self.effect_type == EffectType.RestoreHealth:
             display_string += f"Restore {int(self.effect_value)} Health"

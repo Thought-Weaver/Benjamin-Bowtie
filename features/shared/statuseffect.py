@@ -62,6 +62,7 @@ class StatusEffectKey(StrEnum):
     CannotAttack = "CannotAttack"
     Sleeping = "Sleeping"
     Decaying = "Decaying"
+    Undying = "Undying"
 
 # -----------------------------------------------------------------------------
 # CONSTANTS
@@ -579,6 +580,19 @@ class Decaying(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: Healing effects are {self.value * 100}% less effective instead for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class Undying(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Undying", StatusEffectKey.Undying, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: You can't be reduced below 1 HP for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

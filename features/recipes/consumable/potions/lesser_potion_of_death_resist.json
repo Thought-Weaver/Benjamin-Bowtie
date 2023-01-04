@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/lesser_potion_of_death_resist",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Potion of Death Resist",
+    "value": 2250,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/lichbloom": 1,
+        "items/ingredient/herbs/shellflower": 1
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_potion_of_death_resist": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}
