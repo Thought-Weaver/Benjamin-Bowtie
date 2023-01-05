@@ -88,6 +88,26 @@ POSITIVE_STATUS_EFFECTS_ON_SELF: List[StatusEffectKey] = [
     StatusEffectKey.Undying
 ]
 
+NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
+    StatusEffectKey.ConDebuff,
+    StatusEffectKey.StrDebuff,
+    StatusEffectKey.DexDebuff,
+    StatusEffectKey.IntDebuff,
+    StatusEffectKey.LckDebuff,
+    StatusEffectKey.MemDebuff,
+    StatusEffectKey.DmgVulnerability,
+    StatusEffectKey.FixedDmgTick,
+    StatusEffectKey.TurnSkipChance,
+    StatusEffectKey.Taunted,
+    StatusEffectKey.DmgDebuff,
+    StatusEffectKey.Charmed,
+    StatusEffectKey.CannotAttack,
+    StatusEffectKey.Sleeping,
+    StatusEffectKey.Decaying,
+    StatusEffectKey.Undying,
+    StatusEffectKey.CannotUseAbilities
+]
+
 # -----------------------------------------------------------------------------
 # CLASSES
 # -----------------------------------------------------------------------------

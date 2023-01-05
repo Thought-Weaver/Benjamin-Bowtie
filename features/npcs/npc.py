@@ -6,7 +6,7 @@ from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 from features.shared.item import ItemKey
-from features.shared.statuseffect import POSITIVE_STATUS_EFFECTS_ON_SELF, StatusEffectKey, Taunted
+from features.shared.statuseffect import NEGATIVE_STATUS_EFFECTS, POSITIVE_STATUS_EFFECTS_ON_SELF, StatusEffectKey, Taunted
 from features.stats import Stats
 from uuid import uuid4
 
@@ -114,6 +114,11 @@ class NPC():
         # The Mage should slightly consider the positive status effects it has active
         if len(self.get_dueling().status_effects) > 0:
             fitness_score += sum([1 if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF else 0 for se in self.get_dueling().status_effects]) / len(self.get_dueling().status_effects)
+        # Consider the average negative status effects on enemies to account for any new ones that might have been applied
+        fitness_score += sum(
+            sum([1 if se.key in NEGATIVE_STATUS_EFFECTS else 0 for se in enemy.get_dueling().status_effects]) / len(enemy.get_dueling().status_effects) if len(enemy.get_dueling().status_effects) > 0 else 0
+            for enemy in enemies
+        ) / len(enemies)
         # Any action that gives an NPC additional actions should be weighted very heavily
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
 
@@ -137,6 +142,11 @@ class NPC():
         # The Rogue should slightly consider the positive status effects it has active
         if len(self.get_dueling().status_effects) > 0:
             fitness_score += sum([1 if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF else 0 for se in self.get_dueling().status_effects]) / len(self.get_dueling().status_effects)
+        # Consider the average negative status effects on enemies to account for any new ones that might have been applied
+        fitness_score += sum(
+            sum([1 if se.key in NEGATIVE_STATUS_EFFECTS else 0 for se in enemy.get_dueling().status_effects]) / len(enemy.get_dueling().status_effects) if len(enemy.get_dueling().status_effects) > 0 else 0
+            for enemy in enemies
+        ) / len(enemies)
         # Any action that gives an NPC additional actions should be weighted very heavily
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
 
@@ -175,6 +185,11 @@ class NPC():
         ) / len(enemies)
         # The Specialist should heavily weight actions that restore mana when low
         fitness_score += ((1 + (1 - org_self.get_expertise().mana / org_self.get_expertise().max_mana) + self_expertise.mana / self_expertise.max_mana - org_self.get_expertise().mana / org_self.get_expertise().max_mana) ** 10 - 1) / (18 ** 2 - 1)
+        # Consider the average negative status effects on enemies to account for any new ones that might have been applied
+        fitness_score += sum(
+            sum([1 if se.key in NEGATIVE_STATUS_EFFECTS else 0 for se in enemy.get_dueling().status_effects]) / len(enemy.get_dueling().status_effects) if len(enemy.get_dueling().status_effects) > 0 else 0
+            for enemy in enemies
+        ) / len(enemies)
         # Any action that gives an NPC additional actions should be weighted very heavily
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
 
