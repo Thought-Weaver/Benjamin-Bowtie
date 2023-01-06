@@ -631,12 +631,19 @@ class YennaView(discord.ui.View):
                 "\"The Sage. For the many options that you may yet choose, there is a benefit to remembering where you've been and studying the wisdom of those who have ventured out into the world before you. This is often regarded as the card of the alchemists, though I'm perhaps a bit biased to suggest you learn some alchemy yourself.\"\n\n"
             )
 
-        description += "\"Remember that the choices are yours to make. What I have shown you here is merely a look into the past, present, and one possible future.\"\n\n*Your attribute points have been reset and you can now spend them again.*"
+        description += "\"Remember that the choices are yours to make. What I have shown you here is merely a look into the past, present, and one possible future.\"\n\n*Your attribute points have been reset and you can now spend them again. Your equipment and current abilities have been unequipped.*"
 
         if self._get_player().get_inventory().get_coins() >= self._TAROT_COST:
             self._get_player().get_expertise().reset_points()
             self._get_player().get_dueling().abilities = []
             self._get_player().get_inventory().remove_coins(self._TAROT_COST)
+            # Since items may have attribute and level requirements that are no longer
+            # met, just unequip everything for safety.
+            equipment = self._get_player().get_equipment()
+            for slot in ClassTag.Equipment:
+                unequipped_item: (Item | None) = equipment.unequip_item_from_slot(slot)
+                self._get_player().get_inventory().add_item(unequipped_item)
+            self._get_player().get_expertise().update_stats(self._get_player().get_combined_attributes())
 
         return Embed(
             title="Tarot Reading",

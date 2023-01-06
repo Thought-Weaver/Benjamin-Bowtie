@@ -6,15 +6,13 @@ from aenum import Enum
 from random import randint
 from strenum import StrEnum
 
-from features.shared.constants import DEX_DMG_SCALE, WEAPON_OVERLEVELED_DEBUFF
+from features.shared.attributes import Attributes
+from features.shared.constants import WEAPON_OVERLEVELED_DEBUFF
 from features.shared.effect import ConditionType, EffectType, ItemEffects
 from features.shared.enums import ClassTag
 from types import MappingProxyType
 
-from typing import TYPE_CHECKING, List
-
-if TYPE_CHECKING:
-    from features.shared.attributes import Attributes
+from typing import List
 
 # -----------------------------------------------------------------------------
 # ENUMS
@@ -548,7 +546,7 @@ class ConsumableStats():
 
 
 class Item():
-    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], state_tags: List[StateTag]=[], count=1, level_requirement=0, item_effects: ItemEffects | None=None, altering_item_keys: List[ItemKey]=[], armor_stats: ArmorStats | None=None, weapon_stats: WeaponStats | None=None, consumable_stats: ConsumableStats | None=None):
+    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], state_tags: List[StateTag]=[], count=1, level_requirement=0, item_effects: ItemEffects | None=None, altering_item_keys: List[ItemKey]=[], attr_requirements: Attributes | None=None, armor_stats: ArmorStats | None=None, weapon_stats: WeaponStats | None=None, consumable_stats: ConsumableStats | None=None):
         self._key: ItemKey = key
         self._icon: str = icon
         self._name: str = name
@@ -562,6 +560,7 @@ class Item():
         self._level_requirement: int = level_requirement
         self._item_effects: ItemEffects | None = item_effects
         self._altering_item_keys: List[ItemKey] = altering_item_keys
+        self._attr_requirements: Attributes | None = attr_requirements 
 
         self._armor_stats: ArmorStats | None = armor_stats
         self._weapon_stats: WeaponStats | None = weapon_stats
@@ -607,6 +606,7 @@ class Item():
             item_data.get("level_requirement", 0),
             item_effects,
             item_data.get("altering_item_keys", []),
+            item_data.get("attr_requirements", None),
             armor_stats,
             weapon_stats,
             consumable_stats
@@ -628,6 +628,7 @@ class Item():
                 self._level_requirement,
                 self._item_effects,
                 self._altering_item_keys[:],
+                self._attr_requirements,
                 self._armor_stats,
                 self._weapon_stats,
                 self._consumable_stats)
@@ -637,6 +638,21 @@ class Item():
 
     def add_amount(self, amount: int):
         self._count += amount
+
+    def meets_attr_requirements(self, attributes: Attributes):
+        attr_reqs_met: bool = self._attr_requirements is None or (
+            attributes.constitution >= self._attr_requirements.constitution and
+            attributes.strength >= self._attr_requirements.strength and
+            attributes.dexterity >= self._attr_requirements.dexterity and
+            attributes.intelligence >= self._attr_requirements.intelligence and
+            attributes.luck >= self._attr_requirements.luck and
+            attributes.memory >= self._attr_requirements.memory
+        )
+        return attr_reqs_met
+
+    def meets_requirements(self, level: int, attributes: Attributes):
+        level_req_met: bool = level >= self._level_requirement
+        return level_req_met and self.meets_attr_requirements(attributes)
 
     def get_name(self) -> str:
         return self._name
@@ -717,6 +733,9 @@ class Item():
     def get_altering_item_keys(self) -> List[ItemKey]:
         return self._altering_item_keys
 
+    def set_altering_item_keys(self, keys: List[ItemKey]) -> None:
+        self._altering_item_keys = keys
+
     def get_armor_stats(self) -> (ArmorStats | None):
         return self._armor_stats
 
@@ -726,8 +745,8 @@ class Item():
     def get_consumable_stats(self) -> (ConsumableStats | None):
         return self._consumable_stats
 
-    def set_altering_item_keys(self, keys: List[ItemKey]) -> None:
-        self._altering_item_keys = keys
+    def get_attr_requirements(self) -> (Attributes | None):
+        return self._attr_requirements
 
     def get_str_for_slot(self, slot: ClassTag.Equipment):
         if slot == ClassTag.Equipment.ChestArmor:
@@ -809,6 +828,8 @@ class Item():
         
         display_string += f"Value: *{self.get_value()}* each\n"
         display_string += f"Level Requirement: {self._level_requirement}"
+        if self._attr_requirements is not None:
+            display_string += f"\nAttribute Requirements: {self._attr_requirements.get_short_comma_sep_str()}"
         
         return display_string
 
@@ -877,6 +898,19 @@ class Item():
             self._item_effects.__setstate__(item_effects_data)
         else:
             self._item_effects = None
+
+        attr_requirements_data: dict | None = base_data.get("attr_requirements")
+        if attr_requirements_data is not None:
+            self._attr_requirements = Attributes(
+                attr_requirements_data.get("constitution", 0),
+                attr_requirements_data.get("strength", 0),
+                attr_requirements_data.get("dexterity", 0),
+                attr_requirements_data.get("intelligence", 0),
+                attr_requirements_data.get("luck", 0),
+                attr_requirements_data.get("memory", 0)
+            )
+        else:
+            self._attr_requirements = None
 
         # These are stateful values and we use what's loaded from the database.
         self._state_tags = state.get("_state_tags", [])

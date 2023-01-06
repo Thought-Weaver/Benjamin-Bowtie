@@ -427,9 +427,9 @@ class Effect():
             display_string += f"{round(self.effect_value * 100, 2)}% Damage Scaling from Lck"
         
         if self.effect_type == EffectType.RestoreArmor:
-            display_string += f"{int(self.effect_value)} Armor Restored"
+            display_string += f"Restore {int(self.effect_value)} Armor"
         if self.effect_type == EffectType.RestorePercentArmor:
-            display_string += f"{round(self.effect_value * 100, 2)}% Armor Restored"
+            display_string += f"Restore {round(self.effect_value * 100, 2)}% Armor"
 
         if self.effect_type == EffectType.PiercingDmg:
             display_string += f"{int(self.effect_value)} Piercing Damage"
@@ -640,6 +640,9 @@ class ItemEffects():
         on_turn_end_strs = [effect.__str__(condition_type) + " at the end of your turn" for effect in filter_by_condition(self.on_turn_end, condition_type)]
         display_string += "\n".join(on_turn_end_strs) + ("\n" if len(on_turn_end_strs) > 0 else "")
 
+        on_damaged_strs = [effect.__str__(condition_type) + " when you're damaged" for effect in filter_by_condition(self.on_damaged, condition_type)]
+        display_string += "\n".join(on_damaged_strs) + ("\n" if len(on_damaged_strs) > 0 else "")
+
         on_successful_ability_strs = [effect.__str__(condition_type) + " when you successfully use an ability" for effect in filter_by_condition(self.on_successful_ability_used, condition_type)]
         display_string += "\n".join(on_successful_ability_strs) + ("\n" if len(on_successful_ability_strs) > 0 else "")
 
@@ -681,6 +684,10 @@ class ItemEffects():
         if on_turn_end_str != "":
             display_string += "At the end of your turn:\n\n" + f"*{on_turn_end_str}*\n\n"
         
+        on_damaged_str = "\n".join([str(effect) for effect in self.on_damaged])
+        if on_damaged_str != "":
+            display_string += "When you're damaged:\n\n" + f"*{on_damaged_str}*\n\n"
+
         on_successful_ability_used_str = "\n".join([str(effect) for effect in self.on_successful_ability_used])
         if on_successful_ability_used_str != "":
             display_string += "When you successfully use an ability:\n\n" + f"*{on_successful_ability_used_str}*\n\n"

@@ -4341,7 +4341,7 @@ class ATidySumI(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum I",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into coins, awarding you 5 coins per successful attack.",
+            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into generated coins, awarding you 5 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -4379,7 +4379,7 @@ class ATidySumII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum II",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into coins, awarding you 10 coins per successful attack.",
+            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into generated coins, awarding you 10 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -4417,7 +4417,7 @@ class ATidySumIII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum III",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into coin, awarding you 15 coins per successful attack.",
+            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into generated coins, awarding you 15 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -4458,7 +4458,7 @@ class CursedCoinsI(Ability):
             icon="\uD83E\uDE99",
             name="Cursed Coins I",
             class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain coins, deal 25% of that as damage to all enemies.",
+            description="For the next 3 turns, whenever you gain generated coins, deal 25% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
@@ -4496,7 +4496,7 @@ class CursedCoinsII(Ability):
             icon="\uD83E\uDE99",
             name="Cursed Coins II",
             class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain coins, deal 50% of that as damage to all enemies.",
+            description="For the next 3 turns, whenever you gain generated coins, deal 50% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
@@ -4534,7 +4534,7 @@ class CursedCoinsIII(Ability):
             icon="\uD83E\uDE99",
             name="Cursed Coins III",
             class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain coins, deal 75% of that as damage to all enemies.",
+            description="For the next 3 turns, whenever you gain generated coins, deal 75% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
@@ -4572,7 +4572,7 @@ class CursedCoinsIV(Ability):
             icon="\uD83E\uDE99",
             name="Cursed Coins IV",
             class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain coins, deal 100% of that as damage to all enemies.",
+            description="For the next 3 turns, whenever you gain generated coins, deal 100% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
@@ -4613,7 +4613,7 @@ class UnseenRichesI(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches I",
             class_key=ExpertiseClass.Merchant,
-            description="Gain coins equal to 25% of your total Luck.",
+            description="Generate coins equal to 25% of your total Luck. These coins are not added to your inventory.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -4626,7 +4626,6 @@ class UnseenRichesI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
         adjusted_coins: int = int(0.25 * coins_to_add)
-        caster.get_inventory().add_coins(adjusted_coins)
         
         tarnished_value = 0
         for se in caster.get_dueling().status_effects:
@@ -4673,7 +4672,7 @@ class UnseenRichesII(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches II",
             class_key=ExpertiseClass.Merchant,
-            description="Gain coins equal to 50% of your total Luck.",
+            description="Generate coins equal to 50% of your total Luck. These coins are not added to your inventory.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -4686,7 +4685,6 @@ class UnseenRichesII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
         adjusted_coins: int = int(0.5 * coins_to_add)
-        caster.get_inventory().add_coins(adjusted_coins)
 
         tarnished_value = 0
         for se in caster.get_dueling().status_effects:
@@ -4697,7 +4695,7 @@ class UnseenRichesII(Ability):
         if tarnished_value != 0:
             cursed_coins_damage += int(tarnished_value * adjusted_coins)
 
-        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {adjusted_coins} coins."
+        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou generated {adjusted_coins} coins."
 
         if cursed_coins_damage != 0:
             for i, target in enumerate(targets):
@@ -4733,7 +4731,7 @@ class UnseenRichesIII(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches III",
             class_key=ExpertiseClass.Merchant,
-            description="Gain coins equal to 75% of your total Luck.",
+            description="Generate coins equal to 75% of your total Luck. These coins are not added to your inventory.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -4746,7 +4744,6 @@ class UnseenRichesIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
         adjusted_coins: int = int(0.75 * coins_to_add)
-        caster.get_inventory().add_coins(adjusted_coins)
         
         tarnished_value = 0
         for se in caster.get_dueling().status_effects:
@@ -4757,7 +4754,7 @@ class UnseenRichesIII(Ability):
         if tarnished_value != 0:
             cursed_coins_damage += int(tarnished_value * adjusted_coins)
 
-        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou gained {adjusted_coins} coins."
+        result_str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou generated {adjusted_coins} coins."
 
         if cursed_coins_damage != 0:
             for i, target in enumerate(targets):

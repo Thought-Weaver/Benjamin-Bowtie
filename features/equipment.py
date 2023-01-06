@@ -349,18 +349,40 @@ class EquipmentView(discord.ui.View):
         # filtered when displayed to the user, so adjusting based on page size wouldn't work.
         found_index = inventory.item_exists(inventory.get_inventory_slots()[exact_item_index])
         if found_index == exact_item_index:
-            item = inventory.remove_item(exact_item_index, 1)
-            prev_item = equipment.equip_item_to_slot(self._cur_equip_slot, item)
+            if inventory.get_inventory_slots()[exact_item_index].meets_attr_requirements(expertise.get_all_attributes() + equipment.get_total_attribute_mods()):
+                item = inventory.remove_item(exact_item_index, 1)
+                prev_item = equipment.equip_item_to_slot(self._cur_equip_slot, item)
 
-            if prev_item is not None:
-                inventory.add_item(prev_item)
+                if prev_item is not None:
+                    inventory.add_item(prev_item)
 
-            embed = Embed(
-                title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
-                description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nEquipped! You can choose a different item from your inventory to equip or exit."
-            )
-
-            expertise.update_stats(player.get_combined_attributes())
+                unequipped_items_strs: List[str] = []
+                # Equipping an item that modifies attributes can trigger a chain effect (notably in the case of a negative modifier)
+                # where items need to be unequipped since they no longer meet attribute requirements.
+                if item is not None and item.get_item_effects() is not None and item.get_item_effects().get_permanent_attribute_mods().any_nonzero():
+                    last_unequipped_items_len: int = -1
+                    while len(unequipped_items_strs) != last_unequipped_items_len:
+                        last_unequipped_items_len = len(unequipped_items_strs)
+                        cur_attrs = expertise.get_all_attributes() + equipment.get_total_attribute_mods()
+                        for slot in ClassTag.Equipment:
+                            item: Item | None = equipment.get_item_in_slot(slot)
+                            if item is not None and not item.meets_attr_requirements(cur_attrs):
+                                equipment.unequip_item_from_slot(slot)
+                                inventory.add_item(item)
+                                unequipped_items_strs.append(item.get_full_name())
+                                expertise.update_stats(player.get_combined_attributes())
+                unequipped_items_str: str = "" if len(unequipped_items_strs) == 0 else ("\n\n" + ", ".join(unequipped_items_strs) + " unequipped due to attribute requirements changing! ")
+                
+                embed = Embed(
+                    title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
+                    description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nEquipped! You can choose a different item from your inventory to equip or exit.{unequipped_items_str}"
+                )
+                expertise.update_stats(player.get_combined_attributes())
+            else:
+                embed = Embed(
+                    title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
+                    description="*Error: You don't meet the attribute requirements for that item!*\n\nChoose an item from your inventory to equip."
+                )
         
         self._get_current_page_buttons()
         return embed
@@ -374,14 +396,37 @@ class EquipmentView(discord.ui.View):
         equipped_item: (Item | None) = equipment.unequip_item_from_slot(self._cur_equip_slot)
         inventory.add_item(equipped_item)
 
+        unequipped_items_strs: List[str] = []
+        # Unequipping an item that modifies attributes can trigger a chain effect where
+        # other items need to be unequipped since they no longer meet attribute requirements.
+        if equipped_item is not None and equipped_item.get_item_effects() is not None and equipped_item.get_item_effects().get_permanent_attribute_mods().any_nonzero():
+            last_unequipped_items_len: int = -1
+            while len(unequipped_items_strs) != last_unequipped_items_len:
+                last_unequipped_items_len = len(unequipped_items_strs)
+                cur_attrs = expertise.get_all_attributes() + equipment.get_total_attribute_mods()
+                for slot in ClassTag.Equipment:
+                    item: Item | None = equipment.get_item_in_slot(slot)
+                    if item is not None and not item.meets_attr_requirements(cur_attrs):
+                        equipment.unequip_item_from_slot(slot)
+                        inventory.add_item(item)
+                        unequipped_items_strs.append(item.get_full_name())
+                        expertise.update_stats(player.get_combined_attributes())
+        unequipped_items_str: str = "" if len(unequipped_items_strs) == 0 else ("\n\n" + ", ".join(unequipped_items_strs) + " unequipped due to attribute requirements changing! ")
+
         expertise.update_stats(player.get_combined_attributes())
 
         self._get_current_page_buttons()
 
-        return Embed(
-            title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
-            description = "None equipped. Choose an item from your inventory to equip."
-        )
+        if equipped_item is not None:
+            return Embed(
+                title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
+                description = f"{equipped_item.get_full_name()} unequipped!{unequipped_items_str}\n\nNone equipped. Choose an item from your inventory to equip."
+            )
+        else:
+            return Embed(
+                title=f"Equip to {self.get_str_for_slot(self._cur_equip_slot)}",
+                description = "None equipped. Choose an item from your inventory to equip."
+            )
 
     def display_item_in_slot(self, slot: ClassTag.Equipment):
         self._cur_equip_slot = slot
