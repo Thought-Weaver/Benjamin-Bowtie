@@ -3544,7 +3544,7 @@ class PiercingStrikeII(Ability):
             icon="\uD83D\uDCCD",
             name="Piercing Strike II",
             class_key=ExpertiseClass.Guardian,
-            description="Lunge forward at an enemy, dealing 120% of your weapon damage with a 25% chance to set Bleeding.",
+            description="Lunge forward at an enemy, dealing 120% of your weapon damage with a 50% chance to set Bleeding.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -3578,7 +3578,7 @@ class PiercingStrikeII(Ability):
         )
 
         for i in range(len(results)):
-            if not results[i].dodged and random() < 0.25:
+            if not results[i].dodged and random() < 0.5:
                 se_str = targets[i].get_dueling().add_status_effect_with_resist(bleed, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and {se_str}"
@@ -3602,7 +3602,7 @@ class PiercingStrikeIII(Ability):
             icon="\uD83D\uDCCD",
             name="Piercing Strike III",
             class_key=ExpertiseClass.Guardian,
-            description="Lunge forward at an enemy, dealing 130% of your weapon damage with a 30% chance to set Bleeding.",
+            description="Lunge forward at an enemy, dealing 130% of your weapon damage with a 80% chance to set Bleeding.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -3636,7 +3636,7 @@ class PiercingStrikeIII(Ability):
         )
 
         for i in range(len(results)):
-            if not results[i].dodged and random() < 0.3:
+            if not results[i].dodged and random() < 0.8:
                 se_str = targets[i].get_dueling().add_status_effect_with_resist(bleed, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and {se_str}"
@@ -3663,7 +3663,7 @@ class PressTheAdvantageI(Ability):
             icon="\uD83E\uDD3A",
             name="Press the Advantage I",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 2 actions this turn.",
+            description="Gain 3 actions this turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -3674,10 +3674,79 @@ class PressTheAdvantageI(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 2
+        caster.get_dueling().actions_remaining += 3
         caster.get_stats().dueling.guardian_abilities_used += 1
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 2 actions available."
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 3 actions available."
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+class PressTheAdvantageII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDD3A",
+            name="Press the Advantage II",
+            class_key=ExpertiseClass.Guardian,
+            description="Gain 4 actions this turn.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=-1,
+            num_targets=0,
+            level_requirement=22,
+            target_own_group=True,
+            purchase_cost=16000
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        caster.get_dueling().actions_remaining += 4
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 4 actions available."
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class PressTheAdvantageIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDD3A",
+            name="Press the Advantage III",
+            class_key=ExpertiseClass.Guardian,
+            description="Gain 5 actions this turn.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=-1,
+            num_targets=0,
+            level_requirement=26,
+            target_own_group=True,
+            purchase_cost=32000
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        caster.get_dueling().actions_remaining += 5
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 5 actions available."
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
