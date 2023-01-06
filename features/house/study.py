@@ -598,7 +598,7 @@ class StudyView(discord.ui.View):
         self._get_socket_buttons()
         return Embed(title="Select Socket", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose a socket to add or remove a gem.")
 
-    def select_gem(self, index: int, item: Item):
+    def select_gem(self, gem_index: int, gem: Item):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
         inventory_slots: List[Item] = inventory.get_inventory_slots()
@@ -606,11 +606,11 @@ class StudyView(discord.ui.View):
             self.exit_with_intent()
             return self.get_embed_for_intent(error="\n\n*Error: Something about the item you want to enchant changed or it's no longer available.*")
 
-        if item is None or inventory_slots[index] != item:
+        if gem is None or inventory_slots[gem_index] != gem:
             self.exit_with_intent()
             return self.get_embed_for_intent(error="\n\n*Error: Something about the gem changed or it's no longer available.*")
 
-        new_item = self._selected_item.remove_amount(1)
+        new_item = inventory_slots[self._selected_item_index].remove_amount(1)
         if new_item is None:
             self.exit_with_intent()
             return self.get_embed_for_intent(error="\n\n*Error: Something about the item you want to enchant changed or it's no longer available.*")
@@ -619,24 +619,25 @@ class StudyView(discord.ui.View):
         if not (0 <= self._selected_socket < len(altering_item_keys)):
             self.exit_with_intent()
             return self.get_embed_for_intent(error="\n\n*Error: That's not a valid socket.*")
-        
-        key = altering_item_keys[self._selected_socket]
-        if key != "":
-            old_item = LOADED_ITEMS.get_new_item(key)
-            inventory.add_item(old_item)
 
-        inventory.remove_item(index, 1)
-        altering_item_keys[self._selected_socket] = item.get_key()
+        old_gem_key = altering_item_keys[self._selected_socket]
+
+        inventory.remove_item(gem_index, 1)
+        altering_item_keys[self._selected_socket] = gem.get_key()
         inventory.add_item(new_item)
+
+        if old_gem_key != "":
+            old_gem = LOADED_ITEMS.get_new_item(old_gem_key)
+            inventory.add_item(old_gem)
 
         # When there's more than one item in your inventory, the index may change after altering
         # it, so make sure the index is updated.
         self._selected_item_index = inventory.get_item_index(new_item)
-        self._selected_item = new_item
+        self._selected_item = inventory.get_inventory_slots()[self._selected_item_index]
 
         self._get_gem_buttons()
 
-        return self.get_embed_for_intent(f"\n\n*{item.get_full_name()} has been socketed into socket {self._selected_socket + 1}*")
+        return self.get_embed_for_intent(f"\n\n*{gem.get_full_name()} has been socketed into socket {self._selected_socket + 1}*")
 
     def remove_gem(self):
         player: Player = self._get_player()
@@ -653,18 +654,24 @@ class StudyView(discord.ui.View):
             self.exit_with_intent()
             return self.get_embed_for_intent(error="\n\n*Error: That's not a valid socket.*")
         
-        altering_item_keys[self._selected_socket] = ""
-        item = LOADED_ITEMS.get_new_item(key)
-        inventory.add_item(item)
+        new_item = inventory_slots[self._selected_item_index].remove_amount(1)
+        if new_item is None:
+            self.exit_with_intent()
+            return self.get_embed_for_intent(error="\n\n*Error: Something about the item you want to enchant changed or it's no longer available.*")
+
+        new_item.get_altering_item_keys()[self._selected_socket] = ""
+        gem = LOADED_ITEMS.get_new_item(key)
+        inventory.add_item(gem)
+        inventory.add_item(new_item)
 
         # When there's more than one item in your inventory, the index may change after altering
         # it, so make sure the index is updated.
-        self._selected_item_index = inventory.get_item_index(item)
-        self._selected_item = item
+        self._selected_item_index = inventory.get_item_index(new_item)
+        self._selected_item = new_item
 
         self._get_gem_buttons()
 
-        return self.get_embed_for_intent(f"\n\n*{item.get_full_name()} has been unsocketed from socket {self._selected_socket}*")
+        return self.get_embed_for_intent(f"\n\n*{gem.get_full_name()} has been unsocketed from socket {self._selected_socket}*")
 
     def exit_with_intent(self):
         self._page = 0
