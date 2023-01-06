@@ -476,14 +476,30 @@ class WeaponStats():
         return f"({self._num_targets} targets)"
 
     def get_random_damage(self, attacker_attrs: Attributes, item_effects: ItemEffects | None, level_diff: int):
-        damage = randint(self._min_damage, self._max_damage)
-        # TODO: How should these stack? Should this logic be here now? Should I just allow items to specify how much they scale
-        # from Dex since that's possible now?
-        if item_effects is not None and any(effect.effect_type == EffectType.DmgBuffFromDex for effect in item_effects.permanent):
-            damage += min(int(damage * DEX_DMG_SCALE * max(attacker_attrs.dexterity, 0)), damage)
-        
+        base_damage: int = randint(self._min_damage, self._max_damage)
+        buffed_damage: int = base_damage
+
+        # This only applies to the main hand item; there should only be one instance of a damage boost per
+        # attribute, so we can just use the value from the first matching one.
+        if item_effects is not None:
+            dex_damage_boost: float = 0
+            int_damage_boost: float = 0
+            lck_damage_boost: float = 0
+
+            for effect in item_effects.permanent:
+                if effect.effect_type == EffectType.DmgBuffFromDex:
+                    dex_damage_boost = effect.effect_value
+                elif effect.effect_type == EffectType.DmgBuffFromInt:
+                    int_damage_boost = effect.effect_value
+                elif effect.effect_type == EffectType.DmgBuffFromLck:
+                    lck_damage_boost = effect.effect_value
+
+            buffed_damage += min(int(base_damage * dex_damage_boost * max(attacker_attrs.dexterity, 0)), base_damage)
+            buffed_damage += min(int(base_damage * int_damage_boost * max(attacker_attrs.intelligence, 0)), base_damage)
+            buffed_damage += min(int(base_damage * lck_damage_boost * max(attacker_attrs.luck, 0)), base_damage)
+
         reduce_to: float = max(0, 1.0 - (WEAPON_OVERLEVELED_DEBUFF * max(0, level_diff)))
-        return int(damage * reduce_to)
+        return int(buffed_damage * reduce_to)
 
     def get_max_damage(self):
         return self._max_damage

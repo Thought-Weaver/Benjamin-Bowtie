@@ -40,8 +40,10 @@ class EffectType(StrEnum):
     DmgBuffLegends = "DmgBuffLegends"
     DmgBuffPoisoned = "DmgBuffPoisoned"
     DmgBuffBleeding = "DmgBuffBleeding"
+
     DmgBuffFromDex = "DmgBuffFromDex"
     DmgBuffFromInt = "DmgBuffFromInt"
+    DmgBuffFromLck = "DmgBuffFromLck"
 
     RestoreArmor = "RestoreArmor"
     RestorePercentArmor = "RestorePercentArmor"
@@ -126,41 +128,43 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
     EffectType.DmgBuffLegends: 14,
     EffectType.DmgBuffPoisoned: 15,
     EffectType.DmgBuffBleeding: 16,
+
     EffectType.DmgBuffFromDex: 17,
     EffectType.DmgBuffFromInt: 18,
+    EffectType.DmgBuffFromLck: 19,
 
-    EffectType.RestoreArmor: 19,
-    EffectType.RestorePercentArmor: 20,
+    EffectType.RestoreArmor: 20,
+    EffectType.RestorePercentArmor: 21,
     
-    EffectType.PiercingDmg: 21,
-    EffectType.PiercingPercentDmg: 22,
-    EffectType.SplashDmg: 23,
-    EffectType.SplashPercentMaxDmg: 24,
+    EffectType.PiercingDmg: 22,
+    EffectType.PiercingPercentDmg: 23,
+    EffectType.SplashDmg: 24,
+    EffectType.SplashPercentMaxDmg: 25,
 
-    EffectType.CritDmgBuff: 25,
-    EffectType.CritDmgReduction: 26,
+    EffectType.CritDmgBuff: 26,
+    EffectType.CritDmgReduction: 27,
 
-    EffectType.HealthSteal: 27,
-    EffectType.ManaSteal: 28,
+    EffectType.HealthSteal: 28,
+    EffectType.ManaSteal: 29,
 
-    EffectType.AdjustedCDs: 29,
+    EffectType.AdjustedCDs: 30,
 
-    EffectType.ChanceStatusEffect: 30,
-    EffectType.ResistStatusEffect: 31,
+    EffectType.ChanceStatusEffect: 31,
+    EffectType.ResistStatusEffect: 32,
 
-    EffectType.RestoreHealth: 40,
-    EffectType.RestorePercentHealth: 41,
-    EffectType.RestoreMana: 42,
-    EffectType.RestorePercentMana: 43,
+    EffectType.RestoreHealth: 33,
+    EffectType.RestorePercentHealth: 34,
+    EffectType.RestoreMana: 35,
+    EffectType.RestorePercentMana: 36,
 
-    EffectType.AdjustedManaCosts: 44,
-    EffectType.HealingAbilityBuff: 45,
-    EffectType.AdditionalXP: 46,
-    EffectType.PotionMod: 47,
+    EffectType.AdjustedManaCosts: 37,
+    EffectType.HealingAbilityBuff: 38,
+    EffectType.AdditionalXP: 39,
+    EffectType.PotionMod: 40,
 
-    EffectType.Damage: 48,
+    EffectType.Damage: 41,
 
-    EffectType.ResurrectOnce: 49
+    EffectType.ResurrectOnce: 42
 })
 
 # -----------------------------------------------------------------------------
@@ -408,6 +412,7 @@ class Effect():
             if self.effect_value > 0:
                 display_string += "+"
             display_string += f"{round(self.effect_value * 100, 2)}% Damage Against Bleeding Enemies"
+        
         if self.effect_type == EffectType.DmgBuffFromDex:
             if self.effect_value > 0:
                 display_string += "+"
@@ -416,6 +421,10 @@ class Effect():
             if self.effect_value > 0:
                 display_string += "+"
             display_string += f"{round(self.effect_value * 100, 2)}% Damage Scaling from Int"
+        if self.effect_type == EffectType.DmgBuffFromLck:
+            if self.effect_value > 0:
+                display_string += "+"
+            display_string += f"{round(self.effect_value * 100, 2)}% Damage Scaling from Lck"
         
         if self.effect_type == EffectType.RestoreArmor:
             display_string += f"{int(self.effect_value)} Armor Restored"
