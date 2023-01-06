@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/superior_atrophy_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Atrophy Potion",
+    "value": 1050,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/graspleaf": 12,
+        "items/ingredient/herbs/razorgrass": 10,
+        "items/valuable/gemstone/flawless_amethyst": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_atrophy_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

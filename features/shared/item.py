@@ -141,6 +141,18 @@ class ItemKey(StrEnum):
     SleepingDraught = "items/consumable/potions/sleeping_draught"
     Smokebomb = "items/consumable/potions/smokebomb"
     StrengthPotion = "items/consumable/potions/strength_potion"
+    SuperiorAtrophyPotion = "items/consumable/potions/superior_atrophy_potion"
+    SuperiorConstitutionPotion = "items/consumable/potions/superior_constitution_potion"
+    SuperiorDexterityPotion = "items/consumable/potions/superior_dexterity_potion"
+    SuperiorExplosivePotion = "items/consumable/potions/superior_explosive_potion"
+    SuperiorHealthPotion = "items/consumable/potions/superior_health_potion"
+    SuperiorIntelligencePotion = "items/consumable/potions/superior_intelligence_potion"
+    SuperiorManaPotion = "items/consumable/potions/superior_mana_potion"
+    SuperiorPoison = "items/consumable/potions/superior_poison"
+    SuperiorPotionOfDecay = "items/consumable/potions/superior_potion_of_decay"
+    SuperiorSleepingDraught = "items/consumable/potions/superior_sleeping_draught"
+    SuperiorSmokebomb = "items/consumable/potions/superior_smokebomb"
+    SuperiorStrengthPotion = "items/consumable/potions/superior_strength_potion"
 
     # Alchemy Supplies
     CrystalVial = "items/ingredient/alchemy_supplies/crystal_vial"

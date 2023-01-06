@@ -84,6 +84,18 @@ class RecipeKey(StrEnum):
     SleepingDraught = "recipes/consumable/potions/sleeping_draught"
     Smokebomb = "recipes/consumable/potions/smokebomb"
     StrengthPotion = "recipes/consumable/potions/strength_potion"
+    SuperiorAtrophyPotion = "recipes/consumable/potions/superior_atrophy_potion"
+    SuperiorConstitutionPotion = "recipes/consumable/potions/superior_constitution_potion"
+    SuperiorDexterityPotion = "recipes/consumable/potions/superior_dexterity_potion"
+    SuperiorExplosivePotion = "recipes/consumable/potions/superior_explosive_potion"
+    SuperiorHealthPotion = "recipes/consumable/potions/superior_health_potion"
+    SuperiorIntelligencePotion = "recipes/consumable/potions/superior_intelligence_potion"
+    SuperiorManaPotion = "recipes/consumable/potions/superior_mana_potion"
+    SuperiorPoison = "recipes/consumable/potions/superior_poison"
+    SuperiorPotionOfDecay = "recipes/consumable/potions/superior_potion_of_decay"
+    SuperiorSleepingDraught = "recipes/consumable/potions/superior_sleeping_draught"
+    SuperiorSmokebomb = "recipes/consumable/potions/superior_smokebomb"
+    SuperiorStrengthPotion = "recipes/consumable/potions/superior_strength_potion"
 
     # Alchemy Supplies
     CrystalVialWithFlawlessQuartz = "recipes/ingredient/alchemy_supplies/crystal_vial_with_flawless_quartz"

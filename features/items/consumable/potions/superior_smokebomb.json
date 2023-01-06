@@ -1,24 +1,24 @@
 {
-    "key": "items/consumable/potions/coralskin_potion",
+    "key": "items/consumable/potions/superior_smokebomb",
     "icon": "\u2697\uFE0F",
-    "name": "Coralskin Potion",
-    "value": 150,
-    "rarity": "Uncommon",
+    "name": "Superior Smokebomb",
+    "value": 1500,
+    "rarity": "Legendary",
     "description": "Can be used while dueling or outside duels.",
     "flavor_text": "",
     "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
     "state_tags": [],
     "count": 1,
     "consumable_stats": {
-        "num_targets": 0,
+        "num_targets": -1,
         "target_own_group": true
     },
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "RestoreArmor",
-                "effect_value": 25,
-                "effect_time": -1,
+                "effect_type": "DexMod",
+                "effect_value": 100,
+                "effect_time": 2,
                 "conditions": [],
                 "condition_values": []
             }

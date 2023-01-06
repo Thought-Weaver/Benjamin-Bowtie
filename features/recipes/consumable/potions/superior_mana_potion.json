@@ -1,0 +1,19 @@
+{
+    "key": "recipes/consumable/potions/superior_intelligence_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Intelligence Potion",
+    "value": 12600,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/singing_coral": 8,
+        "items/ingredient/herbs/manabloom": 15,
+        "items/ingredient/herbs/lichbloom": 2,
+        "items/valuable/gemstone/flawless_topaz": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_intelligence_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

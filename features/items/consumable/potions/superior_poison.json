@@ -1,26 +1,27 @@
 {
-    "key": "items/consumable/potions/coralskin_potion",
+    "key": "items/consumable/potions/superior_poison",
     "icon": "\u2697\uFE0F",
-    "name": "Coralskin Potion",
-    "value": 150,
-    "rarity": "Uncommon",
+    "name": "Superior Poison",
+    "value": 460,
+    "rarity": "Epic",
     "description": "Can be used while dueling or outside duels.",
     "flavor_text": "",
     "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
     "state_tags": [],
     "count": 1,
     "consumable_stats": {
-        "num_targets": 0,
-        "target_own_group": true
+        "num_targets": 1,
+        "target_own_group": false
     },
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "RestoreArmor",
-                "effect_value": 25,
-                "effect_time": -1,
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 10,
                 "conditions": [],
-                "condition_values": []
+                "condition_values": [],
+                "associated_status_effect": "Poisoned"
             }
         ]
     }

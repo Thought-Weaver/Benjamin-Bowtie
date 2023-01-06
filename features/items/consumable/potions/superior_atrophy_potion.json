@@ -1,0 +1,28 @@
+{
+    "key": "items/consumable/potions/superior_atrophy_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Atrophy Potion",
+    "value": 350,
+    "rarity": "Legendary",
+    "description": "Can be used while dueling or outside duels.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 1,
+        "target_own_group": false
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 5,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotAttack"
+            }
+        ]
+    }
+}

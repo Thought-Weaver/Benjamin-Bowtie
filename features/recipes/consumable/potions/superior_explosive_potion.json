@@ -1,0 +1,19 @@
+{
+    "key": "recipes/consumable/potions/superior_explosive_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Explosive Potion",
+    "value": 7500,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/dawns_glory": 8,
+        "items/ingredient/herbs/fissureleaf": 8,
+        "items/ingredient/herbs/blaze_cluster": 5,
+        "items/valuable/gemstone/flawless_sunstone": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_explosive_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

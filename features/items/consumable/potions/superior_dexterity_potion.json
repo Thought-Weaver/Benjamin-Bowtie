@@ -1,9 +1,9 @@
 {
-    "key": "items/consumable/potions/coralskin_potion",
+    "key": "items/consumable/potions/superior_dexterity_potion",
     "icon": "\u2697\uFE0F",
-    "name": "Coralskin Potion",
-    "value": 150,
-    "rarity": "Uncommon",
+    "name": "Superior Dexterity Potion",
+    "value": 850,
+    "rarity": "Epic",
     "description": "Can be used while dueling or outside duels.",
     "flavor_text": "",
     "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
@@ -16,9 +16,9 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "RestoreArmor",
-                "effect_value": 25,
-                "effect_time": -1,
+                "effect_type": "DexMod",
+                "effect_value": 200,
+                "effect_time": 4,
                 "conditions": [],
                 "condition_values": []
             }

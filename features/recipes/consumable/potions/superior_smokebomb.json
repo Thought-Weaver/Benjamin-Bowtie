@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/superior_smokebomb",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Smokebomb",
+    "value": 4500,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/dream_maker": 8,
+        "items/ingredient/herbs/shellflower": 8,
+        "items/valuable/gemstone/flawless_moonstone": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_smokebomb": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

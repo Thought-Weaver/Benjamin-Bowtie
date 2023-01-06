@@ -437,7 +437,7 @@ class AlchemyChamberView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.PotionIngredient])
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.PotionIngredient, ClassTag.Valuable.Gemstone])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -487,7 +487,7 @@ class AlchemyChamberView(discord.ui.View):
 
         special_num_per_page: int = self._NUM_PER_PAGE - 1
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.PotionIngredient])
+        filtered_indices = inventory.filter_inventory_slots([ClassTag.Ingredient.PotionIngredient, ClassTag.Valuable.Gemstone])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * special_num_per_page:min(len(filtered_items), (self._page + 1) * special_num_per_page)]
