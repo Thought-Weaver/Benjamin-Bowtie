@@ -150,7 +150,7 @@ class Dueling():
         return result
 
     def get_statuses_string(self) -> str:
-        return "*Status Effects:*\n\n" + "\n".join([str(se) for se in self.status_effects])
+        return "*Status Effects:*\n\n" + "\n".join([str(se) for se in self.status_effects if se.turns_remaining != 0])
 
     def __getstate__(self):
         return self.__dict__
