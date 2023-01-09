@@ -1642,7 +1642,7 @@ class DuelView(discord.ui.View):
 
         for result_str in item_status_effects:
             formatted_str = result_str.format(self.get_name(previous_entity))
-            self._additional_info_string_data += formatted_str    
+            self._additional_info_string_data += formatted_str + "\n"
         
         for item in previous_entity.get_equipment().get_all_equipped_items():
             item_effects = item.get_item_effects()
@@ -1651,7 +1651,7 @@ class DuelView(discord.ui.View):
             for item_effect in item_effects.on_turn_end:
                 result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, previous_entity, self.get_name(previous_entity), is_turn_start=False)
                 if result_str != "":
-                    self._additional_info_string_data += result_str + " "
+                    self._additional_info_string_data += result_str + "\n"
 
         self._turn_index = (self._turn_index + 1) % len(self._turn_order)
         while self._turn_order[self._turn_index].get_expertise().hp == 0:
@@ -1663,7 +1663,7 @@ class DuelView(discord.ui.View):
         
         for result_str in item_status_effects:
             formatted_str = result_str.format(self.get_name(previous_entity))
-            self._additional_info_string_data += formatted_str    
+            self._additional_info_string_data += formatted_str + "\n"
 
         for item in entity.get_equipment().get_all_equipped_items():
             item_effects = item.get_item_effects()
@@ -1672,7 +1672,7 @@ class DuelView(discord.ui.View):
             for item_effect in item_effects.on_turn_start:
                 result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity), is_turn_start=True)
                 if result_str != "":
-                    self._additional_info_string_data += result_str + " "
+                    self._additional_info_string_data += result_str + "\n"
         
         start_damage: int = 0
         start_heals: int = 0
