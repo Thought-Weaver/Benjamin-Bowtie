@@ -1548,6 +1548,10 @@ class DuelView(discord.ui.View):
 
         self._additional_info_string_data = ""
 
+        # TODO: For Players, when this starts, if they have a companion equipped, make sure
+        # any active ability from that companion is added into the abilities param in their
+        # Dueling class. Or, actually, should this happen when the companion is changed? Only
+        # issue with the latter is they could try to unequip it.
         if not skip_init_updates:
             for entity in allies + enemies:
                 entity.get_dueling().is_in_combat = True
@@ -1757,7 +1761,7 @@ class DuelView(discord.ui.View):
             max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
             armor_str: str = f"\n{entity.get_dueling().get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 else ""
 
-            info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon}\n\n{entity.get_expertise().get_health_and_mana_string()}{armor_str}"
+            info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon} (Lvl. {entity.get_expertise().level})\n\n{entity.get_expertise().get_health_and_mana_string()}{armor_str}"
             if len(entity.get_dueling().status_effects) > 0:
                 info_str += f"\n\n{entity.get_dueling().get_statuses_string()}"
             info_str += "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n"
@@ -2166,8 +2170,10 @@ class DuelView(discord.ui.View):
                         
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1 
             base_damage = weapon_stats.get_random_damage(attacker_attrs, item_effects, max(0, level_req - attacker.get_expertise().level))
-            damage = ceil(base_damage * critical_hit_final)
-            damage += min(int(damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), damage)
+            
+            damage = base_damage
+            damage += min(ceil(base_damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), base_damage)
+            damage = ceil(damage * critical_hit_final)
 
             # Doing these after damage computation because the player doesn't get an indication the effect occurred
             # until the Continue screen, so it feels slightly more natural to have them not affect damage dealt. I
@@ -2301,6 +2307,9 @@ class DuelView(discord.ui.View):
             class_key: ExpertiseClass = self._selected_ability.get_class_key()
             final_xp = caster.get_expertise().add_xp_to_class(xp_to_add, class_key, caster.get_equipment())
             xp_str = f"\n\n*You gained {final_xp} {class_key} xp!*"
+
+        # TODO: In special case for companion battles, handle incrementing companion ability
+        # use stats and XP gain
 
         return result_str.format(*names) + xp_str
 
