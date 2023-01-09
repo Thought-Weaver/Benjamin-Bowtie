@@ -6,8 +6,8 @@ from math import ceil
 from random import randint, random
 
 from features.equipment import Equipment
-from features.expertise import ExpertiseClass
-from features.shared.constants import BLEED_PERCENT_HP, DEX_DODGE_SCALE, INT_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, POISONED_PERCENT_HP, STR_DMG_SCALE
+from features.expertise import Attribute, ExpertiseClass
+from features.shared.constants import BLEED_PERCENT_HP, DEX_DMG_SCALE, DEX_DODGE_SCALE, INT_DMG_SCALE, LCK_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, POISONED_PERCENT_HP, STR_DMG_SCALE
 from features.shared.effect import EffectType, ItemEffectCategory
 from features.shared.enums import ClassTag
 from features.shared.item import ItemKey, WeaponStats
@@ -30,7 +30,7 @@ class NegativeAbilityResult():
 
 
 class Ability():
-    def __init__(self, icon: str, name: str, class_key: ExpertiseClass, description: str, flavor_text: str, mana_cost: int, cooldown: int, num_targets: int, level_requirement: int, target_own_group: bool, purchase_cost: int):
+    def __init__(self, icon: str, name: str, class_key: ExpertiseClass, description: str, flavor_text: str, mana_cost: int, cooldown: int, num_targets: int, level_requirement: int, target_own_group: bool, purchase_cost: int, scaling: List[Attribute]):
         # TODO: Handle whether ability status effects stack with a new param
         self._icon = icon
         self._name = name
@@ -45,6 +45,7 @@ class Ability():
         self._level_requirement = level_requirement
         self._target_own_group = target_own_group
         self._purchase_cost = purchase_cost
+        self._scaling = scaling
 
         # Turns remaining until it can be used again
         # If this is -1, then it's a once-per-duel ability that's already been used
@@ -82,6 +83,9 @@ class Ability():
 
     def get_class_key(self):
         return self._class_key
+
+    def get_scaling(self):
+        return self._scaling
 
     def get_turn_after_lapsed(self):
         return self._turn_after_lapsed
@@ -183,8 +187,18 @@ class Ability():
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(dmg_range.start, dmg_range.stop)
-            damage = int(base_damage * critical_hit_final)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            
+            damage = base_damage
+            if Attribute.Intelligence in self._scaling:
+                damage += min(ceil(base_damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            if Attribute.Strength in self._scaling:
+                damage += min(ceil(base_damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+            if Attribute.Dexterity in self._scaling:
+                damage += min(ceil(base_damage * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+            if Attribute.Luck in self._scaling:
+                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+
+            damage = ceil(damage * critical_hit_final)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -363,9 +377,19 @@ class Ability():
             critical_hit_final = max(critical_hit_boost + critical_hit_buff, 1) if critical_hit_boost > 1 else 1
 
             base_heal = randint(heal_range.start, heal_range.stop)
-            heal_amount = int(base_heal * critical_hit_final)
-            heal_amount += int(heal_amount * INT_DMG_SCALE * max(caster_attrs.intelligence, 0))
-            heal_amount += int(heal_amount * healing_adjustment)
+
+            heal_amount = base_heal
+            if Attribute.Intelligence in self._scaling:
+                heal_amount += min(ceil(base_heal * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            if Attribute.Strength in self._scaling:
+                heal_amount += min(ceil(base_heal * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+            if Attribute.Dexterity in self._scaling:
+                heal_amount += min(ceil(base_heal * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+            if Attribute.Luck in self._scaling:
+                heal_amount += min(ceil(base_heal * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+
+            heal_amount = ceil(heal_amount * critical_hit_final)
+            heal_amount += ceil(heal_amount * healing_adjustment)
 
             if decaying_adjustment != 0:
                 heal_amount *= decaying_adjustment
@@ -414,9 +438,13 @@ class Ability():
         if self._cur_cooldown > 0:
             cur_cooldown_str = f"\n\n**CD Remaining: {self._cur_cooldown}**"
 
+        attr_short_strs = ", ".join(Attribute.get_short_strs(self._scaling))
+        scaling_str = f"Scales with {attr_short_strs}\n\n" if len(self._scaling) > 0 else ""
+
         return (
             f"{self._icon} **{self._name}**\n"
             f"{self._mana_cost} Mana / {target_str} / {cooldown_str}\n\n"
+            f"{scaling_str}"
             f"{self._description}\n\n"
             f"{flavor_text}"
             f"*Requires {self._class_key} Level {self._level_requirement}*"
@@ -439,6 +467,7 @@ class Ability():
         self._cur_cooldown = state.get("_cur_cooldown", 0)
         self._target_own_group = state.get("_target_own_group", False)
         self._purchase_cost = state.get("_purchase_cost", 0)
+        self._scaling = state.get("_scaling", [])
         self._turn_after_lapsed = state.get("_turn_after_lapsed", False)
 
 # -----------------------------------------------------------------------------
@@ -460,7 +489,8 @@ class SeaSprayI(Ability):
             num_targets=1,
             level_requirement=2,
             target_own_group=False,
-            purchase_cost=50
+            purchase_cost=50,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -494,7 +524,8 @@ class SeaSprayII(Ability):
             num_targets=1,
             level_requirement=4,
             target_own_group=False,
-            purchase_cost=100
+            purchase_cost=100,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -526,7 +557,8 @@ class SeaSprayIII(Ability):
             num_targets=1,
             level_requirement=6,
             target_own_group=False,
-            purchase_cost=200
+            purchase_cost=200,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -558,7 +590,8 @@ class SeaSprayIV(Ability):
             num_targets=1,
             level_requirement=8,
             target_own_group=False,
-            purchase_cost=400
+            purchase_cost=400,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -590,7 +623,8 @@ class SeaSprayV(Ability):
             num_targets=1,
             level_requirement=10,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -625,7 +659,8 @@ class CrabnadoI(Ability):
             num_targets=-2,
             level_requirement=3,
             target_own_group=False,
-            purchase_cost=75
+            purchase_cost=75,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -667,7 +702,8 @@ class CrabnadoII(Ability):
             num_targets=-2,
             level_requirement=6,
             target_own_group=False,
-            purchase_cost=150
+            purchase_cost=150,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -709,7 +745,8 @@ class CrabnadoIII(Ability):
             num_targets=-2,
             level_requirement=9,
             target_own_group=False,
-            purchase_cost=300
+            purchase_cost=300,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -754,7 +791,8 @@ class CurseOfTheSeaI(Ability):
             num_targets=1,
             level_requirement=5,
             target_own_group=False,
-            purchase_cost=200
+            purchase_cost=200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -804,7 +842,8 @@ class CurseOfTheSeaII(Ability):
             num_targets=1,
             level_requirement=9,
             target_own_group=False,
-            purchase_cost=400
+            purchase_cost=400,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -854,7 +893,8 @@ class CurseOfTheSeaIII(Ability):
             num_targets=1,
             level_requirement=13,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -907,7 +947,8 @@ class HookI(Ability):
             num_targets=1,
             level_requirement=8,
             target_own_group=False,
-            purchase_cost=200
+            purchase_cost=200,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -945,7 +986,8 @@ class HookII(Ability):
             num_targets=1,
             level_requirement=10,
             target_own_group=False,
-            purchase_cost=400
+            purchase_cost=400,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -983,7 +1025,8 @@ class HookIII(Ability):
             num_targets=1,
             level_requirement=12,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1024,7 +1067,8 @@ class WrathOfTheWavesI(Ability):
             num_targets=3,
             level_requirement=10,
             target_own_group=False,
-            purchase_cost=400
+            purchase_cost=400,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1050,8 +1094,8 @@ class WrathOfTheWavesI(Ability):
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = int(randint(5, 10) * bonus_dmg_boost * critical_hit_boost)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil(randint(5, 10) * bonus_dmg_boost * critical_hit_boost)
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -1132,7 +1176,8 @@ class WrathOfTheWavesII(Ability):
             num_targets=3,
             level_requirement=12,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1158,8 +1203,8 @@ class WrathOfTheWavesII(Ability):
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = int(randint(6, 12) * bonus_dmg_boost * critical_hit_boost)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil(randint(6, 12) * bonus_dmg_boost * critical_hit_boost)
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -1240,7 +1285,8 @@ class WrathOfTheWavesIII(Ability):
             num_targets=3,
             level_requirement=14,
             target_own_group=False,
-            purchase_cost=1600
+            purchase_cost=1600,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1266,8 +1312,8 @@ class WrathOfTheWavesIII(Ability):
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = int(randint(10, 15) * bonus_dmg_boost * critical_hit_boost)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil(randint(10, 15) * bonus_dmg_boost * critical_hit_boost)
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -1351,7 +1397,8 @@ class HighTideI(Ability):
             num_targets=0,
             level_requirement=12,
             target_own_group=True,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1389,7 +1436,8 @@ class HighTideII(Ability):
             num_targets=0,
             level_requirement=15,
             target_own_group=True,
-            purchase_cost=1600
+            purchase_cost=1600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1427,7 +1475,8 @@ class HighTideIII(Ability):
             num_targets=0,
             level_requirement=18,
             target_own_group=True,
-            purchase_cost=3200
+            purchase_cost=3200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1465,7 +1514,8 @@ class HighTideIV(Ability):
             num_targets=0,
             level_requirement=21,
             target_own_group=True,
-            purchase_cost=6400
+            purchase_cost=6400,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1506,7 +1556,8 @@ class ThunderingTorrentI(Ability):
             num_targets=2,
             level_requirement=14,
             target_own_group=False,
-            purchase_cost=500
+            purchase_cost=500,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1546,8 +1597,10 @@ class ThunderingTorrentI(Ability):
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(10, 15)
-            damage = int(base_damage * critical_hit_final)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            
+            damage = base_damage
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil(damage * critical_hit_final)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -1585,7 +1638,7 @@ class ThunderingTorrentI(Ability):
 
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
-                value=int(damage / 2),
+                value=ceil(damage / 2),
                 source_str=self.get_icon_and_name()
             ))
 
@@ -1634,7 +1687,8 @@ class ThunderingTorrentII(Ability):
             num_targets=2,
             level_requirement=16,
             target_own_group=False,
-            purchase_cost=1000
+            purchase_cost=1000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1674,8 +1728,10 @@ class ThunderingTorrentII(Ability):
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(12, 18)
-            damage = int(base_damage * critical_hit_final)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            
+            damage = base_damage
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil(damage * critical_hit_final)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -1713,7 +1769,7 @@ class ThunderingTorrentII(Ability):
 
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
-                value=int(damage / 2),
+                value=ceil(damage / 2),
                 source_str=self.get_icon_and_name()
             ))
 
@@ -1762,7 +1818,8 @@ class ThunderingTorrentIII(Ability):
             num_targets=2,
             level_requirement=18,
             target_own_group=False,
-            purchase_cost=2000
+            purchase_cost=2000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1801,8 +1858,10 @@ class ThunderingTorrentIII(Ability):
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(15, 20)
-            damage = int(base_damage * critical_hit_final)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            
+            damage = base_damage
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil(damage * critical_hit_final)
             
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -1841,7 +1900,7 @@ class ThunderingTorrentIII(Ability):
 
             target_dueling.status_effects.append(FixedDmgTick(
                 turns_remaining=1,
-                value=int(damage / 2),
+                value=ceil(damage / 2),
                 source_str=self.get_icon_and_name()
             ))
 
@@ -1893,7 +1952,8 @@ class DrownInTheDeepI(Ability):
             num_targets=3,
             level_requirement=18,
             target_own_group=False,
-            purchase_cost=1200
+            purchase_cost=1200,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -1916,8 +1976,8 @@ class DrownInTheDeepI(Ability):
             target_max_hp = target_expertise.max_hp
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
-            damage = int((1 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil((1 * num_dex_reduce_effects) / 100 * target_max_hp)
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -1982,7 +2042,8 @@ class DrownInTheDeepII(Ability):
             num_targets=3,
             level_requirement=22,
             target_own_group=False,
-            purchase_cost=2400
+            purchase_cost=2400,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2005,8 +2066,8 @@ class DrownInTheDeepII(Ability):
             target_max_hp = target_expertise.max_hp
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
-            damage = int((1.5 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil((1.5 * num_dex_reduce_effects) / 100 * target_max_hp)
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -2071,7 +2132,8 @@ class DrownInTheDeepIII(Ability):
             num_targets=3,
             level_requirement=26,
             target_own_group=False,
-            purchase_cost=4800
+            purchase_cost=4800,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2094,8 +2156,8 @@ class DrownInTheDeepIII(Ability):
             target_max_hp = target_expertise.max_hp
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
-            damage = int((2 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil((2 * num_dex_reduce_effects) / 100 * target_max_hp)
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -2163,7 +2225,8 @@ class WhirlpoolI(Ability):
             num_targets=-1,
             level_requirement=20,
             target_own_group=False,
-            purchase_cost=1000
+            purchase_cost=1000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2205,9 +2268,11 @@ class WhirlpoolI(Ability):
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(10, 20)
-            damage = int(base_damage * critical_hit_final)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
-            
+
+            damage = base_damage
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil(damage * critical_hit_final)
+
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
             for item in caster_equipment.get_all_equipped_items():
@@ -2287,7 +2352,8 @@ class WhirlpoolII(Ability):
             num_targets=-1,
             level_requirement=22,
             target_own_group=False,
-            purchase_cost=2000
+            purchase_cost=2000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2329,8 +2395,10 @@ class WhirlpoolII(Ability):
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(10, 15)
-            damage = int(base_damage * critical_hit_final)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+
+            damage = base_damage
+            damage = min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil(damage * critical_hit_final)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -2411,7 +2479,8 @@ class WhirlpoolIII(Ability):
             num_targets=-1,
             level_requirement=24,
             target_own_group=False,
-            purchase_cost=4000
+            purchase_cost=4000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2453,8 +2522,10 @@ class WhirlpoolIII(Ability):
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(10, 15)
-            damage = int(base_damage * critical_hit_final)
-            damage += min(int(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+
+            damage = base_damage
+            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage = ceil(damage * critical_hit_final)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -2538,7 +2609,8 @@ class ShatteringStormI(Ability):
             num_targets=5,
             level_requirement=22,
             target_own_group=False,
-            purchase_cost=5000
+            purchase_cost=5000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2576,7 +2648,8 @@ class ShatteringStormII(Ability):
             num_targets=5,
             level_requirement=24,
             target_own_group=False,
-            purchase_cost=10000
+            purchase_cost=10000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2614,7 +2687,8 @@ class ShatteringStormIII(Ability):
             num_targets=5,
             level_requirement=26,
             target_own_group=False,
-            purchase_cost=20000
+            purchase_cost=20000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2657,7 +2731,8 @@ class WhirlwindI(Ability):
             num_targets=-1,
             level_requirement=2,
             target_own_group=False,
-            purchase_cost=200
+            purchase_cost=200,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2673,7 +2748,7 @@ class WhirlwindI(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.5)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2703,7 +2778,8 @@ class WhirlwindII(Ability):
             num_targets=-1,
             level_requirement=5,
             target_own_group=False,
-            purchase_cost=400
+            purchase_cost=400,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2719,7 +2795,7 @@ class WhirlwindII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.6)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2749,7 +2825,8 @@ class WhirlwindIII(Ability):
             num_targets=-1,
             level_requirement=8,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2765,7 +2842,7 @@ class WhirlwindIII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.7)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2795,7 +2872,8 @@ class WhirlwindIV(Ability):
             num_targets=-1,
             level_requirement=11,
             target_own_group=False,
-            purchase_cost=1600
+            purchase_cost=1600,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2811,7 +2889,7 @@ class WhirlwindIV(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.8)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2844,7 +2922,8 @@ class SecondWindI(Ability):
             num_targets=0,
             level_requirement=3,
             target_own_group=True,
-            purchase_cost=300
+            purchase_cost=300,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2878,7 +2957,8 @@ class SecondWindII(Ability):
             num_targets=0,
             level_requirement=8,
             target_own_group=True,
-            purchase_cost=600
+            purchase_cost=600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2912,7 +2992,8 @@ class SecondWindIII(Ability):
             num_targets=0,
             level_requirement=13,
             target_own_group=True,
-            purchase_cost=1200
+            purchase_cost=1200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2949,7 +3030,8 @@ class BidedAttackI(Ability):
             num_targets=0,
             level_requirement=4,
             target_own_group=True,
-            purchase_cost=200
+            purchase_cost=200,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -2987,7 +3069,8 @@ class BidedAttackII(Ability):
             num_targets=0,
             level_requirement=7,
             target_own_group=True,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3025,7 +3108,8 @@ class BidedAttackIII(Ability):
             num_targets=0,
             level_requirement=10,
             target_own_group=True,
-            purchase_cost=1600
+            purchase_cost=1600,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3066,7 +3150,8 @@ class ScarArmorI(Ability):
             num_targets=0,
             level_requirement=5,
             target_own_group=True,
-            purchase_cost=400
+            purchase_cost=400,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3108,7 +3193,8 @@ class ScarArmorII(Ability):
             num_targets=0,
             level_requirement=15,
             target_own_group=True,
-            purchase_cost=1200
+            purchase_cost=1200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3153,7 +3239,8 @@ class UnbreakingI(Ability):
             num_targets=0,
             level_requirement=8,
             target_own_group=True,
-            purchase_cost=600
+            purchase_cost=600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3191,7 +3278,8 @@ class UnbreakingII(Ability):
             num_targets=0,
             level_requirement=16,
             target_own_group=True,
-            purchase_cost=2400
+            purchase_cost=2400,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3232,7 +3320,8 @@ class CounterstrikeI(Ability):
             num_targets=1,
             level_requirement=9,
             target_own_group=False,
-            purchase_cost=700
+            purchase_cost=700,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3248,7 +3337,7 @@ class CounterstrikeI(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.75 * base_damage)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
         damage += ceil(min(0.1 * (caster_expertise.max_hp - caster_expertise.hp), damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3279,7 +3368,8 @@ class CounterstrikeII(Ability):
             num_targets=1,
             level_requirement=12,
             target_own_group=False,
-            purchase_cost=1400
+            purchase_cost=1400,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3295,7 +3385,7 @@ class CounterstrikeII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.8 * base_damage)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
         damage += ceil(min(0.2 * (caster_expertise.max_hp - caster_expertise.hp), 3 * damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3326,7 +3416,8 @@ class CounterstrikeIII(Ability):
             num_targets=1,
             level_requirement=15,
             target_own_group=False,
-            purchase_cost=2800
+            purchase_cost=2800,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3342,7 +3433,7 @@ class CounterstrikeIII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.85 * base_damage)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
         damage += ceil(min(0.3 * (caster_expertise.max_hp - caster_expertise.hp), 5 * damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3376,7 +3467,8 @@ class TauntI(Ability):
             num_targets=1,
             level_requirement=6,
             target_own_group=False,
-            purchase_cost=500
+            purchase_cost=500,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3414,7 +3506,8 @@ class TauntII(Ability):
             num_targets=3,
             level_requirement=9,
             target_own_group=False,
-            purchase_cost=1000
+            purchase_cost=1000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3452,7 +3545,8 @@ class TauntIII(Ability):
             num_targets=5,
             level_requirement=12,
             target_own_group=False,
-            purchase_cost=2000
+            purchase_cost=2000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3493,7 +3587,8 @@ class PiercingStrikeI(Ability):
             num_targets=1,
             level_requirement=15,
             target_own_group=False,
-            purchase_cost=1000
+            purchase_cost=1000,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3507,8 +3602,8 @@ class PiercingStrikeI(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = int(1.1 * base_damage)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage = ceil(1.1 * base_damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3551,7 +3646,8 @@ class PiercingStrikeII(Ability):
             num_targets=1,
             level_requirement=18,
             target_own_group=False,
-            purchase_cost=2000
+            purchase_cost=2000,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3565,8 +3661,8 @@ class PiercingStrikeII(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = int(1.2 * base_damage)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage = ceil(1.2 * base_damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3609,7 +3705,8 @@ class PiercingStrikeIII(Ability):
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
-            purchase_cost=4000
+            purchase_cost=4000,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3623,8 +3720,8 @@ class PiercingStrikeIII(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = int(1.3 * base_damage)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage = ceil(1.3 * base_damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3670,7 +3767,8 @@ class PressTheAdvantageI(Ability):
             num_targets=0,
             level_requirement=18,
             target_own_group=True,
-            purchase_cost=8000
+            purchase_cost=8000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3704,7 +3802,8 @@ class PressTheAdvantageII(Ability):
             num_targets=0,
             level_requirement=22,
             target_own_group=True,
-            purchase_cost=16000
+            purchase_cost=16000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3739,7 +3838,8 @@ class PressTheAdvantageIII(Ability):
             num_targets=0,
             level_requirement=26,
             target_own_group=True,
-            purchase_cost=32000
+            purchase_cost=32000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3777,7 +3877,8 @@ class EvadeI(Ability):
             num_targets=0,
             level_requirement=20,
             target_own_group=True,
-            purchase_cost=2000
+            purchase_cost=2000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3815,7 +3916,8 @@ class EvadeII(Ability):
             num_targets=0,
             level_requirement=22,
             target_own_group=True,
-            purchase_cost=4000
+            purchase_cost=4000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3853,7 +3955,8 @@ class EvadeIII(Ability):
             num_targets=0,
             level_requirement=24,
             target_own_group=True,
-            purchase_cost=8000
+            purchase_cost=8000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3894,7 +3997,8 @@ class HeavySlamI(Ability):
             num_targets=1,
             level_requirement=22,
             target_own_group=False,
-            purchase_cost=2500
+            purchase_cost=2500,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3908,8 +4012,8 @@ class HeavySlamI(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = int((0.4 + 0.05 * caster_attrs.constitution) * base_damage)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage = ceil((0.4 + 0.05 * caster_attrs.constitution) * base_damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3939,7 +4043,8 @@ class HeavySlamII(Ability):
             num_targets=1,
             level_requirement=24,
             target_own_group=False,
-            purchase_cost=5000
+            purchase_cost=5000,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3953,8 +4058,8 @@ class HeavySlamII(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = int((0.6 + 0.05 * caster_attrs.constitution) * base_damage)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage = ceil((0.6 + 0.05 * caster_attrs.constitution) * base_damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3984,7 +4089,8 @@ class HeavySlamIII(Ability):
             num_targets=1,
             level_requirement=26,
             target_own_group=False,
-            purchase_cost=10000
+            purchase_cost=10000,
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -3998,8 +4104,8 @@ class HeavySlamIII(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = int((0.8 + 0.05 * caster_attrs.constitution) * base_damage)
-        damage += min(int(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage = ceil((0.8 + 0.05 * caster_attrs.constitution) * base_damage)
+        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4034,7 +4140,8 @@ class ContractWealthForPowerI(Ability):
             num_targets=0,
             level_requirement=2,
             target_own_group=True,
-            purchase_cost=50
+            purchase_cost=50,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4108,7 +4215,8 @@ class ContractWealthForPowerII(Ability):
             num_targets=0,
             level_requirement=6,
             target_own_group=True,
-            purchase_cost=100
+            purchase_cost=100,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4182,7 +4290,8 @@ class ContractWealthForPowerIII(Ability):
             num_targets=0,
             level_requirement=10,
             target_own_group=True,
-            purchase_cost=200
+            purchase_cost=200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4259,7 +4368,8 @@ class BoundToGetLuckyI(Ability):
             num_targets=0,
             level_requirement=4,
             target_own_group=True,
-            purchase_cost=100
+            purchase_cost=100,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4297,7 +4407,8 @@ class BoundToGetLuckyII(Ability):
             num_targets=0,
             level_requirement=6,
             target_own_group=True,
-            purchase_cost=200
+            purchase_cost=200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4335,7 +4446,8 @@ class BoundToGetLuckyIII(Ability):
             num_targets=0,
             level_requirement=8,
             target_own_group=True,
-            purchase_cost=400
+            purchase_cost=400,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4376,7 +4488,8 @@ class SilkspeakingI(Ability):
             num_targets=1,
             level_requirement=6,
             target_own_group=False,
-            purchase_cost=1000
+            purchase_cost=1000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4417,7 +4530,8 @@ class ATidySumI(Ability):
             num_targets=0,
             level_requirement=8,
             target_own_group=True,
-            purchase_cost=300
+            purchase_cost=300,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4455,7 +4569,8 @@ class ATidySumII(Ability):
             num_targets=0,
             level_requirement=10,
             target_own_group=True,
-            purchase_cost=600
+            purchase_cost=600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4493,7 +4608,8 @@ class ATidySumIII(Ability):
             num_targets=0,
             level_requirement=12,
             target_own_group=True,
-            purchase_cost=1200
+            purchase_cost=1200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4534,7 +4650,8 @@ class CursedCoinsI(Ability):
             num_targets=0,
             level_requirement=10,
             target_own_group=True,
-            purchase_cost=300
+            purchase_cost=300,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4572,7 +4689,8 @@ class CursedCoinsII(Ability):
             num_targets=0,
             level_requirement=12,
             target_own_group=True,
-            purchase_cost=600
+            purchase_cost=600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4610,7 +4728,8 @@ class CursedCoinsIII(Ability):
             num_targets=0,
             level_requirement=14,
             target_own_group=True,
-            purchase_cost=1200
+            purchase_cost=1200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4648,7 +4767,8 @@ class CursedCoinsIV(Ability):
             num_targets=0,
             level_requirement=16,
             target_own_group=True,
-            purchase_cost=2400
+            purchase_cost=2400,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4689,7 +4809,8 @@ class UnseenRichesI(Ability):
             num_targets=-1,
             level_requirement=11,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4748,7 +4869,8 @@ class UnseenRichesII(Ability):
             num_targets=-1,
             level_requirement=13,
             target_own_group=False,
-            purchase_cost=1600
+            purchase_cost=1600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4807,7 +4929,8 @@ class UnseenRichesIII(Ability):
             num_targets=-1,
             level_requirement=15,
             target_own_group=False,
-            purchase_cost=3200
+            purchase_cost=3200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4869,7 +4992,8 @@ class ContractManaToBloodI(Ability):
             num_targets=0,
             level_requirement=14,
             target_own_group=True,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4907,7 +5031,8 @@ class ContractManaToBloodII(Ability):
             num_targets=0,
             level_requirement=16,
             target_own_group=True,
-            purchase_cost=1600
+            purchase_cost=1600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4945,7 +5070,8 @@ class ContractManaToBloodIII(Ability):
             num_targets=0,
             level_requirement=18,
             target_own_group=True,
-            purchase_cost=3200
+            purchase_cost=3200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -4986,7 +5112,8 @@ class ContractBloodForBloodI(Ability):
             num_targets=3,
             level_requirement=16,
             target_own_group=False,
-            purchase_cost=1500
+            purchase_cost=1500,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5025,7 +5152,8 @@ class ContractBloodForBloodII(Ability):
             num_targets=3,
             level_requirement=18,
             target_own_group=False,
-            purchase_cost=3000
+            purchase_cost=3000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5064,7 +5192,8 @@ class ContractBloodForBloodIII(Ability):
             num_targets=3,
             level_requirement=20,
             target_own_group=False,
-            purchase_cost=6000
+            purchase_cost=6000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5106,7 +5235,8 @@ class DeepPocketsI(Ability):
             num_targets=1,
             level_requirement=19,
             target_own_group=False,
-            purchase_cost=8000
+            purchase_cost=8000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5140,7 +5270,8 @@ class DeepPocketsII(Ability):
             num_targets=1,
             level_requirement=22,
             target_own_group=False,
-            purchase_cost=16000
+            purchase_cost=16000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5174,7 +5305,8 @@ class DeepPocketsIII(Ability):
             num_targets=1,
             level_requirement=25,
             target_own_group=False,
-            purchase_cost=32000
+            purchase_cost=32000,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5213,7 +5345,8 @@ class IncenseI(Ability):
             num_targets=-1,
             level_requirement=1,
             target_own_group=True,
-            purchase_cost=100
+            purchase_cost=100,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5245,7 +5378,8 @@ class IncenseII(Ability):
             num_targets=-1,
             level_requirement=4,
             target_own_group=True,
-            purchase_cost=200
+            purchase_cost=200,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5277,7 +5411,8 @@ class IncenseIII(Ability):
             num_targets=-1,
             level_requirement=7,
             target_own_group=True,
-            purchase_cost=400
+            purchase_cost=400,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5312,7 +5447,8 @@ class PreparePotionsI(Ability):
             num_targets=0,
             level_requirement=3,
             target_own_group=True,
-            purchase_cost=150
+            purchase_cost=150,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5350,7 +5486,8 @@ class PreparePotionsII(Ability):
             num_targets=0,
             level_requirement=5,
             target_own_group=True,
-            purchase_cost=150
+            purchase_cost=150,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5388,7 +5525,8 @@ class PreparePotionsIII(Ability):
             num_targets=0,
             level_requirement=7,
             target_own_group=True,
-            purchase_cost=150
+            purchase_cost=150,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5429,7 +5567,8 @@ class VitalityTransferI(Ability):
             num_targets=1,
             level_requirement=5,
             target_own_group=True,
-            purchase_cost=300
+            purchase_cost=300,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5466,7 +5605,8 @@ class VitalityTransferII(Ability):
             num_targets=1,
             level_requirement=8,
             target_own_group=True,
-            purchase_cost=600
+            purchase_cost=600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5503,7 +5643,8 @@ class VitalityTransferIII(Ability):
             num_targets=1,
             level_requirement=11,
             target_own_group=True,
-            purchase_cost=1200
+            purchase_cost=1200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5543,7 +5684,8 @@ class CleanseI(Ability):
             num_targets=1,
             level_requirement=7,
             target_own_group=True,
-            purchase_cost=1600
+            purchase_cost=1600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5587,7 +5729,8 @@ class ToxicCloudI(Ability):
             num_targets=-1,
             level_requirement=9,
             target_own_group=False,
-            purchase_cost=400
+            purchase_cost=400,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5633,7 +5776,8 @@ class ToxicCloudII(Ability):
             num_targets=-1,
             level_requirement=12,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5679,7 +5823,8 @@ class ToxicCloudIII(Ability):
             num_targets=-1,
             level_requirement=15,
             target_own_group=False,
-            purchase_cost=1600
+            purchase_cost=1600,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5725,7 +5870,8 @@ class ToxicCloudIV(Ability):
             num_targets=-1,
             level_requirement=18,
             target_own_group=False,
-            purchase_cost=3200
+            purchase_cost=3200,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5774,7 +5920,8 @@ class SmokescreenI(Ability):
             num_targets=-1,
             level_requirement=11,
             target_own_group=True,
-            purchase_cost=600
+            purchase_cost=600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5812,7 +5959,8 @@ class SmokescreenII(Ability):
             num_targets=-1,
             level_requirement=14,
             target_own_group=True,
-            purchase_cost=1200
+            purchase_cost=1200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5850,7 +5998,8 @@ class SmokescreenIII(Ability):
             num_targets=-1,
             level_requirement=17,
             target_own_group=True,
-            purchase_cost=2400
+            purchase_cost=2400,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5891,7 +6040,8 @@ class EmpowermentI(Ability):
             num_targets=1,
             level_requirement=13,
             target_own_group=True,
-            purchase_cost=2800
+            purchase_cost=2800,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5932,7 +6082,8 @@ class EmpowermentII(Ability):
             num_targets=1,
             level_requirement=18,
             target_own_group=True,
-            purchase_cost=5600
+            purchase_cost=5600,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -5976,7 +6127,8 @@ class FesteringVaporI(Ability):
             num_targets=-1,
             level_requirement=15,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -6012,7 +6164,8 @@ class FesteringVaporII(Ability):
             num_targets=-1,
             level_requirement=15,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -6048,7 +6201,8 @@ class FesteringVaporIII(Ability):
             num_targets=-1,
             level_requirement=15,
             target_own_group=False,
-            purchase_cost=800
+            purchase_cost=800,
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -6087,7 +6241,8 @@ class PoisonousSkinI(Ability):
             num_targets=0,
             level_requirement=17,
             target_own_group=True,
-            purchase_cost=3000
+            purchase_cost=3000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -6128,7 +6283,8 @@ class RegenerationI(Ability):
             num_targets=3,
             level_requirement=19,
             target_own_group=True,
-            purchase_cost=1200
+            purchase_cost=1200,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -6166,7 +6322,8 @@ class RegenerationII(Ability):
             num_targets=3,
             level_requirement=21,
             target_own_group=True,
-            purchase_cost=2400
+            purchase_cost=2400,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -6204,7 +6361,8 @@ class RegenerationIII(Ability):
             num_targets=3,
             level_requirement=23,
             target_own_group=True,
-            purchase_cost=4800
+            purchase_cost=4800,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -6245,7 +6403,8 @@ class ParalyzingFumesI(Ability):
             num_targets=-1,
             level_requirement=20,
             target_own_group=False,
-            purchase_cost=5000
+            purchase_cost=5000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -6283,7 +6442,8 @@ class ParalyzingFumesII(Ability):
             num_targets=-1,
             level_requirement=24,
             target_own_group=False,
-            purchase_cost=10000
+            purchase_cost=10000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
@@ -6324,7 +6484,8 @@ class QuickAccessI(Ability):
             num_targets=0,
             level_requirement=22,
             target_own_group=True,
-            purchase_cost=8000
+            purchase_cost=8000,
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
