@@ -66,6 +66,8 @@ class StatusEffectKey(StrEnum):
     Undying = "Undying"
     CannotUseAbilities = "CannotUseAbilities"
 
+    BonusDamageOnAttack = "BonusDamageOnAttack"
+
 # -----------------------------------------------------------------------------
 # CONSTANTS
 # -----------------------------------------------------------------------------
@@ -87,7 +89,8 @@ POSITIVE_STATUS_EFFECTS_ON_SELF: List[StatusEffectKey] = [
     StatusEffectKey.RestrictedToItems, # Since this can only happen with Quick Access
     StatusEffectKey.DmgBuff,
     StatusEffectKey.Undying,
-    StatusEffectKey.DmgReflect
+    StatusEffectKey.DmgReflect,
+    StatusEffectKey.BonusDamageOnAttack
 ]
 
 NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
@@ -643,6 +646,19 @@ class DmgReflect(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: You reflect {self.value} damage you take for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class BonusDamageOnAttack(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Patient", StatusEffectKey.BonusDamageOnAttack, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: Your next attack deals {self.value} more damage (lasts until attacking or for {self.get_turns_remaining_str()})"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

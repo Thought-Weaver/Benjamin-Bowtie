@@ -2104,11 +2104,14 @@ class DuelView(discord.ui.View):
 
         generating_value = 0
         tarnished_value = 0
+        bonus_damage = 0
         for se in attacker.get_dueling().status_effects:
             if se.key == StatusEffectKey.Generating:
                 generating_value = se.value
             if se.key == StatusEffectKey.Tarnished:
                 tarnished_value = se.value
+            if se.key == StatusEffectKey.BonusDamageOnAttack:
+                bonus_damage += int(se.value)
         cursed_coins_damage = 0
 
         main_hand_item = attacker_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
@@ -2174,6 +2177,7 @@ class DuelView(discord.ui.View):
             damage = base_damage
             damage += min(ceil(base_damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), base_damage)
             damage = ceil(damage * critical_hit_final)
+            damage += bonus_damage
 
             # Doing these after damage computation because the player doesn't get an indication the effect occurred
             # until the Continue screen, so it feels slightly more natural to have them not affect damage dealt. I
