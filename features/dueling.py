@@ -2220,11 +2220,29 @@ class DuelView(discord.ui.View):
             target.get_stats().dueling.damage_taken += actual_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target != attacker), se.on_being_hit_buffs))
                     result_strs.append(f"{target_name} gained {se.get_buffs_str()}")
+
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                attacker_dmg_reduct = attacker.get_dueling().get_total_percent_dmg_reduct()
+
+                attacker_org_armor = attacker.get_dueling().armor
+                actual_reflected_damage = attacker.get_expertise().damage(reflected_damage, attacker.get_dueling(), attacker_dmg_reduct, ignore_armor=False)
+                attacker_cur_armor = attacker.get_dueling().armor
+                
+                attacker_dmg_reduct_str = f" ({attacker_dmg_reduct * 100}% Reduction)" if attacker_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({attacker_cur_armor - attacker_org_armor} Armor)" if attacker_cur_armor - attacker_org_armor < 0 else ""
+
+                result_strs.append(f"{target_name} reflected {actual_reflected_damage}{reflect_armor_str}{attacker_dmg_reduct_str} back to {attacker_name}")
+
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             generating_string = ""

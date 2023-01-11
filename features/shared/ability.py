@@ -235,11 +235,28 @@ class Ability():
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -1132,11 +1149,28 @@ class WrathOfTheWavesI(Ability):
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+            
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -1241,11 +1275,28 @@ class WrathOfTheWavesII(Ability):
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+            
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -1350,11 +1401,28 @@ class WrathOfTheWavesIII(Ability):
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -1643,11 +1711,28 @@ class ThunderingTorrentI(Ability):
             ))
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -1774,11 +1859,28 @@ class ThunderingTorrentII(Ability):
             ))
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -1905,11 +2007,28 @@ class ThunderingTorrentIII(Ability):
             ))
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -2308,11 +2427,28 @@ class WhirlpoolI(Ability):
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -2435,11 +2571,28 @@ class WhirlpoolII(Ability):
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -2562,11 +2715,28 @@ class WhirlpoolIII(Ability):
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
+            dmg_reflect: float = 0
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.AttrBuffOnDamage:
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
                     se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+            
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+
+                caster_org_armor = caster.get_dueling().armor
+                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
+                caster_cur_armor = caster.get_dueling().armor
+                
+                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
+
+                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
+
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
@@ -3870,7 +4040,7 @@ class EvadeI(Ability):
             icon="\uD83D\uDCA8",
             name="Evade I",
             class_key=ExpertiseClass.Guardian,
-            description="Gain +200 Dexterity for 1 turn.",
+            description="Gain +100 Dexterity for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=5,
@@ -3884,7 +4054,7 @@ class EvadeI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=1,
-            value=200,
+            value=100,
             source_str=self.get_icon_and_name()
         )
 
@@ -3909,7 +4079,7 @@ class EvadeII(Ability):
             icon="\uD83D\uDCA8",
             name="Evade II",
             class_key=ExpertiseClass.Guardian,
-            description="Gain +300 Dexterity for 1 turn.",
+            description="Gain +175 Dexterity for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=5,
@@ -3923,7 +4093,7 @@ class EvadeII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=1,
-            value=300,
+            value=175,
             source_str=self.get_icon_and_name()
         )
 
@@ -3948,7 +4118,7 @@ class EvadeIII(Ability):
             icon="\uD83D\uDCA8",
             name="Evade III",
             class_key=ExpertiseClass.Guardian,
-            description="Gain +400 Dexterity for 1 turn.",
+            description="Gain +250 Dexterity for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=5,
@@ -3962,7 +4132,7 @@ class EvadeIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=1,
-            value=400,
+            value=250,
             source_str=self.get_icon_and_name()
         )
 

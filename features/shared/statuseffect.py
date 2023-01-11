@@ -57,6 +57,7 @@ class StatusEffectKey(StrEnum):
 
     DmgBuff = "DmgBuff"
     DmgDebuff = "DmgDebuff"
+    DmgReflect = "DmgReflect"
 
     Charmed = "Charmed"
     CannotAttack = "CannotAttack"
@@ -85,7 +86,8 @@ POSITIVE_STATUS_EFFECTS_ON_SELF: List[StatusEffectKey] = [
     StatusEffectKey.RegenerateHP,
     StatusEffectKey.RestrictedToItems, # Since this can only happen with Quick Access
     StatusEffectKey.DmgBuff,
-    StatusEffectKey.Undying
+    StatusEffectKey.Undying,
+    StatusEffectKey.DmgReflect
 ]
 
 NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
@@ -628,6 +630,19 @@ class CannotUseAbilities(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: You can't use abilities for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class DmgReflect(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Reflecting", StatusEffectKey.DmgReflect, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: You reflect {self.value} damage you take for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

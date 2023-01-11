@@ -11,7 +11,7 @@ from features.shared.attributes import Attributes
 from features.shared.constants import BASE_HP, BASE_MANA, CON_HEALTH_SCALE, INT_MANA_SCALE
 from features.shared.effect import EffectType
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from features.shared.statuseffect import StatusEffectKey
 if TYPE_CHECKING:
@@ -38,6 +38,24 @@ class Attribute(StrEnum):
     Intelligence = "Intelligence"
     Luck = "Luck"
     Memory = "Memory"
+
+    @staticmethod
+    def get_short_strs(attrs: List[Attribute]):
+        short_strs: List[str] = []
+        for attr in attrs:
+            if attr == Attribute.Constitution:
+                short_strs.append("Con")
+            elif attr == Attribute.Strength:
+                short_strs.append("Str")
+            elif attr == Attribute.Dexterity:
+                short_strs.append("Dex")
+            elif attr == Attribute.Intelligence:
+                short_strs.append("Int")
+            elif attr == Attribute.Luck:
+                short_strs.append("Lck")
+            elif attr == Attribute.Memory:
+                short_strs.append("Mem")
+        return short_strs
 
 # -----------------------------------------------------------------------------
 # CLASSES
