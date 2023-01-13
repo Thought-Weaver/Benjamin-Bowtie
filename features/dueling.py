@@ -2173,8 +2173,16 @@ class DuelView(discord.ui.View):
                         
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1 
             base_damage = weapon_stats.get_random_damage(attacker_attrs, item_effects, max(0, level_req - attacker.get_expertise().level))
-            
-            damage = base_damage
+
+            stacking_damage: float = 1
+            if main_hand_item is not None:
+                for se in target_dueling.status_effects:
+                    if se.key == StatusEffectKey.StackingDamage:
+                        assert(isinstance(se, StackingDamage))
+                        if se.caster == attacker and se.source_str == main_hand_item.get_full_name():
+                            stacking_damage += se.value
+
+            damage = ceil(base_damage * stacking_damage)
             damage += min(ceil(base_damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), base_damage)
             damage = ceil(damage * critical_hit_final)
             damage += bonus_damage

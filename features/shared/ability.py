@@ -156,6 +156,19 @@ class Ability():
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
+        critical_hit_dmg_buff = 0
+        for item in caster_equipment.get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for item_effect in item_effects.permanent:
+                    if not item_effect.meets_conditions(caster, item):
+                        continue
+
+                    if item_effect.effect_type == EffectType.CritDmgBuff:
+                        critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
+                    if item_effect.effect_type == EffectType.CritDmgReduction:
+                        critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
+
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
             target_equipment = target.get_equipment()
@@ -167,19 +180,6 @@ class Ability():
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
-            critical_hit_dmg_buff = 0
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is not None:
-                    for item_effect in item_effects.permanent:
-                        if not item_effect.meets_conditions(caster, item):
-                            continue
-
-                        if item_effect.effect_type == EffectType.CritDmgBuff:
-                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
-                        if item_effect.effect_type == EffectType.CritDmgReduction:
-                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
-
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
@@ -187,8 +187,15 @@ class Ability():
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(dmg_range.start, dmg_range.stop)
-            
-            damage = base_damage
+
+            stacking_damage: float = 1
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+
+            damage = ceil(base_damage * stacking_damage)
             if Attribute.Intelligence in self._scaling:
                 damage += min(ceil(base_damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             if Attribute.Strength in self._scaling:

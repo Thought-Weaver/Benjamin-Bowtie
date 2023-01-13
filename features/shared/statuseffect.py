@@ -67,6 +67,7 @@ class StatusEffectKey(StrEnum):
     CannotUseAbilities = "CannotUseAbilities"
 
     BonusDamageOnAttack = "BonusDamageOnAttack"
+    StackingDamage = "StackingDamage"
 
 # -----------------------------------------------------------------------------
 # CONSTANTS
@@ -110,7 +111,8 @@ NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
     StatusEffectKey.Sleeping,
     StatusEffectKey.Decaying,
     StatusEffectKey.Undying,
-    StatusEffectKey.CannotUseAbilities
+    StatusEffectKey.CannotUseAbilities,
+    StatusEffectKey.StackingDamage
 ]
 
 # -----------------------------------------------------------------------------
@@ -528,7 +530,7 @@ class RegenerateHP(StatusEffect):
         super().__init__(turns_remaining, value, "Regenerating", StatusEffectKey.RegenerateHP, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: You regain {self.value}% of your health for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: You regain {self.value * 100}% of your health for the next {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -659,6 +661,20 @@ class BonusDamageOnAttack(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: Your next attack deals {self.value} more damage (lasts until attacking or for {self.get_turns_remaining_str()})"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class StackingDamage(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), caster: Player | NPC, source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Reverberating", StatusEffectKey.StackingDamage, source_str, trigger_first_turn)
+        self.caster = caster
+
+    def __str__(self):
+        display_str = f"{self.name}: Attacking or using the ability that caused this again against this target deals {self.value * 100}% more damage (lasts for {self.get_turns_remaining_str()})"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
