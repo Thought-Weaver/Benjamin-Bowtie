@@ -6,7 +6,7 @@
     "rarity": "Uncommon",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }
