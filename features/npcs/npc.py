@@ -26,6 +26,7 @@ class NPCRoles(StrEnum):
     Chef = "Chef"
     RandomItemMerchant = "RandomItemMerchant"
     DuelingTrainer = "DuelingTrainer"
+    Companion = "Companion"
 
 
 class NPCDuelingPersonas(StrEnum):

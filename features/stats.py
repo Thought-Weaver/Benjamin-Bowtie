@@ -18,6 +18,7 @@ class StatCategory(StrEnum):
     Dueling = "dueling"
     Garden = "garden"
     Crafting = "crafting"
+    Companions = "companions"
 
 # Based on the command names; the user will do b!stats [name] or omit the name
 # and get all of them at once. I'm using a class to help with deserializing the
@@ -439,6 +440,75 @@ class Stats():
             self.legendary_items_cooked = state.get("legendary_items_cooked", 0)
             self.artifact_items_cooked = state.get("artifact_items_cooked", 0)
 
+    class CompanionsStats():
+        def __init__(self):
+            self.companions_found: int = 0
+            self.companion_abilities_used: int = 0
+
+            self.companion_battles_fought: int = 0
+            self.companion_battles_won: int = 0
+            self.companion_battles_tied: int = 0
+
+            self.attacks_done: int = 0
+            self.abilities_used: int = 0
+            self.items_used: int = 0
+
+            self.damage_dealt: int = 0
+            self.damage_taken: int = 0
+            self.damage_blocked_or_reduced: int = 0
+            
+            self.attacks_dodged: int = 0
+            self.abilities_dodged: int = 0
+            self.critical_hit_successes: int = 0
+
+        def get_name(self):
+            return "Companions Stats"
+
+        def get_stats_str(self):
+            return (
+                f"Companions Found: *{self.companions_found}*\n"
+                f"Companion Abilities Used: *{self.companion_abilities_used}*\n\n"
+
+                f"Companion Battles Fought: *{self.companion_battles_fought}*\n"
+                f"Companion Battles Won: *{self.companion_battles_won}*\n"
+                f"Companion Battles Tied: *{self.companion_battles_tied}*\n\n"
+
+                f"Attacks Done: *{self.attacks_done}*\n"
+                f"Abilities Used: *{self.abilities_used}*\n"
+                f"Items Used: *{self.items_used}*\n\n"
+
+                f"Damage Dealt: *{self.damage_dealt}*\n"
+                f"Damage Taken: *{self.damage_taken}*\n"
+                f"Damage Blocked or Reduced: *{self.damage_blocked_or_reduced}*\n\n"
+
+                f"Attacks Dodged: *{self.attacks_dodged}*\n"
+                f"Abilities Dodged: *{self.abilities_dodged}*\n"
+                f"Criticals Hit Successes: *{self.critical_hit_successes}*"
+            )
+
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.companions_found = state.get("companions_found", 0)
+            self.companion_abilities_used = state.get("companion_abilities_used", 0)
+
+            self.companion_battles_fought = state.get("companion_battles_fought", 0)
+            self.companion_battles_won = state.get("companion_battles_won", 0)
+            self.companion_battles_tied = state.get("companion_battles_tied", 0)
+            
+            self.attacks_done = state.get("attacks_done", 0)
+            self.abilities_used = state.get("abilities_used", 0)
+            self.items_used = state.get("items_used", 0)
+
+            self.damage_dealt = state.get("damage_dealt", 0)
+            self.damage_taken = state.get("damage_taken", 0)
+            self.damage_blocked_or_reduced = state.get("damage_blocked_or_reduced", 0)
+
+            self.attacks_dodged = state.get("attacks_dodged", 0)
+            self.abilities_dodged = state.get("abilities_dodged", 0)
+            self.critical_hit_successes = state.get("critical_hit_successes", 0)
+
     def __init__(self):
         self.fish = self.FishStats()
         self.mail = self.MailStats()
@@ -448,6 +518,7 @@ class Stats():
         self.dueling = self.DuelingStats()
         self.garden = self.GardenStats()
         self.crafting = self.CraftingStats()
+        self.companions = self.CompanionsStats()
 
     def category_to_class(self, category: StatCategory):
         if category == category.Fish:
@@ -466,10 +537,13 @@ class Stats():
             return self.garden
         if category == category.Crafting:
             return self.crafting
+        if category == category.Companions:
+            return self.companions
 
     def list(self):
         # Can simply change the order of this list if I want the pages
         # to be organized differently.
+        # TODO: Add companions to the list when it's ready in February
         return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell, self.dueling, self.garden, self.crafting]
 
     def __getstate__(self):
@@ -484,6 +558,7 @@ class Stats():
         self.dueling = state.get("dueling", self.DuelingStats())
         self.garden = state.get("garden", self.GardenStats())
         self.crafting = state.get("crafting", self.CraftingStats())
+        self.companions = state.get("companions", self.CompanionsStats())
 
 
 class StatView(discord.ui.View):

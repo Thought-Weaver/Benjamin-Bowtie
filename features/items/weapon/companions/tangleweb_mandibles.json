@@ -1,0 +1,17 @@
+{
+    "key": "items/weapon/companions/tangleweb_mandibles",
+    "icon": "\uD83D\uDD77\uFE0F",
+    "name": "Tangleweb Mandibles",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 1,
+        "max_damage": 2
+    }
+}

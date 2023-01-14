@@ -1,0 +1,28 @@
+{
+    "key": "items/weapon/companions/tower_beetle_mandibles",
+    "icon": "\uD83E\uDEB2",
+    "name": "Tower Beetle Mandibles",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 1,
+        "max_damage": 2
+    },
+    "item_effects": {
+        "on_successful_attack": [
+            {
+                "effect_type": "RestoreArmor",
+                "effect_value": 3,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

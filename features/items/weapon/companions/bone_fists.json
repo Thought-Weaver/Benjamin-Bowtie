@@ -1,0 +1,28 @@
+{
+    "key": "items/weapon/companions/bone_fists",
+    "icon": "\uD83E\uDDB4",
+    "name": "Bone Fists",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 1,
+        "max_damage": 2
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromInt",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

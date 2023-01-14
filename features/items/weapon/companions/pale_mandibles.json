@@ -1,0 +1,28 @@
+{
+    "key": "items/weapon/companions/pale_mandibles",
+    "icon": "\uD83D\uDD77\uFE0F",
+    "name": "Pale Mandibles",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 1,
+        "max_damage": 2
+    },
+    "item_effects": {
+        "on_successful_attack": [
+            {
+                "effect_type": "DmgBuffPoisoned",
+                "effect_value": 2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

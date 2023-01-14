@@ -1,0 +1,29 @@
+{
+    "key": "items/weapon/companions/silver_wings",
+    "icon": "\uD83E\uDD89",
+    "name": "Silver Wings",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 1,
+        "max_damage": 2
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Marked"
+            }
+        ]
+    }
+}

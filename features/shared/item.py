@@ -448,6 +448,27 @@ class ItemKey(StrEnum):
     # Misc Weapons
     CopperbroadsFryingPan = "items/weapon/misc/copperbroads_frying_pan"
 
+    # Companion Weapons
+    BearClaws = "items/weapon/companions/bear_claws"
+    BoarTusks = "items/weapon/companions/boar_tusks"
+    BoneFists = "items/weapon/companions/bone_fists"
+    BunnyPaws = "items/weapon/companions/bunny_paws"
+    ButterflyWings = "items/weapon/companions/butterfly_wings"
+    CrabClaws = "items/weapon/companions/crab_claws"
+    FoxClaws = "items/weapon/companions/fox_claws"
+    FroggyLegs = "items/weapon/companions/froggy_legs"
+    PaleMandibles = "items/weapon/companions/pale_mandibles"
+    RaccoonClaws = "items/weapon/companions/raccoon_claws"
+    RavenTalons = "items/weapon/companions/raven_talons"
+    ScorpionClaws = "items/weapon/companions/scorpion_claws"
+    SilverWings = "items/weapon/companions/silver_wings"
+    SnakeFangs = "items/weapon/companions/snake_fangs"
+    TanglewebMandibles = "items/weapon/companions/tangleweb_mandibles"
+    TowerBeetleMandibles = "items/weapon/companions/tower_beetle_mandibles"
+    TurtleBeak = "items/weapon/companions/turtle_beak"
+    VoidBite = "items/weapon/companions/void_bite"
+    VoidClaws = "items/weapon/companions/void_claws"
+
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"
     GoldenKnucklebone = "items/equipment/offhand/golden_knucklebone"
