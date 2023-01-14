@@ -197,13 +197,13 @@ class Ability():
 
             damage = ceil(base_damage * stacking_damage)
             if Attribute.Intelligence in self._scaling:
-                damage += min(ceil(base_damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+                damage += min(ceil(base_damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
             if Attribute.Strength in self._scaling:
-                damage += min(ceil(base_damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+                damage += min(ceil(base_damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), base_damage)
             if Attribute.Dexterity in self._scaling:
-                damage += min(ceil(base_damage * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+                damage += min(ceil(base_damage * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), base_damage)
             if Attribute.Luck in self._scaling:
-                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), base_damage)
 
             damage = ceil(damage * critical_hit_final)
 
@@ -233,7 +233,7 @@ class Ability():
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -404,13 +404,13 @@ class Ability():
 
             heal_amount = base_heal
             if Attribute.Intelligence in self._scaling:
-                heal_amount += min(ceil(base_heal * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+                heal_amount += min(ceil(base_heal * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_heal)
             if Attribute.Strength in self._scaling:
-                heal_amount += min(ceil(base_heal * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+                heal_amount += min(ceil(base_heal * STR_DMG_SCALE * max(caster_attrs.strength, 0)), base_heal)
             if Attribute.Dexterity in self._scaling:
-                heal_amount += min(ceil(base_heal * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+                heal_amount += min(ceil(base_heal * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), base_heal)
             if Attribute.Luck in self._scaling:
-                heal_amount += min(ceil(base_heal * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+                heal_amount += min(ceil(base_heal * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), base_heal)
 
             heal_amount = ceil(heal_amount * critical_hit_final)
             heal_amount += ceil(heal_amount * healing_adjustment)
@@ -1245,7 +1245,7 @@ class WrathOfTheWavesII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = ceil(randint(6, 12) * bonus_dmg_boost * critical_hit_boost)
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -1371,7 +1371,7 @@ class WrathOfTheWavesIII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             damage = ceil(randint(10, 15) * bonus_dmg_boost * critical_hit_boost)
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -1674,7 +1674,7 @@ class ThunderingTorrentI(Ability):
             base_damage = randint(10, 15)
             
             damage = base_damage
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             damage = ceil(damage * critical_hit_final)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
@@ -1822,7 +1822,7 @@ class ThunderingTorrentII(Ability):
             base_damage = randint(12, 18)
             
             damage = base_damage
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
             damage = ceil(damage * critical_hit_final)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
@@ -1969,7 +1969,7 @@ class ThunderingTorrentIII(Ability):
             base_damage = randint(15, 20)
             
             damage = base_damage
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
             damage = ceil(damage * critical_hit_final)
             
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
@@ -2103,7 +2103,7 @@ class DrownInTheDeepI(Ability):
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
             damage = ceil((1 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -2193,7 +2193,7 @@ class DrownInTheDeepII(Ability):
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
             damage = ceil((1.5 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -2283,7 +2283,7 @@ class DrownInTheDeepIII(Ability):
             num_dex_reduce_effects = sum(list(map(lambda x: x.key == StatusEffectKey.DexDebuff, target_dueling.status_effects)))
 
             damage = ceil((2 * num_dex_reduce_effects) / 100 * target_max_hp)
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
 
@@ -2396,7 +2396,7 @@ class WhirlpoolI(Ability):
             base_damage = randint(10, 20)
 
             damage = base_damage
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
             damage = ceil(damage * critical_hit_final)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
@@ -2684,7 +2684,7 @@ class WhirlpoolIII(Ability):
             base_damage = randint(10, 15)
 
             damage = base_damage
-            damage += min(ceil(damage *INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
             damage = ceil(damage * critical_hit_final)
 
             results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
@@ -2925,7 +2925,7 @@ class WhirlwindI(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.5)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -2972,7 +2972,7 @@ class WhirlwindII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.6)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3019,7 +3019,7 @@ class WhirlwindIII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.7)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3066,7 +3066,7 @@ class WhirlwindIV(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.8)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3514,7 +3514,7 @@ class CounterstrikeI(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.75 * base_damage)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
         damage += ceil(min(0.1 * (caster_expertise.max_hp - caster_expertise.hp), damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3562,7 +3562,7 @@ class CounterstrikeII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.8 * base_damage)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
         damage += ceil(min(0.2 * (caster_expertise.max_hp - caster_expertise.hp), 3 * damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3610,7 +3610,7 @@ class CounterstrikeIII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.85 * base_damage)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
         damage += ceil(min(0.3 * (caster_expertise.max_hp - caster_expertise.hp), 5 * damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3780,7 +3780,7 @@ class PiercingStrikeI(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(1.1 * base_damage)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3839,7 +3839,7 @@ class PiercingStrikeII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(1.2 * base_damage)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3898,7 +3898,7 @@ class PiercingStrikeIII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(1.3 * base_damage)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4190,7 +4190,7 @@ class HeavySlamI(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil((0.4 + 0.05 * caster_attrs.constitution) * base_damage)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4236,7 +4236,7 @@ class HeavySlamII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil((0.6 + 0.05 * caster_attrs.constitution) * base_damage)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4282,7 +4282,7 @@ class HeavySlamIII(Ability):
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil((0.8 + 0.05 * caster_attrs.constitution) * base_damage)
-        damage += min(ceil(damage *STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
+        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
