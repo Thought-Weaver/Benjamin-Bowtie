@@ -354,14 +354,17 @@ class RandomItemMerchant(NPC):
             self._inventory = Inventory()
 
         health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
-        health_potions.add_amount(2)
-        sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
-        sapping_potions.add_amount(1)
+        health_potions.add_amount(1)
+        explosive_potions = LOADED_ITEMS.get_new_item(ItemKey.ExplosivePotion)
+        explosive_potions.add_amount(2)
+        poison_potions = LOADED_ITEMS.get_new_item(ItemKey.GreaterPoison)
+        poison_potions.add_amount(1)
         greater_dex_potion = LOADED_ITEMS.get_new_item(ItemKey.GreaterDexterityPotion)
         luck_potion = LOADED_ITEMS.get_new_item(ItemKey.LuckPotion)
 
         self._inventory.add_item(health_potions)
-        self._inventory.add_item(sapping_potions)
+        self._inventory.add_item(explosive_potions)
+        self._inventory.add_item(poison_potions)
         self._inventory.add_item(greater_dex_potion)
         self._inventory.add_item(luck_potion)
 

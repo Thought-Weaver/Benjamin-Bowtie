@@ -2,7 +2,7 @@
     "key": "items/equipment/offhand/deck_of_fate",
     "icon": "\uD83C\uDCCF",
     "name": "Deck of Fate",
-    "value": 250,
+    "value": 1250,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Pick a card! Any card!",
@@ -13,7 +13,35 @@
         "permanent": [
             {
                 "effect_type": "LckMod",
+                "effect_value": 10,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "ConMod",
                 "effect_value": 5,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "DexMod",
+                "effect_value": 15,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "IntMod",
+                "effect_value": 5,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "StrMod",
+                "effect_value": 20,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
