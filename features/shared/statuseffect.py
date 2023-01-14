@@ -70,6 +70,8 @@ class StatusEffectKey(StrEnum):
     StackingDamage = "StackingDamage"
     Marked = "Marked"
 
+    AttackingChanceToApplyStatus = "AttackingChanceToApplyStatus"
+
 # -----------------------------------------------------------------------------
 # CONSTANTS
 # -----------------------------------------------------------------------------
@@ -690,6 +692,20 @@ class Marked(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: This target is marked for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class AttackingChanceToApplyStatus(StatusEffect):
+    def __init__(self, turns_remaining: int, value: (float | int), status_effect: StatusEffect, source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, f"Applying ({status_effect.name})", StatusEffectKey.Marked, source_str, trigger_first_turn)
+        self.status_effect = status_effect
+
+    def __str__(self):
+        display_str = f"{self.name}: You have a {self.value * 100}% to apply {self.status_effect.name} on successful attacks for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

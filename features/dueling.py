@@ -2104,14 +2104,19 @@ class DuelView(discord.ui.View):
 
         generating_value = 0
         tarnished_value = 0
-        bonus_damage = 0
+        bonus_damage: int = 0
+        bonus_percent_damage: float = 1
         for se in attacker.get_dueling().status_effects:
             if se.key == StatusEffectKey.Generating:
                 generating_value = se.value
-            if se.key == StatusEffectKey.Tarnished:
+            elif se.key == StatusEffectKey.Tarnished:
                 tarnished_value = se.value
-            if se.key == StatusEffectKey.BonusDamageOnAttack:
+            elif se.key == StatusEffectKey.BonusDamageOnAttack:
                 bonus_damage += int(se.value)
+            elif se.key == StatusEffectKey.DmgBuff:
+                bonus_percent_damage += se.value
+            elif se.key == StatusEffectKey.DmgDebuff:
+                bonus_percent_damage -= se.value
         cursed_coins_damage = 0
 
         main_hand_item = attacker_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
@@ -2181,10 +2186,15 @@ class DuelView(discord.ui.View):
                         assert(isinstance(se, StackingDamage))
                         if se.caster == attacker and se.source_str == main_hand_item.get_full_name():
                             stacking_damage += se.value
+                    if se.key == StatusEffectKey.AttackingChanceToApplyStatus:
+                        assert(isinstance(se, AttackingChanceToApplyStatus))
+                        if random() < se.value:
+                            se_apply_str: str = target.get_dueling().add_status_effect_with_resist(se.status_effect, target, 0).format(target_name)
+                            result_strs.append(se_apply_str)
 
             damage = ceil(base_damage * stacking_damage)
             damage += min(ceil(base_damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), base_damage)
-            damage = ceil(damage * critical_hit_final)
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage)
             damage += bonus_damage
 
             # Doing these after damage computation because the player doesn't get an indication the effect occurred
