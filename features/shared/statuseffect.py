@@ -72,6 +72,10 @@ class StatusEffectKey(StrEnum):
 
     AttackingChanceToApplyStatus = "AttackingChanceToApplyStatus"
 
+    # TODO: For charging abilities, I should add a Charging status which
+    # is a requirement to cast an associated ability (referenced by class perhaps?)
+    # and is consumed in order to cast it. 
+
 # -----------------------------------------------------------------------------
 # CONSTANTS
 # -----------------------------------------------------------------------------
