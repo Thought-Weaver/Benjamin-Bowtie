@@ -780,7 +780,7 @@ class AlchemyChamberView(discord.ui.View):
                 stats.crafting.artifact_items_alchemized += num_to_make
         output_display = '\n'.join(output_strs)
 
-        return Embed(title="Recipes", description=f"alchemizing successful! You received:\n\n{output_display}{xp_display}\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
+        return Embed(title="Recipes", description=f"Alchemizing successful! You received:\n\n{output_display}{xp_display}\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
 
     def try_alchemizing(self):
         if len(self._current_alchemizing.items()) == 0:
@@ -909,7 +909,7 @@ class AlchemyChamberView(discord.ui.View):
 
         self._get_alchemize_buttons()
 
-        return Embed(title="Alchemize", description=f"alchemizing successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
+        return Embed(title="Alchemize", description=f"Alchemizing successful! You received:\n\n{output_display}\n{xp_display}{new_recipe_str}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nChoose a recipe you've acquired or discovered to make.\n\nNavigate through your recipes using the Prev and Next buttons.")
 
     def exit_with_intent(self):
         self._selected_item = None
