@@ -12,5 +12,8 @@
     "level_requirement": 15,
     "armor_stats": {
         "armor_amount": 10
+    },
+    "attr_requirements:": {
+        "constitution": 5
     }
 }
