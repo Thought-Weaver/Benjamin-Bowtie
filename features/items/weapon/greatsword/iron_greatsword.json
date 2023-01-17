@@ -13,5 +13,8 @@
     "weapon_stats": {
         "min_damage": 5,
         "max_damage": 8
+    },
+    "attr_requirements:": {
+        "strength": 2
     }
 }

@@ -24,5 +24,8 @@
                 "condition_values": []
             }
         ]
+    },
+    "attr_requirements:": {
+        "intelligence": 2
     }
 }
