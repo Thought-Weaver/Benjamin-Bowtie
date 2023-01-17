@@ -749,10 +749,10 @@ class Adventures(commands.Cog):
 
         description = (
             "__Attributes:__\n\n"
-            "**Constitution:** Affects max HP and increases the speed of any health regen\n"
+            "**Constitution:** Affects max HP\n"
             "**Strength:** Affects how much damage is dealt with weapons and weapon-based abilities\n"
             "**Dexterity:** Affects dodge chance and whether you go first when dueling\n"
-            "**Intelligence:** Affects how much damage is done with mana-based abilities, max mana, and increases mana regen\n"
+            "**Intelligence:** Affects how much damage is done with mana-based abilities and your max mana\n"
             "**Luck:** Increases your prowess in matters of chance and acts as a modifier for critical hit chance\n"
             "**Memory:** Adds additional ability slots, one per point of memory\n\n"
             "__Status Effects:__\n\n"
