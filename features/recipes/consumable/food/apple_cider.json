@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/apple_cider",
+    "icon": "\uD83C\uDF7A",
+    "name": "Apple Cider",
+    "value": 135,
+    "inputs": {
+        "items/consumable/food/apple": 3,
+        "items/consumable/food/dragon_pepper": 1,
+        "items/ingredient/herbs/fissureleaf": 1
+    },
+    "outputs": {
+        "items/consumable/food/apple_cider": 1
+    }
+}

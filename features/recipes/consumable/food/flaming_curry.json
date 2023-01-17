@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/food/flaming_curry",
+    "icon": "\uD83C\uDF5B",
+    "name": "Flaming Curry",
+    "value": 750,
+    "inputs": {
+        "items/ingredient/herbs/blaze_cluster": 1,
+        "items/ingredient/herbs/fissureleaf": 2,
+        "items/ingredient/herbs/razorgrass": 5,
+        "items/ingredient/herbs/dream_maker": 1,
+        "items/consumable/food/dragon_pepper": 2
+    },
+    "outputs": {
+        "items/consumable/food/flaming_curry": 1
+    }
+}

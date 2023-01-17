@@ -1,8 +1,8 @@
 {
-    "key": "items/consumable/food/dumpling",
-    "icon": "\uD83E\uDD5F",
-    "name": "Dumpling",
-    "value": 100,
+    "key": "items/consumable/food/seafood_medley",
+    "icon": "\uD83E\uDD58",
+    "name": "Seafood Medley",
+    "value": 70,
     "rarity": "Uncommon",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",

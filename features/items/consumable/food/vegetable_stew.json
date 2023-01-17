@@ -1,8 +1,8 @@
 {
-    "key": "items/consumable/food/dumpling",
-    "icon": "\uD83E\uDD5F",
-    "name": "Dumpling",
-    "value": 100,
+    "key": "items/consumable/food/vegetable_stew",
+    "icon": "\uD83C\uDF72",
+    "name": "Vegetable Stew",
+    "value": 68,
     "rarity": "Uncommon",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",

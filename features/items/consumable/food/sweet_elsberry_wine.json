@@ -1,8 +1,8 @@
 {
-    "key": "items/consumable/food/dumpling",
-    "icon": "\uD83E\uDD5F",
-    "name": "Dumpling",
-    "value": 100,
+    "key": "items/consumable/food/sweet_elsberry_wine",
+    "icon": "\uD83C\uDF77",
+    "name": "Sweet Elsberry Wine",
+    "value": 65,
     "rarity": "Uncommon",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",
@@ -16,7 +16,7 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "RestorePercentHealth",
+                "effect_type": "RestorePercentMana",
                 "effect_value": 0.12,
                 "effect_time": -1,
                 "conditions": [],

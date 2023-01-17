@@ -1,0 +1,12 @@
+{
+    "key": "recipes/consumable/food/elsberry_juice",
+    "icon": "\uD83C\uDF77",
+    "name": "Elsberry Juice",
+    "value": 60,
+    "inputs": {
+        "items/consumable/food/elsberries": 3
+    },
+    "outputs": {
+        "items/consumable/food/elsberry_juice": 1
+    }
+}

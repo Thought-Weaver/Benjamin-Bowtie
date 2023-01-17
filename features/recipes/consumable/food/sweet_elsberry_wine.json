@@ -1,0 +1,13 @@
+{
+    "key": "recipes/consumable/food/sweet_elsberry_wine",
+    "icon": "\uD83C\uDF77",
+    "name": "Sweet Elsberry Wine",
+    "value": 195,
+    "inputs": {
+        "items/consumable/food/elsberries": 5,
+        "items/ingredient/herbs/fissureleaf": 2
+    },
+    "outputs": {
+        "items/consumable/food/sweet_elsberry_wine": 1
+    }
+}

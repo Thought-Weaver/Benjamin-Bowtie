@@ -19,16 +19,32 @@ if TYPE_CHECKING:
 
 class RecipeKey(StrEnum):
     # Food
+    AppleCider = "recipes/consumable/food/apple_cider"
+    AzureberryJuice = "recipes/consumable/food/azureberry_juice"
     Bread = "recipes/consumable/food/bread"
     CookedMinnow = "recipes/consumable/food/cooked_minnow"
     CookedRoughy = "recipes/consumable/food/cooked_roughy"
     Dumpling = "recipes/consumable/food/dumpling"
+    ElsberryJuice = "recipes/consumable/food/elsberry_juice"
     FishCakeWithMinnow = "recipes/consumable/food/fish_cake_with_minnow"
     FishCakeWithRoughy = "recipes/consumable/food/fish_cake_with_roughy"
+    FlamingCurry = "recipes/consumable/food/flaming_curry"
     FriedShrimp = "recipes/consumable/food/fried_shrimp"
+    GoldenHoneydrop = "recipes/consumable/food/golden_honeydrop"
+    GoldenSalad = "recipes/consumable/food/golden_salad"
+    MildAle = "recipes/consumable/food/mild_ale"
+    MinnowSushi = "recipes/consumable/food/minnow_sushi"
     MushroomSalad = "recipes/consumable/food/mushroom_salad"
     MushroomStew = "recipes/consumable/food/mushroom_stew"
+    RazorgrassBall = "recipes/consumable/food/razorgrass_ball"
+    RoastedPotato = "recipes/consumable/food/roasted_potato"
+    RoughySushi = "recipes/consumable/food/roughy_sushi"
+    SeafoodMedley = "recipes/consumable/food/seafood_medley"
+    SpicyMushroomFlatbread = "recipes/consumable/food/spicy_mushroom_flatbread"
+    SundewDelight = "recipes/consumable/food/sundew_delight"
+    SweetElsberryWine = "recipes/consumable/food/sweet_elsberry_wine"
     VegetableFritter = "recipes/consumable/food/vegetable_fritter"
+    VegetableStew = "recipes/consumable/food/vegetable_stew"
 
     # Potions
     AtrophyPotion = "recipes/consumable/potions/atrophy_potion"

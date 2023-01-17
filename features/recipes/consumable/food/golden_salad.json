@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/golden_salad",
+    "icon": "\uD83E\uDD57",
+    "name": "Golden Salad",
+    "value": 900,
+    "inputs": {
+        "items/ingredient/herbs/seaclover": 5,
+        "items/ingredient/herbs/graspleaf": 2,
+        "items/ingredient/herbs/fissureleaf": 2,
+        "items/ingredient/herbs/golden_clover": 3
+    },
+    "outputs": {
+        "items/consumable/food/golden_salad": 1
+    }
+}

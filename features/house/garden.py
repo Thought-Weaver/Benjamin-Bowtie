@@ -95,7 +95,23 @@ SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
     ItemKey.SpidersGroveSpores: SeedData(7, 7, 24, ItemKey.SpidersGrove, 0.1, 2, "\uD83C\uDF31", 12),
     ItemKey.SungrainSeed: SeedData(1, 2, 20, ItemKey.Sungrain, 0.7, 2, "\uD83C\uDF31", 1),
     ItemKey.WanderweedSeed: SeedData(2, 6, 9, ItemKey.Wanderweed, 0.15, 3, "\uD83C\uDF31", 9),
-    ItemKey.WitherheartSeed: SeedData(12, 24, 26, ItemKey.Witherheart, 0.03, 1, "\uD83C\uDF31", 144)
+    ItemKey.WitherheartSeed: SeedData(12, 24, 26, ItemKey.Witherheart, 0.03, 1, "\uD83C\uDF31", 144),
+
+    ItemKey.AllumCutting: SeedData(1, 3, 8, ItemKey.Allum, 0.75, 1, "\uD83C\uDF31", 1),
+    ItemKey.AppleSeed: SeedData(2, 4, 18, ItemKey.Apple, 0.5, 4, "\uD83C\uDF31", 1),
+    ItemKey.AshberrySeed: SeedData(1, 3, 25, ItemKey.Ashberries, 0.95, 1, "\uD83C\uDF31", 1),
+    ItemKey.AzureberrySeed: SeedData(1, 3, 10, ItemKey.Azureberries, 0.45, 3, "\uD83C\uDF31", 1),
+    ItemKey.CrownberrySeed: SeedData(1, 2, 14, ItemKey.Crownberry, 0.2, 4, "\uD83C\uDF31", 1),
+    ItemKey.DragonPepperSeed: SeedData(1, 3, 20, ItemKey.DragonPepper, 0.6, 2, "\uD83C\uDF31", 1),
+    ItemKey.ElsberrySeed: SeedData(1, 2, 12, ItemKey.Elsberries, 0.7, 3, "\uD83C\uDF31", 1),
+    ItemKey.GoldenAppleSeed: SeedData(1, 2, 12, ItemKey.GoldenApple, 0.01, 3, "\uD83C\uDF31", 1),
+    ItemKey.GrovemelonSeed: SeedData(2, 5, 25, ItemKey.Grovemelon, 0.5, 2, "\uD83C\uDF31", 1),
+    ItemKey.HoneyfruitSeed: SeedData(1, 3, 15, ItemKey.Honeyfruit, 0.85, 1, "\uD83C\uDF31", 1),
+    ItemKey.PlumpinSeed: SeedData(2, 4, 12, ItemKey.Plumpin, 0.4, 3, "\uD83C\uDF31", 1),
+    ItemKey.PotatoCutting: SeedData(1, 2, 30, ItemKey.Potato, 0.95, 1, "\uD83C\uDF31", 1),
+    ItemKey.SpearLeekCutting: SeedData(2, 3, 10, ItemKey.SpearLeek, 0.9, 1, "\uD83C\uDF31", 1),
+    ItemKey.SunfruitSeed: SeedData(1, 3, 15, ItemKey.Sunfruit, 0.6, 2, "\uD83C\uDF31", 1),
+    ItemKey.SweetrootCutting: SeedData(1, 2, 18, ItemKey.Sweetroot, 0.9, 1, "\uD83C\uDF31", 1)
 })
 
 
@@ -127,7 +143,8 @@ MUTATION_PROBS: MappingProxyType[Tuple[ItemKey | Literal[""], ItemKey | Literal[
     (ItemKey.FoolsDelight, ItemKey.Bloodcrown): (ItemKey.SpidersGroveSpores, 0.01),
     (ItemKey.Bloodcrown, ItemKey.DawnsGlory): (ItemKey.BlazeClusterSpores, 0.1),
     (ItemKey.Seaclover, ItemKey.Sungrain): (ItemKey.GoldenCloverSeed, 0.005),
-    (ItemKey.Meddlespread, ItemKey.Snowdew): (ItemKey.WanderweedSeed, 0.01)
+    (ItemKey.Meddlespread, ItemKey.Snowdew): (ItemKey.WanderweedSeed, 0.01),
+    (ItemKey.GoldenClover, ItemKey.Apple): (ItemKey.GoldenCloverSeed, 0.01)
 })
 
 # -----------------------------------------------------------------------------

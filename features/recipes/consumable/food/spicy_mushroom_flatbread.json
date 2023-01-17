@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/spicy_mushroom_flatbread",
+    "icon": "\uD83E\uDD59",
+    "name": "Spicy Mushroom Flatbread",
+    "value": 200,
+    "inputs": {
+        "items/ingredient/herbs/sungrain": 2,
+        "items/ingredient/herbs/blaze_cluster": 1,
+        "items/ingredient/herbs/seaclover": 3
+    },
+    "outputs": {
+        "items/consumable/food/spicy_mushroom_flatbread": 1
+    }
+}

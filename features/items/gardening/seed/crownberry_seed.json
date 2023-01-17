@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/crownberry_seed",
+    "icon": "\uD83C\uDF53",
+    "name": "Crownberry Seed",
+    "value": 1,
+    "rarity": "Common",
+    "description": "When planted, grows a crownberry plant.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

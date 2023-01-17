@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/minnow_sushi",
+    "icon": "\uD83C\uDF63",
+    "name": "Minnow Sushi",
+    "value": 140,
+    "inputs": {
+        "items/creature/fish/minnow": 1,
+        "items/ingredient/herbs/stranglekelp": 3,
+        "items/ingredient/herbs/razorgrass": 3
+    },
+    "outputs": {
+        "items/consumable/food/minnow_sushi": 1
+    }
+}

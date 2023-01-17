@@ -6,7 +6,7 @@
     "rarity": "Common",
     "description": "Used for crafting potions.",
     "flavor_text": "",
-    "class_tags": ["Ingredient", "Potion_Ingredient"],
+    "class_tags": ["Ingredient", "Potion_Ingredient", "Cooking_Supplies"],
     "state_tags": [],
     "count": 1
 }

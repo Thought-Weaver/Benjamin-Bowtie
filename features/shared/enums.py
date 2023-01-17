@@ -51,6 +51,7 @@ class ClassTag(Enum):
         Spice = "Spice" # Specifically for cooking
         PotionIngredient = "Potion_Ingredient"
         CraftingMaterial = "Crafting_Material"
+        CookingSupplies = "Cooking_Supplies"
 
     @skip
     class Creature(StrEnum):

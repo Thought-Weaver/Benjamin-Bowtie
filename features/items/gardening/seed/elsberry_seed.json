@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/elsberry_seed",
+    "icon": "\uD83C\uDF47",
+    "name": "Elsberry Seed",
+    "value": 1,
+    "rarity": "Common",
+    "description": "When planted, grows an elsberry plant.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

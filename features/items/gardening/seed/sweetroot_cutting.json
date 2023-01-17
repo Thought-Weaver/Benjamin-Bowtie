@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/sweetroot_cutting",
+    "icon": "\uD83E\uDD55",
+    "name": "Sweetroot Cutting",
+    "value": 1,
+    "rarity": "Common",
+    "description": "When planted, grows a sweetroot plant.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

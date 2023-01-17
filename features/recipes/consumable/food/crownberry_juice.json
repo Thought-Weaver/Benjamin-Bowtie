@@ -1,0 +1,12 @@
+{
+    "key": "recipes/consumable/food/crownberry_juice",
+    "icon": "\uD83C\uDF77",
+    "name": "Crownberry Juice",
+    "value": 60,
+    "inputs": {
+        "items/consumable/food/crownberry": 3
+    },
+    "outputs": {
+        "items/consumable/food/crownberry_juice": 1
+    }
+}

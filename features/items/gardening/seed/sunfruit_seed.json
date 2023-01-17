@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/sunfruit_seed",
+    "icon": "\uD83C\uDF4A",
+    "name": "Sunfruit Seed",
+    "value": 2,
+    "rarity": "Common",
+    "description": "When planted, grows a sunfruit plant.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

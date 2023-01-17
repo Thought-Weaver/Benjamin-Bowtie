@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/food/seafood_medley",
+    "icon": "\uD83E\uDD58",
+    "name": "Seafood Medley",
+    "value": 210,
+    "inputs": {
+        "items/creature/fish/minnow": 3,
+        "items/creature/fish/roughy": 1,
+        "items/creature/fish/shark": 1,
+        "items/creature/fish/shrimp": 3,
+        "items/creature/fish/oysters": 5
+    },
+    "outputs": {
+        "items/consumable/food/seafood_medley": 1
+    }
+}

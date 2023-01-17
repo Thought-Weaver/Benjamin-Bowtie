@@ -138,15 +138,35 @@ class ChefView(discord.ui.View):
         self._chef: ChefView = database[str(guild_id)]["npcs"][NPCRoles.Chef]
 
         self._wares: List[Item] = [
+            LOADED_ITEMS.get_new_item(ItemKey.AppleCider),
             LOADED_ITEMS.get_new_item(ItemKey.Bread),
             LOADED_ITEMS.get_new_item(ItemKey.CookedMinnow),
             LOADED_ITEMS.get_new_item(ItemKey.CookedRoughy),
             LOADED_ITEMS.get_new_item(ItemKey.Dumpling),
             LOADED_ITEMS.get_new_item(ItemKey.FishCake),
             LOADED_ITEMS.get_new_item(ItemKey.FriedShrimp),
+            LOADED_ITEMS.get_new_item(ItemKey.MildAle),
+            LOADED_ITEMS.get_new_item(ItemKey.MinnowSushi),
             LOADED_ITEMS.get_new_item(ItemKey.MushroomSalad),
             LOADED_ITEMS.get_new_item(ItemKey.MushroomStew),
-            LOADED_ITEMS.get_new_item(ItemKey.VegetableFritter)
+            LOADED_ITEMS.get_new_item(ItemKey.RoughySushi),
+            LOADED_ITEMS.get_new_item(ItemKey.VegetableFritter),
+            LOADED_ITEMS.get_new_item(ItemKey.VegetableStew),
+
+            LOADED_ITEMS.get_new_item(ItemKey.AllumCutting),
+            LOADED_ITEMS.get_new_item(ItemKey.AppleSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.AshberrySeed),
+            LOADED_ITEMS.get_new_item(ItemKey.AzureberrySeed),
+            LOADED_ITEMS.get_new_item(ItemKey.CrownberrySeed),
+            LOADED_ITEMS.get_new_item(ItemKey.DragonPepperSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.ElsberrySeed),
+            LOADED_ITEMS.get_new_item(ItemKey.GrovemelonSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.HoneyfruitSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.PlumpinSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.PotatoCutting),
+            LOADED_ITEMS.get_new_item(ItemKey.SpearLeekCutting),
+            LOADED_ITEMS.get_new_item(ItemKey.SunfruitSeed),
+            LOADED_ITEMS.get_new_item(ItemKey.SweetrootCutting)
         ]
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1

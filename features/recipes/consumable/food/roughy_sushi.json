@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/roughy_sushi",
+    "icon": "\uD83C\uDF63",
+    "name": "Roughy Sushi",
+    "value": 150,
+    "inputs": {
+        "items/creature/fish/roughy": 1,
+        "items/ingredient/herbs/stranglekelp": 3,
+        "items/ingredient/herbs/razorgrass": 3
+    },
+    "outputs": {
+        "items/consumable/food/roughy_sushi": 1
+    }
+}

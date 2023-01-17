@@ -6,7 +6,7 @@
     "rarity": "Uncommon",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",
-    "class_tags": ["Ingredient", "Consumable", "Food", "Creature", "Fish", "Usable_Outside_Duels", "Usable_Within_Duels"],
+    "class_tags": ["Ingredient", "Consumable", "Food", "Usable_Outside_Duels", "Usable_Within_Duels"],
     "state_tags": [],
     "count": 1,
     "consumable_stats": {

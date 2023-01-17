@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/azureberry_seed",
+    "icon": "\uD83E\uDED0",
+    "name": "Azureberry Seed",
+    "value": 2,
+    "rarity": "Common",
+    "description": "When planted, grows an azureberry plant.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

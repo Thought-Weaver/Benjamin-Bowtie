@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/honeyfruit_seed",
+    "icon": "\uD83C\uDF4D",
+    "name": "Honeyfruit Seed",
+    "value": 2,
+    "rarity": "Common",
+    "description": "When planted, grows a honeyfruit plant.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,13 @@
+{
+    "key": "recipes/consumable/food/razorgrass_ball",
+    "icon": "\uD83C\uDF59",
+    "name": "Razorgrass Ball",
+    "value": 110,
+    "inputs": {
+        "items/ingredient/herbs/stranglekelp": 1,
+        "items/ingredient/herbs/razorgrass": 3
+    },
+    "outputs": {
+        "items/consumable/food/razorgrass_ball": 1
+    }
+}

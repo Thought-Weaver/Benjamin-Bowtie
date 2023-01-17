@@ -1,8 +1,8 @@
 {
-    "key": "items/consumable/food/dumpling",
-    "icon": "\uD83E\uDD5F",
-    "name": "Dumpling",
-    "value": 100,
+    "key": "items/consumable/food/spicy_mushroom_flatbread",
+    "icon": "\uD83E\uDD59",
+    "name": "Spicy Mushroom Flatbread",
+    "value": 65,
     "rarity": "Uncommon",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",
@@ -17,7 +17,7 @@
         "permanent": [
             {
                 "effect_type": "RestorePercentHealth",
-                "effect_value": 0.12,
+                "effect_value": 0.09,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []

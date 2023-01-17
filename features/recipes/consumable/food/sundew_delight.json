@@ -1,0 +1,13 @@
+{
+    "key": "recipes/consumable/food/sundew_delight",
+    "icon": "\uD83C\uDF79",
+    "name": "Sundew Delight",
+    "value": 90,
+    "inputs": {
+        "items/consumable/food/honeyfruit": 2,
+        "items/consumable/food/sunfruit": 2
+    },
+    "outputs": {
+        "items/consumable/food/sundew_delight": 1
+    }
+}

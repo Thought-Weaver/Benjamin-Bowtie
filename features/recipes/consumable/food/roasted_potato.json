@@ -1,0 +1,12 @@
+{
+    "key": "recipes/consumable/food/roasted_potato",
+    "icon": "\uD83C\uDF60",
+    "name": "Roasted Potato",
+    "value": 15,
+    "inputs": {
+        "items/consumable/food/potato": 1
+    },
+    "outputs": {
+        "items/consumable/food/roasted_potato": 1
+    }
+}

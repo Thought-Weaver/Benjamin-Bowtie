@@ -1,0 +1,12 @@
+{
+    "key": "recipes/consumable/food/mild_ale",
+    "icon": "\uD83C\uDF7A",
+    "name": "Mild Ale",
+    "value": 90,
+    "inputs": {
+        "items/ingredient/herbs/sungrain": 3
+    },
+    "outputs": {
+        "items/consumable/food/mild_ale": 1
+    }
+}

@@ -1,9 +1,9 @@
 {
-    "key": "items/consumable/food/dumpling",
-    "icon": "\uD83E\uDD5F",
-    "name": "Dumpling",
-    "value": 100,
-    "rarity": "Uncommon",
+    "key": "items/consumable/food/mild_ale",
+    "icon": "\uD83C\uDF7A",
+    "name": "Mild Ale",
+    "value": 28,
+    "rarity": "Common",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",
     "class_tags": ["Ingredient", "Consumable", "Food", "Usable_Outside_Duels", "Usable_Within_Duels"],
@@ -16,8 +16,8 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "RestorePercentHealth",
-                "effect_value": 0.12,
+                "effect_type": "RestorePercentMana",
+                "effect_value": 0.09,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []

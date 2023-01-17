@@ -1,0 +1,12 @@
+{
+    "key": "recipes/consumable/food/azureberry_juice",
+    "icon": "\uD83C\uDF77",
+    "name": "Azureberry Juice",
+    "value": 90,
+    "inputs": {
+        "items/consumable/food/azureberries": 3
+    },
+    "outputs": {
+        "items/consumable/food/azureberry_juice": 1
+    }
+}

@@ -1,9 +1,9 @@
 {
-    "key": "items/consumable/food/dumpling",
-    "icon": "\uD83E\uDD5F",
-    "name": "Dumpling",
-    "value": 100,
-    "rarity": "Uncommon",
+    "key": "items/consumable/food/dragon_pepper",
+    "icon": "\uD83C\uDF36\uFE0F",
+    "name": "Dragon Pepper",
+    "value": 5,
+    "rarity": "Common",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",
     "class_tags": ["Ingredient", "Consumable", "Food", "Usable_Outside_Duels", "Usable_Within_Duels"],
@@ -17,7 +17,7 @@
         "permanent": [
             {
                 "effect_type": "RestorePercentHealth",
-                "effect_value": 0.12,
+                "effect_value": 0.01,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []

@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/golden_honeydrop",
+    "icon": "\uD83C\uDF79",
+    "name": "Golden Honeydrop",
+    "value": 360,
+    "inputs": {
+        "items/consumable/food/honeyfruit": 5,
+        "items/consumable/food/crownberry": 5,
+        "items/ingredient/herbs/golden_clover": 1
+    },
+    "outputs": {
+        "items/consumable/food/golden_honeydrop": 1
+    }
+}

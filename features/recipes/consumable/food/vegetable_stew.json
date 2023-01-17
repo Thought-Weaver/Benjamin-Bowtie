@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/food/vegetable_stew",
+    "icon": "\uD83C\uDF72",
+    "name": "Vegetable Stew",
+    "value": 180,
+    "inputs": {
+        "items/ingredient/herbs/seaclover": 3,
+        "items/ingredient/herbs/shiverroot": 3,
+        "items/consumable/food/sweetroot": 5,
+        "items/consumable/food/potato": 2,
+        "items/consumable/food/allum": 1,
+        "items/consumable/food/spear_leek": 1,
+        "items/consumable/food/plumpin": 2
+    },
+    "outputs": {
+        "items/consumable/food/vegetable_stew": 1
+    }
+}

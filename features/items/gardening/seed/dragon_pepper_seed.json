@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/dragon_pepper_seed",
+    "icon": "\uD83C\uDF36\uFE0F",
+    "name": "Dragon Pepper Seed",
+    "value": 2,
+    "rarity": "Common",
+    "description": "When planted, grows a dragon pepper plant.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

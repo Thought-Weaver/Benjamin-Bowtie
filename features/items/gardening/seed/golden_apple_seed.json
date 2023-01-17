@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/golden_apple_seed",
+    "icon": "\uD83C\uDF4F",
+    "name": "Golden Apple Seed",
+    "value": 20,
+    "rarity": "Epic",
+    "description": "When planted, grows a golden apple plant.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}
