@@ -2736,7 +2736,11 @@ class DuelView(discord.ui.View):
 
         restricted_to_items: bool = any(se.key == StatusEffectKey.RestrictedToItems for se in npc_dueling.status_effects)
         cannot_attack: bool = any(se.key == StatusEffectKey.CannotAttack for se in npc_dueling.status_effects)
-        cannot_use_abilities: bool = any(se.key == StatusEffectKey.CannotUseAbilities for se in npc_dueling.status_effects)
+        taunt_targets: List[Player | NPC] = [se.forced_to_attack for se in npc_dueling.status_effects if isinstance(se, Taunted)]
+
+        cannot_use_abilities: bool = any(se.key == StatusEffectKey.CannotUseAbilities for se in npc_dueling.status_effects) or len(taunt_targets) > 0
+        cannot_use_items: bool = len(taunt_targets) > 0
+
         charmed: bool = any(se.key == StatusEffectKey.Charmed for se in npc_dueling.status_effects)
 
         enemies = self._allies if (cur_npc in self._enemies and not charmed) else self._enemies
@@ -2784,7 +2788,20 @@ class DuelView(discord.ui.View):
                     
                     update_optimal_fitness(fitness_score, Intent.Attack, None, -1, None, -1, enemies)
                 else:
-                    if len(enemies) > 0:
+                    if len(taunt_targets) > 0:
+                        targets = [choice(taunt_targets)]
+                        dueling_copy: DuelView = self.create_copy()
+                        target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                        dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
+                        dueling_copy.attack_selected_targets()
+
+                        copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                        dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
+                        dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
+                        fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
+
+                        update_optimal_fitness(fitness_score, Intent.Attack, None, -1, None, -1, list(targets))
+                    elif len(enemies) > 0:
                         combinations = list(itertools.combinations(enemies, self._targets_remaining))
                         for targets in combinations:
                             dueling_copy: DuelView = self.create_copy()
@@ -2894,25 +2911,68 @@ class DuelView(discord.ui.View):
 
                                 update_optimal_fitness(fitness_score, Intent.Ability, ability, i, None, -1, list(targets))
 
-        # Step 3: Try using all items
-        inventory_slots = npc_inventory.get_inventory_slots()
-        filtered_indices = npc_inventory.filter_inventory_slots([ClassTag.Consumable.UsableWithinDuels])
-        filtered_items = [inventory_slots[i] for i in filtered_indices]
-        for i, item in enumerate(filtered_items):
-            consumable_stats = item.get_consumable_stats()
-            if consumable_stats is None:
-                continue
-            
-            self._targets_remaining = consumable_stats.get_num_targets()
+        if not cannot_use_items:
+            # Step 3: Try using all items
+            inventory_slots = npc_inventory.get_inventory_slots()
+            filtered_indices = npc_inventory.filter_inventory_slots([ClassTag.Consumable.UsableWithinDuels])
+            filtered_items = [inventory_slots[i] for i in filtered_indices]
+            for i, item in enumerate(filtered_items):
+                consumable_stats = item.get_consumable_stats()
+                if consumable_stats is None:
+                    continue
+                
+                self._targets_remaining = consumable_stats.get_num_targets()
 
-            if self._targets_remaining < 0:
-                dueling_copy: DuelView = self.create_copy()
+                if self._targets_remaining < 0:
+                    dueling_copy: DuelView = self.create_copy()
 
-                dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
-                dueling_copy._selected_item_index = i
+                    dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
+                    dueling_copy._selected_item_index = i
 
-                targets = []
-                if self._targets_remaining == -1:
+                    targets = []
+                    if self._targets_remaining == -1:
+                        target_own_group = consumable_stats.get_target_own_group()
+                        if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
+                            if not charmed:
+                                targets = self._enemies
+                            else:
+                                targets = self._allies
+                        elif (cur_npc in self._enemies and not target_own_group) or (cur_npc in self._allies and target_own_group):
+                            if not charmed:
+                                targets = self._allies
+                            else:
+                                targets = self._enemies
+                    elif self._targets_remaining == -2:
+                        targets = self._turn_order
+                    target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                    dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
+                    dueling_copy.use_item_on_selected_targets()
+
+                    copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                    dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
+                    dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
+                    fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
+
+                    update_optimal_fitness(fitness_score, Intent.Item, None, -1, item, i, targets)
+                elif self._targets_remaining == 0:
+                    dueling_copy: DuelView = self.create_copy()
+
+                    dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
+                    dueling_copy._selected_item_index = i
+
+                    targets = [cur_npc]
+                    target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                    dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
+                    dueling_copy.use_item_on_selected_targets()
+
+                    copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                    dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
+                    dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
+                    fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
+
+                    update_optimal_fitness(fitness_score, Intent.Item, None, -1, item, i, targets)
+                else:
+                    targets = []
                     target_own_group = consumable_stats.get_target_own_group()
                     if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
                         if not charmed:
@@ -2924,73 +2984,31 @@ class DuelView(discord.ui.View):
                             targets = self._allies
                         else:
                             targets = self._enemies
-                elif self._targets_remaining == -2:
-                    targets = self._turn_order
-                target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
-                dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
-                dueling_copy.use_item_on_selected_targets()
 
-                copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
-                dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
-                dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
-                fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
+                    for se in npc_dueling.status_effects:
+                        if se.key == StatusEffectKey.CannotTarget:
+                            assert(isinstance(se, CannotTarget))
+                            if se.cant_target in targets:
+                                targets.remove(se.cant_target)
 
-                update_optimal_fitness(fitness_score, Intent.Item, None, -1, item, i, targets)
-            elif self._targets_remaining == 0:
-                dueling_copy: DuelView = self.create_copy()
+                    if len(targets) > 0:
+                        combinations = list(itertools.combinations(enemies, self._targets_remaining))
+                        for targets in combinations:
+                            dueling_copy: DuelView = self.create_copy()
 
-                dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
-                dueling_copy._selected_item_index = i
+                            dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
+                            dueling_copy._selected_item_index = i
 
-                targets = [cur_npc]
-                target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
-                dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
-                dueling_copy.use_item_on_selected_targets()
+                            target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                            dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
+                            dueling_copy.use_item_on_selected_targets()
 
-                copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
-                dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
-                dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
-                fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
-
-                update_optimal_fitness(fitness_score, Intent.Item, None, -1, item, i, targets)
-            else:
-                targets = []
-                target_own_group = consumable_stats.get_target_own_group()
-                if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
-                    if not charmed:
-                        targets = self._enemies
-                    else:
-                        targets = self._allies
-                elif (cur_npc in self._enemies and not target_own_group) or (cur_npc in self._allies and target_own_group):
-                    if not charmed:
-                        targets = self._allies
-                    else:
-                        targets = self._enemies
-
-                for se in npc_dueling.status_effects:
-                    if se.key == StatusEffectKey.CannotTarget:
-                        assert(isinstance(se, CannotTarget))
-                        if se.cant_target in targets:
-                            targets.remove(se.cant_target)
-
-                if len(targets) > 0:
-                    combinations = list(itertools.combinations(enemies, self._targets_remaining))
-                    for targets in combinations:
-                        dueling_copy: DuelView = self.create_copy()
-
-                        dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
-                        dueling_copy._selected_item_index = i
-
-                        target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
-                        dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
-                        dueling_copy.use_item_on_selected_targets()
-
-                        copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
-                        dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
-                        dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
-                        fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
-                        
-                        update_optimal_fitness(fitness_score, Intent.Item, None, -1, item, i, list(targets))
+                            copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                            dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
+                            dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
+                            fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
+                            
+                            update_optimal_fitness(fitness_score, Intent.Item, None, -1, item, i, list(targets))
 
         optimal_result_str: str = ""
         action_str: str = ""
