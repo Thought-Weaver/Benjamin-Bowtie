@@ -685,7 +685,6 @@ class Adventures(commands.Cog):
         await context.send(embed=embed, view=equipment_view)
 
     @commands.command(name="duel", help="Challenge another player or NPC to a duel")
-    @commands.cooldown(1, 300, commands.BucketType.user)
     async def duel_handler(self, context: commands.Context, users: commands.Greedy[User | str]=None):
         assert(context.guild is not None)
 

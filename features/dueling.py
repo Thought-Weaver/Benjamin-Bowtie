@@ -150,7 +150,12 @@ class Dueling():
         return result
 
     def get_statuses_string(self) -> str:
-        return "*Status Effects:*\n\n" + "\n".join([str(se) for se in self.status_effects if se.turns_remaining != 0])
+        status_strs: List[str] = [str(se) for se in self.status_effects if se.turns_remaining != 0]
+
+        if len(status_strs) == 0:
+            return ""
+
+        return "*Status Effects:*\n\n" + "\n".join(status_strs)
 
     def __getstate__(self):
         return self.__dict__
@@ -1651,7 +1656,7 @@ class DuelView(discord.ui.View):
             for item_effect in item_effects.on_turn_end:
                 result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, previous_entity, self.get_name(previous_entity), is_turn_start=False)
                 if result_str != "":
-                    self._additional_info_string_data += result_str + "\n"
+                    self._additional_info_string_data += result_str
 
         self._turn_index = (self._turn_index + 1) % len(self._turn_order)
         while self._turn_order[self._turn_index].get_expertise().hp == 0:
@@ -1672,7 +1677,7 @@ class DuelView(discord.ui.View):
             for item_effect in item_effects.on_turn_start:
                 result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity), is_turn_start=True)
                 if result_str != "":
-                    self._additional_info_string_data += result_str + "\n"
+                    self._additional_info_string_data += result_str
         
         start_damage: int = 0
         start_heals: int = 0
@@ -1763,7 +1768,9 @@ class DuelView(discord.ui.View):
 
             info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon} (Lvl. {entity.get_expertise().level})\n\n{entity.get_expertise().get_health_and_mana_string()}{armor_str}"
             if len(entity.get_dueling().status_effects) > 0:
-                info_str += f"\n\n{entity.get_dueling().get_statuses_string()}"
+                statuses_str = entity.get_dueling().get_statuses_string()
+                if statuses_str != "":
+                    info_str += f"\n\n{statuses_str}"
             info_str += "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n"
 
         player_name = self.get_user_for_current_turn().display_name
@@ -2207,7 +2214,7 @@ class DuelView(discord.ui.View):
                 if other_item_effects is None:
                     continue
                 for item_effect in other_item_effects.on_successful_attack:
-                    damage, result_str = attacker.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, attacker, target, i + 1, damage)
+                    damage, result_str = attacker.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, attacker, target, 1, damage)
                     if result_str != "":
                         result_strs.append(result_str.format(attacker_name, target_name))
 
@@ -2218,9 +2225,9 @@ class DuelView(discord.ui.View):
                 if other_item_effects is None:
                     continue
                 for item_effect in other_item_effects.on_attacked:
-                    damage, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, i + 1, damage)
+                    damage, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, 1, damage)
                     if result_str != "":
-                        result_strs.append(result_str.format(target_name, attacker_name))
+                        result_strs.append(result_str.format(attacker_name, target_name))
 
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
 
@@ -2234,9 +2241,9 @@ class DuelView(discord.ui.View):
                     if other_item_effects is None:
                         continue
                     for item_effect in other_item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, 1, actual_damage_dealt)
                         if result_str != "":
-                            result_strs.append(result_str.format(target_name, attacker_name))
+                            result_strs.append(result_str.format(attacker_name, target_name))
 
             attacker.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
