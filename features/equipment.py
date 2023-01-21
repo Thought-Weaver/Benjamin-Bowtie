@@ -365,11 +365,11 @@ class EquipmentView(discord.ui.View):
                         last_unequipped_items_len = len(unequipped_items_strs)
                         cur_attrs = expertise.get_all_attributes() + equipment.get_total_attribute_mods()
                         for slot in ClassTag.Equipment:
-                            item: Item | None = equipment.get_item_in_slot(slot)
-                            if item is not None and not item.meets_attr_requirements(cur_attrs):
+                            next_item: Item | None = equipment.get_item_in_slot(slot)
+                            if next_item is not None and not next_item.meets_attr_requirements(cur_attrs):
                                 equipment.unequip_item_from_slot(slot)
-                                inventory.add_item(item)
-                                unequipped_items_strs.append(item.get_full_name())
+                                inventory.add_item(next_item)
+                                unequipped_items_strs.append(next_item.get_full_name())
                                 expertise.update_stats(player.get_combined_attributes())
                 unequipped_items_str: str = "" if len(unequipped_items_strs) == 0 else ("\n\n" + ", ".join(unequipped_items_strs) + " unequipped due to attribute requirements changing! ")
                 

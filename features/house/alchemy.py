@@ -826,44 +826,45 @@ class AlchemyChamberView(discord.ui.View):
 
             alchemizing_failed_info: str = ""
             for input_key, quantity in self._current_alchemizing.items():
-                recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key)
-                if recipe_key is not None:                    
-                    recipe: Recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
+                if quantity > 0:
+                    recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key)
+                    if recipe_key is not None:
+                        recipe: Recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
 
-                    # Potion recipes only have a single output
-                    item_key: ItemKey | None = None
-                    for output_key in recipe.outputs:
-                        item_key = output_key
-                        break
+                        # Potion recipes only have a single output
+                        item_key: ItemKey | None = None
+                        for output_key in recipe.outputs:
+                            item_key = output_key
+                            break
 
-                    if item_key is None:
-                        continue
+                        if item_key is None:
+                            continue
 
-                    resulting_item: Item = LOADED_ITEMS.get_new_item(item_key)
-                    item_effects = resulting_item.get_item_effects()
-                    
-                    if item_effects is not None:
-                        amount_adj_str: str = ""
-                        if recipe.inputs[input_key] - quantity == 0:
-                            amount_adj_str = "\u2705"
-                        elif recipe.inputs[input_key] - quantity > 0:
-                            amount_adj_str = "\u2B06\uFE0F"
-                        else:
-                            amount_adj_str = "\u2B07\uFE0F"
+                        resulting_item: Item = LOADED_ITEMS.get_new_item(item_key)
+                        item_effects = resulting_item.get_item_effects()
+                        
+                        if item_effects is not None:
+                            amount_adj_str: str = ""
+                            if recipe.inputs[input_key] - quantity == 0:
+                                amount_adj_str = "\u2705"
+                            elif recipe.inputs[input_key] - quantity > 0:
+                                amount_adj_str = "\u2B06\uFE0F"
+                            else:
+                                amount_adj_str = "\u2B07\uFE0F"
 
-                        # This is a bit hacky
-                        effect_level: str = "Standard"
-                        if "superior" in item_key:
-                            effect_level = "Superior"
-                        elif "greater" in item_key:
-                            effect_level = "Greater"
-                        elif "lesser" in item_key:
-                            effect_level = "Lesser"
+                            # This is a bit hacky
+                            effect_level: str = "Standard"
+                            if "superior" in item_key:
+                                effect_level = "Superior"
+                            elif "greater" in item_key:
+                                effect_level = "Greater"
+                            elif "lesser" in item_key:
+                                effect_level = "Lesser"
 
-                        input_item: Item = LOADED_ITEMS.get_new_item(input_key)
-                        # Consumable effects only exist on the permanent parameter
-                        effect = choice(item_effects.permanent)
-                        alchemizing_failed_info += f"\n{input_item.get_full_name()} (x{quantity}): {effect.get_descriptive_name()} ({effect_level}) {amount_adj_str}"
+                            input_item: Item = LOADED_ITEMS.get_new_item(input_key)
+                            # Consumable effects only exist on the permanent parameter
+                            effect = choice(item_effects.permanent)
+                            alchemizing_failed_info += f"\n{input_item.get_full_name()} (x{quantity}): {effect.get_descriptive_name()} ({effect_level}) {amount_adj_str}"
 
             if alchemizing_failed_info != "":
                 alchemizing_failed_info = f"\n\nYou learned:\n{alchemizing_failed_info}"

@@ -826,29 +826,30 @@ class KitchenView(discord.ui.View):
 
             failed_info: str = ""
             for input_key, quantity in self._current_cooking.items():
-                recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key)
-                if recipe_key is not None:                    
-                    recipe: Recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
-                    
-                    incorrect_recipe_type: bool = False
-                    for output_key in recipe.outputs.keys():
-                        output_item: Item = LOADED_ITEMS.get_new_item(output_key)
-                        if ClassTag.Consumable.Food not in output_item.get_class_tags():
-                            incorrect_recipe_type = True
-                    
-                    if incorrect_recipe_type:
-                        continue
+                if quantity > 0:
+                    recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key)
+                    if recipe_key is not None:                    
+                        recipe: Recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
+                        
+                        incorrect_recipe_type: bool = False
+                        for output_key in recipe.outputs.keys():
+                            output_item: Item = LOADED_ITEMS.get_new_item(output_key)
+                            if ClassTag.Consumable.Food not in output_item.get_class_tags():
+                                incorrect_recipe_type = True
+                        
+                        if incorrect_recipe_type:
+                            continue
 
-                    amount_adj_str: str = ""
-                    if recipe.inputs[input_key] - quantity == 0:
-                        amount_adj_str = "\u2705"
-                    elif recipe.inputs[input_key] - quantity > 0:
-                        amount_adj_str = "\u2B06\uFE0F"
-                    else:
-                        amount_adj_str = "\u2B07\uFE0F"
+                        amount_adj_str: str = ""
+                        if recipe.inputs[input_key] - quantity == 0:
+                            amount_adj_str = "\u2705"
+                        elif recipe.inputs[input_key] - quantity > 0:
+                            amount_adj_str = "\u2B06\uFE0F"
+                        else:
+                            amount_adj_str = "\u2B07\uFE0F"
 
-                    input_item: Item = LOADED_ITEMS.get_new_item(input_key)
-                    failed_info += f"\n{input_item.get_full_name()} (x{quantity}): {recipe.get_name_and_icon()} {amount_adj_str}"
+                        input_item: Item = LOADED_ITEMS.get_new_item(input_key)
+                        failed_info += f"\n{input_item.get_full_name()} (x{quantity}): {recipe.get_name_and_icon()} {amount_adj_str}"
 
             if failed_info != "":
                 failed_info = f"\n\nYou learned:\n{failed_info}"
