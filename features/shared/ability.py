@@ -5491,6 +5491,7 @@ class DeepPocketsI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         damage: int = min(100, int(0.01 * caster.get_inventory().get_coins()))
+        caster.get_inventory().remove_coins(damage)
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -5526,6 +5527,7 @@ class DeepPocketsII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         damage: int = min(150, int(0.01 * caster.get_inventory().get_coins()))
+        caster.get_inventory().remove_coins(damage)
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -5561,6 +5563,7 @@ class DeepPocketsIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         damage: int = min(200, int(0.01 * caster.get_inventory().get_coins()))
+        caster.get_inventory().remove_coins(damage)
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
