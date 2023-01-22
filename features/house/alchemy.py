@@ -863,8 +863,9 @@ class AlchemyChamberView(discord.ui.View):
 
                             input_item: Item = LOADED_ITEMS.get_new_item(input_key)
                             # Consumable effects only exist on the permanent parameter
-                            effect = choice(item_effects.permanent)
-                            alchemizing_failed_info += f"\n{input_item.get_full_name()} (x{quantity}): {effect.get_descriptive_name()} ({effect_level}) {amount_adj_str}"
+                            if len(item_effects.permanent) > 0:
+                                effect = choice(item_effects.permanent)
+                                alchemizing_failed_info += f"\n{input_item.get_full_name()} (x{quantity}): {effect.get_descriptive_name()} ({effect_level}) {amount_adj_str}"
 
             if alchemizing_failed_info != "":
                 alchemizing_failed_info = f"\n\nYou learned:\n{alchemizing_failed_info}"
