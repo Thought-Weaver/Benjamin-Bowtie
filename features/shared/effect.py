@@ -301,6 +301,14 @@ class Effect():
                     return "Decaying"
                 elif se_key == StatusEffectKey.Undying:
                     return "Undying"
+                elif se_key == StatusEffectKey.CannotUseAbilities:
+                    return "Enfeebled Chance"
+                elif se_key == StatusEffectKey.BonusDamageOnAttack:
+                    return "Patient Chance"
+                elif se_key == StatusEffectKey.StackingDamage:
+                    return "Reverberating Chance"
+                elif se_key == StatusEffectKey.Marked:
+                    return "Marked Chance"
             case EffectType.ResistStatusEffect:
                 se_key: StatusEffectKey | None = self.associated_status_effect
                 if se_key == StatusEffectKey.Poisoned:
@@ -321,6 +329,14 @@ class Effect():
                     return "Resist Sleeping Chance"
                 elif se_key == StatusEffectKey.Decaying:
                     return "Resist Decaying Chance"
+                elif se_key == StatusEffectKey.CannotUseAbilities:
+                    return "Resist Enfeebled Chance"
+                elif se_key == StatusEffectKey.BonusDamageOnAttack:
+                    return "Resist Patient Chance"
+                elif se_key == StatusEffectKey.StackingDamage:
+                    return "Resist Reverberating Chance"
+                elif se_key == StatusEffectKey.Marked:
+                    return "Resist Marked Chance"
             case EffectType.RestoreHealth:
                 return "Restore Health"
             case EffectType.RestorePercentHealth:
