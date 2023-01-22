@@ -357,11 +357,16 @@ class LoadedRecipes():
         recipe_key.value: json.load(open(f"./features/{recipe_key.value}.json", "r")) for recipe_key in RecipeKey
     })
 
-    def get_random_recipe_using_item(self, item_key: ItemKey):
+    def get_random_recipe_using_item(self, item_key: ItemKey, required_output_class_tags: List[ClassTag]):
         recipe_keys: List[RecipeKey] = []
         for recipe_key, recipe_state in self._states.items():
             input_quantity_needed: int = recipe_state["inputs"].get(item_key, 0)
-            if input_quantity_needed > 0:
+
+            output_contains_any_tag: bool = True
+            if len(required_output_class_tags) > 0:
+                output_contains_any_tag = any(tag in LOADED_ITEMS.get_new_item(output_key).get_class_tags() for output_key in recipe_state["outputs"].keys() for tag in required_output_class_tags)
+        
+            if input_quantity_needed > 0 and output_contains_any_tag:
                 recipe_keys.append(recipe_key)
 
         if len(recipe_keys) == 0:

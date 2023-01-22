@@ -827,7 +827,7 @@ class AlchemyChamberView(discord.ui.View):
             alchemizing_failed_info: str = ""
             for input_key, quantity in self._current_alchemizing.items():
                 if quantity > 0:
-                    recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key)
+                    recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key, [ClassTag.Consumable.Potion, ClassTag.Ingredient.PotionIngredient])
                     if recipe_key is not None:
                         recipe: Recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
 
