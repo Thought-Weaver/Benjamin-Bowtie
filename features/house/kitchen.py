@@ -818,8 +818,7 @@ class KitchenView(discord.ui.View):
             index = inventory.search_by_key(input_key)
             # Make experimenting a risk-and-reward situation rather than always consuming the items
             for _ in range(quantity):
-                if found_recipe is None:
-                    inventory.remove_item(index, 1)
+                inventory.remove_item(index, 1)
 
         if found_recipe is None:
             self._get_cook_buttons()
