@@ -98,6 +98,7 @@ class ItemKey(StrEnum):
     GoldenHoneydrop = "items/consumable/food/golden_honeydrop"
     GoldenSalad = "items/consumable/food/golden_salad"
     Grovemelon = "items/consumable/food/grovemelon"
+    Grub = "items/consumable/food/grub"
     Honeyfruit = "items/consumable/food/honeyfruit"
     MildAle = "items/consumable/food/mild_ale"
     MinnowSushi = "items/consumable/food/minnow_sushi"
