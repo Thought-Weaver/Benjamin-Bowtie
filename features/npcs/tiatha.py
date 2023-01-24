@@ -159,11 +159,12 @@ class DruidView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
 
     def get_initial_embed(self):
-        # TODO: Design the grove and description
         return Embed(
-            title="",
+            title="Murmuring Grove",
             description=(
-                ""
+                "In the forest outside the village, the thicket of trees opens into a small clearing, scattered with various, colored flowers and small shrubs. "
+                "Towards its center, surrounded by the wildlife of the forest, is a young woman with long dark blond braids and a rough brown tunic and cloak. She looks up as you approach, as do all the animals, curious to know why you've come.\n\n"
+                "Tiatha greets you and invites you to take a seat on a stump nearby, \"Worry not, for though the forest deeper still harbors danger, we are safe here. What can I do for you?\""
             )
         )
 
