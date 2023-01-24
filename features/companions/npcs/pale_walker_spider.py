@@ -1,4 +1,4 @@
-from pstats import Stats
+from typing import List
 from uuid import uuid4
 from features.companions.abilities import DeadlyVenomI, DeadlyVenomII, DeadlyVenomIII, DeadlyVenomIV, DeadlyVenomV, GhostlyMovementI, GhostlyMovementII, GhostlyMovementIII, GhostlyMovementIV, GhostlyMovementV, GlassPierceI, GlassPierceII, GlassPierceIII, GlassPierceIV, GlassPierceV
 from features.dueling import Dueling
@@ -6,8 +6,10 @@ from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class PaleWalkerSpider(NPC):
@@ -45,33 +47,34 @@ class PaleWalkerSpider(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [DeadlyVenomV, GhostlyMovementV, GlassPierceV]
-        elif self._companion_level <= 45:
-            return [DeadlyVenomV, GhostlyMovementV, GlassPierceIV]
-        elif self._companion_level <= 40:
-            return [DeadlyVenomIV, GhostlyMovementIV, GlassPierceIV]
-        elif self._companion_level <= 35:
-            return [DeadlyVenomIV, GhostlyMovementIII, GlassPierceIV]
-        elif self._companion_level <= 30:
-            return [DeadlyVenomIV, GhostlyMovementIII, GlassPierceIII]
-        elif self._companion_level <= 25:
-            return [DeadlyVenomIII, GhostlyMovementIII, GlassPierceIII]
-        elif self._companion_level <= 20:
-            return [DeadlyVenomIII, GhostlyMovementII, GlassPierceII]
-        elif self._companion_level <= 15:
-            return [DeadlyVenomII, GhostlyMovementII, GlassPierceI]
-        elif self._companion_level <= 10:
-            return [DeadlyVenomII, GhostlyMovementI]
-        elif self._companion_level <= 5:
-            return [DeadlyVenomI]
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [DeadlyVenomV(), GhostlyMovementV(), GlassPierceV()]
+        elif self._companion_level >= 45:
+            return [DeadlyVenomV(), GhostlyMovementV(), GlassPierceIV()]
+        elif self._companion_level >= 40:
+            return [DeadlyVenomIV(), GhostlyMovementIV(), GlassPierceIV()]
+        elif self._companion_level >= 35:
+            return [DeadlyVenomIV(), GhostlyMovementIII(), GlassPierceIV()]
+        elif self._companion_level >= 30:
+            return [DeadlyVenomIV(), GhostlyMovementIII(), GlassPierceIII()]
+        elif self._companion_level >= 25:
+            return [DeadlyVenomIII(), GhostlyMovementIII(), GlassPierceIII()]
+        elif self._companion_level >= 20:
+            return [DeadlyVenomIII(), GhostlyMovementII(), GlassPierceII()]
+        elif self._companion_level >= 15:
+            return [DeadlyVenomII(), GhostlyMovementII(), GlassPierceI()]
+        elif self._companion_level >= 10:
+            return [DeadlyVenomII(), GhostlyMovementI()]
+        elif self._companion_level >= 5:
+            return [DeadlyVenomI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

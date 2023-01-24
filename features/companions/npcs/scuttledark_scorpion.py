@@ -1,13 +1,15 @@
-from pstats import Stats
+from typing import List
 from uuid import uuid4
 from features.companions.abilities import GraspingClawsI, GraspingClawsII, GraspingClawsIII, GraspingClawsIV, GraspingClawsV, IntoTheShadowsI, IntoTheShadowsII, IntoTheShadowsIII, IntoTheShadowsIV, IntoTheShadowsV, PowerfulPierceI, PowerfulPierceII, PowerfulPierceIII, PowerfulPierceIV, PowerfulPierceV
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
+from features.shared.ability import Ability
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class ScuttledarkScorpion(NPC):
@@ -44,34 +46,35 @@ class ScuttledarkScorpion(NPC):
         self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.ScorpionClaws))
 
         self._expertise.update_stats(self.get_combined_attributes())
-
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [PowerfulPierceV, IntoTheShadowsV, GraspingClawsV]
-        elif self._companion_level <= 45:
-            return [PowerfulPierceV, IntoTheShadowsV, GraspingClawsIV]
-        elif self._companion_level <= 40:
-            return [PowerfulPierceIV, IntoTheShadowsIV, GraspingClawsIV]
-        elif self._companion_level <= 35:
-            return [PowerfulPierceIV, IntoTheShadowsIII, GraspingClawsIV]
-        elif self._companion_level <= 30:
-            return [PowerfulPierceIV, IntoTheShadowsIII, GraspingClawsIII]
-        elif self._companion_level <= 25:
-            return [PowerfulPierceIII, IntoTheShadowsIII, GraspingClawsIII]
-        elif self._companion_level <= 20:
-            return [PowerfulPierceIII, IntoTheShadowsII, GraspingClawsII]
-        elif self._companion_level <= 15:
-            return [PowerfulPierceII, IntoTheShadowsII, GraspingClawsI]
-        elif self._companion_level <= 10:
-            return [PowerfulPierceII, IntoTheShadowsI]
-        elif self._companion_level <= 5:
-            return [PowerfulPierceI]
+    
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [PowerfulPierceV(), IntoTheShadowsV(), GraspingClawsV()]
+        elif self._companion_level >= 45:
+            return [PowerfulPierceV(), IntoTheShadowsV(), GraspingClawsIV()]
+        elif self._companion_level >= 40:
+            return [PowerfulPierceIV(), IntoTheShadowsIV(), GraspingClawsIV()]
+        elif self._companion_level >= 35:
+            return [PowerfulPierceIV(), IntoTheShadowsIII(), GraspingClawsIV()]
+        elif self._companion_level >= 30:
+            return [PowerfulPierceIV(), IntoTheShadowsIII(), GraspingClawsIII()]
+        elif self._companion_level >= 25:
+            return [PowerfulPierceIII(), IntoTheShadowsIII(), GraspingClawsIII()]
+        elif self._companion_level >= 20:
+            return [PowerfulPierceIII(), IntoTheShadowsII(), GraspingClawsII()]
+        elif self._companion_level >= 15:
+            return [PowerfulPierceII(), IntoTheShadowsII(), GraspingClawsI()]
+        elif self._companion_level >= 10:
+            return [PowerfulPierceII(), IntoTheShadowsI()]
+        elif self._companion_level >= 5:
+            return [PowerfulPierceI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

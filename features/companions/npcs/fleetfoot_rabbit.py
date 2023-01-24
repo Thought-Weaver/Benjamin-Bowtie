@@ -1,13 +1,15 @@
-from pstats import Stats
 from uuid import uuid4
+from typing import List
 from features.companions.abilities import FleeI, FleeII, FleeIII, FleeIV, FleeV, PummelI, PummelII, PummelIII, PummelIV, PummelV, WhatLuckI, WhatLuckII, WhatLuckIII, WhatLuckIV, WhatLuckV
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class FleetfootRabbit(NPC):
@@ -45,33 +47,34 @@ class FleetfootRabbit(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [FleeV, WhatLuckV, PummelV]
-        elif self._companion_level <= 45:
-            return [FleeV, WhatLuckV, PummelIV]
-        elif self._companion_level <= 40:
-            return [FleeIV, WhatLuckIV, PummelIV]
-        elif self._companion_level <= 35:
-            return [FleeIV, WhatLuckIII, PummelIV]
-        elif self._companion_level <= 30:
-            return [FleeIV, WhatLuckIII, PummelIII]
-        elif self._companion_level <= 25:
-            return [FleeIII, WhatLuckIII, PummelIII]
-        elif self._companion_level <= 20:
-            return [FleeIII, WhatLuckII, PummelII]
-        elif self._companion_level <= 15:
-            return [FleeII, WhatLuckII, PummelI]
-        elif self._companion_level <= 10:
-            return [FleeII, WhatLuckI]
-        elif self._companion_level <= 5:
-            return [FleeI]
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [FleeV(), WhatLuckV(), PummelV()]
+        elif self._companion_level >= 45:
+            return [FleeV(), WhatLuckV(), PummelIV()]
+        elif self._companion_level >= 40:
+            return [FleeIV(), WhatLuckIV(), PummelIV()]
+        elif self._companion_level >= 35:
+            return [FleeIV(), WhatLuckIII(), PummelIV()]
+        elif self._companion_level >= 30:
+            return [FleeIV(), WhatLuckIII(), PummelIII()]
+        elif self._companion_level >= 25:
+            return [FleeIII(), WhatLuckIII(), PummelIII()]
+        elif self._companion_level >= 20:
+            return [FleeIII(), WhatLuckII(), PummelII()]
+        elif self._companion_level >= 15:
+            return [FleeII(), WhatLuckII(), PummelI()]
+        elif self._companion_level >= 10:
+            return [FleeII(), WhatLuckI()]
+        elif self._companion_level >= 5:
+            return [FleeI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

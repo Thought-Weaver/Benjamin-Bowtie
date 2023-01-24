@@ -1,13 +1,15 @@
-from pstats import Stats
 from uuid import uuid4
+from typing import List
 from features.companions.abilities import DiveI, DiveII, DiveIII, DiveIV, DiveV, PeckPeckPeckI, PeckPeckPeckII, PeckPeckPeckIII, PeckPeckPeckIV, PeckPeckPeckV, ShriekingCawI, ShriekingCawII, ShriekingCawIII, ShriekingCawIV, ShriekingCawV
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class WanderboundRaven(NPC):
@@ -45,33 +47,34 @@ class WanderboundRaven(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [ShriekingCawV, PeckPeckPeckV, DiveV]
-        elif self._companion_level <= 45:
-            return [ShriekingCawV, PeckPeckPeckV, DiveIV]
-        elif self._companion_level <= 40:
-            return [ShriekingCawIV, PeckPeckPeckIV, DiveIV]
-        elif self._companion_level <= 35:
-            return [ShriekingCawIV, PeckPeckPeckIII, DiveIV]
-        elif self._companion_level <= 30:
-            return [ShriekingCawIV, PeckPeckPeckIII, DiveIII]
-        elif self._companion_level <= 25:
-            return [ShriekingCawIII, PeckPeckPeckIII, DiveIII]
-        elif self._companion_level <= 20:
-            return [ShriekingCawIII, PeckPeckPeckII, DiveII]
-        elif self._companion_level <= 15:
-            return [ShriekingCawII, PeckPeckPeckII, DiveI]
-        elif self._companion_level <= 10:
-            return [ShriekingCawII, PeckPeckPeckI]
-        elif self._companion_level <= 5:
-            return [ShriekingCawI]
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [ShriekingCawV(), PeckPeckPeckV(), DiveV()]
+        elif self._companion_level >= 45:
+            return [ShriekingCawV(), PeckPeckPeckV(), DiveIV()]
+        elif self._companion_level >= 40:
+            return [ShriekingCawIV(), PeckPeckPeckIV(), DiveIV()]
+        elif self._companion_level >= 35:
+            return [ShriekingCawIV(), PeckPeckPeckIII(), DiveIV()]
+        elif self._companion_level >= 30:
+            return [ShriekingCawIV(), PeckPeckPeckIII(), DiveIII()]
+        elif self._companion_level >= 25:
+            return [ShriekingCawIII(), PeckPeckPeckIII(), DiveIII()]
+        elif self._companion_level >= 20:
+            return [ShriekingCawIII(), PeckPeckPeckII(), DiveII()]
+        elif self._companion_level >= 15:
+            return [ShriekingCawII(), PeckPeckPeckII(), DiveI()]
+        elif self._companion_level >= 10:
+            return [ShriekingCawII(), PeckPeckPeckI()]
+        elif self._companion_level >= 5:
+            return [ShriekingCawI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

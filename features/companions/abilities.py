@@ -1,13 +1,15 @@
+from __future__ import annotations
+
 from math import ceil
 import random
 from features.expertise import Attribute, ExpertiseClass
 from features.shared.ability import Ability, NegativeAbilityResult
 
-from typing import List, TYPE_CHECKING
 from features.shared.constants import BLEED_PERCENT_HP, DEX_DMG_SCALE, DEX_DODGE_SCALE, INT_DMG_SCALE, LCK_DMG_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, POISONED_PERCENT_HP, STR_DMG_SCALE
 from features.shared.effect import EffectType, ItemEffectCategory
-
 from features.shared.statuseffect import AttackingChanceToApplyStatus, AttrBuffOnDamage, Bleeding, BonusDamageOnAttack, Charmed, ConBuff, ConDebuff, DexBuff, DexDebuff, DmgDebuff, DmgReduction, DmgReflect, LckBuff, LckDebuff, Marked, Poisoned, RegenerateHP, Sleeping, StackingDamage, StatusEffectKey, StrBuff, StrDebuff, TurnSkipChance, Undying
+
+from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.npcs.npc import NPC
     from features.player import Player

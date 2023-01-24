@@ -1,13 +1,15 @@
-from pstats import Stats
+from typing import List
 from uuid import uuid4
 from features.companions.abilities import IntoTheShadowsI, IntoTheShadowsII, IntoTheShadowsIII, IntoTheShadowsIV, IntoTheShadowsV, LuckyPawsI, LuckyPawsII, LuckyPawsIII, LuckyPawsIV, LuckyPawsV, StrikeFromBehindI, StrikeFromBehindII, StrikeFromBehindIII, StrikeFromBehindIV, StrikeFromBehindV
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
+from features.shared.ability import Ability
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class ShadowfootRaccoon(NPC):
@@ -45,33 +47,34 @@ class ShadowfootRaccoon(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [StrikeFromBehindV, LuckyPawsV, IntoTheShadowsV]
-        elif self._companion_level <= 45:
-            return [StrikeFromBehindV, LuckyPawsV, IntoTheShadowsIV]
-        elif self._companion_level <= 40:
-            return [StrikeFromBehindIV, LuckyPawsIV, IntoTheShadowsIV]
-        elif self._companion_level <= 35:
-            return [StrikeFromBehindIV, LuckyPawsIII, IntoTheShadowsIV]
-        elif self._companion_level <= 30:
-            return [StrikeFromBehindIV, LuckyPawsIII, IntoTheShadowsIII]
-        elif self._companion_level <= 25:
-            return [StrikeFromBehindIII, LuckyPawsIII, IntoTheShadowsIII]
-        elif self._companion_level <= 20:
-            return [StrikeFromBehindIII, LuckyPawsII, IntoTheShadowsII]
-        elif self._companion_level <= 15:
-            return [StrikeFromBehindII, LuckyPawsII, IntoTheShadowsI]
-        elif self._companion_level <= 10:
-            return [StrikeFromBehindII, LuckyPawsI]
-        elif self._companion_level <= 5:
-            return [StrikeFromBehindI]
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [StrikeFromBehindV(), LuckyPawsV(), IntoTheShadowsV()]
+        elif self._companion_level >= 45:
+            return [StrikeFromBehindV(), LuckyPawsV(), IntoTheShadowsIV()]
+        elif self._companion_level >= 40:
+            return [StrikeFromBehindIV(), LuckyPawsIV(), IntoTheShadowsIV()]
+        elif self._companion_level >= 35:
+            return [StrikeFromBehindIV(), LuckyPawsIII(), IntoTheShadowsIV()]
+        elif self._companion_level >= 30:
+            return [StrikeFromBehindIV(), LuckyPawsIII(), IntoTheShadowsIII()]
+        elif self._companion_level >= 25:
+            return [StrikeFromBehindIII(), LuckyPawsIII(), IntoTheShadowsIII()]
+        elif self._companion_level >= 20:
+            return [StrikeFromBehindIII(), LuckyPawsII(), IntoTheShadowsII()]
+        elif self._companion_level >= 15:
+            return [StrikeFromBehindII(), LuckyPawsII(), IntoTheShadowsI()]
+        elif self._companion_level >= 10:
+            return [StrikeFromBehindII(), LuckyPawsI()]
+        elif self._companion_level >= 5:
+            return [StrikeFromBehindI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

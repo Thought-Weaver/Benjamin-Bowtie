@@ -1,13 +1,15 @@
-from pstats import Stats
+from typing import List
 from uuid import uuid4
 from features.companions.abilities import DeflectionI, DeflectionII, DeflectionIII, DeflectionIV, DeflectionV, ShellterI, ShellterII, ShellterIII, ShellterIV, ShellterV, TerraspinI, TerraspinII, TerraspinIII, TerraspinIV, TerraspinV
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
+from features.shared.ability import Ability
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class SunbaskTurtle(NPC):
@@ -45,33 +47,34 @@ class SunbaskTurtle(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [DeflectionV, ShellterV, TerraspinV]
-        elif self._companion_level <= 45:
-            return [DeflectionV, ShellterV, TerraspinIV]
-        elif self._companion_level <= 40:
-            return [DeflectionIV, ShellterIV, TerraspinIV]
-        elif self._companion_level <= 35:
-            return [DeflectionIV, ShellterIII, TerraspinIV]
-        elif self._companion_level <= 30:
-            return [DeflectionIV, ShellterIII, TerraspinIII]
-        elif self._companion_level <= 25:
-            return [DeflectionIII, ShellterIII, TerraspinIII]
-        elif self._companion_level <= 20:
-            return [DeflectionIII, ShellterII, TerraspinII]
-        elif self._companion_level <= 15:
-            return [DeflectionII, ShellterII, TerraspinI]
-        elif self._companion_level <= 10:
-            return [DeflectionII, ShellterI]
-        elif self._companion_level <= 5:
-            return [DeflectionI]
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [DeflectionV(), ShellterV(), TerraspinV()]
+        elif self._companion_level >= 45:
+            return [DeflectionV(), ShellterV(), TerraspinIV()]
+        elif self._companion_level >= 40:
+            return [DeflectionIV(), ShellterIV(), TerraspinIV()]
+        elif self._companion_level >= 35:
+            return [DeflectionIV(), ShellterIII(), TerraspinIV()]
+        elif self._companion_level >= 30:
+            return [DeflectionIV(), ShellterIII(), TerraspinIII()]
+        elif self._companion_level >= 25:
+            return [DeflectionIII(), ShellterIII(), TerraspinIII()]
+        elif self._companion_level >= 20:
+            return [DeflectionIII(), ShellterII(), TerraspinII()]
+        elif self._companion_level >= 15:
+            return [DeflectionII(), ShellterII(), TerraspinI()]
+        elif self._companion_level >= 10:
+            return [DeflectionII(), ShellterI()]
+        elif self._companion_level >= 5:
+            return [DeflectionI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

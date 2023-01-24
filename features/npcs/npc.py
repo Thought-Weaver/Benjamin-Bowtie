@@ -27,6 +27,7 @@ class NPCRoles(StrEnum):
     RandomItemMerchant = "RandomItemMerchant"
     DuelingTrainer = "DuelingTrainer"
     Companion = "Companion"
+    CompanionMerchant = "CompanionMerchant"
 
 
 class NPCDuelingPersonas(StrEnum):

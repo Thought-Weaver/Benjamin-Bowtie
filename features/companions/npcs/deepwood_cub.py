@@ -1,13 +1,15 @@
-from pstats import Stats
 from uuid import uuid4
+from typing import List
 from features.companions.abilities import BearDownI, BearDownII, BearDownIII, BearDownIV, BearDownV, BulkEnduranceI, BulkEnduranceII, BulkEnduranceIII, BulkEnduranceIV, BulkEnduranceV, HibernateI, HibernateII, HibernateIII, HibernateIV, HibernateV
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class DeepwoodCub(NPC):
@@ -45,33 +47,34 @@ class DeepwoodCub(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [BearDownV, HibernateV, BulkEnduranceV]
-        elif self._companion_level <= 45:
-            return [BearDownV, HibernateV, BulkEnduranceIV]
-        elif self._companion_level <= 40:
-            return [BearDownIV, HibernateIV, BulkEnduranceIV]
-        elif self._companion_level <= 35:
-            return [BearDownIV, HibernateIII, BulkEnduranceIV]
-        elif self._companion_level <= 30:
-            return [BearDownIV, HibernateIII, BulkEnduranceIII]
-        elif self._companion_level <= 25:
-            return [BearDownIII, HibernateIII, BulkEnduranceIII]
-        elif self._companion_level <= 20:
-            return [BearDownIII, HibernateII, BulkEnduranceII]
-        elif self._companion_level <= 15:
-            return [BearDownII, HibernateII, BulkEnduranceI]
-        elif self._companion_level <= 10:
-            return [BearDownII, HibernateI]
-        elif self._companion_level <= 5:
-            return [BearDownI]
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [BearDownV(), HibernateV(), BulkEnduranceV()]
+        elif self._companion_level >= 45:
+            return [BearDownV(), HibernateV(), BulkEnduranceIV()]
+        elif self._companion_level >= 40:
+            return [BearDownIV(), HibernateIV(), BulkEnduranceIV()]
+        elif self._companion_level >= 35:
+            return [BearDownIV(), HibernateIII(), BulkEnduranceIV()]
+        elif self._companion_level >= 30:
+            return [BearDownIV(), HibernateIII(), BulkEnduranceIII()]
+        elif self._companion_level >= 25:
+            return [BearDownIII(), HibernateIII(), BulkEnduranceIII()]
+        elif self._companion_level >= 20:
+            return [BearDownIII(), HibernateII(), BulkEnduranceII()]
+        elif self._companion_level >= 15:
+            return [BearDownII(), HibernateII(), BulkEnduranceI()]
+        elif self._companion_level >= 10:
+            return [BearDownII(), HibernateI()]
+        elif self._companion_level >= 5:
+            return [BearDownI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

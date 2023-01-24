@@ -1,13 +1,15 @@
-from pstats import Stats
 from uuid import uuid4
+from typing import List
 from features.companions.abilities import BeetleBashI, BeetleBashII, BeetleBashIII, BeetleBashIV, BeetleBashV, PlatedArmorI, PlatedArmorII, PlatedArmorIII, PlatedArmorIV, PlatedArmorV, TowerStanceI, TowerStanceII, TowerStanceIII, TowerStanceIV, TowerStanceV
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class GiantTowerBeetle(NPC):
@@ -44,34 +46,35 @@ class GiantTowerBeetle(NPC):
         self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.TowerBeetleMandibles))
 
         self._expertise.update_stats(self.get_combined_attributes())
-
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [PlatedArmorV, TowerStanceV, BeetleBashV]
-        elif self._companion_level <= 45:
-            return [PlatedArmorV, TowerStanceV, BeetleBashIV]
-        elif self._companion_level <= 40:
-            return [PlatedArmorIV, TowerStanceIV, BeetleBashIV]
-        elif self._companion_level <= 35:
-            return [PlatedArmorIV, TowerStanceIII, BeetleBashIV]
-        elif self._companion_level <= 30:
-            return [PlatedArmorIV, TowerStanceIII, BeetleBashIII]
-        elif self._companion_level <= 25:
-            return [PlatedArmorIII, TowerStanceIII, BeetleBashIII]
-        elif self._companion_level <= 20:
-            return [PlatedArmorIII, TowerStanceII, BeetleBashII]
-        elif self._companion_level <= 15:
-            return [PlatedArmorII, TowerStanceII, BeetleBashI]
-        elif self._companion_level <= 10:
-            return [PlatedArmorII, TowerStanceI]
-        elif self._companion_level <= 5:
-            return [PlatedArmorI]
+    
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [PlatedArmorV(), TowerStanceV(), BeetleBashV()]
+        elif self._companion_level >= 45:
+            return [PlatedArmorV(), TowerStanceV(), BeetleBashIV()]
+        elif self._companion_level >= 40:
+            return [PlatedArmorIV(), TowerStanceIV(), BeetleBashIV()]
+        elif self._companion_level >= 35:
+            return [PlatedArmorIV(), TowerStanceIII(), BeetleBashIV()]
+        elif self._companion_level >= 30:
+            return [PlatedArmorIV(), TowerStanceIII(), BeetleBashIII()]
+        elif self._companion_level >= 25:
+            return [PlatedArmorIII(), TowerStanceIII(), BeetleBashIII()]
+        elif self._companion_level >= 20:
+            return [PlatedArmorIII(), TowerStanceII(), BeetleBashII()]
+        elif self._companion_level >= 15:
+            return [PlatedArmorII(), TowerStanceII(), BeetleBashI()]
+        elif self._companion_level >= 10:
+            return [PlatedArmorII(), TowerStanceI()]
+        elif self._companion_level >= 5:
+            return [PlatedArmorI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from features.companions.player_companions import PlayerCompanions
 
 from features.dueling import Dueling
 from features.equipment import Equipment
@@ -23,6 +24,7 @@ class Player():
         self._equipment: Equipment = Equipment()
         self._dueling: Dueling = Dueling()
         self._house: House = House()
+        self._companions: PlayerCompanions = PlayerCompanions(self.send_mail)
 
     def get_id(self):
         return self._id
@@ -40,6 +42,9 @@ class Player():
     def get_mailbox(self):
         return self._mailbox
 
+    def send_mail(self, mail: Mail):
+        self._mailbox.append(mail)
+
     def get_stats(self):
         return self._stats
 
@@ -55,6 +60,9 @@ class Player():
     def get_house(self):
         return self._house
 
+    def get_companions(self):
+        return self._companions
+
     def __getstate__(self):
         return self.__dict__
 
@@ -67,3 +75,4 @@ class Player():
         self._equipment = state.get("_equipment", Equipment())
         self._dueling = state.get("_dueling", Dueling())
         self._house = state.get("_house", House())
+        self._companions = state.get("_companions", PlayerCompanions(self.send_mail))

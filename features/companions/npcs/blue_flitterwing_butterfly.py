@@ -1,13 +1,15 @@
-from pstats import Stats
 from uuid import uuid4
+from typing import List
 from features.companions.abilities import InnervateI, InnervateII, InnervateIII, InnervateIV, InnervateV, MesmerizeI, MesmerizeII, MesmerizeIII, MesmerizeIV, MesmerizeV, WingbeatI, WingbeatII, WingbeatIII, WingbeatIV, WingbeatV
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class BlueFlitterwingButterfly(NPC):
@@ -45,33 +47,34 @@ class BlueFlitterwingButterfly(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [MesmerizeV, InnervateV, WingbeatV]
-        elif self._companion_level <= 45:
-            return [MesmerizeV, InnervateV, WingbeatIV]
-        elif self._companion_level <= 40:
-            return [MesmerizeIV, InnervateIV, WingbeatIV]
-        elif self._companion_level <= 35:
-            return [MesmerizeIV, InnervateIII, WingbeatIV]
-        elif self._companion_level <= 30:
-            return [MesmerizeIV, InnervateIII, WingbeatIII]
-        elif self._companion_level <= 25:
-            return [MesmerizeIII, InnervateIII, WingbeatIII]
-        elif self._companion_level <= 20:
-            return [MesmerizeIII, InnervateII, WingbeatII]
-        elif self._companion_level <= 15:
-            return [MesmerizeII, InnervateII, WingbeatI]
-        elif self._companion_level <= 10:
-            return [MesmerizeII, InnervateI]
-        elif self._companion_level <= 5:
-            return [MesmerizeI]
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [MesmerizeV(), InnervateV(), WingbeatV()]
+        elif self._companion_level >= 45:
+            return [MesmerizeV(), InnervateV(), WingbeatIV()]
+        elif self._companion_level >= 40:
+            return [MesmerizeIV(), InnervateIV(), WingbeatIV()]
+        elif self._companion_level >= 35:
+            return [MesmerizeIV(), InnervateIII(), WingbeatIV()]
+        elif self._companion_level >= 30:
+            return [MesmerizeIV(), InnervateIII(), WingbeatIII()]
+        elif self._companion_level >= 25:
+            return [MesmerizeIII(), InnervateIII(), WingbeatIII()]
+        elif self._companion_level >= 20:
+            return [MesmerizeIII(), InnervateII(), WingbeatII()]
+        elif self._companion_level >= 15:
+            return [MesmerizeII(), InnervateII(), WingbeatI()]
+        elif self._companion_level >= 10:
+            return [MesmerizeII(), InnervateI()]
+        elif self._companion_level >= 5:
+            return [MesmerizeI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

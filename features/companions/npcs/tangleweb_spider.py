@@ -1,13 +1,15 @@
-from pstats import Stats
+from typing import List
 from uuid import uuid4
 from features.companions.abilities import CraftWebI, CraftWebII, CraftWebIII, CraftWebIV, CraftWebV, PatientStrikeI, PatientStrikeII, PatientStrikeIII, PatientStrikeIV, PatientStrikeV, WrapTheMealI, WrapTheMealII, WrapTheMealIII, WrapTheMealIV, WrapTheMealV
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
+from features.shared.ability import Ability
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class TanglewebSpider(NPC):
@@ -45,33 +47,34 @@ class TanglewebSpider(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [PatientStrikeV, CraftWebV, WrapTheMealV]
-        elif self._companion_level <= 45:
-            return [PatientStrikeV, CraftWebV, WrapTheMealIV]
-        elif self._companion_level <= 40:
-            return [PatientStrikeIV, CraftWebIV, WrapTheMealIV]
-        elif self._companion_level <= 35:
-            return [PatientStrikeIV, CraftWebIII, WrapTheMealIV]
-        elif self._companion_level <= 30:
-            return [PatientStrikeIV, CraftWebIII, WrapTheMealIII]
-        elif self._companion_level <= 25:
-            return [PatientStrikeIII, CraftWebIII, WrapTheMealIII]
-        elif self._companion_level <= 20:
-            return [PatientStrikeIII, CraftWebII, WrapTheMealII]
-        elif self._companion_level <= 15:
-            return [PatientStrikeII, CraftWebII, WrapTheMealI]
-        elif self._companion_level <= 10:
-            return [PatientStrikeII, CraftWebI]
-        elif self._companion_level <= 5:
-            return [PatientStrikeI]
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [PatientStrikeV(), CraftWebV(), WrapTheMealV()]
+        elif self._companion_level >= 45:
+            return [PatientStrikeV(), CraftWebV(), WrapTheMealIV()]
+        elif self._companion_level >= 40:
+            return [PatientStrikeIV(), CraftWebIV(), WrapTheMealIV()]
+        elif self._companion_level >= 35:
+            return [PatientStrikeIV(), CraftWebIII(), WrapTheMealIV()]
+        elif self._companion_level >= 30:
+            return [PatientStrikeIV(), CraftWebIII(), WrapTheMealIII()]
+        elif self._companion_level >= 25:
+            return [PatientStrikeIII(), CraftWebIII(), WrapTheMealIII()]
+        elif self._companion_level >= 20:
+            return [PatientStrikeIII(), CraftWebII(), WrapTheMealII()]
+        elif self._companion_level >= 15:
+            return [PatientStrikeII(), CraftWebII(), WrapTheMealI()]
+        elif self._companion_level >= 10:
+            return [PatientStrikeII(), CraftWebI()]
+        elif self._companion_level >= 5:
+            return [PatientStrikeI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()

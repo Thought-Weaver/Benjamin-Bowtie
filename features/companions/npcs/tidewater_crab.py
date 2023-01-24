@@ -1,4 +1,4 @@
-from pstats import Stats
+from typing import List
 from uuid import uuid4
 from features.companions.abilities import PINCHI, PINCHII, PINCHIII, PINCHIV, PINCHV, MiniCrabnadoI, MiniCrabnadoII, MiniCrabnadoIII, MiniCrabnadoIV, MiniCrabnadoV, ScuttleI, ScuttleII, ScuttleIII, ScuttleIV, ScuttleV
 from features.dueling import Dueling
@@ -6,8 +6,10 @@ from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.stats import Stats
 
 
 class TidewaterCrab(NPC):
@@ -45,33 +47,34 @@ class TidewaterCrab(NPC):
 
         self._expertise.update_stats(self.get_combined_attributes())
 
-    def get_abilities_for_level(self):
-        if self._companion_level <= 50:
-            return [PINCHV, ScuttleV, MiniCrabnadoV]
-        elif self._companion_level <= 45:
-            return [PINCHV, ScuttleV, MiniCrabnadoIV]
-        elif self._companion_level <= 40:
-            return [PINCHIV, ScuttleIV, MiniCrabnadoIV]
-        elif self._companion_level <= 35:
-            return [PINCHIV, ScuttleIII, MiniCrabnadoIV]
-        elif self._companion_level <= 30:
-            return [PINCHIV, ScuttleIII, MiniCrabnadoIII]
-        elif self._companion_level <= 25:
-            return [PINCHIII, ScuttleIII, MiniCrabnadoIII]
-        elif self._companion_level <= 20:
-            return [PINCHIII, ScuttleII, MiniCrabnadoII]
-        elif self._companion_level <= 15:
-            return [PINCHII, ScuttleII, MiniCrabnadoI]
-        elif self._companion_level <= 10:
-            return [PINCHII, ScuttleI]
-        elif self._companion_level <= 5:
-            return [PINCHI]
+    def get_abilities_for_level(self) -> List[Ability]:
+        if self._companion_level >= 50:
+            return [PINCHV(), ScuttleV(), MiniCrabnadoV()]
+        elif self._companion_level >= 45:
+            return [PINCHV(), ScuttleV(), MiniCrabnadoIV()]
+        elif self._companion_level >= 40:
+            return [PINCHIV(), ScuttleIV(), MiniCrabnadoIV()]
+        elif self._companion_level >= 35:
+            return [PINCHIV(), ScuttleIII(), MiniCrabnadoIV()]
+        elif self._companion_level >= 30:
+            return [PINCHIV(), ScuttleIII(), MiniCrabnadoIII()]
+        elif self._companion_level >= 25:
+            return [PINCHIII(), ScuttleIII(), MiniCrabnadoIII()]
+        elif self._companion_level >= 20:
+            return [PINCHIII(), ScuttleII(), MiniCrabnadoII()]
+        elif self._companion_level >= 15:
+            return [PINCHII(), ScuttleII(), MiniCrabnadoI()]
+        elif self._companion_level >= 10:
+            return [PINCHII(), ScuttleI()]
+        elif self._companion_level >= 5:
+            return [PINCHI()]
+        return []
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = self.get_abilities_for_level()
 
     def _setup_npc_params(self):
         self._setup_inventory()
