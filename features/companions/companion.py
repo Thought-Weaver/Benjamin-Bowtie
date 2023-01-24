@@ -29,10 +29,9 @@ from features.shared.attributes import Attributes
 from features.shared.effect import EffectType, ItemEffectCategory
 from features.shared.enums import ClassTag
 from features.shared.item import ItemKey, Rarity
+from features.shared.statuseffect import StatusEffectKey
 
 from typing import TYPE_CHECKING, List
-
-from features.shared.statuseffect import StatusEffectKey
 if TYPE_CHECKING:
     from features.shared.ability import Ability
     from features.shared.effect import Effect
