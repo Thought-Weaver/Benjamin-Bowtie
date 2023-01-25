@@ -8,8 +8,9 @@ from discord.embeds import Embed
 from discord.ext import commands
 from enum import StrEnum
 
-from features.companions.companion import COMPANION_FEEDING_POINTS, COMPANION_NAMING_POINTS, COMPANION_PREFERRED_FOOD_BONUS_POINTS, Companion, CompanionKey, CompanionTier
 from features.mail import Mail
+from features.shared.constants import COMPANION_FEEDING_POINTS, COMPANION_NAMING_POINTS, COMPANION_PREFERRED_FOOD_BONUS_POINTS
+from features.shared.enums import CompanionKey, CompanionTier
 from features.shared.item import LOADED_ITEMS, Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -17,6 +18,7 @@ from features.shared.prevbutton import PrevButton
 from typing import TYPE_CHECKING, Callable, Dict, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
+    from features.companions.companion import Companion
     from features.player import Player
 
 # -----------------------------------------------------------------------------
@@ -25,7 +27,7 @@ if TYPE_CHECKING:
 
 class NamingModal(discord.ui.Modal):
     def __init__(self, database: dict, guild_id: int, user: discord.User, companion: Companion | None, view: PlayerCompanionsView, message_id: int):
-        companion_name: str = companion.get_icon_and_name() if companion is not None else "?"
+        companion_name: str = companion.get_name() if companion is not None else "?"
 
         super().__init__(title=f"Rename {companion_name}")
 
@@ -51,8 +53,8 @@ class NamingModal(discord.ui.Modal):
             embed = Embed(
                 title="Companions",
                 description=
-                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._companion)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
-                "Navigate through your acquired companions companions using the Prev and Next buttons.\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._companion)}\n\n"
+                "Navigate through your companions using the Prev and Next buttons.\n\n"
                 f"*Error: No companion is selected!*"
             )
 
@@ -73,8 +75,8 @@ class NamingModal(discord.ui.Modal):
         embed = Embed(
             title="Companions",
             description=
-            f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._companion)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
-            "Navigate through your acquired companions companions using the Prev and Next buttons.\n\n"
+            f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._companion)}\n\n"
+            "Navigate through your companions using the Prev and Next buttons.\n\n"
             f"*Your companion has been renamed to {new_name}{additional_info}*"
         )
 
@@ -158,7 +160,7 @@ class ChooseButton(discord.ui.Button):
 
 class FeedButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"Feed", row=row)
+        super().__init__(style=discord.ButtonStyle.blurple, label=f"Feed", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -171,8 +173,8 @@ class FeedButton(discord.ui.Button):
 
 
 class InventoryButton(discord.ui.Button):
-    def __init__(self, item_index: int, item: Item):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=item_index, emoji=item.get_icon())
+    def __init__(self, item_index: int, item: Item, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{item.get_name_and_count()}", row=row, emoji=item.get_icon())
         
         self._item_index = item_index
         self._item = item
@@ -205,7 +207,7 @@ class FeedCompanionItemButton(discord.ui.Button):
 
 class NameCompanionButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"Rename", row=row)
+        super().__init__(style=discord.ButtonStyle.blurple, label=f"Rename", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -262,7 +264,7 @@ class PlayerCompanionsView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
 
     def get_initial_embed(self):
-        return Embed(title="Companions", description="Browse your acquired companions using the next and prev buttons.")
+        return Embed(title="Companions", description="Browse your companions using the next and prev buttons.")
 
     def _get_companions_page_buttons(self):
         self.clear_items()
@@ -274,6 +276,7 @@ class PlayerCompanionsView(discord.ui.View):
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, companion in enumerate(page_slots):
             self.add_item(CompanionButton(companion, i))
+
         if self._page != 0:
             self.add_item(PrevButton(min(self._NUM_PER_PAGE, len(page_slots))))
         if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
@@ -283,6 +286,7 @@ class PlayerCompanionsView(discord.ui.View):
             if companions.current_companion != self._selected_companion.get_key():
                 self.add_item(ChooseButton(min(self._NUM_PER_PAGE, len(page_slots))))
             self.add_item(FeedButton(min(self._NUM_PER_PAGE, len(page_slots))))
+            self.add_item(NameCompanionButton(min(self._NUM_PER_PAGE, len(page_slots))))
 
     def _display_companion_info(self):
         if self._selected_companion is None:
@@ -291,7 +295,7 @@ class PlayerCompanionsView(discord.ui.View):
             return Embed(
                 title="Companions",
                 description=(
-                    "Navigate through your acquired companions using the Prev and Next buttons.\n\n"
+                    "Navigate through your companions using the Prev and Next buttons.\n\n"
                     "*Error: Something about that companion changed or it's no longer available.*"
                 )
             )
@@ -299,14 +303,15 @@ class PlayerCompanionsView(discord.ui.View):
         return Embed(
             title="Companions",
             description=(
-                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._selected_companion)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
-                "Navigate through your acquired companions companions using the Prev and Next buttons."
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._selected_companion)}\n\n"
+                "Navigate through your companions using the Prev and Next buttons."
             )
         )
 
     def enter_companions(self):
         self._intent = Intent.Companions
 
+        self._page = 0
         self._selected_item = None
         self._selected_item_index = -1
 
@@ -314,7 +319,8 @@ class PlayerCompanionsView(discord.ui.View):
         return Embed(
             title="Companions",
             description=(
-                "Navigate through your acquired companions companions using the Prev and Next buttons."
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._selected_companion)}\n\n"
+                "Navigate through your companions using the Prev and Next buttons."
             )
         )
 
@@ -341,8 +347,8 @@ class PlayerCompanionsView(discord.ui.View):
         return Embed(
             title="Companions",
             description=(
-                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._selected_companion)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
-                "Navigate through your acquired companions companions using the Prev and Next buttons.\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._selected_companion)}\n\n"
+                "Navigate through your companions using the Prev and Next buttons.\n\n"
                 f"{message}"
             )
         )
@@ -360,7 +366,7 @@ class PlayerCompanionsView(discord.ui.View):
             page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
             for i, item in enumerate(page_slots):
                 exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
-                self.add_item(InventoryButton(exact_item_index, item))
+                self.add_item(InventoryButton(exact_item_index, item, i))
             if self._page != 0:
                 self.add_item(PrevButton(min(self._NUM_PER_PAGE, len(page_slots))))
             if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
@@ -373,6 +379,8 @@ class PlayerCompanionsView(discord.ui.View):
 
     def enter_feed(self):
         self._intent = Intent.Feed
+
+        self._page = 0
 
         self._get_inventory_buttons()
         return Embed(
@@ -477,6 +485,32 @@ class PlayerCompanionsView(discord.ui.View):
                 f"*{message}*"
             )
         )
+
+    def next_page(self):
+        self._page += 1
+        if self._intent == Intent.Companions:
+            self._selected_companion = None
+            self._get_companions_page_buttons()
+            return Embed(title="Companions", description="Navigate through your companions using the Prev and Next buttons.")
+        elif self._intent == Intent.Feed:
+            self._selected_item = None
+            self._selected_item_index = -1
+            self._get_inventory_buttons()
+            return Embed(title="Feed Item", description="Navigate through your items using the Prev and Next buttons.")
+        return Embed(title="Unknown")
+
+    def prev_page(self):
+        self._page = max(0, self._page - 1)
+        if self._intent == Intent.Companions:
+            self._selected_companion = None
+            self._get_companions_page_buttons()
+            return Embed(title="Companions", description="Navigate through your companions using the Prev and Next buttons.")
+        elif self._intent == Intent.Feed:
+            self._selected_item = None
+            self._selected_item_index = -1
+            self._get_inventory_buttons()
+            return Embed(title="Feed Item", description="Navigate through your items using the Prev and Next buttons.")
+        return Embed(title="Unknown")
 
     async def refresh(self, message_id: int, embed: Embed):
         self._get_companions_page_buttons()

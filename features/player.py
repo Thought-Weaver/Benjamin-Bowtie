@@ -1,6 +1,6 @@
 from __future__ import annotations
-from features.companions.player_companions import PlayerCompanions
 
+from features.companions.player_companions import PlayerCompanions
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise

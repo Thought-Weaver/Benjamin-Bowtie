@@ -12,6 +12,7 @@ from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
+from features.companions.player_companions import PlayerCompanionsView
 from features.dueling import GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
@@ -30,6 +31,7 @@ from features.npcs.copperbroad import Chef
 from features.npcs.galos import Galos
 from features.npcs.mrbones import Difficulty, MrBones
 from features.npcs.npc import NPCRoles
+from features.npcs.tiatha import Druid
 from features.npcs.viktor import RandomItemMerchant
 from features.npcs.yenna import Yenna
 from features.player import Player
@@ -84,7 +86,9 @@ class Adventures(commands.Cog):
                 self._database[guild_id_str]["npcs"][NPCRoles.Chef] = Chef()
             if self._database[guild_id_str]["npcs"].get(NPCRoles.RandomItemMerchant) is None:
                 self._database[guild_id_str]["npcs"][NPCRoles.RandomItemMerchant] = RandomItemMerchant()
-
+            if self._database[guild_id_str]["npcs"].get(NPCRoles.CompanionMerchant) is None:
+                self._database[guild_id_str]["npcs"][NPCRoles.CompanionMerchant] = Druid()
+        
         def validate_user_ids(guild_id_str: str):
             if self._database[guild_id_str].get("members") is None:
                 self._database[guild_id_str]["members"] = {}
@@ -1001,6 +1005,22 @@ class Adventures(commands.Cog):
         view = StorageView(self._bot, self._database, context.guild.id, context.author, None, context)
         embed = view.get_embed_for_intent()
         await context.send(embed=embed, view=view)
+
+    @commands.command(name="companions", help="See your acquired companions and interact with them", aliases=["pets"])
+    async def companions_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't visit your storage.")
+            return
+        
+        companions_view = PlayerCompanionsView(self._bot, self._database, context.guild.id, context.author, context)
+        embed = companions_view.get_initial_embed()
+        await context.send(embed=embed, view=companions_view)
 
 
 async def setup(bot: BenjaminBowtieBot):

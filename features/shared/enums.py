@@ -1,6 +1,10 @@
 from aenum import Enum, skip
 from strenum import StrEnum
 
+# -----------------------------------------------------------------------------
+# ITEM ENUMS
+# -----------------------------------------------------------------------------
+
 # Using aenum and @skip to create an Enum of StrEnums
 # As a result, there can't be any top-level keys
 class ClassTag(Enum):
@@ -91,3 +95,35 @@ class HouseRoom(StrEnum):
     Kitchen = "Kitchen"
     Garden = "Garden"
     Storage = "Storage"
+
+# -----------------------------------------------------------------------------
+# COMPANIONS ENUMS
+# -----------------------------------------------------------------------------
+
+class CompanionKey(StrEnum):
+    Unknown = "Unknown"
+    TidewaterCrab = "TidewaterCrab"
+    PondloverFrog = "PondloverFrog"
+    SunbaskTurtle = "SunbaskTurtle"
+    FlyingFox = "FlyingFox"
+    ShadowfootRaccoon = "ShadowfootRaccoon"
+    TanglewebSpider = "TanglewebSpider"
+    PaleWalkerSpider = "PaleWalkerSpider"
+    VerdantSlitherer = "VerdantSlitherer"
+    GnashtuskBoar = "GnashtuskBoar"
+    VoidseenCat = "VoidseenCat"
+    VoidseenPup = "VoidseenPup"
+    DeepwoodCub = "DeepwoodCub"
+    FleetfootRabbit = "FleetfootRabbit"
+    GiantTowerBeetle = "GiantTowerBeetle"
+    MinatureBoneGolem = "MiniatureBoneGolem"
+    SilverwingOwl = "SilverwingOwl"
+    BlueFlitterwingButterfly = "BlueFlitterwingButterfly"
+    ScuttledarkScorpion = "ScuttledarkScorpion"
+    WanderboundRaven = "WanderboundRaven"
+
+class CompanionTier(StrEnum):
+    NoTier = "NoTier"
+    Good = "Good"
+    Great = "Great"
+    Best = "Best"

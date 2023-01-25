@@ -5,11 +5,17 @@ import discord
 
 from discord import Embed
 from strenum import StrEnum
+
 from features.companions.companion import BlueFlitterwingButterflyCompanion, Companion, FleetfootRabbitCompanion, SunbaskTurtleCompanion, TanglewebSpiderCompanion, VerdantSlithererCompanion, WanderboundRavenCompanion
-from features.npcs.npc import NPCRoles
+from features.dueling import Dueling
+from features.equipment import Equipment
+from features.expertise import Expertise, ExpertiseClass
+from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
+from features.stats import Stats
 
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
@@ -213,7 +219,7 @@ class DruidView(discord.ui.View):
             title="Browse Wares",
             description=(
                 f"You have {player.get_inventory().get_coins_str()}.\n\n"
-                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n\n**Price: {actual_cost_str}**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n\n**Companion Price: {actual_cost_str}**\n\n"
                 "Navigate through available wares using the Prev and Next buttons."
             )
         )
@@ -311,7 +317,7 @@ class DruidView(discord.ui.View):
             title="Browse Companions",
             description=(
                 f"You have {player.get_inventory().get_coins_str()}.\n\n"
-                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._selected_companion)}\n\n**Price: {actual_cost_str}**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
+                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_companion.__str__(True)}\n\n**Price: {actual_cost_str}**\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
                 "Navigate through available companions using the Prev and Next buttons."
             )
         )
@@ -328,7 +334,7 @@ class DruidView(discord.ui.View):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
         companions: PlayerCompanions = player.get_companions()
-        all_slots = list(filter(lambda c: c not in companions.companions.keys(), self._companions))
+        all_slots = list(filter(lambda c: c.get_key() not in companions.companions.keys(), self._companions))
 
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, companion in enumerate(page_slots):
@@ -449,3 +455,102 @@ class DruidView(discord.ui.View):
 
     def get_user(self):
         return self._user
+
+# -----------------------------------------------------------------------------
+# NPC CLASS
+# -----------------------------------------------------------------------------
+
+class Druid(NPC):
+    def __init__(self):
+        super().__init__("Tiatha", NPCRoles.CompanionMerchant, NPCDuelingPersonas.Mage, {})
+
+        self._setup_npc_params()
+
+    def _setup_inventory(self):
+        if self._inventory is None:
+            self._inventory = Inventory()
+
+        items_to_add = []
+
+        self._inventory.add_coins(500)
+        for item in items_to_add:
+            self._inventory.add_item(item)
+
+    def _setup_xp(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
+        self._expertise.add_xp_to_class(35200, ExpertiseClass.Fisher, self._equipment) # Level 30
+        self._expertise.add_xp_to_class(7000, ExpertiseClass.Guardian, self._equipment) # Level 15
+        self._expertise.add_xp_to_class(15000, ExpertiseClass.Alchemist, self._equipment) # Level 25
+
+        self._expertise.points_to_spend = 0
+        
+        self._expertise.constitution = 30
+        self._expertise.intelligence = 20
+        self._expertise.dexterity = 10
+        self._expertise.strength = 0
+        self._expertise.luck = 5
+        self._expertise.memory = 5
+
+    def _setup_equipment(self):
+        if self._expertise is None:
+            self._expertise = Expertise()
+        if self._equipment is None:
+            self._equipment = Equipment()
+
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.LeatherHelmet))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.LeatherGloves))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.LeatherJerkin))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.LeatherLeggings))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.LeatherBoots))
+
+        self._expertise.update_stats(self.get_combined_attributes())
+
+    def _setup_abilities(self):
+        if self._dueling is None:
+            self._dueling = Dueling()
+        
+        self._dueling.abilities = []
+
+    def _setup_npc_params(self):
+        self._setup_inventory()
+        self._setup_equipment()
+        self._setup_xp()
+        self._setup_abilities()
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self._id = state.get("_id", str(uuid4()))
+        self._name = "Tiatha"
+        self._role = NPCRoles.CompanionMerchant
+        self._dueling_persona = NPCDuelingPersonas.Mage
+        self._dueling_rewards = {}
+        
+        self._inventory: Inventory | None = state.get("_inventory")
+        if self._inventory is None:
+            self._inventory = Inventory()
+            self._setup_inventory()
+
+        self._equipment: Equipment | None = state.get("_equipment")
+        if self._equipment is None:
+            self._equipment = Equipment()
+            self._setup_equipment()
+
+        self._expertise: Expertise | None = state.get("_expertise")
+        if self._expertise is None:
+            self._expertise = Expertise()
+            self._setup_xp()
+
+        self._dueling: Dueling | None = state.get("_dueling")
+        if self._dueling is None:
+            self._dueling = Dueling()
+            self._setup_abilities()
+
+        self._stats: Stats | None = state.get("_stats")
+        if self._stats is None:
+            self._stats = Stats()

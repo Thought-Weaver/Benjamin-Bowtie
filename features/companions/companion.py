@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from math import ceil
-from strenum import StrEnum
 
 from features.companions.abilities import PINCHI, BearDownI, BeetleBashI, BouncingKickI, BulkEnduranceI, ChargeI, CoiledStrikeI, CraftWebI, DeadlyVenomI, DeflectionI, DiveI, EruptionOfBoneI, ExposeTummyI, FeathersFlyI, FleeI, GhostlyMovementI, GlassPierceI, GoreI, GraspingClawsI, GustI, HibernateI, HippityHopI, HypnoticGazeI, InnervateI, IntoTheShadowsI, IsThatAFlyI, LuckyPawsI, LungeI, ManaBurnI, ManaLeechI, ManaLeechII, ManaLeechIII, ManaLeechIV, ManaLeechV, MesmerizeI, MightOfTheVoidI, MightyBoneFistI, MiniCrabnadoI, MysticShroudI, PatientStrikeI, PeckPeckPeckI, PlatedArmorI, PowerfulPierceI, PummelI, RecklessBiteI, ScuttleI, ShellterI, ShriekingCawI, SiphoningSwipeI, StrikeFromBehindI, TerraspinI, TheDarkBarkI, ThickHideI, ToTheSkiesI, TowerStanceI, ToxungenI, UndeathIsJustTheBeginningI, WhatLuckI, WingbeatI, WithTheWindI, WrapTheMealI, QuickeningPaceV, QuickeningPaceIV, QuickeningPaceIII, QuickeningPaceII, QuickeningPaceI, ToweringArmorV, ToweringArmorIV, ToweringArmorIII, ToweringArmorII, ToweringArmorI, ThrowTheBonesV, ThrowTheBonesIV, ThrowTheBonesIII, ThrowTheBonesII, ThrowTheBonesI, VenomousBiteV, VenomousBiteIV, VenomousBiteIII, VenomousBiteII, VenomousBiteI, IsThatAFlyV, IsThatAFlyIV, IsThatAFlyIII, IsThatAFlyII, SneakyManeuversV, SneakyManeuversIV, SneakyManeuversIII, SneakyManeuversII, SneakyManeuversI, WebShotV, WebShotIV, WebShotIII, WebShotII, WebShotI, PINCHV, PINCHIV, PINCHIII, PINCHII, MightOfTheVoidV, MightOfTheVoidIV, MightOfTheVoidIII, MightOfTheVoidII
 from features.companions.npcs.blue_flitterwing_butterfly import BlueFlitterwingButterfly
@@ -26,59 +25,15 @@ from features.companions.npcs.wanderbound_raven import WanderboundRaven
 
 from features.npcs.npc import NPC
 from features.shared.attributes import Attributes
-from features.shared.effect import EffectType, ItemEffectCategory
-from features.shared.enums import ClassTag
+from features.shared.constants import BASE_BEST_TIER_POINTS, BASE_GOOD_TIER_POINTS, BASE_GREAT_TIER_POINTS
+from features.shared.effect import Effect, EffectType, ItemEffectCategory
+from features.shared.enums import ClassTag, CompanionKey, CompanionTier
 from features.shared.item import ItemKey, Rarity
 from features.shared.statuseffect import StatusEffectKey
 
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from features.shared.ability import Ability
-    from features.shared.effect import Effect
-
-# -----------------------------------------------------------------------------
-# CONSTANTS
-# -----------------------------------------------------------------------------
-
-BASE_GOOD_TIER_POINTS = 50
-BASE_GREAT_TIER_POINTS = 500
-BASE_BEST_TIER_POINTS = 5000
-
-COMPANION_NAMING_POINTS = 25
-COMPANION_FEEDING_POINTS = 1
-COMPANION_PREFERRED_FOOD_BONUS_POINTS = 1
-
-# -----------------------------------------------------------------------------
-# ENUMS
-# -----------------------------------------------------------------------------
-
-class CompanionKey(StrEnum):
-    Unknown = "Unknown"
-    TidewaterCrab = "TidewaterCrab"
-    PondloverFrog = "PondloverFrog"
-    SunbaskTurtle = "SunbaskTurtle"
-    FlyingFox = "FlyingFox"
-    ShadowfootRaccoon = "ShadowfootRaccoon"
-    TanglewebSpider = "TanglewebSpider"
-    PaleWalkerSpider = "PaleWalkerSpider"
-    VerdantSlitherer = "VerdantSlitherer"
-    GnashtuskBoar = "GnashtuskBoar"
-    VoidseenCat = "VoidseenCat"
-    VoidseenPup = "VoidseenPup"
-    DeepwoodCub = "DeepwoodCub"
-    FleetfootRabbit = "FleetfootRabbit"
-    GiantTowerBeetle = "GiantTowerBeetle"
-    MinatureBoneGolem = "MiniatureBoneGolem"
-    SilverwingOwl = "SilverwingOwl"
-    BlueFlitterwingButterfly = "BlueFlitterwingButterfly"
-    ScuttledarkScorpion = "ScuttledarkScorpion"
-    WanderboundRaven = "WanderboundRaven"
-
-class CompanionTier(StrEnum):
-    NoTier = "NoTier"
-    Good = "Good"
-    Great = "Great"
-    Best = "Best"
 
 # -----------------------------------------------------------------------------
 # BASE CLASS
@@ -209,13 +164,15 @@ class Companion():
     def __str__(self, use_base_abilities=False) -> str:
         display_string = f"**{self.get_icon_and_name()}**\n*{self._rarity} Companion*\n\n"
 
-        display_string += f"Level: {self._level} *({self.get_xp_to_level(self._level + 1) - self._xp} xp to next)*\n\n"
+        display_string += f"Level: {self._level} *({self.get_xp_to_level(self._level + 1) - self._xp} xp to next)*\n"
+        display_string += f"{self.get_tier_str()} *({self.get_points_to_next_tier_str()})*\n\n"
         
+        dueling_ability = self.get_dueling_ability(effect_category=None)
         if self._has_active_ability:
             display_string += "**Active Dueling Ability**\n\n"
         else:
             display_string += "**Passive Dueling Ability**\n\n"
-        display_string += str(self.get_dueling_ability(effect_category=None)) + "\n\n"
+        display_string += "᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n" + str(dueling_ability) + "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
 
         pet_battle_entity = self.get_pet_battle_entity()
         expertise = pet_battle_entity.get_expertise()
@@ -226,7 +183,7 @@ class Companion():
             f"Dexterity: {expertise.dexterity}\n"
             f"Intelligence: {expertise.intelligence}\n"
             f"Luck: {expertise.luck}\n"
-            f"Memory: {expertise.memory}\n\n"
+            f"Memory: {expertise.memory}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
         )
 
         abilities = []
@@ -235,11 +192,11 @@ class Companion():
         else:
             abilities = pet_battle_entity.get_dueling().abilities
         
-        display_string += "**Abilities:**\n\n" + "\n".join([f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(ability)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" for ability in abilities]) + "\n\n"
+        display_string += "**Companion Battle Abilities**\n\n" + "\n".join([f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(ability)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" for ability in abilities]) + "\n\n"
 
         display_string += (
             f"**Weapon**\n\n"
-            f"{pet_battle_entity.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)}"
+            f"{pet_battle_entity.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
         )
 
         return display_string

@@ -29,3 +29,15 @@ MAX_GARDEN_SIZE = 4
 
 ARMOR_OVERLEVELED_DEBUFF = 0.15
 WEAPON_OVERLEVELED_DEBUFF = 0.15
+
+# -----------------------------------------------------------------------------
+# COMPANION CONSTANTS
+# -----------------------------------------------------------------------------
+
+BASE_GOOD_TIER_POINTS = 50
+BASE_GREAT_TIER_POINTS = 500
+BASE_BEST_TIER_POINTS = 5000
+
+COMPANION_NAMING_POINTS = 25
+COMPANION_FEEDING_POINTS = 1
+COMPANION_PREFERRED_FOOD_BONUS_POINTS = 1
