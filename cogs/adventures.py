@@ -12,6 +12,7 @@ from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
+from features.companions.companion import ShadowfootRaccoonCompanion, TidewaterCrabCompanion
 from features.companions.player_companions import PlayerCompanionsView
 from features.dueling import CompanionBattleView, GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
 from features.equipment import EquipmentView
@@ -36,7 +37,7 @@ from features.npcs.viktor import RandomItemMerchant
 from features.npcs.yenna import Yenna
 from features.player import Player
 from features.stats import StatCategory, StatView
-from features.shared.enums import ClassTag
+from features.shared.enums import ClassTag, CompanionKey
 from features.shared.item import Item, LOADED_ITEMS, ItemKey, Rarity
 from features.stories.forest import ForestStory
 from features.stories.ocean import OceanStory
@@ -331,12 +332,21 @@ class Adventures(commands.Cog):
             xp_to_add = 13
             player_stats.fish.epic_fish_caught += 1
         
+        companion_result_str: str = ""
+        if fishing_result is not None and fishing_result.get_key() == ItemKey.Crab and random.random() < 0.1:
+            companions = author_player.get_companions()
+            if CompanionKey.TidewaterCrab not in companions.companions.keys():
+                companions.companions[CompanionKey.TidewaterCrab] = TidewaterCrabCompanion()
+                companions.companions[CompanionKey.TidewaterCrab].set_id(author_player.get_id())
+                companion_result_str += "\n\nThis crab seems particularly friendly towards you! It's been added as a companion in b!companions."
+
         author_player.get_inventory().add_item(fishing_result)
         final_xp = player_xp.add_xp_to_class(xp_to_add, xp_class, author_player.get_equipment())
 
         description = "It's been added to your b!inventory."
         if final_xp > 0:
             description += f"\n\n*(+{final_xp} {xp_class} xp)*"
+        description += companion_result_str
 
         embed = Embed(
             title=f"You caught {fishing_result.get_full_name()} worth {fishing_result.get_value_str()}!",
@@ -604,10 +614,19 @@ class Adventures(commands.Cog):
 
         # 99.5% base chance of getting nothing
         if rand_val == 0:
+            companion_result_str: str = ""
+            if random.random() < 0.001:
+                companions = author_player.get_companions()
+                if CompanionKey.ShadowfootRaccoon not in companions.companions.keys():
+                    companions.companions[CompanionKey.ShadowfootRaccoon] = ShadowfootRaccoonCompanion()
+                    companions.companions[CompanionKey.ShadowfootRaccoon].set_id(author_player.get_id())
+                    companion_result_str += "\n\nBut just a moment later, there's a sound of shuffling and metal hitting metal, followed by a distinct scurrying and scrabbling up a cobblestone wall -- as out pops the head of a raccoon clutching your coin! Spotting you, it freezes, but seems to recognize that you might be the source of the money which has so often been tossed into the depths of the well. Curious, it approaches you and seems to want to follow! A new companion has been added to b!companions."
+
             embed = Embed(
                 title="You toss the coin in...",
-                description="It plummets into the darkness below and hits the bottom with a resounding clink."
+                description=f"It plummets into the darkness below and hits the bottom with a resounding clink.{companion_result_str}"
             )
+
             await context.send(embed=embed)
         # 0.21% base chance of getting 150 coins
         if rand_val == 1:
