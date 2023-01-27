@@ -13,7 +13,7 @@ from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
 from features.companions.player_companions import PlayerCompanionsView
-from features.dueling import GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
+from features.dueling import CompanionBattleView, GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
 from features.house.alchemy import AlchemyChamberView
@@ -51,6 +51,7 @@ if TYPE_CHECKING:
     from features.expertise import Expertise
     from features.inventory import Inventory
     from features.npcs.npc import NPC
+    from features.shared.ability import Ability
     from features.stats import Stats
 
 class Adventures(commands.Cog):
@@ -201,6 +202,16 @@ class Adventures(commands.Cog):
                 player_expertise.update_stats(player.get_combined_attributes())
                 player_expertise.hp = player_expertise.max_hp
                 player_expertise.mana = player_expertise.max_mana
+
+                companions = player.get_companions()
+                if companions.current_companion is not None:
+                    companion_ability = companions.companions[companions.current_companion].get_dueling_ability(effect_category=None)
+                    
+                    if isinstance(companion_ability, Ability):
+                        try:
+                            player.get_dueling().abilities.remove(companion_ability)
+                        except:
+                            pass
                 
                 player.get_stats().dueling.duels_fought += 1
                 player.get_stats().dueling.duels_tied += 1
@@ -1022,6 +1033,52 @@ class Adventures(commands.Cog):
         embed = companions_view.get_initial_embed()
         await context.send(embed=embed, view=companions_view)
 
+    @commands.command(name="companionbattle", help="Gather players to choose teams for a companion battle", aliases=["petbattle"])
+    async def group_duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+        assert(context.guild is not None)
+
+        if users is None:
+            await context.send("You need to @ a member to use b!companionbattle.")
+            return
+
+        if len(set(users)) != len(users):
+            await context.send("You can't @ another player multiple times in a single companion battle.")
+            return
+
+        if context.author in users:
+            await context.send("You can't challenge yourself to a companion battle.")
+            return
+            
+        if any(user.bot for user in users):
+            await context.send("You can't challenge a bot to a companion battle.")
+            return
+        
+        if len(users) != len(set(users)):
+            await context.send("You can't challenge a player more than once in a single companion battle.")
+            return
+            
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        for user in users:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't start a companion battle.")
+            return
+
+        challenged_players: List[Player] = [self._get_player(context.guild.id, user.id) for user in users]
+        if any(player.get_dueling().is_in_combat for player in challenged_players):
+            await context.send(f"At least one of those players is in a duel.")
+            return
+
+        if any(player.get_companions().current_companion is None for player in [self._get_player(context.guild.id, context.author.id), *challenged_players]):
+            await context.send(f"At least one of those players (or yourself) doesn't have a chosen companion.")
+            return
+
+        pvp_duel = CompanionBattleView(self._bot, self._database, context.guild.id, [context.author, *users])
+
+        await context.send(embed=pvp_duel.get_info_embed(), view=pvp_duel)
 
 async def setup(bot: BenjaminBowtieBot):
     await bot.add_cog(Adventures(bot))

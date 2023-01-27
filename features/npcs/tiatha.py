@@ -360,6 +360,8 @@ class DruidView(discord.ui.View):
             if inventory.get_coins() >= actual_value:
                 inventory.remove_coins(actual_value)
                 companions.companions[self._selected_companion.get_key()] = self._selected_companion.__class__() # type: ignore
+                companions.companions[self._selected_companion.get_key()].set_id(player.get_id())
+
                 self._get_companions_page_buttons()
 
                 return Embed(

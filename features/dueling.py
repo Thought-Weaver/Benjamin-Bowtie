@@ -192,10 +192,10 @@ class Dueling():
 
     # TODO: These functions aren't abstracted particularly well. I should be able to take some pieces from
     # those below and put them into helper functions to reduce code duplication.
-    def apply_on_successful_attack_or_ability_effects(self, item: Item, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, other_entity_index: int, damage_dealt: int) -> Tuple[int, str]:
+    def apply_on_successful_attack_or_ability_effects(self, item: Item | None, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, other_entity_index: int, damage_dealt: int, source_str: str) -> Tuple[int, str]:
         # Note: Not all effects are listed here, since not all make sense to trigger
         # in this scenario.
-        if not item_effect.meets_conditions(self_entity, item):
+        if item is not None and not item_effect.meets_conditions(self_entity, item):
             return (damage_dealt, "")
 
         if item_effect.effect_type == EffectType.CleanseStatusEffects:
@@ -208,18 +208,18 @@ class Dueling():
                 attr_mod = ConBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {source_str}")
         
         if item_effect.effect_type == EffectType.StrMod:
             attr_mod = None
@@ -227,18 +227,18 @@ class Dueling():
                 attr_mod = StrBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DexMod:
             attr_mod = None
@@ -246,18 +246,18 @@ class Dueling():
                 attr_mod = DexBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.IntMod:
             attr_mod = None
@@ -265,18 +265,18 @@ class Dueling():
                 attr_mod = IntBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.LckMod:
             attr_mod = None
@@ -284,18 +284,18 @@ class Dueling():
                 attr_mod = LckBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.MemMod:
             attr_mod = None
@@ -303,18 +303,18 @@ class Dueling():
                 attr_mod = MemBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DmgResist:
             status_effect = DmgReduction(
@@ -323,7 +323,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             self.status_effects.append(status_effect)
-            return (damage_dealt, "{0}" + f" is now {status_effect.name} from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" is now {status_effect.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DmgBuff:
             status_effect = None
@@ -331,45 +331,45 @@ class Dueling():
                 status_effect = DmgBuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 status_effect = DmgDebuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(status_effect)
-            return (damage_dealt, "{0}" + f" is now {status_effect.name} from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" is now {status_effect.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DmgBuffSelfMaxHealth:
             additional_dmg = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
             return (
                 damage_dealt + additional_dmg,
-                f"+{additional_dmg} damage from {item.get_full_name()}"
+                f"+{additional_dmg} damage from {source_str}"
             )
         
         if item_effect.effect_type == EffectType.DmgBuffSelfRemainingHealth:
             additional_dmg = int(item_effect.effect_value * self_entity.get_expertise().hp)
             return (
                 damage_dealt + additional_dmg,
-                f"+{additional_dmg} damage from {item.get_full_name()}"
+                f"+{additional_dmg} damage from {source_str}"
             )
 
         if item_effect.effect_type == EffectType.DmgBuffOtherMaxHealth:
             additional_dmg = int(item_effect.effect_value * other_entity.get_expertise().max_hp)
             return (
                 damage_dealt + additional_dmg,
-                f"+{additional_dmg} damage from {item.get_full_name()}"
+                f"+{additional_dmg} damage from {source_str}"
             )
         
         if item_effect.effect_type == EffectType.DmgBuffOtherRemainingHealth:
             additional_dmg = int(item_effect.effect_value * other_entity.get_expertise().hp)
             return (
                 damage_dealt + additional_dmg,
-                f"+{additional_dmg} damage from {item.get_full_name()}"
+                f"+{additional_dmg} damage from {source_str}"
             )            
 
         # TODO: When legendary enemies are implemented, I'll need to handle that here
@@ -379,7 +379,7 @@ class Dueling():
                 additional_dmg = int(damage_dealt * item_effect.effect_value)
                 return (
                     damage_dealt + additional_dmg,
-                    f"+{additional_dmg} damage on Poisoned target from {item.get_full_name()}"
+                    f"+{additional_dmg} damage on Poisoned target from {source_str}"
                 )
 
         if item_effect.effect_type == EffectType.DmgBuffBleeding:
@@ -387,33 +387,33 @@ class Dueling():
                 additional_dmg = int(damage_dealt * item_effect.effect_value)
                 return (
                     damage_dealt + additional_dmg,
-                    f"+{additional_dmg} damage on Bleeding target from {item.get_full_name()}"
+                    f"+{additional_dmg} damage on Bleeding target from {source_str}"
                 )
 
         if item_effect.effect_type == EffectType.RestoreArmor:
             max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
             to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
-            return (damage_dealt, "{0}" + f" restored {to_restore} Armor using {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" restored {to_restore} Armor using {source_str}")
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
             max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
             armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
-            return (damage_dealt, "{0}" + f" restored {to_restore} Armor using {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" restored {to_restore} Armor using {source_str}")
 
         if item_effect.effect_type == EffectType.HealthSteal:
             health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
             other_entity.get_expertise().damage(health_steal, other_entity.get_dueling(), percent_reduct=0, ignore_armor=True)
-            return (damage_dealt, "{0}" + f" stole {health_steal} HP from " + "{" + f"{other_entity_index}" + "}" + f" using {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" stole {health_steal} HP from " + "{" + f"{other_entity_index}" + "}" + f" using {source_str}")
 
         if item_effect.effect_type == EffectType.ManaSteal:
             mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
             self_entity.get_expertise().restore_mana(mana_steal)
             other_entity.get_expertise().remove_mana(mana_steal)
-            return (damage_dealt, "{0}" + f" stole {mana_steal} mana from " + "{" + f"{other_entity_index}" + "}" + f" using {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" stole {mana_steal} mana from " + "{" + f"{other_entity_index}" + "}" + f" using {source_str}")
 
         if item_effect.effect_type == EffectType.RestoreHealth:
             healing = int(item_effect.effect_value)
@@ -427,7 +427,7 @@ class Dueling():
                 healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
-            return (damage_dealt, "{0}" + f" healed {healing} HP from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" healed {healing} HP from {source_str}")
         
         if item_effect.effect_type == EffectType.RestorePercentHealth:
             healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
@@ -441,24 +441,24 @@ class Dueling():
                 healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
-            return (damage_dealt, "{0}" + f" healed {healing} HP from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" healed {healing} HP from {source_str}")
 
         if item_effect.effect_type == EffectType.RestoreMana:
             restoration = int(item_effect.effect_value)
             self_entity.get_expertise().restore_mana(restoration)
-            return (damage_dealt, "{0}" + f" restored {restoration} mana from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" restored {restoration} mana from {source_str}")
         
         if item_effect.effect_type == EffectType.RestorePercentMana:
             restoration = int(item_effect.effect_value * self_entity.get_expertise().max_mana)
             self_entity.get_expertise().restore_mana(restoration)
-            return (damage_dealt, "{0}" + f" restored {restoration} mana from {item.get_full_name()}")
+            return (damage_dealt, "{0}" + f" restored {restoration} mana from {source_str}")
 
         return (damage_dealt, "")
 
-    def apply_on_attacked_or_damaged_effects(self, item: Item, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, self_entity_index: int, damage_dealt: int):
+    def apply_on_attacked_or_damaged_effects(self, item: Item | None, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, self_entity_index: int, damage_dealt: int, source_str: str):
         # Note: Not all effects are listed here, since not all make sense to trigger
         # in this scenario.
-        if not item_effect.meets_conditions(self_entity, item):
+        if item is not None and not item_effect.meets_conditions(self_entity, item):
             return (damage_dealt, "")
 
         if item_effect.effect_type == EffectType.CleanseStatusEffects:
@@ -471,18 +471,18 @@ class Dueling():
                 attr_mod = ConBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {source_str}")
         
         if item_effect.effect_type == EffectType.StrMod:
             attr_mod = None
@@ -490,18 +490,18 @@ class Dueling():
                 attr_mod = StrBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DexMod:
             attr_mod = None
@@ -509,18 +509,18 @@ class Dueling():
                 attr_mod = DexBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.IntMod:
             attr_mod = None
@@ -528,18 +528,18 @@ class Dueling():
                 attr_mod = IntBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.LckMod:
             attr_mod = None
@@ -547,18 +547,18 @@ class Dueling():
                 attr_mod = LckBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.MemMod:
             attr_mod = None
@@ -566,28 +566,28 @@ class Dueling():
                 attr_mod = MemBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(attr_mod)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {attr_mod.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DmgResist:
             status_effect = DmgReduction(
                 item_effect.effect_time,
                 item_effect.effect_value,
-                source_str=f"{item.get_full_name()}",
+                source_str=f"{source_str}",
                 trigger_first_turn=False
             )
             self.status_effects.append(status_effect)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DmgBuff:
             status_effect = None
@@ -595,18 +595,18 @@ class Dueling():
                 status_effect = DmgBuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             else:
                 status_effect = DmgDebuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=False
                 )
             self.status_effects.append(status_effect)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DmgReflect and damage_dealt > 0:
             damage_to_reflect = int(damage_dealt * item_effect.effect_value)
@@ -616,32 +616,32 @@ class Dueling():
             cur_armor = other_entity.get_dueling().armor
 
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" reflected {damage_done}{armor_str} damage back to " + "{0}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" reflected {damage_done}{armor_str} damage back to " + "{0}" + f" using {source_str}")
 
         if item_effect.effect_type == EffectType.RestoreArmor:
             max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
             to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {to_restore} Armor using {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {to_restore} Armor using {source_str}")
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
             max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
             armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {to_restore} Armor using {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {to_restore} Armor using {source_str}")
 
         if item_effect.effect_type == EffectType.HealthSteal:
             health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
             other_entity.get_expertise().damage(health_steal, other_entity.get_dueling(), percent_reduct=0, ignore_armor=True)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" stole {health_steal} HP from " + "{0}" + f" using {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" stole {health_steal} HP from " + "{0}" + f" using {source_str}")
 
         if item_effect.effect_type == EffectType.ManaSteal:
             mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
             self_entity.get_expertise().restore_mana(mana_steal)
             other_entity.get_expertise().remove_mana(mana_steal)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" stole {mana_steal} mana from " + "{0}" + f" using {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" stole {mana_steal} mana from " + "{0}" + f" using {source_str}")
 
         if item_effect.effect_type == EffectType.RestoreHealth:
             healing = int(item_effect.effect_value)
@@ -655,7 +655,7 @@ class Dueling():
                 healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {source_str}")
         
         if item_effect.effect_type == EffectType.RestorePercentHealth:
             healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
@@ -669,20 +669,20 @@ class Dueling():
                 healing += int(healing * decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {source_str}")
 
         if item_effect.effect_type == EffectType.RestoreMana:
             restoration = int(item_effect.effect_value)
             self_entity.get_expertise().restore_mana(restoration)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {restoration} mana from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {restoration} mana from {source_str}")
         
         if item_effect.effect_type == EffectType.RestorePercentMana:
             restoration = int(item_effect.effect_value * self_entity.get_expertise().max_mana)
             self_entity.get_expertise().restore_mana(restoration)
-            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {restoration} mana from {item.get_full_name()}")
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {restoration} mana from {source_str}")
 
         # TODO: This could be a condition in the effect itself.
-        if item_effect.effect_type == EffectType.ResurrectOnce and self_entity.get_expertise().hp <= 0:
+        if item is not None and item_effect.effect_type == EffectType.ResurrectOnce and self_entity.get_expertise().hp <= 0:
             self_entity.get_expertise().heal(self_entity.get_expertise().max_hp)
 
             equipment_dict = self_entity.get_equipment().get_all_equipment_dict()
@@ -838,10 +838,10 @@ class Dueling():
 
         return result_strs
 
-    def apply_on_turn_start_or_end_effects(self, item: Item, item_effect: Effect, entity: Player | NPC, entity_name: str, is_turn_start: bool):
+    def apply_on_turn_start_or_end_effects(self, item: Item | None, item_effect: Effect, entity: Player | NPC, entity_name: str, is_turn_start: bool, source_str: str):
         # Note: Not all effects are listed here, since not all make sense to trigger
         # in this scenario.
-        if not item_effect.meets_conditions(entity, item):
+        if item is not None and not item_effect.meets_conditions(entity, item):
             return ""
 
         if item_effect.effect_type == EffectType.CleanseStatusEffects:
@@ -854,18 +854,18 @@ class Dueling():
                 attr_mod = ConBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = ConDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
-            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+            return f"{entity_name} is now {attr_mod.name} from {source_str}"
         
         if item_effect.effect_type == EffectType.StrMod:
             attr_mod = None
@@ -873,18 +873,18 @@ class Dueling():
                 attr_mod = StrBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = StrDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
-            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+            return f"{entity_name} is now {attr_mod.name} from {source_str}"
 
         if item_effect.effect_type == EffectType.DexMod:
             attr_mod = None
@@ -892,18 +892,18 @@ class Dueling():
                 attr_mod = DexBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = DexDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
-            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+            return f"{entity_name} is now {attr_mod.name} from {source_str}"
 
         if item_effect.effect_type == EffectType.IntMod:
             attr_mod = None
@@ -911,18 +911,18 @@ class Dueling():
                 attr_mod = IntBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = IntDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
-            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+            return f"{entity_name} is now {attr_mod.name} from {source_str}"
 
         if item_effect.effect_type == EffectType.LckMod:
             attr_mod = None
@@ -930,18 +930,18 @@ class Dueling():
                 attr_mod = LckBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = LckDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
-            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+            return f"{entity_name} is now {attr_mod.name} from {source_str}"
 
         if item_effect.effect_type == EffectType.MemMod:
             attr_mod = None
@@ -949,28 +949,28 @@ class Dueling():
                 attr_mod = MemBuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             else:
                 attr_mod = MemDebuff(
                     item_effect.effect_time,
                     int(item_effect.effect_value),
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(attr_mod)
-            return f"{entity_name} is now {attr_mod.name} from {item.get_full_name()}"
+            return f"{entity_name} is now {attr_mod.name} from {source_str}"
 
         if item_effect.effect_type == EffectType.DmgResist:
             status_effect = DmgReduction(
                 item_effect.effect_time,
                 item_effect.effect_value,
-                source_str=f"{item.get_full_name()}",
+                source_str=f"{source_str}",
                 trigger_first_turn=is_turn_start
             )
             self.status_effects.append(status_effect)
-            return f"{entity_name} is now {status_effect.name} from {item.get_full_name()}"
+            return f"{entity_name} is now {status_effect.name} from {source_str}"
 
         if item_effect.effect_type == EffectType.DmgBuff:
             status_effect = None
@@ -978,18 +978,18 @@ class Dueling():
                 status_effect = DmgBuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             else:
                 status_effect = DmgDebuff(
                     item_effect.effect_time,
                     item_effect.effect_value,
-                    source_str=f"{item.get_full_name()}",
+                    source_str=f"{source_str}",
                     trigger_first_turn=is_turn_start
                 )
             self.status_effects.append(status_effect)
-            return f"{entity_name} is now {status_effect.name} from {item.get_full_name()}"
+            return f"{entity_name} is now {status_effect.name} from {source_str}"
 
         if item_effect.effect_type == EffectType.RestoreHealth:
             healing = int(item_effect.effect_value)
@@ -1003,7 +1003,7 @@ class Dueling():
                 healing += int(healing * decaying_adjustment)
 
             entity.get_expertise().heal(healing)
-            return f"{entity_name} healed {healing} HP from {item.get_full_name()}"
+            return f"{entity_name} healed {healing} HP from {source_str}"
         
         if item_effect.effect_type == EffectType.RestorePercentHealth:
             healing = ceil(item_effect.effect_value * entity.get_expertise().max_hp)
@@ -1017,30 +1017,30 @@ class Dueling():
                 healing += int(healing * decaying_adjustment)
 
             entity.get_expertise().heal(healing)
-            return f"{entity_name} healed {healing} HP from {item.get_full_name()}"
+            return f"{entity_name} healed {healing} HP from {source_str}"
 
         if item_effect.effect_type == EffectType.RestoreMana:
             restoration = int(item_effect.effect_value)
             entity.get_expertise().restore_mana(restoration)
-            return f"{entity_name} restored {restoration} mana from {item.get_full_name()}"
+            return f"{entity_name} restored {restoration} mana from {source_str}"
         
         if item_effect.effect_type == EffectType.RestorePercentMana:
             restoration = ceil(item_effect.effect_value * entity.get_expertise().max_mana)
             entity.get_expertise().restore_mana(restoration)
-            return f"{entity_name} restored {restoration} mana from {item.get_full_name()}"
+            return f"{entity_name} restored {restoration} mana from {source_str}"
 
         if item_effect.effect_type == EffectType.RestoreArmor:
             max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
             to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - entity.get_dueling().armor))
             entity.get_dueling().armor += to_restore
-            return f" {entity_name} restored {to_restore} Armor using {item.get_full_name()}"
+            return f" {entity_name} restored {to_restore} Armor using {source_str}"
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
             max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
             armor_from_effect: int = ceil(max_reduced_armor * item_effect.effect_value)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - entity.get_dueling().armor))
             entity.get_dueling().armor += to_restore
-            return f"{entity_name} restored {to_restore} Armor using {item.get_full_name()}"
+            return f"{entity_name} restored {to_restore} Armor using {source_str}"
 
         return ""
 
@@ -1523,7 +1523,7 @@ class DuelView(discord.ui.View):
         game_won: bool
         winners: List[Player | NPC] | None
 
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, users: List[discord.User], allies: List[Player | NPC], enemies: List[Player | NPC], skip_init_updates: bool=False):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, users: List[discord.User], allies: List[Player | NPC], enemies: List[Player | NPC], skip_init_updates: bool=False, companion_battle:bool=False):
         super().__init__(timeout=None)
 
         self._bot = bot
@@ -1534,6 +1534,8 @@ class DuelView(discord.ui.View):
         self._enemies: List[Player | NPC] = enemies
         self._turn_order: List[Player | NPC] = sorted(allies + enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
         self._turn_index: int = 0
+
+        self._companion_battle: bool = companion_battle
 
         self._intent: (Intent | None) = None
         self._selected_targets: List[Player | NPC] = []
@@ -1553,10 +1555,6 @@ class DuelView(discord.ui.View):
 
         self._additional_info_string_data = ""
 
-        # TODO: For Players, when this starts, if they have a companion equipped, make sure
-        # any active ability from that companion is added into the abilities param in their
-        # Dueling class. Or, actually, should this happen when the companion is changed? Only
-        # issue with the latter is they could try to unequip it.
         if not skip_init_updates:
             for entity in allies + enemies:
                 entity.get_dueling().is_in_combat = True
@@ -1566,11 +1564,19 @@ class DuelView(discord.ui.View):
 
             cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
             if isinstance(cur_entity, Player):
+                companions = cur_entity.get_companions()
+                if companions.current_companion is not None:
+                    companion_ability = companions.companions[companions.current_companion].get_dueling_ability(effect_category=None)
+                    
+                    if isinstance(companion_ability, Ability):
+                        cur_entity.get_dueling().abilities.append(companion_ability)
+                
+            if isinstance(cur_entity, Player) or self._companion_battle:
                 self.show_actions()
             else:
                 self._npc_initial_embed = self.take_npc_turn()
 
-    def get_user_from_player(self, player: Player):
+    def get_user_from_player(self, player: Player | NPC):
         for user in self._users:
             if str(user.id) == player.get_id():
                 return user
@@ -1578,7 +1584,7 @@ class DuelView(discord.ui.View):
 
     def get_user_for_current_turn(self):
         cur_turn_entity = self._turn_order[self._turn_index]
-        if isinstance(cur_turn_entity, Player):
+        if isinstance(cur_turn_entity, Player) or self._companion_battle:
             return self.get_user_from_player(cur_turn_entity)
         return None
 
@@ -1654,9 +1660,20 @@ class DuelView(discord.ui.View):
             if item_effects is None:
                 continue
             for item_effect in item_effects.on_turn_end:
-                result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, previous_entity, self.get_name(previous_entity), is_turn_start=False)
+                result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, previous_entity, self.get_name(previous_entity), is_turn_start=False, source_str=item.get_full_name())
                 if result_str != "":
                     self._additional_info_string_data += result_str
+
+        if isinstance(previous_entity, Player):
+            companions = previous_entity.get_companions()
+            companion_key = companions.current_companion
+            if companion_key is not None:
+                current_companion = companions.companions[companion_key]
+                companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnTurnEnd)
+                if isinstance(companion_effect, Effect):
+                    result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(None, companion_effect, previous_entity, self.get_name(previous_entity), is_turn_start=False, source_str=current_companion.get_icon_and_name())
+                    if result_str != "":
+                        self._additional_info_string_data += result_str
 
         self._turn_index = (self._turn_index + 1) % len(self._turn_order)
         while self._turn_order[self._turn_index].get_expertise().hp == 0:
@@ -1675,9 +1692,20 @@ class DuelView(discord.ui.View):
             if item_effects is None:
                 continue
             for item_effect in item_effects.on_turn_start:
-                result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity), is_turn_start=True)
+                result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity), is_turn_start=True, source_str=item.get_full_name())
                 if result_str != "":
                     self._additional_info_string_data += result_str
+        
+        if isinstance(entity, Player):
+            companions = entity.get_companions()
+            companion_key = companions.current_companion
+            if companion_key is not None:
+                current_companion = companions.companions[companion_key]
+                companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnTurnStart)
+                if isinstance(companion_effect, Effect):
+                    result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(None, companion_effect, entity, self.get_name(entity), is_turn_start=True, source_str=current_companion.get_icon_and_name())
+                    if result_str != "":
+                        self._additional_info_string_data += result_str
         
         start_damage: int = 0
         start_heals: int = 0
@@ -1821,6 +1849,32 @@ class DuelView(discord.ui.View):
         
         losers = self._allies if duel_result.winners == self._enemies else self._enemies
 
+        if self._companion_battle:
+            winner_owner_players: List[Player] = [self._database[str(self._guild_id)].get("members", {}).get(npc.get_id(), None) for npc in duel_result.winners]
+            winner_str: str = ""
+            for player in winner_owner_players:
+                player.get_dueling().is_in_combat = False
+                companion_key = player.get_companions().current_companion
+                if companion_key is not None:
+                    current_companion = player.get_companions().companions[companion_key]
+                    xp_gained: int = ceil(0.5 * current_companion.pet_battle_xp_gain)
+                    current_companion.add_xp(xp_gained)
+                    winner_str += f"{current_companion.get_icon_and_name()} *(+{xp_gained} xp)*\n"
+
+            loser_owner_players: List[Player] = [self._database[str(self._guild_id)].get("members", {}).get(npc.get_id(), None) for npc in losers]
+            loser_str: str = ""
+            for player in loser_owner_players:
+                player.get_dueling().is_in_combat = False
+                companion_key = player.get_companions().current_companion
+                if companion_key is not None:
+                    current_companion = player.get_companions().companions[companion_key]
+                    xp_gained: int = ceil(0.5 * current_companion.pet_battle_xp_gain)
+                    current_companion.add_xp(xp_gained)
+                    loser_str += f"{current_companion.get_icon_and_name()} *(+{xp_gained} xp)*\n"
+
+            result_str: str = f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}"
+            return Embed(title="Companion Battle Complete", description=f"Your bonds have grown stronger and your companions have gained experience.\n\n{result_str}")
+
         for winner in duel_result.winners:
             winner.get_stats().dueling.duels_fought += 1
             winner.get_stats().dueling.duels_won += 1
@@ -1830,7 +1884,7 @@ class DuelView(discord.ui.View):
         if all(isinstance(entity, Player) for entity in self._turn_order):
             # This should only happen in a PvP duel
             winner_str = ""
-            winner_xp = ceil(1.1 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
+            winner_xp = ceil(0.75 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
                 winner_expertise = winner.get_expertise()
                 winner_dueling = winner.get_dueling()
@@ -1850,7 +1904,7 @@ class DuelView(discord.ui.View):
                 winner_str += f"{self.get_name(winner)} *(+{final_winner_xp} Guardian xp)*\n"
 
             loser_str = ""
-            loser_xp = ceil(sum(winner.get_expertise().level for winner in duel_result.winners) / (2 * len(losers)))
+            loser_xp = ceil(sum(winner.get_expertise().level for winner in duel_result.winners) / (4 * len(losers)))
             for loser in losers:
                 loser_expertise = loser.get_expertise()
                 loser_dueling = loser.get_dueling()
@@ -1872,7 +1926,7 @@ class DuelView(discord.ui.View):
             return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\nPractice for the journeys yet to come.")
         elif all(isinstance(entity, NPC) for entity in self._enemies):
             winner_str = ""
-            winner_xp = ceil(0.5 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
+            winner_xp = ceil(0.25 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
                 if isinstance(winner, Player):
                     winner_expertise = winner.get_expertise()
@@ -1941,7 +1995,7 @@ class DuelView(discord.ui.View):
                 return Embed(title="Duel Finished", description=f"You have been vanquished!")
         else: # In a completely mixed duel
             winner_str = ""
-            winner_xp = ceil(0.5 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
+            winner_xp = ceil(0.25 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
                 if isinstance(winner, Player):
                     winner_expertise = winner.get_expertise()
@@ -2214,9 +2268,20 @@ class DuelView(discord.ui.View):
                 if other_item_effects is None:
                     continue
                 for item_effect in other_item_effects.on_successful_attack:
-                    damage, result_str = attacker.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, attacker, target, 1, damage)
+                    damage, result_str = attacker.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, attacker, target, 1, damage, item.get_full_name())
                     if result_str != "":
                         result_strs.append(result_str.format(attacker_name, target_name))
+
+            if isinstance(attacker, Player):
+                companions = attacker.get_companions()
+                companion_key = companions.current_companion
+                if companion_key is not None:
+                    current_companion = companions.companions[companion_key]
+                    companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnSuccessfulAttack)
+                    if isinstance(companion_effect, Effect):
+                        damage, result_str = attacker.get_dueling().apply_on_successful_attack_or_ability_effects(None, companion_effect, attacker, target, 1, damage, current_companion.get_icon_and_name())
+                        if result_str != "":
+                            result_strs.append(result_str.format(attacker_name, target_name))
 
             result_strs += [s.format(attacker_name) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAttacked, attacker, target, 0)]
 
@@ -2225,9 +2290,20 @@ class DuelView(discord.ui.View):
                 if other_item_effects is None:
                     continue
                 for item_effect in other_item_effects.on_attacked:
-                    damage, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, 1, damage)
+                    damage, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, 1, damage, item.get_full_name())
                     if result_str != "":
                         result_strs.append(result_str.format(attacker_name, target_name))
+
+            if isinstance(attacker, Player):
+                companions = attacker.get_companions()
+                companion_key = companions.current_companion
+                if companion_key is not None:
+                    current_companion = companions.companions[companion_key]
+                    companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnAttacked)
+                    if isinstance(companion_effect, Effect):
+                        damage, result_str = attacker.get_dueling().apply_on_attacked_or_damaged_effects(None, companion_effect, target, attacker, 1, damage, current_companion.get_icon_and_name())
+                        if result_str != "":
+                            result_strs.append(result_str.format(attacker_name, target_name))
 
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
 
@@ -2241,9 +2317,20 @@ class DuelView(discord.ui.View):
                     if other_item_effects is None:
                         continue
                     for item_effect in other_item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, 1, actual_damage_dealt, item.get_full_name())
                         if result_str != "":
                             result_strs.append(result_str.format(attacker_name, target_name))
+
+                if isinstance(attacker, Player):
+                    companions = attacker.get_companions()
+                    companion_key = companions.current_companion
+                    if companion_key is not None:
+                        current_companion = companions.companions[companion_key]
+                        companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnDamaged)
+                        if isinstance(companion_effect, Effect):
+                            damage, result_str = attacker.get_dueling().apply_on_attacked_or_damaged_effects(None, companion_effect, target, attacker, 1, damage, current_companion.get_icon_and_name())
+                            if result_str != "":
+                                result_strs.append(result_str.format(attacker_name, target_name))
 
             attacker.get_stats().dueling.damage_dealt += actual_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt
@@ -2690,7 +2777,9 @@ class DuelView(discord.ui.View):
         if next_entity != cur_entity:
             next_entity_dueling: Dueling = next_entity.get_dueling()
             next_entity_dueling.actions_remaining = next_entity_dueling.init_actions_remaining
-        if isinstance(next_entity, Player):
+        
+        cur_turn_user = self.get_user_for_current_turn()
+        if isinstance(next_entity, Player) or (cur_turn_user is not None and next_entity.get_id() == str(cur_turn_user.id)):
             return self.show_actions()
         else:
             return self.take_npc_turn()
@@ -3166,7 +3255,7 @@ class PlayerVsPlayerOrNPCDuelView(discord.ui.View):
             "Players will enter combat in turn order according to their Dexterity attribute. Each turn, you will choose an action to take: "
             "Attacking using their main hand weapon, using an ability, or using an item.\n\n"
             "The duel ends when all opponents have been reduced to 0 HP. Following the duel, all players will be restored to full HP and mana.\n\n"
-            f"The game will begin when all challenged players accept the invitation to duel.{npc_intro_str}{acceptance_str}"
+            f"The duel will begin when all challenged players accept the invitation to duel.{npc_intro_str}{acceptance_str}"
         ))
 
     def accept_request(self, user: discord.User):
@@ -3305,7 +3394,7 @@ class GroupPlayerVsPlayerDuelView(discord.ui.View):
             "Players will enter combat in turn order according to their Dexterity attribute. Each turn, you will choose an action to take: "
             "Attacking using their main hand weapon, using an ability, or using an item.\n\n"
             "The duel ends when all opponents have been reduced to 0 HP. Following the duel, all players will be restored to full HP and mana.\n\n"
-            f"The game will begin when all players have selected a team and at least 1 person is on each team.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n**Team 1:**\n\n{team_1_names}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n**Team 2:**\n\n{team_2_names}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
+            f"The duel will begin when all players have selected a team and at least 1 person is on each team.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n**Team 1:**\n\n{team_1_names}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n**Team 2:**\n\n{team_2_names}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
         ))
 
     def add_to_team_1(self, user: discord.User):
@@ -3370,3 +3459,154 @@ class GroupPlayerVsPlayerDuelView(discord.ui.View):
 
     def get_duel_starter(self):
         return self._duel_starter
+
+# -----------------------------------------------------------------------------
+# COMPANION BATTLE VIEW AND GUI
+# -----------------------------------------------------------------------------
+
+class StartCompanionBattleButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.green, label="Start")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: CompanionBattleView = self.view
+
+        if interaction.user.id != view.get_duel_starter().id:
+            await interaction.response.edit_message(embed=view.get_info_embed(), content="Error: You can't start this companion battle!", view=view)
+            return
+        
+        if not view.all_accepted():
+            await interaction.response.edit_message(embed=view.get_info_embed(), view=view, content="All players choose a team before the companion battle can start.")
+        elif len(view.get_team_1()) == 0 or len(view.get_team_2()) == 0:
+            await interaction.response.edit_message(embed=view.get_info_embed(), view=view, content="At least one player must be on each team.")
+        else:
+            if view.any_in_duels_currently():
+                await interaction.response.edit_message(embed=None, view=None, content="At least one person is already in a duel or companion battle. This duel has been cancelled.")
+                return
+
+            view.set_players_in_combat()
+
+            duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_team_1_players(), view.get_team_2_players(), companion_battle=True)
+            initial_info: Embed = duel_view.get_initial_embed()
+
+            await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)
+
+
+class CompanionBattleView(discord.ui.View):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, users: List[discord.User]):
+        super().__init__(timeout=900)
+
+        self._bot = bot
+        self._database = database
+        self._guild_id = guild_id
+        self._users = users
+        self._duel_starter = users[0]
+
+        self._team_1: List[discord.User] = []
+        self._team_2: List[discord.User] = []
+
+        self.add_item(Team1Button())
+        self.add_item(Team2Button())
+        self.add_item(StartCompanionBattleButton())
+
+    def _get_player(self, user_id: int) -> Player:
+        return self._database[str(self._guild_id)]["members"][str(user_id)]
+
+    def get_info_embed(self):
+        team_1_names = "\n".join(list(map(lambda x: x.display_name, self._team_1)))
+        team_2_names = "\n".join(list(map(lambda x: x.display_name, self._team_2)))
+        return Embed(title="Companion Battle", description=(
+            "Companions will enter combat in turn order according to their Dexterity attribute. Each turn, you will choose an action to take: "
+            "Attacking using their main hand weapon, using an ability, or using an item.\n\n"
+            "The duel ends when all opponents have been reduced to 0 HP. Following the duel, all players will be restored to full HP and mana.\n\n"
+            f"The companion battle will begin when all players have selected a team and at least 1 person is on each team.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n**Team 1:**\n\n{team_1_names}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n**Team 2:**\n\n{team_2_names}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
+        ))
+
+    def add_to_team_1(self, user: discord.User):
+        if self._get_player(user.id).get_dueling().is_in_combat:
+            self.clear_items()
+            return Embed(
+                title="Companion Battle Cancelled",
+                description=f"{user.display_name} is in a duel or companion battle and can't accept this one!"
+            )
+
+        if user in self._team_2:
+            self._team_2.remove(user)
+        if user not in self._team_1:
+            self._team_1.append(user)
+        
+        return self.get_info_embed()
+
+    def add_to_team_2(self, user: discord.User):
+        if self._get_player(user.id).get_dueling().is_in_combat:
+            self.clear_items()
+            return Embed(
+                title="Companion Battle Cancelled",
+                description=f"{user.display_name} is already in a duel and can't accept this one!"
+            )
+
+        if user in self._team_1:
+            self._team_1.remove(user)
+        if user not in self._team_2:
+            self._team_2.append(user)
+        
+        return self.get_info_embed()
+
+    def all_accepted(self):
+        return all(user in self._team_1 or user in self._team_2 for user in self._users)
+
+    def any_in_duels_currently(self):
+        return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)
+
+    def get_team_1_players(self):
+        team_1: List[NPC] = []
+
+        for user in self._team_1:
+            player = self._get_player(user.id)
+            companions = player.get_companions()
+            companion_key = companions.current_companion
+            if companion_key is not None:
+                team_1.append(companions.companions[companion_key].get_pet_battle_entity())
+        
+        return team_1
+
+    def get_team_2_players(self):
+        team_2: List[NPC] = []
+
+        for user in self._team_2:
+            player = self._get_player(user.id)
+            companions = player.get_companions()
+            companion_key = companions.current_companion
+            if companion_key is not None:
+                team_2.append(companions.companions[companion_key].get_pet_battle_entity())
+        
+        return team_2
+    
+    def get_bot(self):
+        return self._bot
+
+    def get_database(self):
+        return self._database
+
+    def get_guild_id(self):
+        return self._guild_id
+
+    def get_team_1(self):
+        return self._team_1
+
+    def get_team_2(self):
+        return self._team_2
+
+    def get_users(self):
+        return self._users
+
+    def get_duel_starter(self):
+        return self._duel_starter
+
+    def set_players_in_combat(self):
+        for user in self._users:
+            player = self._get_player(user.id)
+            player.get_dueling().is_in_combat = True

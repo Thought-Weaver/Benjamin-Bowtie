@@ -40,7 +40,9 @@ if TYPE_CHECKING:
 # -----------------------------------------------------------------------------
 
 class Companion():
-    def __init__(self, icon: str, display_name: str, key: CompanionKey, rarity: Rarity, value: int, has_active_ability: bool, duel_xp_gain: int, pet_battle_xp_gain: int, preferred_foods: List[ItemKey], valid_food_categories: List[ClassTag], best_tier_items: List[ItemKey]):
+    def __init__(self, icon: str, display_name: str, key: CompanionKey, rarity: Rarity, value: int, has_active_ability: bool, duel_xp_gain: int, pet_battle_xp_gain: int, preferred_foods: List[ItemKey], valid_food_categories: List[ClassTag], best_tier_items: List[ItemKey]):        
+        self._id: str = ""
+
         self._icon = icon
         self._display_name = display_name
         self._key = key
@@ -88,7 +90,7 @@ class Companion():
         pass
 
     def get_xp_to_level(self, level: int) -> int:
-        return ceil(75 + 30 * level * (level - 1) + (2 ** ((level - 1) / 15.0) - 1) / (1 - 2 ** (-1 / 15.0)))
+        return ceil(5 + 15 * level * (level - 1) + (2 ** ((level - 1) / 15.0) - 1) / (1 - 2 ** (-1 / 15.0)))
 
     def level_up_check(self) -> int:
         org_level = self._level
@@ -161,6 +163,9 @@ class Companion():
     def get_best_tier_items(self):
         return self._best_tier_items
 
+    def set_id(self, id: str):
+        self._id = id
+
     def __str__(self, use_base_abilities=False) -> str:
         display_string = f"**{self.get_icon_and_name()}**\n*{self._rarity} Companion*\n\n"
 
@@ -215,6 +220,8 @@ class Companion():
         return self.__dict__
 
     def __setstate__(self, state: dict):
+        self._id = state.get("_id", "")
+
         self._icon = state.get("_icon", "")
         self._display_name = state.get("_display_name", "")
         self._key = state.get("_key", CompanionKey.Unknown)
@@ -269,7 +276,9 @@ class BlueFlitterwingButterflyCompanion(Companion):
             return ManaLeechI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return BlueFlitterwingButterfly(self._level)
+        entity = BlueFlitterwingButterfly(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [MesmerizeI(), InnervateI(), WingbeatI()]
@@ -282,6 +291,8 @@ class BlueFlitterwingButterflyCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Blue Flitterwing Butterfly")
 
@@ -358,7 +369,9 @@ class DeepwoodCubCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        return DeepwoodCub(self._level)
+        entity = DeepwoodCub(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [BearDownI(), HibernateI(), BulkEnduranceI()]
@@ -371,6 +384,8 @@ class DeepwoodCubCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Deepwood Cub")
 
@@ -414,7 +429,9 @@ class FleetfootRabbitCompanion(Companion):
             return QuickeningPaceI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return FleetfootRabbit(self._level)
+        entity = FleetfootRabbit(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [FleeI(), WhatLuckI(), PummelI()]
@@ -427,6 +444,8 @@ class FleetfootRabbitCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Fleetfoot Rabbit")
 
@@ -503,7 +522,9 @@ class FlyingFoxCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        return FlyingFox(self._level)
+        entity = FlyingFox(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [LungeI(), ToTheSkiesI(), GustI()]
@@ -516,6 +537,8 @@ class FlyingFoxCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Flying Fox")
 
@@ -559,7 +582,9 @@ class GiantTowerBeetleCompanion(Companion):
             return ToweringArmorI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return GiantTowerBeetle(self._level)
+        entity = GiantTowerBeetle(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [PlatedArmorI(), TowerStanceI(), BeetleBashI()]
@@ -572,6 +597,8 @@ class GiantTowerBeetleCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Giant Tower Beetle")
 
@@ -648,7 +675,9 @@ class GnashtuskBoarCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        return GnashtuskBoar(self._level)
+        entity = GnashtuskBoar(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [GoreI(), ThickHideI(), ChargeI()]
@@ -661,6 +690,8 @@ class GnashtuskBoarCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Gnashtusk Boar")
 
@@ -704,7 +735,9 @@ class MiniatureBoneGolemCompanion(Companion):
             return ThrowTheBonesI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return MiniatureBoneGolem(self._level)
+        entity = MiniatureBoneGolem(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [UndeathIsJustTheBeginningI(), MightyBoneFistI(), EruptionOfBoneI()]
@@ -717,6 +750,8 @@ class MiniatureBoneGolemCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Miniature Bone Golem")
 
@@ -760,7 +795,9 @@ class PaleWalkerSpiderCompanion(Companion):
             return VenomousBiteI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return PaleWalkerSpider(self._level)
+        entity = PaleWalkerSpider(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [DeadlyVenomI(), GhostlyMovementI(), GlassPierceI()]
@@ -773,6 +810,8 @@ class PaleWalkerSpiderCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Pale Walker")
 
@@ -816,7 +855,9 @@ class PondloverFrogCompanion(Companion):
             return IsThatAFlyI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return PondloverFrog(self._level)
+        entity = PondloverFrog(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [IsThatAFlyI(), HippityHopI(), BouncingKickI()]
@@ -829,6 +870,8 @@ class PondloverFrogCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Pondlover Frog")
 
@@ -905,7 +948,9 @@ class ScuttledarkScorpionCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        return ScuttledarkScorpion(self._level)
+        entity = ScuttledarkScorpion(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [PowerfulPierceI(), IntoTheShadowsI(), GraspingClawsI()]
@@ -918,6 +963,8 @@ class ScuttledarkScorpionCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Scuttledark Scorpion")
 
@@ -961,7 +1008,9 @@ class ShadowfootRaccoonCompanion(Companion):
             return SneakyManeuversI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return ShadowfootRaccoon(self._level)
+        entity = ShadowfootRaccoon(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [StrikeFromBehindI(), LuckyPawsI(), IntoTheShadowsI()]
@@ -974,6 +1023,8 @@ class ShadowfootRaccoonCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Shadowfoot Raccoon")
 
@@ -1050,7 +1101,9 @@ class SilverwingOwlCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        return SilverwingOwl(self._level)
+        entity = SilverwingOwl(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [MysticShroudI(), FeathersFlyI(), WithTheWindI()]
@@ -1063,6 +1116,8 @@ class SilverwingOwlCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Silverwing Owl")
 
@@ -1139,7 +1194,9 @@ class SunbaskTurtleCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        return SunbaskTurtle(self._level)
+        entity = SunbaskTurtle(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [DeflectionI(), ShellterI(), TerraspinI()]
@@ -1152,6 +1209,8 @@ class SunbaskTurtleCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Sunbask Turtle")
 
@@ -1195,7 +1254,9 @@ class TanglewebSpiderCompanion(Companion):
             return WebShotI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return TanglewebSpider(self._level)
+        entity = TanglewebSpider(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [PatientStrikeI(), CraftWebI(), WrapTheMealI()]
@@ -1208,6 +1269,8 @@ class TanglewebSpiderCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Tangleweb Spider")
 
@@ -1251,7 +1314,9 @@ class TidewaterCrabCompanion(Companion):
             return PINCHI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return TidewaterCrab(self._level)
+        entity = TidewaterCrab(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [PINCHI(), ScuttleI(), MiniCrabnadoI()]
@@ -1264,6 +1329,8 @@ class TidewaterCrabCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Tidewater Crab")
 
@@ -1340,7 +1407,9 @@ class VerdantSlithererCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        return VerdantSlitherer(self._level)
+        entity = VerdantSlitherer(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [ToxungenI(), HypnoticGazeI(), CoiledStrikeI()]
@@ -1353,6 +1422,8 @@ class VerdantSlithererCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Verdant Slitherer")
 
@@ -1434,7 +1505,9 @@ class VoidseenCatCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        return VerdantSlitherer(self._level)
+        entity = VerdantSlitherer(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [SiphoningSwipeI(), ExposeTummyI(), ManaBurnI()]
@@ -1447,6 +1520,8 @@ class VoidseenCatCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Voidseen Cat")
 
@@ -1490,7 +1565,9 @@ class VoidseenPupCompanion(Companion):
             return MightOfTheVoidI()
 
     def get_pet_battle_entity(self) -> NPC:
-        return VoidseenPup(self._level)
+        entity = VoidseenPup(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [MightOfTheVoidI(), RecklessBiteI(), TheDarkBarkI()]
@@ -1503,6 +1580,8 @@ class VoidseenPupCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Voidseen Pup")
 
@@ -1579,7 +1658,9 @@ class WanderboundRavenCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        return WanderboundRaven(self._level)
+        entity = WanderboundRaven(self._level)
+        entity.set_id(self._id)
+        return entity
 
     def get_base_abilities(self) -> List[Ability]:
         return [ShriekingCawI(), PeckPeckPeckI(), DiveI()]
@@ -1592,6 +1673,8 @@ class WanderboundRavenCompanion(Companion):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Wanderbound Raven")
 

@@ -30,10 +30,10 @@ class ShadowfootRaccoon(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.constitution = self._companion_level // 2
+        self._expertise.constitution = min(self._companion_level // 2, 50)
         self._expertise.strength = self._companion_level // 4
         self._expertise.dexterity = self._companion_level
-        self._expertise.intelligence = self._companion_level // 2
+        self._expertise.intelligence = min(self._companion_level // 2, 40)
         self._expertise.luck = self._companion_level
         self._expertise.memory = self._companion_level // 5
 

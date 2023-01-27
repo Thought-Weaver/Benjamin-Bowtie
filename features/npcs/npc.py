@@ -240,6 +240,9 @@ class NPC():
     def get_id(self):
         return self._id
 
+    def set_id(self, id: str):
+        self._id = id
+
     def get_combined_attributes(self):
         return self._expertise.get_all_attributes() + self._equipment.get_total_attribute_mods() + self._dueling.get_combined_attribute_mods()
 
