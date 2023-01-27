@@ -165,14 +165,18 @@ class Companion():
         display_string = f"**{self.get_icon_and_name()}**\n*{self._rarity} Companion*\n\n"
 
         display_string += f"Level: {self._level} *({self.get_xp_to_level(self._level + 1) - self._xp} xp to next)*\n"
-        display_string += f"{self.get_tier_str()} *({self.get_points_to_next_tier_str()})*\n\n"
+        display_string += f"{self.get_tier_str()} *({self.get_points_to_next_tier_str()})*"
+
+        display_string += "\n\n﹋﹋﹋﹋﹋﹋﹋﹋\n"
         
         dueling_ability = self.get_dueling_ability(effect_category=None)
         if self._has_active_ability:
             display_string += "**Active Dueling Ability**\n\n"
         else:
             display_string += "**Passive Dueling Ability**\n\n"
-        display_string += "᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n" + str(dueling_ability) + "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
+        display_string += "᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n" + str(dueling_ability) + "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
+
+        display_string += "\n\n﹋﹋﹋﹋﹋﹋﹋﹋\n"
 
         pet_battle_entity = self.get_pet_battle_entity()
         expertise = pet_battle_entity.get_expertise()
@@ -183,8 +187,10 @@ class Companion():
             f"Dexterity: {expertise.dexterity}\n"
             f"Intelligence: {expertise.intelligence}\n"
             f"Luck: {expertise.luck}\n"
-            f"Memory: {expertise.memory}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
+            f"Memory: {expertise.memory}"
         )
+
+        display_string += "\n\n﹋﹋﹋﹋﹋﹋﹋﹋\n"
 
         abilities = []
         if use_base_abilities:
@@ -192,12 +198,16 @@ class Companion():
         else:
             abilities = pet_battle_entity.get_dueling().abilities
         
-        display_string += "**Companion Battle Abilities**\n\n" + "\n".join([f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(ability)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" for ability in abilities]) + "\n\n"
+        display_string += "**Companion Battle Abilities**\n\n" + "\n".join([f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(ability)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" for ability in abilities])
+
+        display_string += "\n\n﹋﹋﹋﹋﹋﹋﹋﹋\n"
 
         display_string += (
             f"**Weapon**\n\n"
-            f"{pet_battle_entity.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
+            f"{pet_battle_entity.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)}"
         )
+
+        display_string += "\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
 
         return display_string
 
