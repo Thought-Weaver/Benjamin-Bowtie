@@ -168,6 +168,11 @@ class GardenPlot():
         # If self.growth_ticks < self.ticks_until_mature, this uproots it 
         # and returns None!
         harvested_plant = self.plant
+
+        if self.soil is not None and self.soil.get_key() == ItemKey.Compost:
+            if harvested_plant is not None and random.random() < 0.05:
+                harvested_plant.add_amount(1)
+
         self.reset(keep_soil=True)
 
         return harvested_plant
@@ -178,9 +183,7 @@ class GardenPlot():
 
         self.growth_ticks += 1
 
-        maturity_adjustment = 1 if self.soil is not None and self.soil.get_key() == ItemKey.Compost else 0
-        adjusted_ticks_until_mature = max(self.seed_data.ticks_until_mature - maturity_adjustment, 1)
-        if self.growth_ticks == adjusted_ticks_until_mature:
+        if self.growth_ticks == self.seed_data.ticks_until_mature:
             self.plant = LOADED_ITEMS.get_new_item(self.seed_data.result)
         
         if self.growth_ticks >= self.seed_data.ticks_until_death:
@@ -198,9 +201,7 @@ class GardenPlot():
         if self.seed_data is None:
             return False
 
-        maturity_adjustment = 1 if self.soil is not None and self.soil.get_key() == ItemKey.Compost else 0
-        adjusted_ticks_until_mature = max(self.seed_data.ticks_until_mature - maturity_adjustment, 1)
-        return self.growth_ticks >= adjusted_ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death
+        return self.growth_ticks >= self.seed_data.ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death
 
     def plant_seed(self, seed: Item):
         seed_data = SEED_DATA.get(seed.get_key())
@@ -229,13 +230,10 @@ class GardenPlot():
             # sprouting phase
             return "\uD83D\uDFEB"
 
-        maturity_adjustment = 1 if self.soil is not None and self.soil.get_key() == ItemKey.Compost else 0
-        adjusted_ticks_until_mature = max(self.seed_data.ticks_until_mature - maturity_adjustment, 1)
-
-        if self.growth_ticks >= self.seed_data.ticks_until_sprout and self.growth_ticks < adjusted_ticks_until_mature:
+        if self.growth_ticks >= self.seed_data.ticks_until_sprout and self.growth_ticks < self.seed_data.ticks_until_mature:
             return self.seed_data.sprout_icon
 
-        if self.growth_ticks >= adjusted_ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death:
+        if self.growth_ticks >= self.seed_data.ticks_until_mature and self.growth_ticks < self.seed_data.ticks_until_death:
             return self.seed_data.mature_icon
 
         # Return a question mark
@@ -254,10 +252,7 @@ class GardenPlot():
         
         growth_tick_str = "tick" if self.growth_ticks == 1 else "ticks"
 
-        maturity_adjustment = 1 if self.soil is not None and self.soil.get_key() == ItemKey.Compost else 0
-        adjusted_ticks_until_mature = max(self.seed_data.ticks_until_mature - maturity_adjustment, 1)
-
-        ticks_until_mature = adjusted_ticks_until_mature - self.growth_ticks
+        ticks_until_mature = self.seed_data.ticks_until_mature - self.growth_ticks
         mature_tick_str = "tick" if ticks_until_mature == 1 else "ticks"
         
         ticks_until_death = self.seed_data.ticks_until_death - self.growth_ticks
@@ -677,7 +672,7 @@ class GardenView(discord.ui.View):
 
         player.get_house().tick_garden(only_update_display=True)
 
-        return self.get_embed_for_intent(additional=f"\n\n*You received {harvest_result.get_full_name()}{seeds_added_str} and gained {final_xp} Alchemist xp*")
+        return self.get_embed_for_intent(additional=f"\n\n*You received {harvest_result.get_full_name_and_count()}{seeds_added_str} and gained {final_xp} Alchemist xp*")
 
     def expand_garden(self):
         player: Player = self._get_player()
