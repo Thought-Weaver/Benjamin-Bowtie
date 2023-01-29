@@ -1,0 +1,23 @@
+{
+    "key": "items/equipment/offhand/pondlover_talisman",
+    "icon": "\uD83D\uDC38",
+    "name": "Pondlover Talisman",
+    "value": 1000,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "A symbol of the strongest friendship.",
+    "class_tags": ["Equipment", "Off_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "on_successful_attack": [
+            {
+                "effect_type": "DexMod",
+                "effect_value": -7,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

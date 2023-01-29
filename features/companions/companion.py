@@ -258,7 +258,7 @@ class BlueFlitterwingButterflyCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.AzureberryJuice, ItemKey.CrownberryJuice, ItemKey.SundewDelight],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -318,7 +318,7 @@ class DeepwoodCubCompanion(Companion):
             has_active_ability=False,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Honeyfruit, ItemKey.Crownberry],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -411,7 +411,7 @@ class FleetfootRabbitCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Fissureleaf, ItemKey.Sweetroot],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -471,7 +471,7 @@ class FlyingFoxCompanion(Companion):
             has_active_ability=False,
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.FishCake, ItemKey.CookedMinnow, ItemKey.CookedRoughy],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -564,8 +564,8 @@ class GiantTowerBeetleCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            preferred_foods=[ItemKey.Compost, ItemKey.Shellflower],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood, ClassTag.Gardening.Soil],
             best_tier_items=[]
         )
 
@@ -624,7 +624,7 @@ class GnashtuskBoarCompanion(Companion):
             has_active_ability=False,
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Sweetroot, ItemKey.Elsberries, ItemKey.Crownberry],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -717,7 +717,7 @@ class MiniatureBoneGolemCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=2,
             pet_battle_xp_gain=4,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.CrackedQuartz, ItemKey.Quartz, ItemKey.FlawlessQuartz],
             valid_food_categories=[ClassTag.Ingredient.CraftingMaterial, ClassTag.Equipment.Equipment],
             best_tier_items=[]
         )
@@ -777,7 +777,7 @@ class PaleWalkerSpiderCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=2,
             pet_battle_xp_gain=4,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Grub],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -837,7 +837,7 @@ class PondloverFrogCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Grub, ItemKey.Seaclover],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -897,7 +897,7 @@ class ScuttledarkScorpionCompanion(Companion):
             has_active_ability=False,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Grub],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -990,7 +990,7 @@ class ShadowfootRaccoonCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.CookedMinnow, ItemKey.CookedRoughy, ItemKey.FishCake],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -1050,7 +1050,7 @@ class SilverwingOwlCompanion(Companion):
             has_active_ability=False,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Azureberries, ItemKey.Minnow, ItemKey.Roughy],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -1143,7 +1143,7 @@ class SunbaskTurtleCompanion(Companion):
             has_active_ability=False,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Crownberry, ItemKey.Honeyfruit, ItemKey.Stranglekelp],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -1236,7 +1236,7 @@ class TanglewebSpiderCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Grub],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -1296,7 +1296,7 @@ class TidewaterCrabCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Roughy, ItemKey.Minnow, ItemKey.Shrimp],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -1449,7 +1449,7 @@ class VoidseenCatCompanion(Companion):
             has_active_ability=False,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Azureberries, ItemKey.Minnow, ItemKey.Roughy],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )
@@ -1607,7 +1607,7 @@ class WanderboundRavenCompanion(Companion):
             has_active_ability=False,
             duel_xp_gain=3,
             pet_battle_xp_gain=4,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.Azureberries, ItemKey.AzureberryJuice],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
             best_tier_items=[]
         )

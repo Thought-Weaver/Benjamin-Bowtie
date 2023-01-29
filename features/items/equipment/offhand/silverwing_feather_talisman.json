@@ -1,0 +1,23 @@
+{
+    "key": "items/equipment/offhand/silverwing_feather_talisman",
+    "icon": "\uD83E\uDD89",
+    "name": "Silverwing Feather Talisman",
+    "value": 1000,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "A symbol of the strongest friendship.",
+    "class_tags": ["Equipment", "Off_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "on_successful_ability_used": [
+            {
+                "effect_type": "DmgBuff",
+                "effect_value": 0.25,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}
