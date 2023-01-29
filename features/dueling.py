@@ -1824,6 +1824,18 @@ class DuelView(discord.ui.View):
 
         return f"{duel_string}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
 
+    def _remove_companion_ability(self, entity: Player | NPC):
+        if isinstance(entity, Player):
+            companions = entity.get_companions()
+            if companions.current_companion is not None:
+                companion_ability = companions.companions[companions.current_companion].get_dueling_ability(effect_category=None)
+                
+                if isinstance(companion_ability, Ability):
+                    try:
+                        entity.get_dueling().abilities.remove(companion_ability)
+                    except:
+                        pass
+
     def get_victory_screen(self, duel_result: DuelResult):
         self.clear_items()
 
@@ -1880,6 +1892,9 @@ class DuelView(discord.ui.View):
             winner.get_stats().dueling.duels_won += 1
         for loser in losers:
             loser.get_stats().dueling.duels_fought += 1
+
+        for entity in self._turn_order:
+            self._remove_companion_ability(entity)
 
         if all(isinstance(entity, Player) for entity in self._turn_order):
             # This should only happen in a PvP duel

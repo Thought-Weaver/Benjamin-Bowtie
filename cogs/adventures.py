@@ -951,9 +951,17 @@ class Adventures(commands.Cog):
         if author_dueling.is_in_combat:
             await context.send(f"You're in a duel and can't visit your garden.")
             return
-        
+
+        companion_result_str: str = ""
+        if random.random() < 0.01:
+            companions = author_player.get_companions()
+            if CompanionKey.BlueFlitterwingButterfly not in companions.companions.keys():
+                companions.companions[CompanionKey.BlueFlitterwingButterfly] = TidewaterCrabCompanion()
+                companions.companions[CompanionKey.BlueFlitterwingButterfly].set_id(author_player.get_id())
+                companion_result_str += "\n\nIn your garden, flittering about the plants, you can see a lovely blue butterfly which comes to rest on your hand. A new companions has been added in b!companions."
+
         view = GardenView(self._bot, self._database, context.guild.id, context.author, None)
-        embed = view.get_embed_for_intent()
+        embed = view.get_embed_for_intent(companion_result_str)
         await context.send(embed=embed, view=view)
 
     @commands.command(name="study", help="Enter your home's study", hidden=True)

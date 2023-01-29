@@ -6,7 +6,7 @@ import discord
 from discord import Embed
 from strenum import StrEnum
 
-from features.companions.companion import BlueFlitterwingButterflyCompanion, Companion, FleetfootRabbitCompanion, SunbaskTurtleCompanion, TanglewebSpiderCompanion, VerdantSlithererCompanion, WanderboundRavenCompanion
+from features.companions.companion import Companion, FleetfootRabbitCompanion, PondloverFrogCompanion, SunbaskTurtleCompanion, TanglewebSpiderCompanion, VerdantSlithererCompanion, WanderboundRavenCompanion
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
@@ -143,8 +143,8 @@ class DruidView(discord.ui.View):
         self._selected_item_index: int = -1
 
         self._companions: List[Companion] = [
-            BlueFlitterwingButterflyCompanion(),
             FleetfootRabbitCompanion(),
+            PondloverFrogCompanion(),
             SunbaskTurtleCompanion(),
             TanglewebSpiderCompanion(),
             VerdantSlithererCompanion(),
