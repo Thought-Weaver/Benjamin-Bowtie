@@ -263,8 +263,26 @@ class PlayerCompanionsView(discord.ui.View):
     def _get_player(self) -> Player:
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
 
+    def send_talismans(self):
+        player: Player = self._get_player()
+        companions: PlayerCompanions = player.get_companions()
+
+        result_str: str = ""
+        for companion_key in companions.companions.keys():
+            companion = companions.companions[companion_key]
+            if companion.get_tier() == CompanionTier.Best and not companion.talisman_given:
+                talisman = LOADED_ITEMS.get_new_item(companion.talisman)
+                # This is a tad hacky, but I'd rather not duplicate the function.
+                companions._send_mail(Mail(companion.get_name(), talisman, 0, f"{companion.get_icon_and_name()} has given this to you as a symbol of your incredible bond!", str(time.time()).split(".")[0], -1))
+                result_str += f"{companion.get_icon_and_name()} has sent a token of your bond to your b!mailbox!\n"
+                companion.talisman_given = True
+        
+        return result_str + "\n\n"
+
     def get_initial_embed(self):
-        return Embed(title="Companions", description="Browse your companions using the next and prev buttons.")
+        talisman_strs = self.send_talismans()
+
+        return Embed(title="Companions", description=f"{talisman_strs}Browse your companions using the next and prev buttons.")
 
     def _get_companions_page_buttons(self):
         self.clear_items()
@@ -316,11 +334,14 @@ class PlayerCompanionsView(discord.ui.View):
         self._selected_item_index = -1
 
         self._get_companions_page_buttons()
+
+        talisman_strs = self.send_talismans()
+
         return Embed(
             title="Companions",
             description=(
                 f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._selected_companion)}\n\n"
-                "Navigate through your companions using the Prev and Next buttons."
+                f"{talisman_strs}Navigate through your companions using the Prev and Next buttons."
             )
         )
 

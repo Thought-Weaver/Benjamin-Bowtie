@@ -40,7 +40,7 @@ if TYPE_CHECKING:
 # -----------------------------------------------------------------------------
 
 class Companion():
-    def __init__(self, icon: str, display_name: str, key: CompanionKey, rarity: Rarity, value: int, has_active_ability: bool, duel_xp_gain: int, pet_battle_xp_gain: int, preferred_foods: List[ItemKey], valid_food_categories: List[ClassTag], best_tier_items: List[ItemKey]):        
+    def __init__(self, icon: str, display_name: str, key: CompanionKey, rarity: Rarity, value: int, has_active_ability: bool, duel_xp_gain: int, pet_battle_xp_gain: int, preferred_foods: List[ItemKey], valid_food_categories: List[ClassTag], best_tier_items: List[ItemKey], talisman: ItemKey):        
         self._id: str = ""
 
         self._icon = icon
@@ -64,6 +64,9 @@ class Companion():
         self.valid_food_categories: List[ClassTag] = valid_food_categories
         self.fed_this_tick: bool = False
         self.custom_named: bool = False
+
+        self.talisman: ItemKey = talisman
+        self.talisman_given: bool = False
 
         self._best_tier_items: List[ItemKey] = best_tier_items
 
@@ -241,6 +244,9 @@ class Companion():
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
 
+        self.talisman = state.get("talisman", ItemKey.ClumpOfLeaves)
+        self.talisman_given = state.get("talisman_given", False)
+
         self._best_tier_items = state.get("_best_tier_items", [])
 
 # -----------------------------------------------------------------------------
@@ -260,7 +266,8 @@ class BlueFlitterwingButterflyCompanion(Companion):
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.AzureberryJuice, ItemKey.CrownberryJuice, ItemKey.SundewDelight],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.FlitterwingTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -305,6 +312,7 @@ class BlueFlitterwingButterflyCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class DeepwoodCubCompanion(Companion):
@@ -320,7 +328,8 @@ class DeepwoodCubCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Honeyfruit, ItemKey.Crownberry],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.DeepwoodTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
@@ -398,6 +407,7 @@ class DeepwoodCubCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class FleetfootRabbitCompanion(Companion):
@@ -413,7 +423,8 @@ class FleetfootRabbitCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Fissureleaf, ItemKey.Sweetroot],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.LuckyPawTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -458,6 +469,7 @@ class FleetfootRabbitCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class FlyingFoxCompanion(Companion):
@@ -473,7 +485,8 @@ class FlyingFoxCompanion(Companion):
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.FishCake, ItemKey.CookedMinnow, ItemKey.CookedRoughy],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.FoxsFeatherTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
@@ -551,6 +564,7 @@ class FlyingFoxCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class GiantTowerBeetleCompanion(Companion):
@@ -566,7 +580,8 @@ class GiantTowerBeetleCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Compost, ItemKey.Shellflower],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood, ClassTag.Gardening.Soil],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.TowerTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -611,6 +626,7 @@ class GiantTowerBeetleCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class GnashtuskBoarCompanion(Companion):
@@ -626,7 +642,8 @@ class GnashtuskBoarCompanion(Companion):
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.Sweetroot, ItemKey.Elsberries, ItemKey.Crownberry],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.GnashtuskTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
@@ -704,6 +721,7 @@ class GnashtuskBoarCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class MiniatureBoneGolemCompanion(Companion):
@@ -719,7 +737,8 @@ class MiniatureBoneGolemCompanion(Companion):
             pet_battle_xp_gain=4,
             preferred_foods=[ItemKey.CrackedQuartz, ItemKey.Quartz, ItemKey.FlawlessQuartz],
             valid_food_categories=[ClassTag.Ingredient.CraftingMaterial, ClassTag.Equipment.Equipment],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.SkullTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -764,6 +783,7 @@ class MiniatureBoneGolemCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class PaleWalkerSpiderCompanion(Companion):
@@ -779,7 +799,8 @@ class PaleWalkerSpiderCompanion(Companion):
             pet_battle_xp_gain=4,
             preferred_foods=[ItemKey.Grub],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.PaleTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -824,6 +845,7 @@ class PaleWalkerSpiderCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class PondloverFrogCompanion(Companion):
@@ -839,7 +861,8 @@ class PondloverFrogCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Grub, ItemKey.Seaclover],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.PondloverTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -884,6 +907,7 @@ class PondloverFrogCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class ScuttledarkScorpionCompanion(Companion):
@@ -899,7 +923,8 @@ class ScuttledarkScorpionCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Grub],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.ScuttledarkTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
@@ -977,6 +1002,7 @@ class ScuttledarkScorpionCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class ShadowfootRaccoonCompanion(Companion):
@@ -992,7 +1018,8 @@ class ShadowfootRaccoonCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.CookedMinnow, ItemKey.CookedRoughy, ItemKey.FishCake],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.LuckyRockTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -1037,6 +1064,7 @@ class ShadowfootRaccoonCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class SilverwingOwlCompanion(Companion):
@@ -1052,7 +1080,8 @@ class SilverwingOwlCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Azureberries, ItemKey.Minnow, ItemKey.Roughy],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.SilverwingFeatherTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
@@ -1130,6 +1159,7 @@ class SilverwingOwlCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class SunbaskTurtleCompanion(Companion):
@@ -1145,7 +1175,8 @@ class SunbaskTurtleCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Crownberry, ItemKey.Honeyfruit, ItemKey.Stranglekelp],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.SunbaskTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
@@ -1223,6 +1254,7 @@ class SunbaskTurtleCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class TanglewebSpiderCompanion(Companion):
@@ -1238,7 +1270,8 @@ class TanglewebSpiderCompanion(Companion):
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.Grub],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.TanglewebTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -1283,6 +1316,7 @@ class TanglewebSpiderCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class TidewaterCrabCompanion(Companion):
@@ -1298,7 +1332,8 @@ class TidewaterCrabCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Roughy, ItemKey.Minnow, ItemKey.Shrimp],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.CrabTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -1343,6 +1378,7 @@ class TidewaterCrabCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class VerdantSlithererCompanion(Companion):
@@ -1358,7 +1394,8 @@ class VerdantSlithererCompanion(Companion):
             pet_battle_xp_gain=6,
             preferred_foods=[],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.VerdantTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
@@ -1436,6 +1473,7 @@ class VerdantSlithererCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class VoidseenCatCompanion(Companion):
@@ -1451,7 +1489,8 @@ class VoidseenCatCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Azureberries, ItemKey.Minnow, ItemKey.Roughy],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.VoidmindTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
@@ -1534,6 +1573,7 @@ class VoidseenCatCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class VoidseenPupCompanion(Companion):
@@ -1549,7 +1589,8 @@ class VoidseenPupCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.VoidforceTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
@@ -1594,6 +1635,7 @@ class VoidseenPupCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
 
 
 class WanderboundRavenCompanion(Companion):
@@ -1609,7 +1651,8 @@ class WanderboundRavenCompanion(Companion):
             pet_battle_xp_gain=4,
             preferred_foods=[ItemKey.Azureberries, ItemKey.AzureberryJuice],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[]
+            best_tier_items=[],
+            talisman=ItemKey.WanderboundTalisman
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
@@ -1687,3 +1730,4 @@ class WanderboundRavenCompanion(Companion):
 
         self.fed_this_tick = state.get("fed_this_tick", False)
         self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)

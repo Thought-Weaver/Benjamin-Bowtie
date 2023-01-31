@@ -517,6 +517,27 @@ class ItemKey(StrEnum):
     VoidBite = "items/weapon/companions/void_bite"
     VoidClaws = "items/weapon/companions/void_claws"
 
+    # Companion Talismans
+    CrabTalisman = "items/equipment/offhand/crab_talisman"
+    DeepwoodTalisman = "items/equipment/offhand/deepwood_talisman"
+    FlitterwingTalisman = "items/equipment/offhand/flitterwing_talisman"
+    FoxsFeatherTalisman = "items/equipment/offhand/foxs_feather_talisman"
+    GnashtuskTalisman = "items/equipment/offhand/gnashtusk_talisman"
+    LuckyPawTalisman = "items/equipment/offhand/lucky_paw_talisman"
+    LuckyRockTalisman = "items/equipment/offhand/lucky_rock_talisman"
+    PaleTalisman = "items/equipment/offhand/pale_talisman"
+    PondloverTalisman = "items/equipment/offhand/pondlover_talisman"
+    ScuttledarkTalisman = "items/equipment/offhand/scuttledark_talisman"
+    SilverwingFeatherTalisman = "items/equipment/offhand/silverwing_feather_talisman"
+    SkullTalisman = "items/equipment/offhand/skull_talisman"
+    SunbaskTalisman = "items/equipment/offhand/sunbask_talisman"
+    TanglewebTalisman = "items/equipment/offhand/tangleweb_talisman"
+    TowerTalisman = "items/equipment/offhand/tower_talisman"
+    VerdantTalisman = "items/equipment/offhand/verdant_talisman"
+    VoidforceTalisman = "items/equipment/offhand/voidforce_talisman"
+    VoidmindTalisman = "items/equipment/offhand/voidmind_talisman"
+    WanderboundTalisman = "items/equipment/offhand/wanderbound_talisman"
+
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"
     GoldenKnucklebone = "items/equipment/offhand/golden_knucklebone"
