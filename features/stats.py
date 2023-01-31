@@ -513,8 +513,7 @@ class Stats():
     def list(self):
         # Can simply change the order of this list if I want the pages
         # to be organized differently.
-        # TODO: Add companions to the list when it's ready in February
-        return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell, self.dueling, self.garden, self.crafting]
+        return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell, self.dueling, self.garden, self.crafting, self.companions]
 
     def __getstate__(self):
         return self.__dict__
