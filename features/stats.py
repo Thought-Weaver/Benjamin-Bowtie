@@ -443,23 +443,13 @@ class Stats():
     class CompanionsStats():
         def __init__(self):
             self.companions_found: int = 0
-            self.companion_abilities_used: int = 0
+            self.items_fed: int = 0
+            self.names_given: int = 0
+            self.bond_points_earned: int = 0
 
             self.companion_battles_fought: int = 0
             self.companion_battles_won: int = 0
             self.companion_battles_tied: int = 0
-
-            self.attacks_done: int = 0
-            self.abilities_used: int = 0
-            self.items_used: int = 0
-
-            self.damage_dealt: int = 0
-            self.damage_taken: int = 0
-            self.damage_blocked_or_reduced: int = 0
-            
-            self.attacks_dodged: int = 0
-            self.abilities_dodged: int = 0
-            self.critical_hit_successes: int = 0
 
         def get_name(self):
             return "Companions Stats"
@@ -467,23 +457,13 @@ class Stats():
         def get_stats_str(self):
             return (
                 f"Companions Found: *{self.companions_found}*\n"
-                f"Companion Abilities Used: *{self.companion_abilities_used}*\n\n"
+                f"Items Fed: *{self.items_fed}*\n"
+                f"Names Given: *{self.names_given}*\n"
+                f"Bond Points Earned: *{self.bond_points_earned}*\n\n"
 
                 f"Companion Battles Fought: *{self.companion_battles_fought}*\n"
                 f"Companion Battles Won: *{self.companion_battles_won}*\n"
-                f"Companion Battles Tied: *{self.companion_battles_tied}*\n\n"
-
-                f"Attacks Done: *{self.attacks_done}*\n"
-                f"Abilities Used: *{self.abilities_used}*\n"
-                f"Items Used: *{self.items_used}*\n\n"
-
-                f"Damage Dealt: *{self.damage_dealt}*\n"
-                f"Damage Taken: *{self.damage_taken}*\n"
-                f"Damage Blocked or Reduced: *{self.damage_blocked_or_reduced}*\n\n"
-
-                f"Attacks Dodged: *{self.attacks_dodged}*\n"
-                f"Abilities Dodged: *{self.abilities_dodged}*\n"
-                f"Criticals Hit Successes: *{self.critical_hit_successes}*"
+                f"Companion Battles Tied: *{self.companion_battles_tied}*\n"
             )
 
         def __getstate__(self):
@@ -491,23 +471,13 @@ class Stats():
 
         def __setstate__(self, state: dict):
             self.companions_found = state.get("companions_found", 0)
-            self.companion_abilities_used = state.get("companion_abilities_used", 0)
+            self.items_fed = state.get("items_fed", 0)
+            self.names_given = state.get("names_given", 0)
+            self.bond_points_earned = state.get("bond_points_earned", 0)
 
             self.companion_battles_fought = state.get("companion_battles_fought", 0)
             self.companion_battles_won = state.get("companion_battles_won", 0)
-            self.companion_battles_tied = state.get("companion_battles_tied", 0)
-            
-            self.attacks_done = state.get("attacks_done", 0)
-            self.abilities_used = state.get("abilities_used", 0)
-            self.items_used = state.get("items_used", 0)
-
-            self.damage_dealt = state.get("damage_dealt", 0)
-            self.damage_taken = state.get("damage_taken", 0)
-            self.damage_blocked_or_reduced = state.get("damage_blocked_or_reduced", 0)
-
-            self.attacks_dodged = state.get("attacks_dodged", 0)
-            self.abilities_dodged = state.get("abilities_dodged", 0)
-            self.critical_hit_successes = state.get("critical_hit_successes", 0)
+            self.companion_battles_tied = state.get("companion_battles_tied", 0)            
 
     def __init__(self):
         self.fish = self.FishStats()

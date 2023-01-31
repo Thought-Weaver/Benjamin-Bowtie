@@ -12,7 +12,7 @@ from discord.embeds import Embed
 from discord.ext import commands, tasks
 
 from bot import BenjaminBowtieBot
-from features.companions.companion import ShadowfootRaccoonCompanion, TidewaterCrabCompanion
+from features.companions.companion import BlueFlitterwingButterflyCompanion, ShadowfootRaccoonCompanion, TidewaterCrabCompanion
 from features.companions.player_companions import PlayerCompanionsView
 from features.dueling import CompanionBattleView, GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
 from features.equipment import EquipmentView
@@ -340,6 +340,8 @@ class Adventures(commands.Cog):
                 companions.companions[CompanionKey.TidewaterCrab].set_id(author_player.get_id())
                 companion_result_str += "\n\nThis crab seems particularly friendly towards you! It's been added as a companion in b!companions."
 
+                author_player.get_stats().companions.companions_found += 1
+
         author_player.get_inventory().add_item(fishing_result)
         final_xp = player_xp.add_xp_to_class(xp_to_add, xp_class, author_player.get_equipment())
 
@@ -621,6 +623,8 @@ class Adventures(commands.Cog):
                     companions.companions[CompanionKey.ShadowfootRaccoon] = ShadowfootRaccoonCompanion()
                     companions.companions[CompanionKey.ShadowfootRaccoon].set_id(author_player.get_id())
                     companion_result_str += "\n\nBut just a moment later, there's a sound of shuffling and metal hitting metal, followed by a distinct scurrying and scrabbling up a cobblestone wall -- as out pops the head of a raccoon clutching your coin! Spotting you, it freezes, but seems to recognize that you might be the source of the money which has so often been tossed into the depths of the well. Curious, it approaches you and seems to want to follow! A new companion has been added to b!companions."
+
+                    author_player.get_stats().companions.companions_found += 1
 
             embed = Embed(
                 title="You toss the coin in...",
@@ -956,9 +960,11 @@ class Adventures(commands.Cog):
         if random.random() < 0.01:
             companions = author_player.get_companions()
             if CompanionKey.BlueFlitterwingButterfly not in companions.companions.keys():
-                companions.companions[CompanionKey.BlueFlitterwingButterfly] = TidewaterCrabCompanion()
+                companions.companions[CompanionKey.BlueFlitterwingButterfly] = BlueFlitterwingButterflyCompanion()
                 companions.companions[CompanionKey.BlueFlitterwingButterfly].set_id(author_player.get_id())
                 companion_result_str += "\n\nIn your garden, flittering about the plants, you can see a lovely blue butterfly which comes to rest on your hand. A new companions has been added in b!companions."
+
+                author_player.get_stats().companions.companions_found += 1
 
         view = GardenView(self._bot, self._database, context.guild.id, context.author, None)
         embed = view.get_embed_for_intent(companion_result_str)

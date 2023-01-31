@@ -13,7 +13,7 @@ from discord.ext import commands
 from strenum import StrEnum
 from features.expertise import ExpertiseClass
 from features.shared.attributes import Attributes
-from features.shared.constants import POISONED_PERCENT_HP, BLEED_PERCENT_HP, DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
+from features.shared.constants import COMPANION_BATTLE_POINTS, POISONED_PERCENT_HP, BLEED_PERCENT_HP, DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
 from features.shared.effect import EffectType, ItemEffectCategory
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, WeaponStats
@@ -1849,8 +1849,12 @@ class DuelView(discord.ui.View):
                 entity.get_expertise().hp = entity.get_expertise().max_hp
                 entity.get_expertise().mana = entity.get_expertise().max_mana
                 
-                entity.get_stats().dueling.duels_fought += 1
-                entity.get_stats().dueling.duels_tied += 1
+                if not self._companion_battle:
+                    entity.get_stats().dueling.duels_fought += 1
+                    entity.get_stats().dueling.duels_tied += 1
+                else:
+                    entity.get_stats().companions.companion_battles_fought += 1
+                    entity.get_stats().companions.companion_battles_tied += 1
 
                 entity.get_expertise().level_up_check()
 
@@ -1869,20 +1873,34 @@ class DuelView(discord.ui.View):
                 companion_key = player.get_companions().current_companion
                 if companion_key is not None:
                     current_companion = player.get_companions().companions[companion_key]
+
                     xp_gained: int = ceil(0.5 * current_companion.pet_battle_xp_gain)
                     current_companion.add_xp(xp_gained)
+
+                    current_companion.add_companion_points(COMPANION_BATTLE_POINTS)
+
                     winner_str += f"{current_companion.get_icon_and_name()} *(+{xp_gained} xp)*\n"
+
+                    player.get_stats().companions.companion_battles_fought += 1
+                    player.get_stats().companions.companion_battles_won += 1
 
             loser_owner_players: List[Player] = [self._database[str(self._guild_id)].get("members", {}).get(npc.get_id(), None) for npc in losers]
             loser_str: str = ""
             for player in loser_owner_players:
                 player.get_dueling().is_in_combat = False
+
                 companion_key = player.get_companions().current_companion
                 if companion_key is not None:
                     current_companion = player.get_companions().companions[companion_key]
+                    
                     xp_gained: int = ceil(0.5 * current_companion.pet_battle_xp_gain)
                     current_companion.add_xp(xp_gained)
+
+                    current_companion.add_companion_points(COMPANION_BATTLE_POINTS)
+
                     loser_str += f"{current_companion.get_icon_and_name()} *(+{xp_gained} xp)*\n"
+
+                    player.get_stats().companions.companion_battles_fought += 1
 
             result_str: str = f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}"
             return Embed(title="Companion Battle Complete", description=f"Your bonds have grown stronger and your companions have gained experience.\n\n{result_str}")

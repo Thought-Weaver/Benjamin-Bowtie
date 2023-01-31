@@ -364,6 +364,8 @@ class DruidView(discord.ui.View):
 
                 self._get_companions_page_buttons()
 
+                player.get_stats().companions.companions_found += 1
+
                 return Embed(
                     title="Browse Companions",
                     description=(

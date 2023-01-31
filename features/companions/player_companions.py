@@ -49,6 +49,8 @@ class NamingModal(discord.ui.Modal):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     async def on_submit(self, interaction: discord.Interaction):
+        player: Player = self._view._get_player()
+
         if self._companion is None:
             embed = Embed(
                 title="Companions",
@@ -70,7 +72,11 @@ class NamingModal(discord.ui.Modal):
             self._companion.custom_named = True
             additional_info = " and your bond is growing stronger!"
 
+            player.get_stats().companions.bond_points_earned += COMPANION_NAMING_POINTS
+
         self._companion.set_name(new_name)
+
+        player.get_stats().companions.names_given += 1
 
         embed = Embed(
             title="Companions",
@@ -495,6 +501,9 @@ class PlayerCompanionsView(discord.ui.View):
             message += " They love it!"
         self._selected_companion.add_companion_points(companion_points)
         self._selected_companion.fed_this_tick = True
+
+        player.get_stats().companions.bond_points_earned += companion_points
+        player.get_stats().companions.items_fed += 1
 
         self._selected_item = None
         self._selected_item_index = -1
