@@ -26,21 +26,22 @@ class Rarity(StrEnum):
     Epic = "Epic"
     Legendary = "Legendary"
     Artifact = "Artifact"
+    Cursed = "Cursed"
 
     def __lt__(self, rarity: Rarity) -> bool:
-        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Artifact, Rarity.Unknown]
+        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Cursed, Rarity.Artifact, Rarity.Unknown]
         return ordering.index(self) < ordering.index(rarity)
 
     def __gt__(self, rarity: Rarity) -> bool:
-        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Artifact, Rarity.Unknown]
+        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Cursed, Rarity.Artifact, Rarity.Unknown]
         return ordering.index(self) > ordering.index(rarity)
 
     def __leq__(self, rarity: Rarity) -> bool:
-        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Artifact, Rarity.Unknown]
+        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Cursed, Rarity.Artifact, Rarity.Unknown]
         return ordering.index(self) <= ordering.index(rarity)
 
     def __geq__(self, rarity: Rarity) -> bool:
-        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Artifact, Rarity.Unknown]
+        ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Cursed, Rarity.Artifact, Rarity.Unknown]
         return ordering.index(self) >= ordering.index(rarity)
 
 
@@ -636,7 +637,7 @@ class ConsumableStats():
 
 
 class Item():
-    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], state_tags: List[StateTag]=[], count=1, level_requirement=0, item_effects: ItemEffects | None=None, altering_item_keys: List[ItemKey]=[], attr_requirements: Attributes | None=None, armor_stats: ArmorStats | None=None, weapon_stats: WeaponStats | None=None, consumable_stats: ConsumableStats | None=None):
+    def __init__(self, key: ItemKey, icon: str, name: str, value: int, rarity: Rarity, description: str, flavor_text:str, class_tags: List[ClassTag], state_tags: List[StateTag] | None=None, count=1, level_requirement=0, item_effects: ItemEffects | None=None, altering_item_keys: List[ItemKey] | None=None, attr_requirements: Attributes | None=None, armor_stats: ArmorStats | None=None, weapon_stats: WeaponStats | None=None, consumable_stats: ConsumableStats | None=None):
         self._key: ItemKey = key
         self._icon: str = icon
         self._name: str = name
@@ -645,11 +646,11 @@ class Item():
         self._description: str = description
         self._flavor_text: str = flavor_text
         self._class_tags: List[ClassTag] = class_tags
-        self._state_tags: List[StateTag] = state_tags
+        self._state_tags: List[StateTag] = [] if state_tags is None else state_tags
         self._count: int = count
         self._level_requirement: int = level_requirement
         self._item_effects: ItemEffects | None = item_effects
-        self._altering_item_keys: List[ItemKey] = altering_item_keys
+        self._altering_item_keys: List[ItemKey] = [] if altering_item_keys is None else altering_item_keys
         self._attr_requirements: Attributes | None = attr_requirements 
 
         self._armor_stats: ArmorStats | None = armor_stats
@@ -679,7 +680,7 @@ class Item():
         item_effects_data = item_data.get("item_effects")
         item_effects = None
         if item_effects_data is not None:
-            item_effects = ItemEffects()
+            item_effects = ItemEffects([], [], [], [], [], [], [], [])
             item_effects.__setstate__(item_effects_data)
         
         return Item(
@@ -804,7 +805,7 @@ class Item():
 
     def get_item_effects(self) -> ItemEffects:
         # Start with this item's base effects
-        combined_effects = self._item_effects if self._item_effects is not None else ItemEffects()
+        combined_effects = self._item_effects if self._item_effects is not None else ItemEffects([], [], [], [], [], [], [], [])
 
         # Add in everything from items that are altering it
         for item_key in self._altering_item_keys:
@@ -812,7 +813,7 @@ class Item():
                 item_effects_data = LOADED_ITEMS.get_item_state(item_key).get("item_effects")
                 item_effects = None
                 if item_effects_data is not None:
-                    item_effects = ItemEffects()
+                    item_effects = ItemEffects([], [], [], [], [], [], [], [])
                     item_effects.__setstate__(item_effects_data)
                 
                 if item_effects is not None:
@@ -984,7 +985,7 @@ class Item():
 
         item_effects_data = base_data.get("item_effects")
         if item_effects_data is not None:
-            self._item_effects = ItemEffects()
+            self._item_effects = ItemEffects([], [], [], [], [], [], [], [])
             self._item_effects.__setstate__(item_effects_data)
         else:
             self._item_effects = None

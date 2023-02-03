@@ -595,7 +595,7 @@ class Effect():
 # -----------------------------------------------------------------------------
 
 class ItemEffects():
-    def __init__(self, permanent: List[Effect]=[], on_turn_start: List[Effect]=[], on_turn_end: List[Effect]=[], on_damaged: List[Effect]=[], on_successful_ability_used: List[Effect]=[], on_successful_attack: List[Effect]=[], on_attacked: List[Effect]=[], on_ability_used_against: List[Effect]=[]):
+    def __init__(self, permanent: List[Effect], on_turn_start: List[Effect], on_turn_end: List[Effect], on_damaged: List[Effect], on_successful_ability_used: List[Effect], on_successful_attack: List[Effect], on_attacked: List[Effect], on_ability_used_against: List[Effect]):
         # Permanent is a special case since it doesn't ever trigger like the others and therefore encapsulates
         # the concept of inherent item mods which are going to be referenced in a bunch of places.
         self.permanent: List[Effect] = permanent
@@ -722,6 +722,18 @@ class ItemEffects():
 
         # Remove the last two newlines
         return display_string[:-2]
+
+    def __len__(self):
+        return len(
+            self.permanent +
+            self.on_turn_start +
+            self.on_turn_end +
+            self.on_damaged +
+            self.on_successful_ability_used +
+            self.on_successful_attack +
+            self.on_attacked +
+            self.on_ability_used_against
+        )
 
     def load_effect_from_state(self, data):
         if isinstance(data, Effect):
