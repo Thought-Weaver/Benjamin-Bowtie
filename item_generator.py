@@ -2293,26 +2293,30 @@ if __name__ == "__main__":
                     item_effects.on_ability_used_against.append(effect)
 
         name, icon = random.choice(NAMES_AND_ICONS[item_type])
-        prefix = ""
-        suffix = ""
-        if random.random() < 0.5:
-            if len(possible_prefixes) != 0:
-                prefix = random.choice(possible_prefixes)
+        if len(item_effects) > 0:
+            prefix = ""
+            suffix = ""
+            if random.random() < 0.5:
+                if len(possible_prefixes) != 0:
+                    prefix = random.choice(possible_prefixes)
+            else:
+                if len(possible_suffixes) != 0:
+                    suffix = random.choice(possible_suffixes)
+            
+            # Occasionally, items get both a suffix and a prefix!
+            if random.random() < 0.1:
+                if prefix == "" and len(possible_prefixes) != 0:
+                    prefix = random.choice(possible_prefixes)
+                elif suffix == "" and len(possible_suffixes) != 0:
+                    suffix = random.choice(possible_suffixes)
+            
+            if prefix != "":
+                name = prefix + " " + name
+            if suffix != "":
+                name = name + " " + suffix
         else:
-            if len(possible_suffixes) != 0:
-                suffix = random.choice(possible_suffixes)
-        
-        # Occasionally, items get both a suffix and a prefix!
-        if random.random() < 0.1:
-            if prefix == "" and len(possible_prefixes) != 0:
-                prefix = random.choice(possible_prefixes)
-            elif suffix == "" and len(possible_suffixes) != 0:
-                suffix = random.choice(possible_suffixes)
-        
-        if prefix != "":
-            name = prefix + " " + name
-        if suffix != "":
-            name = name + " " + suffix
+            # Just skip the item if it didn't get any valid item effects
+            continue
         
         attr_reqs = Attributes(0, 0, 0, 0, 0, 0)
         level_req = 0
