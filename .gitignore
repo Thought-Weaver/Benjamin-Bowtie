@@ -10,6 +10,7 @@ __pycache__/
 .vscode/
 .mypy_cache/
 features/npcs/images
+generated_items/final_items/
 
 # Databases
 database

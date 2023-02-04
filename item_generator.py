@@ -2296,7 +2296,7 @@ if __name__ == "__main__":
                     time_range = range(time_range.start, time_range.stop + 1)
                 effect_time: int = random.choice(list(time_range))
 
-                if random.random() < 0.005 and (len(BAD_PREFIXES.get(effect_type, [])) > 0 or len(BAD_SUFFIXES.get(effect_type, [])) > 0):
+                if random.random() < 0.1 and (len(BAD_PREFIXES.get(effect_type, [])) > 0 or len(BAD_SUFFIXES.get(effect_type, [])) > 0):
                     effect_value *= -1
                     rarity = Rarity.Cursed
                     possible_prefixes = BAD_PREFIXES.get(effect_type, [])
@@ -2568,7 +2568,7 @@ if __name__ == "__main__":
                 "armor": armor_stats._armor_amount
             }
         
-        attr_requirements_dict = {}
+        attr_requirements_dict: Dict[str, int] = {}
         if attr_reqs.constitution > 0:
             attr_requirements_dict["constitution"] = attr_reqs.constitution
         if attr_reqs.strength > 0:
@@ -2581,6 +2581,9 @@ if __name__ == "__main__":
             attr_requirements_dict["luck"] = attr_reqs.luck
         if attr_reqs.memory > 0:
             attr_requirements_dict["memory"] = attr_reqs.memory
+        
+        if len(attr_requirements_dict) > 0:
+            item["attr_requirements"] = attr_requirements_dict
 
         json_str = json.dumps(item, indent=4)
         filename = f"./generated_items/{key}.json"
