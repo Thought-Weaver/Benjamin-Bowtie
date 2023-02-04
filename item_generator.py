@@ -82,7 +82,8 @@ NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]
         ("Cestus", "\uD83E\uDD4A"),
         ("Star Fist", "\uD83E\uDD4A"),
         ("Claws", "\uD83E\uDD4A"),
-        ("Talons", "\uD83E\uDD4A")
+        ("Talons", "\uD83E\uDD4A"),
+        ("Gadlings", "\uD83E\uDD4A")
     ],
     ClassTag.Weapon.Spear: [
         ("Spear", "\uD83C\uDF62"),
@@ -167,7 +168,10 @@ NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]
         ("Necklace", "\uD83D\uDCFF"),
         ("Amulet", "\uD83D\uDCFF"),
         ("Periapt", "\uD83D\uDCFF"),
-        ("Sigil", "\uD83D\uDCFF")
+        ("Sigil", "\uD83D\uDCFF"),
+        ("Pendant", "\uD83D\uDCFF"),
+        ("Carcanet", "\uD83D\uDCFF"),
+        ("Strand", "\uD83D\uDCFF")
     ],
     ClassTag.Equipment.Ring: [
         ("Ring", "\uD83D\uDC8D"),
@@ -213,14 +217,14 @@ SLOTS_PER_ITEM_TYPE: Dict[ClassTag.Weapon | ClassTag.Equipment, range] = {
 GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = {
     EffectType.CleanseStatusEffects: ["of Purification", "of Cleansing"],
 
-    EffectType.ConMod: ["of Fortification", "of Constitution"],
+    EffectType.ConMod: ["of Fortification", "of Constitution", "of the Bear"],
     EffectType.StrMod: ["of Strength", "of Might"],
-    EffectType.DexMod: ["of Dexterity", "of Precision", "of Haste", "of Accuracy"],
-    EffectType.IntMod: ["of Knowledge", "of the Erudite", "of Intelligence", "of Arcana"],
+    EffectType.DexMod: ["of Dexterity", "of Precision", "of Haste", "of Accuracy", "of the Wind", "of Shadows"],
+    EffectType.IntMod: ["of Knowledge", "of the Erudite", "of Intelligence", "of Arcana", "of the Augur", "of the Sage"],
     EffectType.LckMod: ["of Luck", "of Fortune", "of Serendipity"],
     EffectType.MemMod: ["of Remembrance", "of Memory"],
 
-    EffectType.DmgReflect: ["of Reflection", "of Mirrors", "of the Turtle"],
+    EffectType.DmgReflect: ["of Reflection", "of Mirrors", "of the Turtle", "of Brambles", "of Thorns"],
     EffectType.DmgResist: ["of Absorption", "of Nullifcation", "of Endurance"],
     EffectType.DmgBuff: ["of Force", "of the Storm", "of Brutality"],
     EffectType.DmgBuffSelfMaxHealth: ["of the Hemocrafter", "of the Butcher"],
@@ -230,7 +234,7 @@ GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
 
     EffectType.DmgBuffLegends: ["of the Titan", "of Legends"],
     EffectType.DmgBuffPoisoned: ["of the Serpent", "of Toxicity"],
-    EffectType.DmgBuffBleeding: ["of the Bloodthirsty", "of the Macabre"],
+    EffectType.DmgBuffBleeding: ["of the Bloodthirsty", "of the Macabre", "of Agony"],
     EffectType.DmgBuffFromDex: ["of Balance", "of Accuracy", "of Precision"],
     EffectType.DmgBuffFromInt: ["of Knowledge", "of Brilliance", "of the Erudite"],
     EffectType.DmgBuffFromLck: ["of Fortune", "of the Fated", "of Luck", "of Serendipity"],
@@ -363,16 +367,16 @@ BAD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = {
 GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = {
     EffectType.CleanseStatusEffects: ["Cleansing", "Purifying"],
 
-    EffectType.ConMod: ["Fortifying", "Tower's", "Impenetrable", "Unbreaking"],
+    EffectType.ConMod: ["Fortifying", "Tower's", "Impenetrable", "Unbreaking", "Bear's", "Stalwart", "Robust"],
     EffectType.StrMod: ["Empowering", "Strong", "Hefty", "Giant's"],
     EffectType.DexMod: ["Quick", "Fast", "Dextrous", "Precise", "Accurate"],
     EffectType.IntMod: ["Knowing", "Brilliant", "Acute", "Arcane"],
     EffectType.LckMod: ["Lucky", "Fated", "Prosperous", "Serendipitous"],
     EffectType.MemMod: ["Recollecting"],
 
-    EffectType.DmgReflect: ["Turtle's", "Reflecting", "Mirror's", "Returning", "Rebounding"],
+    EffectType.DmgReflect: ["Turtle's", "Reflecting", "Mirror's", "Rebounding", "Barbed"],
     EffectType.DmgResist: ["Absorbing", "Nullifying", "Enduring", "Outlasting"],
-    EffectType.DmgBuff: ["Empowering", "Annihilating", "Storm's", "Jagged", "Deadly", "Brutal", "Savage"],
+    EffectType.DmgBuff: ["Empowering", "Annihilating", "Storm's", "Jagged", "Deadly", "Brutal", "Savage", "Heavy", "Merciless"],
     EffectType.DmgBuffSelfMaxHealth: ["Bloodbound", "Lifestrike", "Hemocrafter's"],
     EffectType.DmgBuffSelfRemainingHealth: ["Bloodbound", "Lifestrike", "Hemocrafter's"],
     EffectType.DmgBuffOtherMaxHealth: ["Bloodbound", "Lifestrike", "Hemocrafter's"],
@@ -385,8 +389,8 @@ GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
     EffectType.DmgBuffFromInt: ["Knowing", "Brilliant", "Erudite's", "Acute"],
     EffectType.DmgBuffFromLck: ["Lucky", "Fated", "Prosperous", "Serendipitous"],
 
-    EffectType.RestoreArmor: ["Repairing", "Restructuring", "Weavebonded", "Metalbonded"],
-    EffectType.RestorePercentArmor: ["Repairing", "Restructuring", "Weavebonded", "Metalbonded"],
+    EffectType.RestoreArmor: ["Repairing", "Restructuring", "Weavebonded", "Metalbonded", "Carapaced"],
+    EffectType.RestorePercentArmor: ["Repairing", "Restructuring", "Weavebonded", "Metalbonded", "Carapaced"],
     EffectType.PiercingDmg: ["Eviscerating", "Piercing"],
     EffectType.PiercingPercentDmg: ["Eviscerating", "Piercing"],
     EffectType.SplashDmg: ["Giant", "Sweeping", "Quaking"],
