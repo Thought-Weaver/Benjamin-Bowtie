@@ -12,11 +12,10 @@ from features.shared.effect import Effect, EffectType, ItemEffectCategory, ItemE
 from features.shared.enums import ClassTag
 from features.shared.item import Rarity, WeaponStats, ArmorStats
 from features.shared.statuseffect import StatusEffectKey
-from itertools import count, takewhile
 
 # Note: This is inclusive!
-def frange(start: float, stop: float, step: float):
-    if step > 0:
+def frange(start: float, stop: float, step: float) -> List[float]:
+    if step > 0 and stop > start:
         return list(numpy.arange(start=start, stop=stop + step, step=step))
     else:
         return [start, stop]
@@ -1129,7 +1128,7 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             StatusEffectKey.DmgVulnerability: {
                 ItemEffectCategory.OnSuccessfulAttack: [[frange(0.05, 0.075, 0.025), range(2, 3)], [frange(0.1, 0.15, 0.025), range(1, 2)]],
                 ItemEffectCategory.OnSuccessfulAbilityUsed: [[frange(0.05, 0.075, 0.025), range(2, 3)], [frange(0.1, 0.15, 0.025), range(1, 2)]],
-                ItemEffectCategory.OnAttacked: [[frange(0.075, 0.01, 0.025), range(2, 3)], [frange(0.1, 0.2, 0.05), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[frange(0.075, 0.1, 0.025), range(2, 3)], [frange(0.1, 0.2, 0.05), range(1, 2)]],
                 ItemEffectCategory.OnAbilityUsedAgainst: [[frange(0.075, 0.01, 0.025), range(2, 3)], [frange(0.1, 0.2, 0.05), range(1, 2)]],
                 ItemEffectCategory.OnDamaged: [[frange(0.075, 0.01, 0.025), range(2, 3)], [frange(0.1, 0.2, 0.05), range(1, 2)]]
             },
@@ -2176,6 +2175,63 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
     }
 }
 
+EFFECT_CHANCES: Dict[EffectType, float] = {
+    EffectType.CleanseStatusEffects: 0.01,
+
+    EffectType.ConMod: 0.02,
+    EffectType.StrMod: 0.02,
+    EffectType.DexMod: 0.02,
+    EffectType.IntMod: 0.02,
+    EffectType.LckMod: 0.02,
+    EffectType.MemMod: 0.02,
+
+    EffectType.DmgReflect: 0.02,
+    EffectType.DmgResist: 0.02,
+    EffectType.DmgBuff: 0.02,
+    EffectType.DmgBuffSelfMaxHealth: 0.005,
+    EffectType.DmgBuffSelfRemainingHealth: 0.005,
+    EffectType.DmgBuffOtherMaxHealth: 0.005,
+    EffectType.DmgBuffOtherRemainingHealth: 0.005,
+
+    EffectType.DmgBuffLegends: 0.02,
+    EffectType.DmgBuffPoisoned: 0.02,
+    EffectType.DmgBuffBleeding: 0.02,
+    EffectType.DmgBuffFromDex: 0.02,
+    EffectType.DmgBuffFromInt: 0.02,
+    EffectType.DmgBuffFromLck: 0.02,
+
+    EffectType.RestoreArmor: 0.02,
+    EffectType.RestorePercentArmor: 0.02,
+    EffectType.PiercingDmg: 0.02,
+    EffectType.PiercingPercentDmg: 0.02,
+    EffectType.SplashDmg: 0.02,
+    EffectType.SplashPercentMaxDmg: 0.02,
+
+    EffectType.CritDmgBuff: 0.02,
+    EffectType.CritDmgReduction: 0.02,
+    
+    EffectType.HealthSteal: 0.02,
+    EffectType.ManaSteal: 0.02,
+    EffectType.AdjustedCDs: 0.02,
+
+    EffectType.ChanceStatusEffect: 0.3,
+
+    EffectType.ResistStatusEffect: 0.2,
+
+    EffectType.RestoreHealth: 0.02,
+    EffectType.RestorePercentHealth: 0.02,
+    EffectType.RestoreMana: 0.02,
+    EffectType.RestorePercentMana: 0.02,
+
+    EffectType.AdjustedManaCosts: 0.02,
+    EffectType.HealingAbilityBuff: 0.02,
+    EffectType.AdditionalXP: 0.02,
+    EffectType.PotionMod: 0.02,
+
+    EffectType.Damage: 0.02,
+    EffectType.ResurrectOnce: 0.02
+}
+
 if __name__ == "__main__":
     for item_index in range(2000):
         # Order should be as follows:
@@ -2210,12 +2266,13 @@ if __name__ == "__main__":
         elif rarity == Rarity.Artifact:
             num_effects = random.randint(1, 4)
 
+        valid_effect_types = {et: v for et, v in EFFECT_CHANCES.items() if et in EFFECTS_BY_RARITY[rarity].keys()}
+
         possible_prefixes = []
         possible_suffixes = []
         
-        # TODO: Random conditionals on effects?
         for effect_index in range(num_effects):
-            effect_type = random.choice(list(EFFECTS_BY_RARITY[pre_curse_rarity].keys()))
+            effect_type = random.choices(list(valid_effect_types.keys()), list(valid_effect_types.values()), k=1)[0]
             item_effect_cat = None
             effect = None
 
@@ -2225,14 +2282,22 @@ if __name__ == "__main__":
                     continue
                 
                 item_effect_cat = random.choice(list(possible_effects.keys()))
-                effect_params: List[takewhile[float] | range] = random.choice(possible_effects[item_effect_cat])
+                effect_params: List[List[float] | range] = random.choice(possible_effects[item_effect_cat])
 
                 # Since range is exclusive but I'd like to be able to identify parameters at a glance
                 # above, this remaps the range with stop + 1.
                 value_range = effect_params[0]
                 if isinstance(value_range, range):
                     value_range = range(value_range.start, value_range.stop + 1)
-                effect_value: int | float = round(random.choice(list(value_range)), 3)
+                effect_value: int | float = 0
+                try: 
+                    effect_value = round(random.choice(list(value_range)), 3)
+                except:
+                    print(rarity)
+                    print(effect_type)
+                    print(item_effect_cat)
+                    print(value_range)
+                    print()
 
                 time_range = effect_params[1]
                 if isinstance(time_range, range):
@@ -2263,12 +2328,20 @@ if __name__ == "__main__":
                 
                 item_effect_cat = random.choice(list(possible_effects.keys()))
 
-                effect_params: List[takewhile[float] | range] = random.choice(possible_effects[item_effect_cat])
+                effect_params: List[List[float] | range] = random.choice(possible_effects[item_effect_cat])
 
                 value_range = effect_params[0]
                 if isinstance(value_range, range):
                     value_range = range(value_range.start, value_range.stop + 1)
-                effect_value: int | float = round(random.choice(list(value_range)), 3)
+                try: 
+                    effect_value = round(random.choice(list(value_range)), 3)
+                except:
+                    print(rarity)
+                    print(effect_type)
+                    print(status_effect_key)
+                    print(item_effect_cat)
+                    print(value_range)
+                    print()
 
                 time_range = effect_params[1]
                 if isinstance(time_range, range):
