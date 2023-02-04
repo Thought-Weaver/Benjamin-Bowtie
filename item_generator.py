@@ -280,7 +280,7 @@ GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
     },
 
     EffectType.ResistStatusEffect: {
-        StatusEffectKey.Bleeding: ["of Clotting", "of Cauterization", "of Coagulation"],
+        StatusEffectKey.Bleeding: ["of Clotting", "of Cauterization", "of Coagulation", "of Embolization"],
         StatusEffectKey.Poisoned: ["of Decontamination", "of the Antidote"],
         StatusEffectKey.DmgVulnerability: ["of Resilience", "of the Formidable", "of Tenacity"],
         StatusEffectKey.TurnSkipChance: ["of the Steady", "of the Unwavering"],
@@ -369,7 +369,7 @@ GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
 
     EffectType.ConMod: ["Fortifying", "Tower's", "Impenetrable", "Unbreaking", "Bear's", "Stalwart", "Robust"],
     EffectType.StrMod: ["Empowering", "Strong", "Hefty", "Giant's"],
-    EffectType.DexMod: ["Quick", "Fast", "Dextrous", "Precise", "Accurate"],
+    EffectType.DexMod: ["Quick", "Dextrous", "Precise", "Accurate", "Nimble", "Deft"],
     EffectType.IntMod: ["Knowing", "Brilliant", "Acute", "Arcane"],
     EffectType.LckMod: ["Lucky", "Fated", "Prosperous", "Serendipitous"],
     EffectType.MemMod: ["Recollecting"],
@@ -385,7 +385,7 @@ GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
     EffectType.DmgBuffLegends: ["Titanic", "Doombringer's", "Fabled", "Mythic"],
     EffectType.DmgBuffPoisoned: ["Serpent's", "Corrosive", "Toxic", "Pestilent"],
     EffectType.DmgBuffBleeding: ["Sanguinary", "Bloodthirsty", "Macabre"],
-    EffectType.DmgBuffFromDex: ["Quick", "Fast", "Balanced", "Accurate", "Precise"],
+    EffectType.DmgBuffFromDex: ["Quick", "Balanced", "Accurate", "Precise"],
     EffectType.DmgBuffFromInt: ["Knowing", "Brilliant", "Erudite's", "Acute"],
     EffectType.DmgBuffFromLck: ["Lucky", "Fated", "Prosperous", "Serendipitous"],
 
@@ -404,7 +404,7 @@ GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
     EffectType.AdjustedCDs: ["Hastening", "Ephemeral", "Temporal"],
 
     EffectType.ChanceStatusEffect: {
-        StatusEffectKey.Bleeding: ["Bloodletting", "Vicious"],
+        StatusEffectKey.Bleeding: ["Bloodletting", "Vicious", "Exsanguinating", "Hemorrhaging"],
         StatusEffectKey.Poisoned: ["Poisonous", "Virulent", "Toxic", "Septic", "Noxious"],
         StatusEffectKey.DmgReduction: ["Defensive", "Shielding", "Preserving"],
         StatusEffectKey.DmgVulnerability: ["Enervating", "Weakening", "Diminishing"],
@@ -2174,7 +2174,7 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
 }
 
 if __name__ == "__main__":
-    for item_index in range(100):
+    for item_index in range(2000):
         # Order should be as follows:
         #   (1) Choose random item type using a class tag, i.e. dagger, shield, etc.
         #   (2) Choose rarity at random from the list
@@ -2308,7 +2308,7 @@ if __name__ == "__main__":
                     suffix = random.choice(possible_suffixes)
             
             # Occasionally, items get both a suffix and a prefix!
-            if random.random() < 0.1:
+            if random.random() < 0.25:
                 if prefix == "" and len(possible_prefixes) != 0:
                     prefix = random.choice(possible_prefixes)
                 elif suffix == "" and len(possible_suffixes) != 0:
