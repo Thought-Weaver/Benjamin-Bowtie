@@ -198,22 +198,23 @@ NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]
     ]
 }
 
+# Note: These have +1 on the upper end since range is exclusive
 SLOTS_PER_ITEM_TYPE: Dict[ClassTag.Weapon | ClassTag.Equipment, range] = {
-    ClassTag.Weapon.Dagger: range(0, 2),
-    ClassTag.Weapon.Sword: range(0, 3),
-    ClassTag.Weapon.Greatsword: range(0, 3),
-    ClassTag.Weapon.Knuckles: range(0, 2),
-    ClassTag.Weapon.Spear: range(0, 3),
-    ClassTag.Weapon.Staff: range(0, 3),
-    ClassTag.Weapon.Shield: range(0, 3),
+    ClassTag.Weapon.Dagger: range(0, 3),
+    ClassTag.Weapon.Sword: range(0, 4),
+    ClassTag.Weapon.Greatsword: range(0, 4),
+    ClassTag.Weapon.Knuckles: range(0, 3),
+    ClassTag.Weapon.Spear: range(0, 4),
+    ClassTag.Weapon.Staff: range(0, 4),
+    ClassTag.Weapon.Shield: range(0, 4),
 
-    ClassTag.Equipment.Helmet: range(0, 2),
-    ClassTag.Equipment.ChestArmor: range(0, 3),
-    ClassTag.Equipment.Gloves: range(0, 1),
-    ClassTag.Equipment.Boots: range(0, 2),
-    ClassTag.Equipment.Amulet: range(0, 1),
-    ClassTag.Equipment.Ring: range(0, 1),
-    ClassTag.Equipment.Leggings: range(0, 2)
+    ClassTag.Equipment.Helmet: range(0, 3),
+    ClassTag.Equipment.ChestArmor: range(0, 4),
+    ClassTag.Equipment.Gloves: range(0, 2),
+    ClassTag.Equipment.Boots: range(0, 3),
+    ClassTag.Equipment.Amulet: range(0, 2),
+    ClassTag.Equipment.Ring: range(0, 2),
+    ClassTag.Equipment.Leggings: range(0, 3)
 }
 
 GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = {
@@ -1510,7 +1511,7 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             ItemEffectCategory.OnDamaged: [[frange(0.04, 0.06, 0.01), range(-1, -1)]]
         },
         EffectType.AdjustedCDs: {
-            ItemEffectCategory.Permanent: [[range(1, 1), range(-1, -1)]]
+            ItemEffectCategory.Permanent: [[range(-1, -1), range(-1, -1)]]
         },
 
         EffectType.ChanceStatusEffect: {
@@ -1920,7 +1921,7 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             ItemEffectCategory.OnDamaged: [[frange(0.05, 0.1, 0.01), range(-1, -1)]]
         },
         EffectType.AdjustedCDs: {
-            ItemEffectCategory.Permanent: [[range(1, 3), range(-1, -1)]]
+            ItemEffectCategory.Permanent: [[range(-3, -1), range(-1, -1)]]
         },
 
         EffectType.ChanceStatusEffect: {
