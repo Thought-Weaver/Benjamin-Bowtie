@@ -2289,15 +2289,7 @@ if __name__ == "__main__":
                 value_range = effect_params[0]
                 if isinstance(value_range, range):
                     value_range = range(value_range.start, value_range.stop + 1)
-                effect_value: int | float = 0
-                try: 
-                    effect_value = round(random.choice(list(value_range)), 3)
-                except:
-                    print(rarity)
-                    print(effect_type)
-                    print(item_effect_cat)
-                    print(value_range)
-                    print()
+                effect_value: int | float = round(random.choice(list(value_range)), 3)
 
                 time_range = effect_params[1]
                 if isinstance(time_range, range):
@@ -2333,15 +2325,7 @@ if __name__ == "__main__":
                 value_range = effect_params[0]
                 if isinstance(value_range, range):
                     value_range = range(value_range.start, value_range.stop + 1)
-                try: 
-                    effect_value = round(random.choice(list(value_range)), 3)
-                except:
-                    print(rarity)
-                    print(effect_type)
-                    print(status_effect_key)
-                    print(item_effect_cat)
-                    print(value_range)
-                    print()
+                effect_value = round(random.choice(list(value_range)), 3)
 
                 time_range = effect_params[1]
                 if isinstance(time_range, range):
