@@ -2308,7 +2308,7 @@ if __name__ == "__main__":
                     suffix = random.choice(possible_suffixes)
             
             # Occasionally, items get both a suffix and a prefix!
-            if random.random() < 0.25:
+            if random.random() < 0.25 and len(item_effects) > 1:
                 if prefix == "" and len(possible_prefixes) != 0:
                     prefix = random.choice(possible_prefixes)
                 elif suffix == "" and len(possible_suffixes) != 0:
