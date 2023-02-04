@@ -171,7 +171,8 @@ NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]
         ("Sigil", "\uD83D\uDCFF"),
         ("Pendant", "\uD83D\uDCFF"),
         ("Carcanet", "\uD83D\uDCFF"),
-        ("Strand", "\uD83D\uDCFF")
+        ("Strand", "\uD83D\uDCFF"),
+        ("Lariat", "\uD83D\uDCFF")
     ],
     ClassTag.Equipment.Ring: [
         ("Ring", "\uD83D\uDC8D"),
@@ -179,6 +180,7 @@ NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]
         ("Band", "\u2B55"),
         ("Loop", "\u2B55"),
         ("Circle", "\u2B55"),
+        ("Cord", "\u2B55"),
         ("Flower Band", "\uD83C\uDF38"),
         ("Mushroom Band", "\uD83C\uDF44")
     ],
