@@ -295,8 +295,8 @@ GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
         StatusEffectKey.Decaying: ["of the Vigorous", "of the Flourishing"]
     },
 
-    EffectType.RestoreHealth: ["of Recovery", "of Restoration", "of Rejunvination"],
-    EffectType.RestorePercentHealth: ["of Recovery", "of Restoration", "of Rejunvination"],
+    EffectType.RestoreHealth: ["of Recovery", "of Restoration", "of Rejuvenation"],
+    EffectType.RestorePercentHealth: ["of Recovery", "of Restoration", "of Rejuvenation"],
     EffectType.RestoreMana: ["of Sorcery", "of the Occult", "of the Mystic"],
     EffectType.RestorePercentMana: ["of Sorcery", "of the Occult", "of the Mystic"],
 
