@@ -2452,7 +2452,7 @@ if __name__ == "__main__":
             attr_reqs.constitution = int(random.uniform(0.2, 0.4) * armor)
             level_req = int(0.75 * armor)
         elif item_type == ClassTag.Equipment.ChestArmor:
-            armor = random.randint(5, 300)
+            armor = random.randint(5, 250)
             armor_stats = ArmorStats(armor)
 
             attr_reqs.constitution = int(random.uniform(0.1, 0.2) * armor)
