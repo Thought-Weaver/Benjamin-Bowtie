@@ -2479,7 +2479,6 @@ if __name__ == "__main__":
             armor = random.randint(5, 200)
             armor_stats = ArmorStats(armor)
 
-            attr_reqs.constitution = int(random.uniform(0.2, 0.4) * armor)
             level_req = int(0.9 * armor) if armor < 60 else int(0.7 * armor)
         elif item_type == ClassTag.Equipment.Ring or item_type == ClassTag.Equipment.Amulet:
             level_req = 10 * len(item_effects)
