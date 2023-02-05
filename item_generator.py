@@ -424,7 +424,7 @@ GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
         StatusEffectKey.DmgReflect: ["Turtle's", "Reflecting", "Mirror's", "Returning", "Rebounding"],
         StatusEffectKey.Charmed: ["Charming", "Alluring", "Entrancing", "Captivating", "Hypnotizing", "Fair", "Beguiling", "Bewitching", "Fair"],
         StatusEffectKey.CannotAttack: ["Atrophying", "Deteriorating", "Wasting", "Waning", "Debilitating"],
-        StatusEffectKey.Sleeping: ["Soporific", "Somiferous", "Lulling", "Slumberous", "Langorous"],
+        StatusEffectKey.Sleeping: ["Soporific", "Somniferous", "Lulling", "Slumberous", "Langorous"],
         StatusEffectKey.Decaying: ["Decaying", "Decomposing", "Moldering", "Spoiling", "Rotting"],
         StatusEffectKey.Undying: ["Immortal", "Deathless", "Eternal", "Everlasting", "Perpetual"],
         StatusEffectKey.CannotUseAbilities: ["Enfeebling", "Draining", "Torpefying"],
@@ -440,7 +440,7 @@ GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
         StatusEffectKey.CannotTarget: ["Focused", "Assiduous"],
         StatusEffectKey.DmgDebuff: ["Mighty", "Powerful", "Robust", "Ardent"],
         StatusEffectKey.Charmed: ["Calm", "Serene", "Composed", "Fair", "Equanimous"],
-        StatusEffectKey.CannotAttack: ["Persistent", "Unabating", "Braced", "Rivited", "Even"],
+        StatusEffectKey.CannotAttack: ["Persistent", "Unabating", "Braced", "Riveted", "Even"],
         StatusEffectKey.Sleeping: ["Awoken", "Insomniac's"],
         StatusEffectKey.Decaying: ["Persistent", "Unabating", "Sheltering"]
     },
@@ -2455,8 +2455,8 @@ if __name__ == "__main__":
             armor = random.randint(5, 300)
             armor_stats = ArmorStats(armor)
 
-            attr_reqs.constitution = int(random.uniform(0.2, 0.4) * armor)
-            level_req = int(0.5 * armor)
+            attr_reqs.constitution = int(random.uniform(0.1, 0.2) * armor)
+            level_req = int(0.3 * armor)
         elif item_type == ClassTag.Equipment.Gloves:
             armor = random.randint(5, 100)
             armor_stats = ArmorStats(armor)
@@ -2545,6 +2545,9 @@ if __name__ == "__main__":
             "level_requirement": level_req,
             "altering_item_keys": ["" for _ in range(num_slots)]
         }
+
+        if rarity == Rarity.Artifact:
+            item["class_tags"].append(ClassTag.Misc.NeedsIdentification)
 
         if len(item_effects) > 0:
             item["item_effects"] = {}
