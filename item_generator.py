@@ -147,7 +147,7 @@ NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]
     ],
     ClassTag.Equipment.Gloves: [
         ("Gloves", "\uD83E\uDDE4"),
-        ("Machettes", "\uD83E\uDDE4"),
+        ("Manchettes", "\uD83E\uDDE4"),
         ("Bracers", "\uD83E\uDDE4"),
         ("Gauntlets", "\uD83E\uDDE4"),
         ("Wraps", "\uD83E\uDDE4"),
