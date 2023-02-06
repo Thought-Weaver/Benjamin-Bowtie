@@ -463,7 +463,7 @@ BAD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = {
     EffectType.CleanseStatusEffects: [],
 
     EffectType.ConMod: ["Shattering", "Weakening", "Eroding"],
-    EffectType.StrMod: ["Weakening", "Withering", "Debiliating", "Diminishing"],
+    EffectType.StrMod: ["Weakening", "Withering", "Debilitating", "Diminishing"],
     EffectType.DexMod: ["Slow", "Unbalanced", "Inaccurate"],
     EffectType.IntMod: ["Foolish", "Mindless", "Slow", "Vacuous", "Vapid", "Dull"],
     EffectType.LckMod: ["Unlucky", "Unfortunate", "Unfavorable", "Ill-Fated", "Luckless"],
