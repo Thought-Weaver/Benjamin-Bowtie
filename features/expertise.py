@@ -8,7 +8,7 @@ from math import ceil
 from strenum import StrEnum
 
 from features.shared.attributes import Attributes
-from features.shared.constants import BASE_HP, BASE_MANA, CON_HEALTH_SCALE, INT_MANA_SCALE
+from features.shared.constants import BASE_CON_HEALTH_SCALE, BASE_HP, BASE_INT_MANA_SCALE, BASE_MANA, CON_HEALTH_SCALE_ADJUST, CON_HEALTH_SCALE_REDUCTION, INT_MANA_SCALE_ADJUST, INT_MANA_SCALE_REDUCTION, MIN_CON_HEALTH_SCALE, MIN_INT_MANA_SCALE
 from features.shared.effect import EffectType
 
 from typing import TYPE_CHECKING, List
@@ -194,15 +194,15 @@ class Expertise():
     def update_stats(self, combined_attributes: Attributes):
         percent_health = self.hp / self.max_hp
         updated_max_hp: int = BASE_HP
-        for _ in range(combined_attributes.constitution):
-            updated_max_hp += ceil(updated_max_hp * CON_HEALTH_SCALE)
+        for con in range(combined_attributes.constitution):
+            updated_max_hp += ceil(updated_max_hp * max(BASE_CON_HEALTH_SCALE - CON_HEALTH_SCALE_REDUCTION * (con / CON_HEALTH_SCALE_ADJUST), MIN_CON_HEALTH_SCALE))
         self.max_hp = updated_max_hp
         self.hp = int(percent_health * self.max_hp)
 
         percent_mana = self.mana / self.max_mana
         updated_max_mana: int = BASE_MANA
-        for _ in range(combined_attributes.intelligence):
-            updated_max_mana += ceil(updated_max_mana * INT_MANA_SCALE)
+        for intel in range(combined_attributes.intelligence):
+            updated_max_mana += ceil(updated_max_mana * max(BASE_INT_MANA_SCALE - INT_MANA_SCALE_REDUCTION * (intel / INT_MANA_SCALE_ADJUST), MIN_INT_MANA_SCALE))
         self.max_mana = updated_max_mana
         self.mana = int(percent_mana * self.max_mana)
 
