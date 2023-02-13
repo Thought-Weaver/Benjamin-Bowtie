@@ -278,7 +278,17 @@ GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
         StatusEffectKey.Decaying: ["of Decay", "of Decomposition", "of Rot"],
         StatusEffectKey.Undying: ["of the Immortal", "of the Eternal", "of the Deathless"],
         StatusEffectKey.CannotUseAbilities: ["of Enfeeblement", "of Exhaustion", "of Depletion"],
-        StatusEffectKey.StackingDamage: ["of Resonance", "of Reverberation"]
+        StatusEffectKey.StackingDamage: ["of Resonance", "of Reverberation"],
+        StatusEffectKey.ConBuff: ["of the Bulwark", "of Buffering", "of Bolstering", "of Invigorating"],
+        StatusEffectKey.ConDebuff: ["of Fatiguing", "of Devitalization", "of Detriment", "of Degradation"],
+        StatusEffectKey.StrBuff: ["of Surging", "of Brawn", "of Thew"],
+        StatusEffectKey.StrDebuff: ["of Weariness", "of Crippling", "of the Inimical"],
+        StatusEffectKey.DexBuff: ["of Finesse", "of the Adroit", "of the Swift"],
+        StatusEffectKey.DexDebuff: ["of Hamstringing", "of Waning", "of Inelegance", "of the Maladroit", "of the Tactless"],
+        StatusEffectKey.IntBuff: ["of the Guide", "of the Enlightened", "of Amplification", "of Edification"],
+        StatusEffectKey.IntDebuff: ["of the Oaf", "of the Fool", "of Infirming"],
+        StatusEffectKey.LckBuff: ["of Prospering", "of Enriching", "of Fortunating"],
+        StatusEffectKey.LckDebuff: ["of Recession", "of Curtailing", "of Dwindling", "of Decrescencing"]
     },
 
     EffectType.ResistStatusEffect: {
@@ -292,7 +302,12 @@ GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
         StatusEffectKey.Charmed: ["of the Serene", "of the Composed"],
         StatusEffectKey.CannotAttack: ["of the Persistent", "of the Unabating"],
         StatusEffectKey.Sleeping: ["of the Sleepless", "of the Insomniac"],
-        StatusEffectKey.Decaying: ["of the Vigorous", "of the Flourishing"]
+        StatusEffectKey.Decaying: ["of the Animated", "of the Flourishing"],
+        StatusEffectKey.ConDebuff: ["of the Vigorous", "of the Hale", "of the Durable"],
+        StatusEffectKey.StrDebuff: ["of the Tough", "of Reinforcement", "of the Rugged"],
+        StatusEffectKey.DexDebuff: ["of the Steady", "of Poise", "of the Unwavering"],
+        StatusEffectKey.IntDebuff: ["of the Acute", "of the Discerning", "of the Keen"],
+        StatusEffectKey.LckDebuff: ["of the Adventitious", "of the Propitious", "of the Favored", "of the Felicitous"]
     },
 
     EffectType.RestoreHealth: ["of Recovery", "of Restoration", "of Rejuvenation"],
@@ -306,7 +321,7 @@ GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
     EffectType.PotionMod: ["of the Alchemist", "of the Hermetic"],
 
     EffectType.Damage: ["of Harm", "of Mutilation", "of Ruin"],
-    EffectType.ResurrectOnce: ["of the Phoenix", "of Revivication"]
+    EffectType.ResurrectOnce: ["of the Phoenix", "of Revivification"]
 }
 
 BAD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = {
@@ -428,7 +443,17 @@ GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
         StatusEffectKey.Decaying: ["Decaying", "Decomposing", "Moldering", "Spoiling", "Rotting"],
         StatusEffectKey.Undying: ["Immortal", "Deathless", "Eternal", "Everlasting", "Perpetual"],
         StatusEffectKey.CannotUseAbilities: ["Enfeebling", "Draining", "Torpefying"],
-        StatusEffectKey.StackingDamage: ["Reverberating", "Accumulating", "Resonating"]
+        StatusEffectKey.StackingDamage: ["Reverberating", "Accumulating", "Resonating"],
+        StatusEffectKey.ConBuff: ["Bolstering", "Invigorating", "Bulwark's", "Protector's", "Buffering"],
+        StatusEffectKey.ConDebuff: ["Exacting", "Fatiguing", "Devitalizing", "Detrimental", "Degrading"],
+        StatusEffectKey.StrBuff: ["Strengthening", "Bulking", "Surging", "Accreting"],
+        StatusEffectKey.StrDebuff: ["Reducing", "Wearying", "Crippling", "Inimical"],
+        StatusEffectKey.DexBuff: ["Spurring", "Swift", "Rushing"],
+        StatusEffectKey.DexDebuff: ["Hamstringing", "Waning", "Maladroit"],
+        StatusEffectKey.IntBuff: ["Enlightening", "Edifying", "Apprising", "Guiding", "Illuminating", "Amplifying"],
+        StatusEffectKey.IntDebuff: ["Infirming", "Baneful", "Maladroit"],
+        StatusEffectKey.LckBuff: ["Fortunating", "Prospering", "Availing", "Enriching"],
+        StatusEffectKey.LckDebuff: ["Receding", "Curtailing", "Dwindling", "Decrescencing"]
     },
 
     EffectType.ResistStatusEffect: {
@@ -442,7 +467,12 @@ GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
         StatusEffectKey.Charmed: ["Calm", "Serene", "Composed", "Fair", "Equanimous"],
         StatusEffectKey.CannotAttack: ["Persistent", "Unabating", "Braced", "Riveted", "Even"],
         StatusEffectKey.Sleeping: ["Awoken", "Insomniac's"],
-        StatusEffectKey.Decaying: ["Persistent", "Unabating", "Sheltering"]
+        StatusEffectKey.Decaying: ["Persistent", "Unabating", "Sheltering"],
+        StatusEffectKey.ConDebuff: ["Vivifying", "Stout", "Durable"],
+        StatusEffectKey.StrDebuff: ["Tough", "Reinforced", "Rugged"],
+        StatusEffectKey.DexDebuff: ["Steady", "Poised", "Unwavering"],
+        StatusEffectKey.IntDebuff: ["Acute", "Discerning", "Keen"],
+        StatusEffectKey.LckDebuff: ["Adventitious", "Propitious", "Felicitous", "Favored"]
     },
 
     EffectType.RestoreHealth: ["Restorative", "Rejuvenating"],
@@ -845,6 +875,86 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             StatusEffectKey.StackingDamage: {
                 ItemEffectCategory.OnSuccessfulAttack: [[frange(0.25, 0.3, 0.025), range(2, 2)]],
                 ItemEffectCategory.OnSuccessfulAbilityUsed: [[frange(0.25, 0.3, 0.025), range(2, 2)]]
+            },
+            StatusEffectKey.ConBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(1, 2)]]
+            },
+            StatusEffectKey.ConDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-1, -1), range(1, 2)]]
+            },
+            StatusEffectKey.StrBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 2), range(1, 2)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 2), range(1, 2)]]
+            },
+            StatusEffectKey.StrDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-3, -1), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-3, -1), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-3, -1), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-3, -1), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-3, -1), range(1, 2)]]
+            },
+            StatusEffectKey.DexBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(1, 2)]]
+            },
+            StatusEffectKey.DexDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-1, -1), range(1, 2)]]
+            },
+            StatusEffectKey.IntBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(1, 2)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(1, 2)]]
+            },
+            StatusEffectKey.IntDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-1, -1), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-1, -1), range(1, 2)]]
+            },
+            StatusEffectKey.LckBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 3), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 2), range(1, 2)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 2), range(1, 2)]]
+            },
+            StatusEffectKey.LckDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-3, -1), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-3, -1), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-3, -1), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-3, -1), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-3, -1), range(1, 2)]]
             }
         },
 
@@ -883,6 +993,21 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
                 ItemEffectCategory.Permanent: [[frange(0.1, 0.2, 0.05), range(-1, -1)]]
             },
             StatusEffectKey.CannotUseAbilities: {
+                ItemEffectCategory.Permanent: [[frange(0.1, 0.2, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.ConDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.1, 0.2, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.StrDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.1, 0.2, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.DexDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.1, 0.2, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.IntDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.1, 0.2, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.LckDebuff: {
                 ItemEffectCategory.Permanent: [[frange(0.1, 0.2, 0.05), range(-1, -1)]]
             }
         },
@@ -1251,6 +1376,86 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             StatusEffectKey.StackingDamage: {
                 ItemEffectCategory.OnSuccessfulAttack: [[frange(0.25, 0.3, 0.025), range(3, 3)]],
                 ItemEffectCategory.OnSuccessfulAbilityUsed: [[frange(0.35, 0.4, 0.025), range(2, 2)]]
+            },
+            StatusEffectKey.ConBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(2, 3)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(2, 3)]]
+            },
+            StatusEffectKey.ConDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]]
+            },
+            StatusEffectKey.StrBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 2), range(2, 3)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 2), range(2, 3)]]
+            },
+            StatusEffectKey.StrDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]]
+            },
+            StatusEffectKey.DexBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(2, 3)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(2, 3)]]
+            },
+            StatusEffectKey.DexDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]]
+            },
+            StatusEffectKey.IntBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 1), range(3, 4)], [range(2, 2), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(2, 3)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(2, 3)]]
+            },
+            StatusEffectKey.IntDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-1, -1), range(3, 4)], [range(-2, -2), range(1, 2)]]
+            },
+            StatusEffectKey.LckBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 3), range(3, 4)], [range(4, 6), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 2), range(2, 3)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 2), range(2, 3)]]
+            },
+            StatusEffectKey.LckDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-3, -1), range(3, 4)], [range(-6, -4), range(1, 2)]]
             }
         },
 
@@ -1289,6 +1494,21 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
                 ItemEffectCategory.Permanent: [[frange(0.2, 0.3, 0.05), range(-1, -1)]]
             },
             StatusEffectKey.CannotUseAbilities: {
+                ItemEffectCategory.Permanent: [[frange(0.2, 0.3, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.ConDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.2, 0.3, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.StrDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.2, 0.3, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.DexDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.2, 0.3, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.IntDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.2, 0.3, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.LckDebuff: {
                 ItemEffectCategory.Permanent: [[frange(0.2, 0.3, 0.05), range(-1, -1)]]
             }
         },
@@ -1661,6 +1881,86 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             StatusEffectKey.StackingDamage: {
                 ItemEffectCategory.OnSuccessfulAttack: [[frange(0.35, 0.4, 0.025), range(3, 3)]],
                 ItemEffectCategory.OnSuccessfulAbilityUsed: [[frange(0.45, 0.5, 0.025), range(2, 2)]]
+            },
+            StatusEffectKey.ConBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(3, 4)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(3, 4)]]
+            },
+            StatusEffectKey.ConDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]]
+            },
+            StatusEffectKey.StrBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 2), range(3, 4)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 2), range(3, 4)]]
+            },
+            StatusEffectKey.StrDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]]
+            },
+            StatusEffectKey.DexBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(3, 4)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(3, 4)]]
+            },
+            StatusEffectKey.DexDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]]
+            },
+            StatusEffectKey.IntBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(2, 2), range(3, 4)], [range(3, 3), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(3, 4)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(3, 4)]]
+            },
+            StatusEffectKey.IntDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-2, -2), range(3, 4)], [range(-3, -3), range(1, 2)]]
+            },
+            StatusEffectKey.LckBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(4, 6), range(3, 4)], [range(6, 8), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 2), range(3, 4)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 2), range(3, 4)]]
+            },
+            StatusEffectKey.LckDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-6, -4), range(3, 4)], [range(-8, -6), range(1, 2)]]
             }
         },
 
@@ -1699,6 +1999,21 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
                 ItemEffectCategory.Permanent: [[frange(0.3, 0.4, 0.05), range(-1, -1)]]
             },
             StatusEffectKey.CannotUseAbilities: {
+                ItemEffectCategory.Permanent: [[frange(0.3, 0.4, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.ConDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.3, 0.4, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.StrDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.3, 0.4, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.DexDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.3, 0.4, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.IntDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.3, 0.4, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.LckDebuff: {
                 ItemEffectCategory.Permanent: [[frange(0.3, 0.4, 0.05), range(-1, -1)]]
             }
         },
@@ -2070,6 +2385,86 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             StatusEffectKey.StackingDamage: {
                 ItemEffectCategory.OnSuccessfulAttack: [[frange(0.35, 0.4, 0.025), range(3, 4)], [frange(0.45, 0.55, 0.025), range(2, 3)], [frange(0.6, 1, 0.05), range(1, 1)]],
                 ItemEffectCategory.OnSuccessfulAbilityUsed: [[frange(0.35, 0.4, 0.025), range(3, 4)], [frange(0.45, 0.55, 0.025), range(2, 3)], [frange(0.6, 1, 0.05), range(1, 1)]]
+            },
+            StatusEffectKey.ConBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(4, 5)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(4, 5)]]
+            },
+            StatusEffectKey.ConDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-2, -3), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]]
+            },
+            StatusEffectKey.StrBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 3), range(4, 5)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 3), range(4, 5)]]
+            },
+            StatusEffectKey.StrDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]]
+            },
+            StatusEffectKey.DexBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(4, 5)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(4, 5)]]
+            },
+            StatusEffectKey.DexDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]]
+            },
+            StatusEffectKey.IntBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(2, 3), range(3, 4)], [range(2, 4), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 1), range(4, 5)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 1), range(4, 5)]]
+            },
+            StatusEffectKey.IntDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-3, -2), range(3, 4)], [range(-4, -2), range(1, 2)]]
+            },
+            StatusEffectKey.LckBuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(5, 8), range(3, 4)], [range(8, 12), range(1, 2)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 3), range(4, 5)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 3), range(4, 5)]]
+            },
+            StatusEffectKey.LckDebuff: {
+                ItemEffectCategory.OnSuccessfulAttack: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]],
+                ItemEffectCategory.OnAttacked: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]],
+                ItemEffectCategory.OnDamaged: [[range(-8, -5), range(3, 4)], [range(-12, -8), range(1, 2)]]
             }
         },
 
@@ -2108,6 +2503,21 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
                 ItemEffectCategory.Permanent: [[frange(0.4, 1, 0.05), range(-1, -1)]]
             },
             StatusEffectKey.CannotUseAbilities: {
+                ItemEffectCategory.Permanent: [[frange(0.4, 1, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.ConDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.4, 1, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.StrDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.4, 1, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.DexDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.4, 1, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.IntDebuff: {
+                ItemEffectCategory.Permanent: [[frange(0.4, 1, 0.05), range(-1, -1)]]
+            },
+            StatusEffectKey.LckDebuff: {
                 ItemEffectCategory.Permanent: [[frange(0.4, 1, 0.05), range(-1, -1)]]
             }
         },
@@ -2289,7 +2699,10 @@ if __name__ == "__main__":
                 value_range = effect_params[0]
                 if isinstance(value_range, range):
                     value_range = range(value_range.start, value_range.stop + 1)
-                effect_value: int | float = round(random.choice(list(value_range)), 3)
+                try:
+                    effect_value: int | float = round(random.choice(list(value_range)), 3)
+                except:
+                    pass
 
                 time_range = effect_params[1]
                 if isinstance(time_range, range):
@@ -2325,7 +2738,10 @@ if __name__ == "__main__":
                 value_range = effect_params[0]
                 if isinstance(value_range, range):
                     value_range = range(value_range.start, value_range.stop + 1)
-                effect_value = round(random.choice(list(value_range)), 3)
+                try:
+                    effect_value = round(random.choice(list(value_range)), 3)
+                except:
+                    pass
 
                 time_range = effect_params[1]
                 if isinstance(time_range, range):

@@ -4,7 +4,7 @@
     "name": "Compost",
     "value": 6,
     "rarity": "Common",
-    "description": "When set as the soil for a garden plot, this reduces the time for a plant to become mature by 1 tick (minimum 1 tick to maturity).",
+    "description": "When set as the soil for a garden plot, this gives a small chance to harvest 2 plants instead of 1.",
     "flavor_text": "",
     "class_tags": ["Gardening", "Soil"],
     "state_tags": [],
