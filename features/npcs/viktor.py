@@ -335,7 +335,8 @@ class RandomItemMerchant(NPC):
             Rarity.Common: 0.7,
             Rarity.Uncommon: 0.22,
             Rarity.Rare: 0.055,
-            Rarity.Epic: 0.02,
+            Rarity.Epic: 0.01,
+            Rarity.Cursed: 0.01,
             Rarity.Legendary: 0.005,
             Rarity.Artifact: 0,
             Rarity.Unknown: 0
