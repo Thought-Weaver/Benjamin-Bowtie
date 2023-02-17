@@ -1,0 +1,49 @@
+{
+    "key": "items/weapon/spear/trident_of_decrescencing",
+    "icon": "\ud83d\udd31",
+    "name": "Trident of Decrescencing",
+    "value": 4470,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 60,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": -3,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "LckDebuff"
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 23,
+        "max_damage": 30,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "dexterity": 30
+    }
+}

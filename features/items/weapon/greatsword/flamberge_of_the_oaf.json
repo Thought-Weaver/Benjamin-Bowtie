@@ -1,0 +1,66 @@
+{
+    "key": "items/weapon/greatsword/flamberge_of_the_oaf",
+    "icon": "\u2694\ufe0f",
+    "name": "Flamberge of the Oaf",
+    "value": 3860,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Greatsword",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 26,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": -3,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "DexDebuff"
+            }
+        ],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": -3,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "IntDebuff"
+            },
+            {
+                "effect_type": "LckMod",
+                "effect_value": 6,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 9,
+        "max_damage": 13,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "strength": 13
+    }
+}

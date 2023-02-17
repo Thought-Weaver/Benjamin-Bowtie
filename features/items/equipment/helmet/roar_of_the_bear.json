@@ -1,0 +1,61 @@
+{
+    "key": "items/equipment/helmet/roar_of_the_bear",
+    "icon": "\ud83c\udfa9",
+    "name": "Roar of the Bear",
+    "value": 8450,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Helmet",
+        "Needs_Identification"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 54,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1.0,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotTarget"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.5,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "DmgBuff"
+            }
+        ],
+        "on_successful_attack": [
+            {
+                "effect_type": "ConMod",
+                "effect_value": 2,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 73
+    },
+    "attr_requirements": {
+        "constitution": 17
+    }
+}

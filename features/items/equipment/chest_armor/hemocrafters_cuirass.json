@@ -1,0 +1,54 @@
+{
+    "key": "items/equipment/chest_armor/hemocrafters_cuirass",
+    "icon": "\ud83e\udde5",
+    "name": "Hemocrafter's Cuirass",
+    "value": 6090,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Chest_Armor"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 47,
+    "altering_item_keys": [
+        "",
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "HealingAbilityBuff",
+                "effect_value": 0.4,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "DmgBuffSelfMaxHealth",
+                "effect_value": 0.02,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 159
+    },
+    "attr_requirements": {
+        "constitution": 28
+    }
+}

@@ -1,0 +1,67 @@
+{
+    "key": "items/weapon/sword/fair_sword",
+    "icon": "\u2694\ufe0f",
+    "name": "Fair Sword",
+    "value": 8395,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Sword",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 60,
+    "altering_item_keys": [
+        "",
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "SplashPercentMaxDmg",
+                "effect_value": 0.375,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.35,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Charmed"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": [
+            {
+                "effect_type": "IntMod",
+                "effect_value": 3,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ]
+    },
+    "weapon_stats": {
+        "min_damage": 23,
+        "max_damage": 30,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "strength": 25
+    }
+}

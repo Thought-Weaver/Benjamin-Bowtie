@@ -1,0 +1,53 @@
+{
+    "key": "items/equipment/leggings/prosperous_legwraps",
+    "icon": "\ud83d\udc56",
+    "name": "Prosperous Legwraps",
+    "value": 1810,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Leggings"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 14,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.35,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "ConDebuff"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": [
+            {
+                "effect_type": "LckMod",
+                "effect_value": 6,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ]
+    },
+    "armor_stats": {
+        "armor": 12
+    },
+    "attr_requirements": {
+        "constitution": 3
+    }
+}

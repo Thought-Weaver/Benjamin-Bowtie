@@ -1,0 +1,42 @@
+{
+    "key": "items/equipment/helmet/occult_flower_crown",
+    "icon": "\ud83c\udf3a",
+    "name": "Occult Flower Crown",
+    "value": 5010,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Helmet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 75,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "RestoreMana",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 100
+    },
+    "attr_requirements": {
+        "constitution": 25
+    }
+}

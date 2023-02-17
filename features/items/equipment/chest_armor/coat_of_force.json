@@ -1,0 +1,63 @@
+{
+    "key": "items/equipment/chest_armor/coat_of_force",
+    "icon": "\ud83e\udde5",
+    "name": "Coat of Force",
+    "value": 8435,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Chest_Armor"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 60,
+    "altering_item_keys": [
+        "",
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgResist",
+                "effect_value": 0.085,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "DmgBuff",
+                "effect_value": 0.18,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "LckMod",
+                "effect_value": 4,
+                "effect_time": 3,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 202
+    },
+    "attr_requirements": {
+        "constitution": 23
+    }
+}

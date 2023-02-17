@@ -1,0 +1,60 @@
+{
+    "key": "items/equipment/gloves/a_new_dream",
+    "icon": "\ud83e\udde4",
+    "name": "A New Dream",
+    "value": 10110,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Gloves",
+        "Needs_Identification"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 71,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "RestoreHealth",
+                "effect_value": 2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "CleanseStatusEffects",
+                "effect_value": -1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.7,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Sleeping"
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 89
+    },
+    "attr_requirements": {
+        "constitution": 24
+    }
+}

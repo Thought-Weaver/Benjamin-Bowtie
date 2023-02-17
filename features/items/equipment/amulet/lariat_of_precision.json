@@ -1,0 +1,36 @@
+{
+    "key": "items/equipment/amulet/lariat_of_precision",
+    "icon": "\ud83d\udcff",
+    "name": "Lariat of Precision",
+    "value": 655,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Amulet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 10,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [
+            {
+                "effect_type": "DexMod",
+                "effect_value": 1,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    }
+}

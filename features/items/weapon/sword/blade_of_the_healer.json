@@ -1,0 +1,56 @@
+{
+    "key": "items/weapon/sword/blade_of_the_healer",
+    "icon": "\u2694\ufe0f",
+    "name": "Blade of the Healer",
+    "value": 2055,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Sword",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 16,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.45,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Taunted"
+            },
+            {
+                "effect_type": "HealingAbilityBuff",
+                "effect_value": 0.4,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 5,
+        "max_damage": 8,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "strength": 3
+    }
+}

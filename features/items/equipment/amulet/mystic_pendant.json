@@ -1,0 +1,36 @@
+{
+    "key": "items/equipment/amulet/mystic_pendant",
+    "icon": "\ud83d\udcff",
+    "name": "Mystic Pendant",
+    "value": 845,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Amulet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 10,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "RestorePercentMana",
+                "effect_value": 0.02,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    }
+}

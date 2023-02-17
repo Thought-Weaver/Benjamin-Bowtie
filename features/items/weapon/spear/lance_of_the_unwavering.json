@@ -1,0 +1,58 @@
+{
+    "key": "items/weapon/spear/lance_of_the_unwavering",
+    "icon": "\ud83c\udf62",
+    "name": "Lance of the Unwavering",
+    "value": 12730,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 120,
+    "altering_item_keys": [
+        "",
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "PiercingPercentDmg",
+                "effect_value": 0.3,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "TurnSkipChance"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 47,
+        "max_damage": 60,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "dexterity": 60
+    }
+}

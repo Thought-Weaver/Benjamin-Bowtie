@@ -1,0 +1,46 @@
+{
+    "key": "items/weapon/knuckles/cestus_of_virulence",
+    "icon": "\ud83e\udd4a",
+    "name": "Cestus of Virulence",
+    "value": 4095,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Knuckles",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 80,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.05,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Poisoned"
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 17,
+        "max_damage": 23,
+        "num_targets": 2
+    },
+    "attr_requirements": {
+        "strength": 23
+    }
+}

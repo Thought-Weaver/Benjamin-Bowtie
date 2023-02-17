@@ -1,0 +1,54 @@
+{
+    "key": "items/equipment/boots/charming_boots",
+    "icon": "\ud83e\udd7e",
+    "name": "Charming Boots",
+    "value": 6940,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 66,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "AdditionalXP",
+                "effect_value": 0.65,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.1,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Charmed"
+            }
+        ]
+    },
+    "armor_stats": {
+        "armor": 110
+    },
+    "attr_requirements:": {
+        "constitution": 30
+    }
+}

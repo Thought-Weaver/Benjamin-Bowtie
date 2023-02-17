@@ -1,0 +1,44 @@
+{
+    "key": "items/equipment/gloves/eternal_gauntlets",
+    "icon": "\ud83e\udde4",
+    "name": "Eternal Gauntlets",
+    "value": 3250,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Gloves"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 30,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.075,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Undying"
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 22
+    },
+    "attr_requirements": {
+        "constitution": 5
+    }
+}

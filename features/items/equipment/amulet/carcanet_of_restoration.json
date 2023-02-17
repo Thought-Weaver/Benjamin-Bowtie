@@ -1,0 +1,53 @@
+{
+    "key": "items/equipment/amulet/carcanet_of_restoration",
+    "icon": "\ud83d\udcff",
+    "name": "Carcanet of Restoration",
+    "value": 3785,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Amulet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 30,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.4,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotUseAbilities"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.35,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "DexDebuff"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "RestoreHealth",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    }
+}

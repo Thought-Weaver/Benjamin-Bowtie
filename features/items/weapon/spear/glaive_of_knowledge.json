@@ -1,0 +1,68 @@
+{
+    "key": "items/weapon/spear/glaive_of_knowledge",
+    "icon": "\ud83c\udf62",
+    "name": "Glaive of Knowledge",
+    "value": 9555,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 70,
+    "altering_item_keys": [
+        "",
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromInt",
+                "effect_value": 0.075,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [
+            {
+                "effect_type": "ConMod",
+                "effect_value": 3,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": [
+            {
+                "effect_type": "Damage",
+                "effect_value": 8,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ]
+    },
+    "weapon_stats": {
+        "min_damage": 27,
+        "max_damage": 35,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "dexterity": 35
+    }
+}

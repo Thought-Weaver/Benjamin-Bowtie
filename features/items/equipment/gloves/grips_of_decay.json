@@ -1,0 +1,44 @@
+{
+    "key": "items/equipment/gloves/grips_of_decay",
+    "icon": "\ud83e\udde4",
+    "name": "Grips of Decay",
+    "value": 5150,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Gloves"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 59,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.35,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Decaying"
+            }
+        ],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 74
+    },
+    "attr_requirements": {
+        "constitution": 28
+    }
+}

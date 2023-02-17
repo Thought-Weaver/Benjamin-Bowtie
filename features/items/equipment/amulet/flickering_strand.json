@@ -1,0 +1,47 @@
+{
+    "key": "items/equipment/amulet/flickering_strand",
+    "icon": "\ud83d\udcff",
+    "name": "Flickering Strand",
+    "value": 2550,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Amulet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 20,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "PiercingPercentDmg",
+                "effect_value": 0.45,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.225,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotTarget"
+            }
+        ],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    }
+}

@@ -1,0 +1,54 @@
+{
+    "key": "items/weapon/dagger/adepts_sickle",
+    "icon": "\u26cf\ufe0f",
+    "name": "Adept's Sickle",
+    "value": 4495,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Dagger",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 46,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "AdditionalXP",
+                "effect_value": 0.5,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "DmgBuffFromDex",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 17,
+        "max_damage": 23,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "dexterity": 23
+    }
+}

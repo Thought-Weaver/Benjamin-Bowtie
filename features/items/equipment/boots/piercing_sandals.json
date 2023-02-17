@@ -1,0 +1,44 @@
+{
+    "key": "items/equipment/boots/piercing_sandals",
+    "icon": "\ud83d\udc61",
+    "name": "Piercing Sandals",
+    "value": 2175,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 28,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "PiercingDmg",
+                "effect_value": 2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 27
+    },
+    "attr_requirements": {
+        "constitution": 6
+    }
+}

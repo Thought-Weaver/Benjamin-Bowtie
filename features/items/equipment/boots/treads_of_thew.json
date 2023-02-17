@@ -1,0 +1,44 @@
+{
+    "key": "items/equipment/boots/treads_of_thew",
+    "icon": "\ud83e\udd7e",
+    "name": "Treads of Thew",
+    "value": 4115,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 57,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "StrBuff"
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 55
+    },
+    "attr_requirements": {
+        "constitution": 16
+    }
+}

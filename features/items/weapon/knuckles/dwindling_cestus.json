@@ -1,0 +1,49 @@
+{
+    "key": "items/weapon/knuckles/dwindling_cestus",
+    "icon": "\ud83e\udd4a",
+    "name": "Dwindling Cestus",
+    "value": 8200,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Knuckles",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 115,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": -1,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "LckDebuff"
+            }
+        ],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 25,
+        "max_damage": 33,
+        "num_targets": 2
+    },
+    "attr_requirements": {
+        "strength": 33
+    }
+}

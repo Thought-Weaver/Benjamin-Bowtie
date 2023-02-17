@@ -1,0 +1,67 @@
+{
+    "key": "items/weapon/knuckles/unseen_fists",
+    "icon": "\ud83e\udd4a",
+    "name": "Unseen Fists",
+    "value": 9180,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Knuckles",
+        "Main_Hand",
+        "Needs_Identification"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 63,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.5,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "ConDebuff"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "LckMod",
+                "effect_value": 3,
+                "effect_time": 5,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.125,
+                "effect_time": 3,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Generating"
+            }
+        ],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 13,
+        "max_damage": 18,
+        "num_targets": 2
+    },
+    "attr_requirements": {
+        "strength": 18
+    }
+}

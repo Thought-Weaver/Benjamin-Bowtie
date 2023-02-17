@@ -1,0 +1,54 @@
+{
+    "key": "items/equipment/amulet/confusing_carcanet",
+    "icon": "\ud83d\udcff",
+    "name": "Confusing Carcanet",
+    "value": 720,
+    "rarity": "Cursed",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Amulet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 30,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "AdjustedCDs",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.15,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "TurnSkipChance"
+            }
+        ],
+        "on_ability_used_against": [
+            {
+                "effect_type": "ManaSteal",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ]
+    }
+}

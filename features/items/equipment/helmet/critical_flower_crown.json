@@ -1,0 +1,51 @@
+{
+    "key": "items/equipment/helmet/critical_flower_crown",
+    "icon": "\ud83c\udf3a",
+    "name": "Critical Flower Crown",
+    "value": 11735,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Helmet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 105,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "CritDmgBuff",
+                "effect_value": 0.2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.45,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "StackingDamage"
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 141
+    },
+    "attr_requirements": {
+        "constitution": 35
+    }
+}

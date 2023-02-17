@@ -1,0 +1,42 @@
+{
+    "key": "items/equipment/leggings/trousers_of_the_occult",
+    "icon": "\ud83d\udc56",
+    "name": "Trousers of the Occult",
+    "value": 6695,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Leggings"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 97,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [
+            {
+                "effect_type": "RestoreMana",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 139
+    },
+    "attr_requirements": {
+        "constitution": 42
+    }
+}

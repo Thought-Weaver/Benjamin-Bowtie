@@ -1,0 +1,61 @@
+{
+    "key": "items/equipment/helmet/halting_cloth_mask_of_transmutation",
+    "icon": "\ud83e\udde3",
+    "name": "Halting Cloth Mask of Transmutation",
+    "value": 4630,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Helmet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 34,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.35,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "TurnSkipChance"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.075,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "TurnSkipChance"
+            },
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.3,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "ManaToHP"
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 46
+    },
+    "attr_requirements": {
+        "constitution": 9
+    }
+}

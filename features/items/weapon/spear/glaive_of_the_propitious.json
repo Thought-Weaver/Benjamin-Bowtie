@@ -1,0 +1,49 @@
+{
+    "key": "items/weapon/spear/glaive_of_the_propitious",
+    "icon": "\ud83c\udf62",
+    "name": "Glaive of the Propitious",
+    "value": 8660,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 102,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "LckDebuff"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 40,
+        "max_damage": 51,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "dexterity": 51
+    }
+}

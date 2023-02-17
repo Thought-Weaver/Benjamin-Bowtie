@@ -1,0 +1,53 @@
+{
+    "key": "items/equipment/helmet/defiance_of_the_void",
+    "icon": "\ud83c\udfa9",
+    "name": "Defiance of the Void",
+    "value": 8440,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Helmet",
+        "Needs_Identification"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 63,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1.0,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Sleeping"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1.0,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Taunted"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 84
+    },
+    "attr_requirements": {
+        "constitution": 29
+    }
+}

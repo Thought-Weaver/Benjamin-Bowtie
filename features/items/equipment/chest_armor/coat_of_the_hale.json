@@ -1,0 +1,44 @@
+{
+    "key": "items/equipment/chest_armor/coat_of_the_hale",
+    "icon": "\ud83e\udde5",
+    "name": "Coat of the Hale",
+    "value": 5930,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Chest_Armor"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 67,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "ConDebuff"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 224
+    },
+    "attr_requirements": {
+        "constitution": 36
+    }
+}

@@ -1,0 +1,63 @@
+{
+    "key": "items/weapon/knuckles/knowing_claws_of_knowledge",
+    "icon": "\ud83e\udd4a",
+    "name": "Knowing Claws of Knowledge",
+    "value": 12880,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Knuckles",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 101,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffSelfMaxHealth",
+                "effect_value": 0.02,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "DmgBuffFromLck",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "IntMod",
+                "effect_value": 1,
+                "effect_time": 4,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 22,
+        "max_damage": 29,
+        "num_targets": 2
+    },
+    "attr_requirements": {
+        "strength": 29
+    }
+}

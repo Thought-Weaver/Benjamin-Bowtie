@@ -1,0 +1,51 @@
+{
+    "key": "items/equipment/chest_armor/cuirass_of_coin_cursing",
+    "icon": "\ud83e\udde5",
+    "name": "Cuirass of Coin Cursing",
+    "value": 7070,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Chest_Armor"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 74,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.1,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Tarnished"
+            }
+        ],
+        "on_turn_end": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 3,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "ConBuff"
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 247
+    },
+    "attr_requirements": {
+        "constitution": 36
+    }
+}

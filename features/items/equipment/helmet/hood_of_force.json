@@ -1,0 +1,45 @@
+{
+    "key": "items/equipment/helmet/hood_of_force",
+    "icon": "\ud83c\udfa9",
+    "name": "Hood of Force",
+    "value": 7585,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Helmet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 108,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.2,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "DmgBuff"
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 145
+    },
+    "attr_requirements": {
+        "constitution": 57
+    }
+}

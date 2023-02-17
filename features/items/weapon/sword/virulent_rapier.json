@@ -1,0 +1,49 @@
+{
+    "key": "items/weapon/sword/virulent_rapier",
+    "icon": "\u2694\ufe0f",
+    "name": "Virulent Rapier",
+    "value": 8685,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Sword",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 122,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.1,
+                "effect_time": 3,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Poisoned"
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 48,
+        "max_damage": 61,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "strength": 56
+    }
+}

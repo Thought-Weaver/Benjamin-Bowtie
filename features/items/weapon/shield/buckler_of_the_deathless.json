@@ -1,0 +1,44 @@
+{
+    "key": "items/weapon/shield/buckler_of_the_deathless",
+    "icon": "\ud83d\udee1\ufe0f",
+    "name": "Buckler of the Deathless",
+    "value": 1590,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Shield",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 16,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.075,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Undying"
+            }
+        ],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 18
+    }
+}

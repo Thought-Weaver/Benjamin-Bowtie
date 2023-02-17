@@ -1,0 +1,50 @@
+{
+    "key": "items/weapon/greatsword/torpefying_reaver",
+    "icon": "\u2694\ufe0f",
+    "name": "Torpefying Reaver",
+    "value": 9575,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Greatsword",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 128,
+    "altering_item_keys": [
+        "",
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.225,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotUseAbilities"
+            }
+        ],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 50,
+        "max_damage": 64,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "strength": 64
+    }
+}

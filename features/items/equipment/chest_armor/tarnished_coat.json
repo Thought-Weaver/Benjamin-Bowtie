@@ -1,0 +1,45 @@
+{
+    "key": "items/equipment/chest_armor/tarnished_coat",
+    "icon": "\ud83e\udde5",
+    "name": "Tarnished Coat",
+    "value": 3245,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Chest_Armor"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 41,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.075,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Tarnished"
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 137
+    },
+    "attr_requirements": {
+        "constitution": 19
+    }
+}

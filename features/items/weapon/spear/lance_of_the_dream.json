@@ -1,0 +1,46 @@
+{
+    "key": "items/weapon/spear/lance_of_the_dream",
+    "icon": "\ud83c\udf62",
+    "name": "Lance of the Dream",
+    "value": 8580,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 86,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.35,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Sleeping"
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 33,
+        "max_damage": 43,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "dexterity": 43
+    }
+}

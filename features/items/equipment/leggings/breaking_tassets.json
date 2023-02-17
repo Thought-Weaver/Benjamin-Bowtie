@@ -1,0 +1,44 @@
+{
+    "key": "items/equipment/leggings/breaking_tassets",
+    "icon": "\ud83d\udc56",
+    "name": "Breaking Tassets",
+    "value": 4845,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Leggings"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 69,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.05,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "TurnSkipChance"
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 99
+    },
+    "attr_requirements": {
+        "constitution": 26
+    }
+}

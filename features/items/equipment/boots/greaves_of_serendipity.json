@@ -1,0 +1,62 @@
+{
+    "key": "items/equipment/boots/greaves_of_serendipity",
+    "icon": "\ud83e\udd7e",
+    "name": "Greaves of Serendipity",
+    "value": 11645,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 90,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.3,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Sleeping"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [
+            {
+                "effect_type": "LckMod",
+                "effect_value": 5,
+                "effect_time": 3,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_ability_used_against": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.45,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotUseAbilities"
+            }
+        ]
+    },
+    "armor_stats": {
+        "armor": 150
+    },
+    "attr_requirements": {
+        "constitution": 56
+    }
+}

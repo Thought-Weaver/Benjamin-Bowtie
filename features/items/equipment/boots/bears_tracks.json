@@ -1,0 +1,62 @@
+{
+    "key": "items/equipment/boots/bears_tracks",
+    "icon": "\ud83e\udd7e",
+    "name": "Bear's Tracks",
+    "value": 6250,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 45,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "CritDmgBuff",
+                "effect_value": 0.2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "HealingAbilityBuff",
+                "effect_value": 0.4,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [
+            {
+                "effect_type": "ConMod",
+                "effect_value": 3,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 76
+    },
+    "attr_requirements": {
+        "constitution": 15
+    }
+}

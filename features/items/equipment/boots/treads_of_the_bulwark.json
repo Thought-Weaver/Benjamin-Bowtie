@@ -1,0 +1,62 @@
+{
+    "key": "items/equipment/boots/treads_of_the_bulwark",
+    "icon": "\ud83e\udd7e",
+    "name": "Treads of the Bulwark",
+    "value": 4720,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 35,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.45,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "LckDebuff"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 4,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "ConBuff"
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [
+            {
+                "effect_type": "RestoreArmor",
+                "effect_value": 5,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 34
+    },
+    "attr_requirements": {
+        "constitution": 9
+    }
+}

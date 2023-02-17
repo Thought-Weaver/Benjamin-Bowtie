@@ -1,0 +1,38 @@
+{
+    "key": "items/equipment/amulet/resonating_necklace",
+    "icon": "\ud83d\udcff",
+    "name": "Resonating Necklace",
+    "value": 2455,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Amulet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 20,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.35,
+                "effect_time": 3,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "StackingDamage"
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    }
+}

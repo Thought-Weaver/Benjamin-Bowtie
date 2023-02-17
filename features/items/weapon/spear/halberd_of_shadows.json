@@ -1,0 +1,48 @@
+{
+    "key": "items/weapon/spear/halberd_of_shadows",
+    "icon": "\ud83c\udf62",
+    "name": "Halberd of Shadows",
+    "value": 4500,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 62,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [
+            {
+                "effect_type": "DexMod",
+                "effect_value": 2,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 24,
+        "max_damage": 31,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "dexterity": 31
+    }
+}

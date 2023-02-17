@@ -1,0 +1,54 @@
+{
+    "key": "items/equipment/helmet/cryptics_hat_of_incantations",
+    "icon": "\ud83c\udfa9",
+    "name": "Cryptic's Hat of Incantations",
+    "value": 7745,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Helmet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 74,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "AdjustedManaCosts",
+                "effect_value": -0.1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [
+            {
+                "effect_type": "ManaSteal",
+                "effect_value": 0.02,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 99
+    },
+    "attr_requirements": {
+        "constitution": 36
+    }
+}

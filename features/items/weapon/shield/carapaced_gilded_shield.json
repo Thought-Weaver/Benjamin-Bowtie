@@ -1,0 +1,54 @@
+{
+    "key": "items/weapon/shield/carapaced_gilded_shield",
+    "icon": "\ud83d\udd30",
+    "name": "Carapaced Gilded Shield",
+    "value": 4600,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Shield",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 35,
+    "altering_item_keys": [
+        "",
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 3,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "IntBuff"
+            }
+        ],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": [
+            {
+                "effect_type": "RestoreArmor",
+                "effect_value": 6,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ]
+    },
+    "armor_stats": {
+        "armor": 39
+    }
+}

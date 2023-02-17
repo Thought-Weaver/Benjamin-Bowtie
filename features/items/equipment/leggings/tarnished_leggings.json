@@ -1,0 +1,45 @@
+{
+    "key": "items/equipment/leggings/tarnished_leggings",
+    "icon": "\ud83d\udc56",
+    "name": "Tarnished Leggings",
+    "value": 3865,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Leggings"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 42,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.05,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Tarnished"
+            }
+        ],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 61
+    },
+    "attr_requirements": {
+        "constitution": 12
+    }
+}

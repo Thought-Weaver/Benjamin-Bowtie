@@ -1,0 +1,54 @@
+{
+    "key": "items/equipment/boots/soporific_tracks",
+    "icon": "\ud83e\udd7e",
+    "name": "Soporific Tracks",
+    "value": 2215,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 18,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "PotionMod",
+                "effect_value": 0.45,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.25,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Sleeping"
+            }
+        ]
+    },
+    "armor_stats": {
+        "armor": 18
+    },
+    "attr_requirements": {
+        "constitution": 5
+    }
+}

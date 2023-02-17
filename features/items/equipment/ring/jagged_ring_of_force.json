@@ -1,0 +1,44 @@
+{
+    "key": "items/equipment/ring/jagged_ring_of_force",
+    "icon": "\ud83d\udc8d",
+    "name": "Jagged Ring of Force",
+    "value": 1940,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Ring"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 20,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgReflect",
+                "effect_value": 0.055,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "DmgBuff",
+                "effect_value": 0.1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    }
+}

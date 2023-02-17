@@ -1,0 +1,51 @@
+{
+    "key": "items/equipment/helmet/mail_hood_of_repair",
+    "icon": "\ud83c\udfa9",
+    "name": "Mail Hood of Repair",
+    "value": 2280,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Helmet"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 24,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.3,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "DmgVulnerability"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "RestorePercentArmor",
+                "effect_value": 0.02,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 33
+    },
+    "attr_requirements": {
+        "constitution": 9
+    }
+}

@@ -1,0 +1,48 @@
+{
+    "key": "items/weapon/knuckles/claws_of_the_giant",
+    "icon": "\ud83e\udd4a",
+    "name": "Claws of the Giant",
+    "value": 6620,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Knuckles",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 91,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "SplashPercentMaxDmg",
+                "effect_value": 0.15,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 20,
+        "max_damage": 26,
+        "num_targets": 2
+    },
+    "attr_requirements": {
+        "strength": 26
+    }
+}

@@ -1,0 +1,58 @@
+{
+    "key": "items/weapon/sword/calm_flowing_sword",
+    "icon": "\u2694\ufe0f",
+    "name": "Calm Flowing Sword",
+    "value": 2125,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Sword",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 12,
+    "altering_item_keys": [
+        "",
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.4,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Charmed"
+            },
+            {
+                "effect_type": "DmgBuffPoisoned",
+                "effect_value": 0.15,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 4,
+        "max_damage": 6,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "strength": 1
+    }
+}

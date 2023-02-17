@@ -1,0 +1,51 @@
+{
+    "key": "items/equipment/gloves/brutal_gauntlets_of_the_rich",
+    "icon": "\ud83e\udde4",
+    "name": "Brutal Gauntlets of the Rich",
+    "value": 1705,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Gloves"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 15,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuff",
+                "effect_value": 0.2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.225,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Generating"
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 11
+    },
+    "attr_requirements": {
+        "constitution": 3
+    }
+}

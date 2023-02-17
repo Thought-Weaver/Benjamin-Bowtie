@@ -1,0 +1,51 @@
+{
+    "key": "items/equipment/leggings/swift_poleyns_of_finesse",
+    "icon": "\ud83d\udc56",
+    "name": "Swift Poleyns of Finesse",
+    "value": 7125,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Leggings"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 73,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.3,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotUseAbilities"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 2,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "DexBuff"
+            }
+        ],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 105
+    },
+    "attr_requirements": {
+        "constitution": 23
+    }
+}

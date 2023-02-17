@@ -1,0 +1,45 @@
+{
+    "key": "items/equipment/chest_armor/brutal_tunic",
+    "icon": "\ud83e\udde5",
+    "name": "Brutal Tunic",
+    "value": 3775,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Chest_Armor"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 62,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.15,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "DmgBuff"
+            }
+        ]
+    },
+    "armor_stats": {
+        "armor": 208
+    },
+    "attr_requirements": {
+        "constitution": 41
+    }
+}

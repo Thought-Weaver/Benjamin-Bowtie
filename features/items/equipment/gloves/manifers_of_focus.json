@@ -1,0 +1,44 @@
+{
+    "key": "items/equipment/gloves/manifers_of_focus",
+    "icon": "\ud83e\udde4",
+    "name": "Manifers of Focus",
+    "value": 4930,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Gloves"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 69,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "CritDmgReduction",
+                "effect_value": 0.125,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 87
+    },
+    "attr_requirements": {
+        "constitution": 32
+    }
+}

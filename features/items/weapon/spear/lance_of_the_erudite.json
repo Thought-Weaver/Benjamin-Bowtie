@@ -1,0 +1,49 @@
+{
+    "key": "items/weapon/spear/lance_of_the_erudite",
+    "icon": "\ud83c\udf62",
+    "name": "Lance of the Erudite",
+    "value": 10020,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 118,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "IntMod",
+                "effect_value": 1,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 46,
+        "max_damage": 59,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "dexterity": 59
+    }
+}

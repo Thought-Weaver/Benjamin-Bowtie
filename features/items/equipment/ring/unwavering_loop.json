@@ -1,0 +1,36 @@
+{
+    "key": "items/equipment/ring/unwavering_loop",
+    "icon": "\u2b55",
+    "name": "Unwavering Loop",
+    "value": 805,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Ring"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 10,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.3,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "DexDebuff"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    }
+}

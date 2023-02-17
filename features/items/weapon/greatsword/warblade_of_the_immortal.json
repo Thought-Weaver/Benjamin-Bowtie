@@ -1,0 +1,46 @@
+{
+    "key": "items/weapon/greatsword/warblade_of_the_immortal",
+    "icon": "\u2694\ufe0f",
+    "name": "Warblade of the Immortal",
+    "value": 11095,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Greatsword",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 112,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.15,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Undying"
+            }
+        ]
+    },
+    "weapon_stats": {
+        "min_damage": 44,
+        "max_damage": 56,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "strength": 56
+    }
+}

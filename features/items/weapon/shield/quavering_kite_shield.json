@@ -1,0 +1,41 @@
+{
+    "key": "items/weapon/shield/quavering_kite_shield",
+    "icon": "\ud83d\udd30",
+    "name": "Quavering Kite Shield",
+    "value": 2720,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Shield",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 51,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "FixedDmgTick"
+            }
+        ],
+        "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor": 73
+    }
+}

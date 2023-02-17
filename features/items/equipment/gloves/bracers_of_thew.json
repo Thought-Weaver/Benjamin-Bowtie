@@ -1,0 +1,42 @@
+{
+    "key": "items/equipment/gloves/bracers_of_thew",
+    "icon": "\ud83e\udde4",
+    "name": "Bracers of Thew",
+    "value": 1670,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Gloves"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 25,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 2,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "StrBuff"
+            }
+        ]
+    },
+    "armor_stats": {
+        "armor": 18
+    },
+    "attr_requirements": {
+        "constitution": 4
+    }
+}

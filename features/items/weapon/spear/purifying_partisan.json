@@ -1,0 +1,58 @@
+{
+    "key": "items/weapon/spear/purifying_partisan",
+    "icon": "\ud83c\udf62",
+    "name": "Purifying Partisan",
+    "value": 1270,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Spear",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 8,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "CritDmgBuff",
+                "effect_value": 0.2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [
+            {
+                "effect_type": "CleanseStatusEffects",
+                "effect_value": -1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 2,
+        "max_damage": 4,
+        "num_targets": 1
+    },
+    "attr_requirements": {
+        "dexterity": 4
+    }
+}
