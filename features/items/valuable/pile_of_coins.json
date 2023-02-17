@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/pile_of_coins",
+    "icon": "\uD83E\uDE99",
+    "name": "Pile of Coins",
+    "value": 150,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

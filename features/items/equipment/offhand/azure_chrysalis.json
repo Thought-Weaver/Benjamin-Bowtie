@@ -1,0 +1,23 @@
+{
+    "key": "items/equipment/offhand/azure_chrysalis",
+    "icon": "\uD83D\uDC8E",
+    "name": "Azure Chrysalis",
+    "value": 50,
+    "rarity": "Artifact",
+    "description": "The next time you perish, this will restore you to full health. It shatters after being used.",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Off_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResurrectOnce",
+                "effect_value": 0,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

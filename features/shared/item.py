@@ -100,6 +100,7 @@ class ItemKey(StrEnum):
     GoldenSalad = "items/consumable/food/golden_salad"
     Grovemelon = "items/consumable/food/grovemelon"
     Grub = "items/consumable/food/grub"
+    Honey = "items/consumable/food/honey"
     Honeyfruit = "items/consumable/food/honeyfruit"
     MildAle = "items/consumable/food/mild_ale"
     MinnowSushi = "items/consumable/food/minnow_sushi"
@@ -107,6 +108,8 @@ class ItemKey(StrEnum):
     MushroomStew = "items/consumable/food/mushroom_stew"
     Plumpin = "items/consumable/food/plumpin"
     Potato = "items/consumable/food/potato"
+    RawBoarMeat = "items/consumable/food/raw_boar_meat"
+    RawWolfMeat = "items/consumable/food/raw_wolf_meat"
     RazorgrassBall = "items/consumable/food/razorgrass_ball"
     RoastedPotato = "items/consumable/food/roasted_potato"
     RoughySushi = "items/consumable/food/roughy_sushi"
@@ -125,6 +128,7 @@ class ItemKey(StrEnum):
     CharmPotion = "items/consumable/potions/charm_potion"
     CleansingPotion = "items/consumable/potions/cleansing_potion"
     ConstitutionPotion = "items/consumable/potions/constitution_potion"
+    CoralskinPotion = "items/consumable/potions/coralskin_potion"
     DexterityPotion = "items/consumable/potions/dexterity_potion"
     EnfeeblingPotion = "items/consumable/potions/enfeebling_potion"
     ExplosivePotion = "items/consumable/potions/explosive_potion"
@@ -538,6 +542,17 @@ class ItemKey(StrEnum):
     VoidforceTalisman = "items/equipment/offhand/voidforce_talisman"
     VoidmindTalisman = "items/equipment/offhand/voidmind_talisman"
     WanderboundTalisman = "items/equipment/offhand/wanderbound_talisman"
+
+    # Companion Best Tier Items
+    AzureChrysalis = "items/equipment/offhand/azure_chrysalis"
+    BoneClub = "items/weapon/sword/bone_club"
+    BoneStaff = "items/weapon/staff/bone_staff"
+    Bones = "items/misc/junk/bones"
+    GlowingWater = "items/consumable/food/glowing_water"
+    PondSludge = "items/consumable/potions/pond_sludge"
+    AFewCoins = "items/valuable/a_few_coins"
+    PileOfCoins = "items/valuable/pile_of_coins"
+    BagOfCoins = "items/valuable/bag_of_coins"
 
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"

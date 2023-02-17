@@ -149,6 +149,8 @@ class ChefView(discord.ui.View):
             LOADED_ITEMS.get_new_item(ItemKey.MinnowSushi),
             LOADED_ITEMS.get_new_item(ItemKey.MushroomSalad),
             LOADED_ITEMS.get_new_item(ItemKey.MushroomStew),
+            LOADED_ITEMS.get_new_item(ItemKey.RawBoarMeat),
+            LOADED_ITEMS.get_new_item(ItemKey.RawWolfMeat),
             LOADED_ITEMS.get_new_item(ItemKey.RoughySushi),
             LOADED_ITEMS.get_new_item(ItemKey.VegetableFritter),
             LOADED_ITEMS.get_new_item(ItemKey.VegetableStew),

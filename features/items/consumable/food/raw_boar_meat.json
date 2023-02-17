@@ -1,0 +1,27 @@
+{
+    "key": "items/consumable/food/raw_boar_meat",
+    "icon": "\uD83E\uDD69",
+    "name": "Raw Boar Meat",
+    "value": 5,
+    "rarity": "Common",
+    "description": "Can be consumed while dueling or outside duels.",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Consumable", "Food", "Usable_Outside_Duels", "Usable_Within_Duels"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 0,
+        "target_own_group": true
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "RestorePercentHealth",
+                "effect_value": 0.01,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

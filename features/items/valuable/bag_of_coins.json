@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/bag_of_coins",
+    "icon": "\uD83D\uDCB0",
+    "name": "Bag of Coins",
+    "value": 300,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

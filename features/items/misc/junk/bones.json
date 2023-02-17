@@ -1,0 +1,12 @@
+{
+    "key": "items/misc/junk/bones",
+    "icon": "\uD83E\uDDB4",
+    "name": "Bones",
+    "value": 3,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Junk"],
+    "state_tags": [],
+    "count": 1
+}

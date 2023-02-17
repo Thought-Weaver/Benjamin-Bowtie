@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/a_few_coins",
+    "icon": "\uD83E\uDE99",
+    "name": "A Few Coins",
+    "value": 50,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

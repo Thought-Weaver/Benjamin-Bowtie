@@ -1,0 +1,34 @@
+{
+    "key": "items/consumable/food/glowing_water",
+    "icon": "\uD83D\uDCA6",
+    "name": "Glowing Water",
+    "value": 100,
+    "rarity": "Epic",
+    "description": "Can be consumed while dueling or outside duels.",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Consumable", "Food", "Usable_Outside_Duels", "Usable_Within_Duels"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 0,
+        "target_own_group": true
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "RestorePercentMana",
+                "effect_value": 0.15,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "RestorePercentHealth",
+                "effect_value": 0.15,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

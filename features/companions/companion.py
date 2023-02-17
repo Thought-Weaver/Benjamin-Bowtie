@@ -267,7 +267,7 @@ class BlueFlitterwingButterflyCompanion(Companion):
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.AzureberryJuice, ItemKey.CrownberryJuice, ItemKey.SundewDelight],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.ManaPotion, ItemKey.LesserManaPotion, ItemKey.AzureChrysalis],
             talisman=ItemKey.FlitterwingTalisman
         )
 
@@ -329,7 +329,7 @@ class DeepwoodCubCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Honeyfruit, ItemKey.Crownberry],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.Wrathbark, ItemKey.Lithewood, ItemKey.SpeckledCap, ItemKey.SpeckledCapSpores, ItemKey.Honeyfruit, ItemKey.Honey],
             talisman=ItemKey.DeepwoodTalisman
         )
 
@@ -424,7 +424,7 @@ class FleetfootRabbitCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Fissureleaf, ItemKey.Sweetroot],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.CrackedJade, ItemKey.Jade, ItemKey.LuckPotion, ItemKey.Sweetroot, ItemKey.SweetrootCutting],
             talisman=ItemKey.LuckyPawTalisman
         )
 
@@ -486,7 +486,7 @@ class FlyingFoxCompanion(Companion):
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.FishCake, ItemKey.CookedMinnow, ItemKey.CookedRoughy],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.Graspleaf, ItemKey.GraspleafSeed, ItemKey.Fissureleaf, ItemKey.FissureleafSeed],
             talisman=ItemKey.FoxsFeatherTalisman
         )
 
@@ -581,7 +581,7 @@ class GiantTowerBeetleCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Compost, ItemKey.Shellflower],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood, ClassTag.Gardening.Soil],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.Shellflower, ItemKey.ShellflowerSeed, ItemKey.CoralskinPotion],
             talisman=ItemKey.TowerTalisman
         )
 
@@ -643,7 +643,7 @@ class GnashtuskBoarCompanion(Companion):
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.Sweetroot, ItemKey.Elsberries, ItemKey.Crownberry],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.IronCuirass, ItemKey.IronHelmet, ItemKey.IronGauntlets, ItemKey.IronLeggings, ItemKey.IronGreaves],
             talisman=ItemKey.GnashtuskTalisman
         )
 
@@ -736,9 +736,9 @@ class MiniatureBoneGolemCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=2,
             pet_battle_xp_gain=4,
-            preferred_foods=[ItemKey.CrackedQuartz, ItemKey.Quartz, ItemKey.FlawlessQuartz],
-            valid_food_categories=[ClassTag.Ingredient.CraftingMaterial, ClassTag.Equipment.Equipment],
-            best_tier_items=[],
+            preferred_foods=[ItemKey.CrackedQuartz, ItemKey.Quartz, ItemKey.FlawlessQuartz, ItemKey.Bones],
+            valid_food_categories=[ClassTag.Ingredient.CraftingMaterial, ClassTag.Equipment.Equipment, ClassTag.Misc.Junk],
+            best_tier_items=[ItemKey.BoneClub, ItemKey.BoneStaff, ItemKey.Bones],
             talisman=ItemKey.SkullTalisman
         )
 
@@ -800,7 +800,7 @@ class PaleWalkerSpiderCompanion(Companion):
             pet_battle_xp_gain=4,
             preferred_foods=[ItemKey.Grub],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.LesserPoison, ItemKey.Poison, ItemKey.GreaterPoison, ItemKey.FoolsDelight, ItemKey.FoolsDelightSpores],
             talisman=ItemKey.PaleTalisman
         )
 
@@ -862,7 +862,7 @@ class PondloverFrogCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Grub, ItemKey.Seaclover],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.Lithewood, ItemKey.GlowingWater, ItemKey.PondSludge],
             talisman=ItemKey.PondloverTalisman
         )
 
@@ -924,7 +924,7 @@ class ScuttledarkScorpionCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Grub],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.CrackedOnyx, ItemKey.LesserStrengthPotion, ItemKey.StrengthPotion, ItemKey.GreaterStrengthPotion],
             talisman=ItemKey.ScuttledarkTalisman
         )
 
@@ -1019,7 +1019,7 @@ class ShadowfootRaccoonCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.CookedMinnow, ItemKey.CookedRoughy, ItemKey.FishCake],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.AFewCoins, ItemKey.PileOfCoins, ItemKey.BagOfCoins, ItemKey.CrackedEmerald, ItemKey.Emerald],
             talisman=ItemKey.LuckyRockTalisman
         )
 
@@ -1081,7 +1081,7 @@ class SilverwingOwlCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Azureberries, ItemKey.Minnow, ItemKey.Roughy],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.Azureberries, ItemKey.AzureberrySeed, ItemKey.LesserIntelligencePotion, ItemKey.IntelligencePotion, ItemKey.GreaterIntelligencePotion],
             talisman=ItemKey.SilverwingFeatherTalisman
         )
 
@@ -1176,7 +1176,7 @@ class SunbaskTurtleCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Crownberry, ItemKey.Honeyfruit, ItemKey.Stranglekelp],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.LesserConstitutionPotion, ItemKey.ConstitutionPotion, ItemKey.GreaterConstitutionPotion],
             talisman=ItemKey.SunbaskTalisman
         )
 
@@ -1271,7 +1271,7 @@ class TanglewebSpiderCompanion(Companion):
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.Grub],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.Spidersilk, ItemKey.LesserDexterityPotion, ItemKey.DexterityPotion, ItemKey.GreaterDexterityPotion],
             talisman=ItemKey.TanglewebTalisman
         )
 
@@ -1333,7 +1333,7 @@ class TidewaterCrabCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Roughy, ItemKey.Minnow, ItemKey.Shrimp],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.Shrimp, ItemKey.Stranglekelp, ItemKey.SirensKiss],
             talisman=ItemKey.CrabTalisman
         )
 
@@ -1393,9 +1393,9 @@ class VerdantSlithererCompanion(Companion):
             has_active_ability=False,
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.RawBoarMeat, ItemKey.RawWolfMeat],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.LesserPoison, ItemKey.Poison, ItemKey.GreaterPoison],
             talisman=ItemKey.VerdantTalisman
         )
 
@@ -1490,7 +1490,7 @@ class VoidseenCatCompanion(Companion):
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Azureberries, ItemKey.Minnow, ItemKey.Roughy],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.VoidseenOre, ItemKey.LesserIntelligencePotion, ItemKey.IntelligencePotion, ItemKey.GreaterIntelligencePotion],
             talisman=ItemKey.VoidmindTalisman
         )
 
@@ -1588,9 +1588,9 @@ class VoidseenPupCompanion(Companion):
             has_active_ability=True,
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
-            preferred_foods=[],
+            preferred_foods=[ItemKey.RawBoarMeat, ItemKey.RawWolfMeat],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.VoidseenOre, ItemKey.LesserStrengthPotion, ItemKey.StrengthPotion, ItemKey.GreaterStrengthPotion],
             talisman=ItemKey.VoidforceTalisman
         )
 
@@ -1652,7 +1652,7 @@ class WanderboundRavenCompanion(Companion):
             pet_battle_xp_gain=4,
             preferred_foods=[ItemKey.Azureberries, ItemKey.AzureberryJuice],
             valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
-            best_tier_items=[],
+            best_tier_items=[ItemKey.CopperOre, ItemKey.SilverOre, ItemKey.GoldOre, ItemKey.CrackedOpal, ItemKey.CrackedQuartz, ItemKey.Quartz, ItemKey.FlawlessQuartz],
             talisman=ItemKey.WanderboundTalisman
         )
 
