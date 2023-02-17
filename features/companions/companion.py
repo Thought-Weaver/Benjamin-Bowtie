@@ -20,10 +20,10 @@ from features.companions.npcs.sunbask_turtle import SunbaskTurtle
 from features.companions.npcs.tangleweb_spider import TanglewebSpider
 from features.companions.npcs.tidewater_crab import TidewaterCrab
 from features.companions.npcs.verdant_slitherer import VerdantSlitherer
+from features.companions.npcs.voidseen_cat import VoidseenCat
 from features.companions.npcs.voidseen_pup import VoidseenPup
 from features.companions.npcs.wanderbound_raven import WanderboundRaven
 
-from features.npcs.npc import NPC
 from features.shared.attributes import Attributes
 from features.shared.constants import BASE_BEST_TIER_POINTS, BASE_GOOD_TIER_POINTS, BASE_GREAT_TIER_POINTS
 from features.shared.effect import Effect, EffectType, ItemEffectCategory
@@ -33,6 +33,7 @@ from features.shared.statuseffect import StatusEffectKey
 
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
+    from features.npcs.npc import NPC
     from features.shared.ability import Ability
 
 # -----------------------------------------------------------------------------
@@ -1544,7 +1545,7 @@ class VoidseenCatCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = VerdantSlitherer(self._level)
+        entity = VoidseenCat(self._level)
         entity.set_id(self._id)
         return entity
 

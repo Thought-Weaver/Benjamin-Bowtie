@@ -1,7 +1,7 @@
 {
-    "key": "items/equipment/helmet/bucket_of_balance",
+    "key": "items/equipment/helmet/bucket_of_fortune",
     "icon": "\ud83e\udee7",
-    "name": "Bucket of Balance",
+    "name": "Bucket of Fortune",
     "value": 10855,
     "rarity": "Legendary",
     "description": "",

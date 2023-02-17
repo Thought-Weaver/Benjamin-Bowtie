@@ -4,9 +4,10 @@ import discord
 from math import sqrt
 import random
 
+import features.companions.companion
+
 from discord.embeds import Embed
 from discord.ext import commands
-from features.companions.companion import VoidseenCatCompanion, VoidseenPupCompanion
 from features.house.alchemy import AlchemyChamberView
 from features.house.garden import MUTATION_PROBS, GardenView
 from features.house.kitchen import KitchenView
@@ -306,14 +307,14 @@ class HouseView(discord.ui.View):
             companions = player.get_companions()
             if random.random() < 0.5:
                 if CompanionKey.VoidseenCat not in companions.companions.keys():
-                    companions.companions[CompanionKey.VoidseenCat] = VoidseenCatCompanion()
+                    companions.companions[CompanionKey.VoidseenCat] = features.companions.companion.VoidseenCatCompanion()
                     companions.companions[CompanionKey.VoidseenCat].set_id(player.get_id())
                     companion_result_str += "\n\nIn your sleep, amid nightmares that seem far too real, you awake with a start to find something curled up beside your feet. A small cat, fur dark as the night, with beautiful eyes shimmering white with shards of color dancing in the irises. It purrs and calms you, driving away the fear you felt from the dreams."
 
                     player.get_stats().companions.companions_found += 1
             else:
                 if CompanionKey.VoidseenPup not in companions.companions.keys():
-                    companions.companions[CompanionKey.VoidseenPup] = VoidseenPupCompanion()
+                    companions.companions[CompanionKey.VoidseenPup] = features.companions.companion.VoidseenPupCompanion()
                     companions.companions[CompanionKey.VoidseenPup].set_id(player.get_id())
                     companion_result_str += "\n\nIn your sleep, amid nightmares that seem far too real, you awake with a start to find something curled up beside your feet. A small pup, fur dark as the night, with beautiful eyes shimmering white with shards of color dancing in the irises. It looks up at you, one ear floppy the other pointed straight up, then nuzzles you with its nose. Your newfound companion brings a profound sense of calm, driving away the terrifying dreams."
 
