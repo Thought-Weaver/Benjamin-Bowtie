@@ -48,8 +48,6 @@ class PINCHI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(1, 2), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -86,8 +84,6 @@ class PINCHII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(2, 3), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -126,8 +122,6 @@ class PINCHIII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(3, 4), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -165,8 +159,6 @@ class PINCHIV(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(4, 5), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -203,8 +195,6 @@ class PINCHV(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(5, 6), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -569,7 +559,7 @@ class MiniCrabnadoV(Ability):
 class IsThatAFlyI(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDD80",
+            icon="\uD83E\uDEB0",
             name="Is That a Fly I",
             class_key=ExpertiseClass.Fisher,
             description="Decreases the target's Dex by 5 for 2 turns and deals 1-2 damage.",
@@ -594,8 +584,6 @@ class IsThatAFlyI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(1, 2), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -608,7 +596,7 @@ class IsThatAFlyI(Ability):
 class IsThatAFlyII(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDD80",
+            icon="\uD83E\uDEB0",
             name="Is That a Fly II",
             class_key=ExpertiseClass.Fisher,
             description="Decreases the target's Dex by 5 for 2 turns and deals 2-3 damage.",
@@ -633,8 +621,6 @@ class IsThatAFlyII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(2, 3), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -647,7 +633,7 @@ class IsThatAFlyII(Ability):
 class IsThatAFlyIII(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDD80",
+            icon="\uD83E\uDEB0",
             name="Is That a Fly III",
             class_key=ExpertiseClass.Fisher,
             description="Decreases the target's Dex by 5 for 2 turns and deals 3-4 damage.",
@@ -672,8 +658,6 @@ class IsThatAFlyIII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(3, 4), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -686,7 +670,7 @@ class IsThatAFlyIII(Ability):
 class IsThatAFlyIV(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDD80",
+            icon="\uD83E\uDEB0",
             name="Is That a Fly IV",
             class_key=ExpertiseClass.Fisher,
             description="Decreases the target's Dex by 5 for 2 turns and deals 4-5 damage.",
@@ -711,8 +695,6 @@ class IsThatAFlyIV(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(4, 5), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -725,7 +707,7 @@ class IsThatAFlyIV(Ability):
 class IsThatAFlyV(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDD80",
+            icon="\uD83E\uDEB0",
             name="Is That a Fly V",
             class_key=ExpertiseClass.Fisher,
             description="Decreases the target's Dex by 5 for 2 turns and deals 5-6 damage.",
@@ -749,8 +731,6 @@ class IsThatAFlyV(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(5, 6), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -1874,8 +1854,6 @@ class GustI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(1, 3), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -1912,8 +1890,6 @@ class GustII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(2, 4), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -1952,8 +1928,6 @@ class GustIII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(3, 5), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -1991,8 +1965,6 @@ class GustIV(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(4, 6), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -2029,8 +2001,6 @@ class GustV(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(5, 7), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -2328,8 +2298,6 @@ class SneakyManeuversI(Ability):
         if mana_and_cd_str is not None:
             result_str += "\n" + mana_and_cd_str
         
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -2388,8 +2356,6 @@ class SneakyManeuversII(Ability):
         if mana_and_cd_str is not None:
             result_str += "\n" + mana_and_cd_str
         
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -2448,8 +2414,6 @@ class SneakyManeuversIII(Ability):
         if mana_and_cd_str is not None:
             result_str += "\n" + mana_and_cd_str
         
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -2508,8 +2472,6 @@ class SneakyManeuversIV(Ability):
         if mana_and_cd_str is not None:
             result_str += "\n" + mana_and_cd_str
         
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -2568,8 +2530,6 @@ class SneakyManeuversV(Ability):
         if mana_and_cd_str is not None:
             result_str += "\n" + mana_and_cd_str
         
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -3146,8 +3106,6 @@ class WebShotI(Ability):
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -3184,8 +3142,6 @@ class WebShotII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -3224,8 +3180,6 @@ class WebShotIII(Ability):
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -3263,8 +3217,6 @@ class WebShotIV(Ability):
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -3301,8 +3253,6 @@ class WebShotV(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -3927,8 +3877,6 @@ class VenomousBiteI(Ability):
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -3972,8 +3920,6 @@ class VenomousBiteII(Ability):
                 results[i].target_str += f" and {se_str}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -4019,8 +3965,6 @@ class VenomousBiteIII(Ability):
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -4065,8 +4009,6 @@ class VenomousBiteIV(Ability):
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -4110,8 +4052,6 @@ class VenomousBiteV(Ability):
                 results[i].target_str += f" and {se_str}"
                 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -6592,8 +6532,6 @@ class MightOfTheVoidI(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
         result_str += "\n".join(results)
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -6630,8 +6568,6 @@ class MightOfTheVoidII(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
         result_str += "\n".join(results)
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -6670,8 +6606,6 @@ class MightOfTheVoidIII(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
         result_str += "\n".join(results)
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -6709,8 +6643,6 @@ class MightOfTheVoidIV(Ability):
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
         result_str += "\n".join(results)
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -6747,8 +6679,6 @@ class MightOfTheVoidV(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
         result_str += "\n".join(results)
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -8586,8 +8516,6 @@ class ToweringArmorI(Ability):
         if mana_cd_result_str is not None:
             result_str += mana_cd_result_str
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -8627,8 +8555,6 @@ class ToweringArmorII(Ability):
         mana_cd_result_str = self.remove_mana_and_set_cd(caster)
         if mana_cd_result_str is not None:
             result_str += mana_cd_result_str
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -8670,8 +8596,6 @@ class ToweringArmorIII(Ability):
         if mana_cd_result_str is not None:
             result_str += mana_cd_result_str
         
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -8712,8 +8636,6 @@ class ToweringArmorIV(Ability):
         if mana_cd_result_str is not None:
             result_str += mana_cd_result_str
         
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -8753,8 +8675,6 @@ class ToweringArmorV(Ability):
         mana_cd_result_str = self.remove_mana_and_set_cd(caster)
         if mana_cd_result_str is not None:
             result_str += mana_cd_result_str
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -9338,8 +9258,6 @@ class ThrowTheBonesI(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(2, 3), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -9377,8 +9295,6 @@ class ThrowTheBonesII(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(2, 3), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -9418,8 +9334,6 @@ class ThrowTheBonesIII(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(2, 3), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -9458,8 +9372,6 @@ class ThrowTheBonesIV(Ability):
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(2, 3), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -9497,8 +9409,6 @@ class ThrowTheBonesV(Ability):
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(2, 3), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -11306,8 +11216,6 @@ class ManaLeechI(Ability):
 
         self.remove_mana_and_set_cd(caster)
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -11348,8 +11256,6 @@ class ManaLeechII(Ability):
         result_str += "\n".join(results)
 
         self.remove_mana_and_set_cd(caster)
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
@@ -11392,8 +11298,6 @@ class ManaLeechIII(Ability):
 
         self.remove_mana_and_set_cd(caster)
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -11435,8 +11339,6 @@ class ManaLeechIV(Ability):
 
         self.remove_mana_and_set_cd(caster)
 
-        caster.get_stats().companions.companion_abilities_used += 1
-
         return result_str
 
     def __getstate__(self):
@@ -11477,8 +11379,6 @@ class ManaLeechV(Ability):
         result_str += "\n".join(results)
 
         self.remove_mana_and_set_cd(caster)
-
-        caster.get_stats().companions.companion_abilities_used += 1
 
         return result_str
 
