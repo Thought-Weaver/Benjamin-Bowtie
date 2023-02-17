@@ -10434,7 +10434,7 @@ class WithTheWindI(Ability):
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_successful_ability_used:
-                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage)
+                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
@@ -10453,7 +10453,7 @@ class WithTheWindI(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt, self.get_icon_and_name())
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -10602,7 +10602,7 @@ class WithTheWindII(Ability):
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_successful_ability_used:
-                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage)
+                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
@@ -10621,7 +10621,7 @@ class WithTheWindII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt, self.get_icon_and_name())
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -10770,7 +10770,7 @@ class WithTheWindIII(Ability):
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_successful_ability_used:
-                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage)
+                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
@@ -10789,7 +10789,7 @@ class WithTheWindIII(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt, self.get_icon_and_name())
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -10938,7 +10938,7 @@ class WithTheWindIV(Ability):
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_successful_ability_used:
-                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage)
+                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
@@ -10957,7 +10957,7 @@ class WithTheWindIV(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt, self.get_icon_and_name())
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
@@ -11106,7 +11106,7 @@ class WithTheWindV(Ability):
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_successful_ability_used:
-                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage)
+                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
@@ -11125,7 +11125,7 @@ class WithTheWindV(Ability):
                     if item_effects is None:
                         continue
                     for item_effect in item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt)
+                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt, self.get_icon_and_name())
                         if result_str != "":
                             results.append(NegativeAbilityResult(result_str, False))
 
