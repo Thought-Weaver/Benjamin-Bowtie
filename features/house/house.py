@@ -1,11 +1,12 @@
 from __future__ import annotations
+
+import discord
 from math import sqrt
 import random
 
-import discord
-
 from discord.embeds import Embed
 from discord.ext import commands
+from features.companions.companion import VoidseenCatCompanion, VoidseenPupCompanion
 from features.house.alchemy import AlchemyChamberView
 from features.house.garden import MUTATION_PROBS, GardenView
 from features.house.kitchen import KitchenView
@@ -15,8 +16,7 @@ from features.house.workshop import WorkshopView
 from features.inventory import Inventory
 from features.mail import MailboxView
 
-from features.shared.constants import MAX_GARDEN_SIZE
-from features.shared.enums import HouseRoom
+from features.shared.enums import CompanionKey, HouseRoom
 from features.shared.item import LOADED_ITEMS, ItemKey
 
 from typing import TYPE_CHECKING, Dict, List
@@ -301,7 +301,25 @@ class HouseView(discord.ui.View):
         player_expertise.hp = player_expertise.max_hp
         player_expertise.mana = player_expertise.max_mana
 
-        return Embed(title="A Nice Home", description="This is your own place in the village, which you can expand with new rooms and capabilities.\n\n*You have rested, clearing your status effects and restoring your HP and Mana.*")
+        companion_result_str: str = ""
+        if random.random() < 0.0002:
+            companions = player.get_companions()
+            if random.random() < 0.5:
+                if CompanionKey.VoidseenCat not in companions.companions.keys():
+                    companions.companions[CompanionKey.VoidseenCat] = VoidseenCatCompanion()
+                    companions.companions[CompanionKey.VoidseenCat].set_id(player.get_id())
+                    companion_result_str += "\n\nIn your sleep, amid nightmares that seem far too real, you awake with a start to find something curled up beside your feet. A small cat, fur dark as the night, with beautiful eyes shimmering white with shards of color dancing in the irises. It purrs and calms you, driving away the fear you felt from the dreams."
+
+                    player.get_stats().companions.companions_found += 1
+            else:
+                if CompanionKey.VoidseenPup not in companions.companions.keys():
+                    companions.companions[CompanionKey.VoidseenPup] = VoidseenPupCompanion()
+                    companions.companions[CompanionKey.VoidseenPup].set_id(player.get_id())
+                    companion_result_str += "\n\nIn your sleep, amid nightmares that seem far too real, you awake with a start to find something curled up beside your feet. A small pup, fur dark as the night, with beautiful eyes shimmering white with shards of color dancing in the irises. It looks up at you, one ear floppy the other pointed straight up, then nuzzles you with its nose. Your newfound companion brings a profound sense of calm, driving away the terrifying dreams."
+
+                    player.get_stats().companions.companions_found += 1
+
+        return Embed(title="A Nice Home", description=f"This is your own place in the village, which you can expand with new rooms and capabilities.\n\n*You have rested, clearing your status effects and restoring your HP and Mana.*{companion_result_str}")
 
     def get_bot(self):
         return self._bot
