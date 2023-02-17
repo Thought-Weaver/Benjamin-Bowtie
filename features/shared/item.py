@@ -3255,7 +3255,7 @@ class Item():
             # There are some cases where I'd rather use a custom description
             if item_effects_str != "":
                 has_any_stats = True
-                display_string += f"{self._item_effects}\n"
+                display_string += f"\n{self._item_effects}\n"
 
         if has_any_stats:
             display_string += "\n"
