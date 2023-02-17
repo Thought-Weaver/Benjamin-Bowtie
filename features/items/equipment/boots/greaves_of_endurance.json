@@ -37,7 +37,7 @@
         "on_ability_used_against": []
     },
     "armor_stats": {
-        "armor": 8
+        "armor_amount": 8
     },
     "attr_requirements": {
         "constitution": 3

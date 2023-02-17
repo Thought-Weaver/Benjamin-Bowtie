@@ -34,7 +34,7 @@
         ]
     },
     "armor_stats": {
-        "armor": 31
+        "armor_amount": 31
     },
     "attr_requirements": {
         "constitution": 12

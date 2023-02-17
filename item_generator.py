@@ -2983,7 +2983,7 @@ if __name__ == "__main__":
             }
         if armor_stats is not None:
             item["armor_stats"] = {
-                "armor": armor_stats._armor_amount
+                "armor_amount": armor_stats._armor_amount
             }
         
         attr_requirements_dict: Dict[str, int] = {}

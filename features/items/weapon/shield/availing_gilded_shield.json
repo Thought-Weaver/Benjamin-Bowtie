@@ -40,6 +40,6 @@
         ]
     },
     "armor_stats": {
-        "armor": 33
+        "armor_amount": 33
     }
 }

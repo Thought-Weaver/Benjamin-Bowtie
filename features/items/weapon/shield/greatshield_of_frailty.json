@@ -39,6 +39,6 @@
         "on_ability_used_against": []
     },
     "armor_stats": {
-        "armor": 124
+        "armor_amount": 124
     }
 }

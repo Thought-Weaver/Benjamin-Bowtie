@@ -3032,7 +3032,19 @@ class Item():
         if item_effects_data is not None:
             item_effects = ItemEffects([], [], [], [], [], [], [], [])
             item_effects.__setstate__(item_effects_data)
-        
+
+        attr_requirements_data: dict | None = item_data.get("attr_requirements")
+        attr_requirements = None
+        if attr_requirements_data is not None:
+            attr_requirements = Attributes(
+                attr_requirements_data.get("constitution", 0),
+                attr_requirements_data.get("strength", 0),
+                attr_requirements_data.get("dexterity", 0),
+                attr_requirements_data.get("intelligence", 0),
+                attr_requirements_data.get("luck", 0),
+                attr_requirements_data.get("memory", 0)
+            )
+
         return Item(
             item_data.get("key", ""),
             item_data.get("icon", ""),
@@ -3047,7 +3059,7 @@ class Item():
             item_data.get("level_requirement", 0),
             item_effects,
             item_data.get("altering_item_keys", []),
-            item_data.get("attr_requirements", None),
+            attr_requirements,
             armor_stats,
             weapon_stats,
             consumable_stats
