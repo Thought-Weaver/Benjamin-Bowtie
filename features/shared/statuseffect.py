@@ -459,7 +459,8 @@ class Generating(StatusEffect):
         super().__init__(turns_remaining, value, "Generating", StatusEffectKey.Generating, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Whenever you successfully attack a target, coins are generated for the next {self.get_turns_remaining_str()}"
+        coin_str = "coins" if self.value != 1 else "coin"
+        display_str = f"{self.name}: Whenever you successfully attack a target, {self.value} {coin_str} are generated for the next {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
