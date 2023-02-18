@@ -6,7 +6,7 @@ import time
 
 from discord.embeds import Embed
 from discord.ext import commands
-from enum import StrEnum
+from strenum import StrEnum
 
 from features.mail import Mail
 from features.shared.constants import COMPANION_FEEDING_POINTS, COMPANION_NAMING_POINTS, COMPANION_PREFERRED_FOOD_BONUS_POINTS
