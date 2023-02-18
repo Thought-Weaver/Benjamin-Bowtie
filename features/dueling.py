@@ -840,6 +840,8 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
 
         chance_enfeebled, turns_enfeebled = chance_status_effect.get(StatusEffectKey.CannotUseAbilities, (0, 0))
         if random() < chance_enfeebled:
@@ -861,7 +863,9 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
-
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
+        
         # Special case, similar to Decaying.
         percent_vulnerable, turns_vulnerable = chance_status_effect.get(StatusEffectKey.DmgVulnerability, (0, 0))
         if percent_vulnerable != 0:
@@ -894,7 +898,9 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
-
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
+        
         # Special case, similar to Decaying.
         percent_tarnished, turns_tarnished = chance_status_effect.get(StatusEffectKey.Tarnished, (0, 0))
         if percent_tarnished != 0:
@@ -905,7 +911,9 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
-
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
+        
         chance_sanguinated, turns_sanguinated = chance_status_effect.get(StatusEffectKey.ManaToHP, (0, 0))
         if random() < chance_sanguinated:
             status_effect = ManaToHP(
@@ -915,7 +923,9 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
-
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
+        
         chance_absorbing, turns_absorbing = chance_status_effect.get(StatusEffectKey.PoisonHeals, (0, 0))
         if random() < chance_absorbing:
             status_effect = PoisonHeals(
@@ -925,7 +935,9 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
-
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
+        
         # Special case, similar to Decaying.
         percent_empowered, turns_empowered = chance_status_effect.get(StatusEffectKey.DmgBuff, (0, 0))
         if percent_empowered != 0:
@@ -936,6 +948,8 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
 
         # Special case, similar to Decaying.
         percent_diminished, turns_diminished = chance_status_effect.get(StatusEffectKey.DmgDebuff, (0, 0))
@@ -945,7 +959,8 @@ class Dueling():
                 value=percent_diminished,
                 trigger_first_turn=False
             )
-            result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
+            if not target_is_ally:
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
 
         # Special case, similar to Decaying.
         # TODO: Need to pass the source str into this function and then to the StackingDamage instance.
@@ -969,6 +984,8 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
 
         con_debuff, turns_con_debuff = chance_status_effect.get(StatusEffectKey.ConDebuff, (0, 0))
         if con_debuff != 0:
@@ -989,6 +1006,8 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
 
         str_debuff, turns_str_debuff = chance_status_effect.get(StatusEffectKey.StrDebuff, (0, 0))
         if str_debuff != 0:
@@ -1009,6 +1028,8 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
 
         dex_debuff, turns_dex_debuff = chance_status_effect.get(StatusEffectKey.DexDebuff, (0, 0))
         if dex_debuff != 0:
@@ -1029,6 +1050,8 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
 
         int_debuff, turns_int_debuff = chance_status_effect.get(StatusEffectKey.IntDebuff, (0, 0))
         if int_debuff != 0:
@@ -1049,6 +1072,8 @@ class Dueling():
             )
             if target_is_ally or target_is_ally is None:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, item_effect_cat, resist_status_effect))
+            else:
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, item_effect_cat, resist_status_effect))
 
         lck_debuff, turns_lck_debuff = chance_status_effect.get(StatusEffectKey.LckDebuff, (0, 0))
         if lck_debuff != 0:
