@@ -424,7 +424,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * decaying_adjustment)
+                healing += int(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{0}" + f" healed {healing} HP from {source_str}")
@@ -438,7 +438,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * decaying_adjustment)
+                healing += int(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{0}" + f" healed {healing} HP from {source_str}")
@@ -652,7 +652,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * decaying_adjustment)
+                healing += int(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {source_str}")
@@ -666,7 +666,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * decaying_adjustment)
+                healing += int(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {source_str}")
@@ -1000,7 +1000,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * decaying_adjustment)
+                healing += int(healing * -decaying_adjustment)
 
             entity.get_expertise().heal(healing)
             return f"{entity_name} healed {healing} HP from {source_str}"
@@ -1014,7 +1014,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * decaying_adjustment)
+                healing += int(healing * -decaying_adjustment)
 
             entity.get_expertise().heal(healing)
             return f"{entity_name} healed {healing} HP from {source_str}"
@@ -1235,7 +1235,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * decaying_adjustment)
+                healing += int(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return "{1}" + f" healed {healing} HP from {item.get_full_name()}"
@@ -1249,7 +1249,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * decaying_adjustment)
+                healing += int(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return "{1}" + f" healed {healing} HP from {item.get_full_name()}"

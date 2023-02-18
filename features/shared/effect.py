@@ -497,9 +497,66 @@ class Effect():
             elif se_key == StatusEffectKey.Decaying:
                 # Guaranteed to happen; the effect value is the percent decrease for healing
                 # effectiveness
-                display_string += f"{round(-self.effect_value * 100, 2)}% Decaying"
+                display_string += f"{round(self.effect_value * 100, 2)}% Decaying"
             elif se_key == StatusEffectKey.Undying:
                 display_string += f"{round(self.effect_value * 100, 2)}% Undying Chance"
+            elif se_key == StatusEffectKey.CannotUseAbilities:
+                display_string += f"{round(self.effect_value * 100, 2)}% Enfeebled Chance"
+            elif se_key == StatusEffectKey.DmgReduction:
+                # Guaranteed to happen
+                display_string += f"{round(self.effect_value * 100, 2)}% Protected"
+            elif se_key == StatusEffectKey.DmgVulnerability:
+                # Guaranteed to happen
+                display_string += f"{round(self.effect_value * 100, 2)}% Vulnerable"
+            elif se_key == StatusEffectKey.FixedDmgTick:
+                # Guaranteed to happen
+                display_string += f"{int(self.effect_value)} Damage Tick"
+            elif se_key == StatusEffectKey.Generating:
+                # Guaranteed to happen
+                display_string += f"{int(self.effect_value)} Coins Generated per Attack"
+            elif se_key == StatusEffectKey.Tarnished:
+                # Guaranteed to happen
+                display_string += f"{round(self.effect_value * 100, 2)}% Tarnished"
+            elif se_key == StatusEffectKey.Sleeping:
+                display_string += f"{round(self.effect_value * 100, 2)}% Sleeping Chance"
+            elif se_key == StatusEffectKey.ManaToHP:
+                display_string += f"{round(self.effect_value * 100, 2)}% Sanguinated Chance"
+            elif se_key == StatusEffectKey.PoisonHeals:
+                display_string += f"{round(self.effect_value * 100, 2)}% Absorbing Chance"
+            elif se_key == StatusEffectKey.DmgBuff:
+                # Guaranteed to happen
+                display_string += f"{round(self.effect_value * 100, 2)}% Empowered"
+            elif se_key == StatusEffectKey.DmgDebuff:
+                # Guaranteed to happen
+                display_string += f"{round(self.effect_value * 100, 2)}% Diminished"
+            elif se_key == StatusEffectKey.StackingDamage:
+                # Guaranteed to happen
+                display_string += f"{round(self.effect_value * 100, 2)}% Reverberating"
+            # All attribute buffs and debuffs are guaranteed to happen
+            elif se_key == StatusEffectKey.ConBuff:
+                display_string += f"+{int(self.effect_value)} Constitution"
+            elif se_key == StatusEffectKey.ConDebuff:
+                display_string += f"{int(self.effect_value)} Constitution"
+            elif se_key == StatusEffectKey.StrBuff:
+                display_string += f"+{int(self.effect_value)} Strength"
+            elif se_key == StatusEffectKey.StrDebuff:
+                display_string += f"{int(self.effect_value)} Strength"
+            elif se_key == StatusEffectKey.DexBuff:
+                display_string += f"+{int(self.effect_value)} Dexterity"
+            elif se_key == StatusEffectKey.DexDebuff:
+                display_string += f"{int(self.effect_value)} Dexterity"
+            elif se_key == StatusEffectKey.IntBuff:
+                display_string += f"+{int(self.effect_value)} Intelligence"
+            elif se_key == StatusEffectKey.IntDebuff:
+                display_string += f"{int(self.effect_value)} Intelligence"
+            elif se_key == StatusEffectKey.LckBuff:
+                display_string += f"+{int(self.effect_value)} Luck"
+            elif se_key == StatusEffectKey.LckDebuff:
+                display_string += f"{int(self.effect_value)} Luck"
+            elif se_key == StatusEffectKey.MemBuff:
+                display_string += f"+{int(self.effect_value)} Memory"
+            elif se_key == StatusEffectKey.MemDebuff:
+                display_string += f"{int(self.effect_value)} Memory"
         if self.effect_type == EffectType.ResistStatusEffect:
             se_key: StatusEffectKey | None = self.associated_status_effect
             if se_key == StatusEffectKey.Poisoned:
@@ -520,6 +577,24 @@ class Effect():
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Sleeping Chance"
             elif se_key == StatusEffectKey.Decaying:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Decaying Chance"
+            elif se_key == StatusEffectKey.DmgVulnerability:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Vulnerable Chance"
+            elif se_key == StatusEffectKey.DmgDebuff:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Diminished Chance"
+            elif se_key == StatusEffectKey.CannotUseAbilities:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Enfeebled Chance"
+            elif se_key == StatusEffectKey.ConDebuff:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Frail Chance"
+            elif se_key == StatusEffectKey.StrDebuff:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Weakened Chance"
+            elif se_key == StatusEffectKey.DexDebuff:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Slowed Chance"
+            elif se_key == StatusEffectKey.IntDebuff:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Drained Chance"
+            elif se_key == StatusEffectKey.LckDebuff:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Unlucky Chance"
+            elif se_key == StatusEffectKey.MemDebuff:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Forgetful Chance"
 
         if self.effect_type == EffectType.RestoreHealth:
             display_string += f"Restore {int(self.effect_value)} Health"

@@ -17,7 +17,7 @@
         "permanent": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": -1.5,
+                "effect_value": 1.5,
                 "effect_time": 2,
                 "conditions": [],
                 "condition_values": [],

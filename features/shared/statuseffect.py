@@ -306,7 +306,7 @@ class DexDebuff(StatusEffect):
 
 class IntDebuff(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
-        super().__init__(turns_remaining, value, "Enfeebled", StatusEffectKey.IntDebuff, source_str, trigger_first_turn)
+        super().__init__(turns_remaining, value, "Drained", StatusEffectKey.IntDebuff, source_str, trigger_first_turn)
 
     def __str__(self):
         display_str = f"{self.name}: {self.value} Int for {self.get_turns_remaining_str()}"

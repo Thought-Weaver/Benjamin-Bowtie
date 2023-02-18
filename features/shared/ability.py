@@ -423,7 +423,7 @@ class Ability():
             heal_amount += ceil(heal_amount * healing_adjustment)
 
             if decaying_adjustment != 0:
-                heal_amount *= decaying_adjustment
+                heal_amount *= -decaying_adjustment
 
             if max_heal_amount is not None:
                 heal_amount = min(heal_amount, max_heal_amount)

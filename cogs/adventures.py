@@ -145,7 +145,7 @@ class Adventures(commands.Cog):
                 mapped.append(user)
         return mapped
 
-    @tasks.loop(time=[datetime.time(hour=i) for i in range(24)])
+    @tasks.loop(time=[datetime.time(hour=i, minute=j) for i in range(24) for j in range(60)])
     async def tick(self):
         for guild_id in self._database.keys():
             guild_id_str = str(guild_id)
@@ -805,7 +805,7 @@ class Adventures(commands.Cog):
             "**Frail:** Constitution is reduced\n"
             "**Weakened:** Strength is reduced\n"
             "**Slowed:** Dexterity is reduced\n"
-            "**Enfeebled:** Intelligence is reduced\n"
+            "**Drained:** Intelligence is reduced\n"
             "**Unlucky:** Luck is reduced\n"
             "**Forgetful:** Memory is reduced\n\n"
             "**Protected:** +x% damage reduction (up to 75%)\n"
