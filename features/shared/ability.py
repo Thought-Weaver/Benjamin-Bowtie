@@ -305,7 +305,7 @@ class Ability():
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_successful_ability_used:
-                    _, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, 0)
+                    _, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, 0, self.get_icon_and_name())
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
@@ -351,7 +351,7 @@ class Ability():
                 if item_effects is None:
                     continue
                 for item_effect in item_effects.on_successful_ability_used:
-                    _, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, 0)
+                    _, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, 0, self.get_icon_and_name())
                     if result_str != "":
                         results.append(result_str)
 
