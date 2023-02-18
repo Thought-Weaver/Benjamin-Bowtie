@@ -70,7 +70,7 @@ class NPC():
         fitness_score += 2.5 * sum(
             (1 - 
                 (enemy.get_expertise().hp + enemy.get_dueling().armor) / 
-                (enemy.get_expertise().max_hp + enemy.get_equipment().get_total_reduced_armor(enemy.get_expertise().level)))
+                (enemy.get_expertise().max_hp + enemy.get_equipment().get_total_reduced_armor(enemy.get_expertise().level, enemy.get_expertise().get_all_attributes() + enemy.get_equipment().get_total_attribute_mods())))
             for enemy in enemies
         ) / len(enemies)
         # The Bruiser should slightly consider the positive status effects it has active
@@ -110,7 +110,7 @@ class NPC():
         fitness_score += 2.5 * sum(
             (1 - 
                 (enemy.get_expertise().hp + enemy.get_dueling().armor) / 
-                (enemy.get_expertise().max_hp + enemy.get_equipment().get_total_reduced_armor(enemy.get_expertise().level)))
+                (enemy.get_expertise().max_hp + enemy.get_equipment().get_total_reduced_armor(enemy.get_expertise().level, enemy.get_expertise().get_all_attributes() + enemy.get_equipment().get_total_attribute_mods())))
             for enemy in enemies
         ) / len(enemies)
         # The Mage should slightly consider the positive status effects it has active
@@ -138,7 +138,7 @@ class NPC():
         fitness_score += 3 * sum(
             (1 - 
                 (enemy.get_expertise().hp + enemy.get_dueling().armor) / 
-                (enemy.get_expertise().max_hp + enemy.get_equipment().get_total_reduced_armor(enemy.get_expertise().level)))
+                (enemy.get_expertise().max_hp + enemy.get_equipment().get_total_reduced_armor(enemy.get_expertise().level, enemy.get_expertise().get_all_attributes() + enemy.get_equipment().get_total_attribute_mods())))
             for enemy in enemies
         ) / len(enemies)
         # The Rogue should slightly consider the positive status effects it has active
@@ -182,7 +182,7 @@ class NPC():
         fitness_score += sum(
             (1 - 
                 (enemy.get_expertise().hp + enemy.get_dueling().armor) / 
-                (enemy.get_expertise().max_hp + enemy.get_equipment().get_total_reduced_armor(enemy.get_expertise().level)))
+                (enemy.get_expertise().max_hp + enemy.get_equipment().get_total_reduced_armor(enemy.get_expertise().level, enemy.get_expertise().get_all_attributes() + enemy.get_equipment().get_total_attribute_mods())))
             for enemy in enemies
         ) / len(enemies)
         # The Specialist should heavily weight actions that restore mana when low
@@ -205,9 +205,9 @@ class NPC():
         fitness_score += self.get_combined_attributes().constitution / 10
         # The Tank should score the average of allies' health strongly since it wants to protect, excluding its own
         fitness_score += (sum(
-                (ally.get_expertise().hp + ally.get_dueling().armor) / (ally.get_expertise().max_hp + ally.get_equipment().get_total_reduced_armor(ally.get_expertise().level))
+                (ally.get_expertise().hp + ally.get_dueling().armor) / (ally.get_expertise().max_hp + ally.get_equipment().get_total_reduced_armor(ally.get_expertise().level, ally.get_expertise().get_all_attributes() + ally.get_equipment().get_total_attribute_mods()))
             for ally in allies) - 
-            (self_expertise.hp + self.get_dueling().armor) / (self_expertise.max_hp + self.get_equipment().get_total_reduced_armor(self_expertise.level))) / (len(allies) - 1)
+            (self_expertise.hp + self.get_dueling().armor) / (self_expertise.max_hp + self.get_equipment().get_total_reduced_armor(self_expertise.level, self_expertise.get_all_attributes() + self.get_equipment().get_total_attribute_mods()))) / (len(allies) - 1)
         # The Tank should add a fixed value for the number of Taunts it's causing
         for enemy in enemies:
             for se in enemy.get_dueling().status_effects:

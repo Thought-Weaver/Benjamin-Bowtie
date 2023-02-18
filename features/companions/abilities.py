@@ -8504,7 +8504,7 @@ class ToweringArmorI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         armor_to_restore: int = 5
-        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level)
+        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level, caster.get_expertise().get_all_attributes() + caster.get_equipment().get_total_attribute_mods())
 
         org_armor = caster.get_dueling().armor
         caster.get_dueling().armor = min(caster.get_dueling().armor + armor_to_restore, max_reduced_armor)
@@ -8544,7 +8544,7 @@ class ToweringArmorII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         armor_to_restore: int = 10
-        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level)
+        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level, caster.get_expertise().get_all_attributes() + caster.get_equipment().get_total_attribute_mods())
 
         org_armor = caster.get_dueling().armor
         caster.get_dueling().armor = min(caster.get_dueling().armor + armor_to_restore, max_reduced_armor)
@@ -8584,7 +8584,7 @@ class ToweringArmorIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         armor_to_restore: int = 15
-        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level)
+        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level, caster.get_expertise().get_all_attributes() + caster.get_equipment().get_total_attribute_mods())
 
         org_armor = caster.get_dueling().armor
         caster.get_dueling().armor = min(caster.get_dueling().armor + armor_to_restore, max_reduced_armor)
@@ -8624,7 +8624,7 @@ class ToweringArmorIV(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         armor_to_restore: int = 20
-        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level)
+        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level, caster.get_expertise().get_all_attributes() + caster.get_equipment().get_total_attribute_mods())
 
         org_armor = caster.get_dueling().armor
         caster.get_dueling().armor = min(caster.get_dueling().armor + armor_to_restore, max_reduced_armor)
@@ -8664,7 +8664,7 @@ class ToweringArmorV(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         armor_to_restore: int = 25
-        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level)
+        max_reduced_armor: int = caster.get_equipment().get_total_reduced_armor(caster.get_expertise().level, caster.get_expertise().get_all_attributes() + caster.get_equipment().get_total_attribute_mods())
 
         org_armor = caster.get_dueling().armor
         caster.get_dueling().armor = min(caster.get_dueling().armor + armor_to_restore, max_reduced_armor)

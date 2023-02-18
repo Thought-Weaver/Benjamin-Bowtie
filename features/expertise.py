@@ -381,7 +381,7 @@ class ExpertiseView(discord.ui.View):
         
         expertise.level_up_check()
         expertise.update_stats(self.get_player().get_combined_attributes())
-        armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level)
+        armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level, self.get_player().get_expertise().get_all_attributes() + self.get_player().get_equipment().get_total_attribute_mods())
 
         attr_mods = equipment.get_total_attribute_mods() + self.get_player().get_dueling().get_combined_attribute_mods()
         return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(attr_mods, armor_str))
@@ -427,7 +427,7 @@ class ExpertiseView(discord.ui.View):
         expertise.level_up_check()
         self._get_current_buttons()
 
-        armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level)
+        armor_str = equipment.get_total_armor_str(self.get_player().get_expertise().level, self.get_player().get_expertise().get_all_attributes() + self.get_player().get_equipment().get_total_attribute_mods())
         attr_mods = equipment.get_total_attribute_mods() + self.get_player().get_dueling().get_combined_attribute_mods()
         return Embed(title=f"{self._user.display_name}'s Expertise (Lvl. {expertise.level})", description=expertise.get_info_string(attr_mods, armor_str))
 

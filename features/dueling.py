@@ -391,13 +391,13 @@ class Dueling():
                 )
 
         if item_effect.effect_type == EffectType.RestoreArmor:
-            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
             to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
             return (damage_dealt, "{0}" + f" restored {to_restore} Armor using {source_str}")
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
-            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
             armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
@@ -619,13 +619,13 @@ class Dueling():
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" reflected {damage_done}{armor_str} damage back to " + "{0}" + f" using {source_str}")
 
         if item_effect.effect_type == EffectType.RestoreArmor:
-            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
             to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {to_restore} Armor using {source_str}")
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
-            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
             armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
@@ -1030,13 +1030,13 @@ class Dueling():
             return f"{entity_name} restored {restoration} mana from {source_str}"
 
         if item_effect.effect_type == EffectType.RestoreArmor:
-            max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
+            max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level, entity.get_expertise().get_all_attributes() + entity.get_equipment().get_total_attribute_mods())
             to_restore = min(int(item_effect.effect_value), max(0, max_reduced_armor - entity.get_dueling().armor))
             entity.get_dueling().armor += to_restore
             return f" {entity_name} restored {to_restore} Armor using {source_str}"
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
-            max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
+            max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level, entity.get_expertise().get_all_attributes() + entity.get_equipment().get_total_attribute_mods())
             armor_from_effect: int = ceil(max_reduced_armor * item_effect.effect_value)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - entity.get_dueling().armor))
             entity.get_dueling().armor += to_restore
@@ -1202,13 +1202,13 @@ class Dueling():
             return "{1}" + f" is now {status_effect.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestoreArmor:
-            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
             to_restore = min(ceil(item_effect.effect_value * potion_effect_mod), max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
             return "{1}" + f" restored {to_restore} Armor using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
-            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level)
+            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
             armor_from_effect: int = ceil(max_reduced_armor * item_effect.effect_value * potion_effect_mod)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
@@ -1558,7 +1558,7 @@ class DuelView(discord.ui.View):
         if not skip_init_updates:
             for entity in allies + enemies:
                 entity.get_dueling().is_in_combat = True
-                entity.get_dueling().armor = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
+                entity.get_dueling().armor = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level, entity.get_expertise().get_all_attributes() + entity.get_equipment().get_total_attribute_mods())
                 # Make sure stats are correct.
                 entity.get_expertise().update_stats(entity.get_combined_attributes())
 
@@ -1791,7 +1791,7 @@ class DuelView(discord.ui.View):
         for i, entity in enumerate(self._turn_order):
             group_icon = ":handshake:" if self._is_ally(entity) else ":imp:"
 
-            max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level)
+            max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level, entity.get_expertise().get_all_attributes() + entity.get_equipment().get_total_attribute_mods())
             armor_str: str = f"\n{entity.get_dueling().get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 else ""
 
             info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon} (Lvl. {entity.get_expertise().level})\n\n{entity.get_expertise().get_health_and_mana_string()}{armor_str}"
@@ -1815,7 +1815,7 @@ class DuelView(discord.ui.View):
         dueling = self._current_target.get_dueling()
         equipment = self._current_target.get_equipment()
 
-        max_reduced_armor: int = equipment.get_total_reduced_armor(expertise.level)
+        max_reduced_armor: int = equipment.get_total_reduced_armor(expertise.level, expertise.get_all_attributes() + equipment.get_total_attribute_mods())
         armor_str = f"\n{dueling.get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 else ""
 
         duel_string = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n({self._current_target_index + 1}) **{name}**\n\n{expertise.get_health_and_mana_string()}{armor_str}"

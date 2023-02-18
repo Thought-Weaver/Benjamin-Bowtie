@@ -167,18 +167,18 @@ class Equipment():
                 armor += armor_stats.get_armor_amount()
         return armor
 
-    def get_total_reduced_armor(self, level: int):
+    def get_total_reduced_armor(self, level: int, attributes: Attributes):
         armor: int = 0
         for item in self.get_all_equipped_items():
             armor_stats: ArmorStats | None = item.get_armor_stats()
-            if armor_stats is not None:
+            if armor_stats is not None and item.meets_attr_requirements(attributes):
                 reduce_to: float = max(0, 1.0 - (ARMOR_OVERLEVELED_DEBUFF * max(0, item.get_level_requirement() - level)))
                 armor += int(armor_stats.get_armor_amount() * reduce_to)
         return armor
 
-    def get_total_armor_str(self, level: int):
+    def get_total_armor_str(self, level: int, attributes: Attributes):
         armor: int = self._get_total_armor()
-        reduced_armor: int = self.get_total_reduced_armor(level)
+        reduced_armor: int = self.get_total_reduced_armor(level, attributes)
         
         if armor != reduced_armor:
             return f"{armor} (-{armor - reduced_armor}) Armor"
