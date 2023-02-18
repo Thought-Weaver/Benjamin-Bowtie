@@ -996,7 +996,7 @@ class ItemKey(StrEnum):
     SkillfulBoots = "items/equipment/boots/skillful_boots"
     SomniferousBoots = "items/equipment/boots/somniferous_boots"
     SomniferousSabatonsOfBrutality = "items/equipment/boots/somniferous_sabatons_of_brutality"
-    SomniferousTracks = "items/equipment/boots/Somniferous_tracks"
+    SomniferousTracks = "items/equipment/boots/somniferous_tracks"
     SoporificTracks = "items/equipment/boots/soporific_tracks"
     SorcerersSabatons = "items/equipment/boots/sorcerers_sabatons"
     SorcerersSandals = "items/equipment/boots/sorcerers_sandals"
