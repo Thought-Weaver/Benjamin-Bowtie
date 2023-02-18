@@ -30,7 +30,7 @@
         "on_ability_used_against": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": 0.15,
+                "effect_value": 2,
                 "effect_time": 2,
                 "conditions": [],
                 "condition_values": [],

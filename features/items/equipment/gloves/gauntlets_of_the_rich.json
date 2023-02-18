@@ -22,7 +22,7 @@
         "on_successful_ability_used": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": 0.1,
+                "effect_value": 2,
                 "effect_time": 1,
                 "conditions": [],
                 "condition_values": [],

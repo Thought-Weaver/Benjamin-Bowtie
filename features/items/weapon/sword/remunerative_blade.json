@@ -37,7 +37,7 @@
         "on_attacked": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": 0.325,
+                "effect_value": 8,
                 "effect_time": 1,
                 "conditions": [],
                 "condition_values": [],

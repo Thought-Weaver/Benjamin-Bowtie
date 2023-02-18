@@ -799,13 +799,13 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
                 ItemEffectCategory.OnDamaged: [[frange(0.1, 0.15, 0.025), range(1, 1)]]
             },
             StatusEffectKey.Generating: {
-                ItemEffectCategory.OnSuccessfulAttack: [[frange(0.05, 0.1, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnSuccessfulAbilityUsed: [[frange(0.05, 0.1, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnAttacked: [[frange(0.1, 0.15, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnAbilityUsedAgainst: [[frange(0.1, 0.15, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnDamaged: [[frange(0.1, 0.15, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnTurnStart: [[frange(0.05, 0.1, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnTurnEnd: [[frange(0.05, 0.1, 0.025), range(1, 1)]]
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 3), range(1, 1)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 3), range(1, 1)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 3), range(1, 1)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 3), range(1, 1)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 3), range(1, 1)]],
+                ItemEffectCategory.OnTurnStart: [[range(1, 2), range(1, 1)]],
+                ItemEffectCategory.OnTurnEnd: [[range(1, 2), range(1, 1)]]
             },
             StatusEffectKey.Tarnished: {
                 ItemEffectCategory.OnSuccessfulAttack: [[frange(0.05, 0.1, 0.025), range(1, 1)]],
@@ -1286,13 +1286,13 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
                 ItemEffectCategory.OnDamaged: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.2, 0.025), range(1, 1)]]
             },
             StatusEffectKey.Generating: {
-                ItemEffectCategory.OnSuccessfulAttack: [[frange(0.05, 0.1, 0.025), range(2, 2)], [frange(0.1, 0.15, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnSuccessfulAbilityUsed: [[frange(0.05, 0.1, 0.025), range(2, 2)], [frange(0.1, 0.15, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnAttacked: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.2, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnAbilityUsedAgainst: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.2, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnDamaged: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.2, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnTurnStart: [[frange(0.05, 0.1, 0.025), range(2, 2)], [frange(0.1, 0.15, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnTurnEnd: [[frange(0.05, 0.1, 0.025), range(2, 2)], [frange(0.1, 0.15, 0.025), range(1, 1)]]
+                ItemEffectCategory.OnSuccessfulAttack: [[range(1, 3), range(2, 2)], [range(3, 6), range(1, 1)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(1, 3), range(2, 2)], [range(3, 6), range(1, 1)]],
+                ItemEffectCategory.OnAttacked: [[range(1, 3), range(2, 2)], [range(3, 6), range(1, 1)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(1, 3), range(2, 2)], [range(3, 6), range(1, 1)]],
+                ItemEffectCategory.OnDamaged: [[range(1, 3), range(2, 2)], [range(3, 6), range(1, 1)]],
+                ItemEffectCategory.OnTurnStart: [[range(2, 3), range(1, 1)]],
+                ItemEffectCategory.OnTurnEnd: [[range(2, 3), range(1, 1)]]
             },
             StatusEffectKey.Tarnished: {
                 ItemEffectCategory.OnSuccessfulAttack: [[frange(0.05, 0.1, 0.025), range(2, 2)], [frange(0.1, 0.15, 0.025), range(1, 1)]],
@@ -1791,13 +1791,13 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
                 ItemEffectCategory.OnDamaged: [[frange(0.15, 0.2, 0.025), range(2, 2)], [frange(0.2, 0.35, 0.025), range(1, 1)]]
             },
             StatusEffectKey.Generating: {
-                ItemEffectCategory.OnSuccessfulAttack: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.25, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnSuccessfulAbilityUsed: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.25, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnAttacked: [[frange(0.15, 0.2, 0.025), range(2, 2)], [frange(0.2, 0.35, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnAbilityUsedAgainst: [[frange(0.15, 0.2, 0.025), range(2, 2)], [frange(0.2, 0.35, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnDamaged: [[frange(0.15, 0.2, 0.025), range(2, 2)], [frange(0.2, 0.35, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnTurnStart: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.2, 0.025), range(1, 1)]],
-                ItemEffectCategory.OnTurnEnd: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.2, 0.025), range(1, 1)]]
+                ItemEffectCategory.OnSuccessfulAttack: [[range(3, 6), range(2, 2)], [range(6, 9), range(1, 1)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(3, 6), range(2, 2)], [range(6, 9), range(1, 1)]],
+                ItemEffectCategory.OnAttacked: [[range(3, 6), range(2, 2)], [range(6, 9), range(1, 1)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(3, 6), range(2, 2)], [range(6, 9), range(1, 1)]],
+                ItemEffectCategory.OnDamaged: [[range(3, 6), range(2, 2)], [range(6, 9), range(1, 1)]],
+                ItemEffectCategory.OnTurnStart: [[range(3, 4), range(1, 1)]],
+                ItemEffectCategory.OnTurnEnd: [[range(3, 4), range(1, 1)]]
             },
             StatusEffectKey.Tarnished: {
                 ItemEffectCategory.OnSuccessfulAttack: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.25, 0.025), range(1, 1)]],
@@ -2295,13 +2295,13 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
                 ItemEffectCategory.OnDamaged: [[frange(0.15, 0.2, 0.025), range(3, 3)], [frange(0.2, 0.3, 0.025), range(2, 2)], [frange(0.4, 0.6, 0.05), range(1, 1)]]
             },
             StatusEffectKey.Generating: {
-                ItemEffectCategory.OnSuccessfulAttack: [[frange(0.1, 0.15, 0.025), range(3, 3)], [frange(0.15, 0.25, 0.025), range(2, 2)], [frange(0.3, 0.75, 0.05), range(1, 1)]],
-                ItemEffectCategory.OnSuccessfulAbilityUsed: [[frange(0.1, 0.15, 0.025), range(3, 3)], [frange(0.15, 0.25, 0.025), range(2, 2)], [frange(0.3, 0.75, 0.05), range(1, 1)]],
-                ItemEffectCategory.OnAttacked: [[frange(0.1, 0.15, 0.025), range(3, 3)], [frange(0.15, 0.25, 0.025), range(2, 2)], [frange(0.3, 0.75, 0.05), range(1, 1)]],
-                ItemEffectCategory.OnAbilityUsedAgainst: [[frange(0.1, 0.15, 0.025), range(3, 3)], [frange(0.15, 0.25, 0.025), range(2, 2)], [frange(0.3, 0.75, 0.05), range(1, 1)]],
-                ItemEffectCategory.OnDamaged: [[frange(0.1, 0.15, 0.025), range(3, 3)], [frange(0.15, 0.25, 0.025), range(2, 2)], [frange(0.3, 0.75, 0.05), range(1, 1)]],
-                ItemEffectCategory.OnTurnStart: [[frange(0.1, 0.15, 0.025), range(3, 3)], [frange(0.15, 0.2, 0.025), range(2, 2)], [frange(0.2, 0.5, 0.05), range(1, 1)]],
-                ItemEffectCategory.OnTurnEnd: [[frange(0.1, 0.15, 0.025), range(3, 3)], [frange(0.15, 0.2, 0.025), range(2, 2)], [frange(0.2, 0.5, 0.05), range(1, 1)]],
+                ItemEffectCategory.OnSuccessfulAttack: [[range(3, 6), range(3, 3)], [range(6, 9), range(2, 2)], [range(10, 20), range(1, 1)]],
+                ItemEffectCategory.OnSuccessfulAbilityUsed: [[range(3, 6), range(3, 3)], [range(6, 9), range(2, 2)], [range(10, 20), range(1, 1)]],
+                ItemEffectCategory.OnAttacked: [[range(3, 6), range(3, 3)], [range(6, 9), range(2, 2)], [range(10, 20), range(1, 1)]],
+                ItemEffectCategory.OnAbilityUsedAgainst: [[range(3, 6), range(3, 3)], [range(6, 9), range(2, 2)], [range(10, 20), range(1, 1)]],
+                ItemEffectCategory.OnDamaged: [[range(3, 6), range(3, 3)], [range(6, 9), range(2, 2)], [range(10, 20), range(1, 1)]],
+                ItemEffectCategory.OnTurnStart: [[range(4, 10), range(1, 1)]],
+                ItemEffectCategory.OnTurnEnd: [[range(4, 10), range(1, 1)]]
             },
             StatusEffectKey.Tarnished: {
                 ItemEffectCategory.OnSuccessfulAttack: [[frange(0.1, 0.15, 0.025), range(2, 2)], [frange(0.15, 0.25, 0.025), range(1, 1)]],

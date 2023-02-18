@@ -44,7 +44,7 @@
         "on_damaged": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": 0.125,
+                "effect_value": 10,
                 "effect_time": 3,
                 "conditions": [],
                 "condition_values": [],
