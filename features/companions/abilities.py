@@ -10427,7 +10427,7 @@ class WithTheWindI(Ability):
 
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
+            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)]
 
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -10438,7 +10438,7 @@ class WithTheWindI(Ability):
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
+            results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
 
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
@@ -10447,7 +10447,7 @@ class WithTheWindI(Ability):
             cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
-                results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
+                results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -10595,7 +10595,7 @@ class WithTheWindII(Ability):
 
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
+            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)]
 
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -10606,7 +10606,7 @@ class WithTheWindII(Ability):
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
+            results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
 
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
@@ -10615,7 +10615,7 @@ class WithTheWindII(Ability):
             cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
-                results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
+                results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -10763,7 +10763,7 @@ class WithTheWindIII(Ability):
 
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
+            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)]
 
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -10774,7 +10774,7 @@ class WithTheWindIII(Ability):
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
+            results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
 
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
@@ -10783,7 +10783,7 @@ class WithTheWindIII(Ability):
             cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
-                results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
+                results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -10931,7 +10931,7 @@ class WithTheWindIV(Ability):
 
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
+            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)]
 
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -10942,7 +10942,7 @@ class WithTheWindIV(Ability):
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
+            results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
 
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
@@ -10951,7 +10951,7 @@ class WithTheWindIV(Ability):
             cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
-                results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
+                results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -11099,7 +11099,7 @@ class WithTheWindV(Ability):
 
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1)]
+            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)]
 
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -11110,7 +11110,7 @@ class WithTheWindV(Ability):
                     if result_str != "":
                         results.append(NegativeAbilityResult(result_str, False))
 
-            results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0)]
+            results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
 
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
@@ -11119,7 +11119,7 @@ class WithTheWindV(Ability):
             cur_armor = target_dueling.armor
 
             if actual_damage_dealt > 0:
-                results += [NegativeAbilityResult(s, False) for s in caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0)]
+                results += [NegativeAbilityResult(s, False) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group)]
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
