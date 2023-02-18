@@ -952,7 +952,6 @@ class ItemKey(StrEnum):
     RestorativeShoes = "items/equipment/boots/restorative_shoes"
     RestructuringTracks = "items/equipment/boots/restructuring_tracks"
     RivetedGreaves = "items/equipment/boots/riveted_greaves"
-    RivetedTreads = "items/equipment/boots/Riveted_treads"
     RobustGreaves = "items/equipment/boots/robust_greaves"
     SabatonsOfBrambles = "items/equipment/boots/sabatons_of_brambles"
     SabatonsOfCoagulation = "items/equipment/boots/sabatons_of_coagulation"
