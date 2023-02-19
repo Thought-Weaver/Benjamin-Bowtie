@@ -145,7 +145,7 @@ class Adventures(commands.Cog):
                 mapped.append(user)
         return mapped
 
-    @tasks.loop(time=[datetime.time(hour=i, minute=j) for i in range(24) for j in range(60)])
+    @tasks.loop(time=[datetime.time(hour=i) for i in range(24)])
     async def tick(self):
         for guild_id in self._database.keys():
             guild_id_str = str(guild_id)
