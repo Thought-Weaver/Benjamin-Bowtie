@@ -390,7 +390,7 @@ class GardenPlotButton(discord.ui.Button):
         icon = plot.get_icon()
         super().__init__(
             style=discord.ButtonStyle.secondary if not is_selected else discord.ButtonStyle.blurple, 
-            row=row, label=" " if icon is None else None,
+            row=row, label="‍" if icon is None else None,
             emoji=icon
         )
         
