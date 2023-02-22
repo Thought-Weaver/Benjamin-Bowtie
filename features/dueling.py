@@ -14,14 +14,13 @@ from strenum import StrEnum
 from features.expertise import ExpertiseClass
 from features.shared.attributes import Attributes
 from features.shared.constants import COMPANION_BATTLE_POINTS, POISONED_PERCENT_HP, BLEED_PERCENT_HP, DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
-from features.shared.effect import EffectType, ItemEffectCategory
+from features.shared.effect import Effect, EffectType, ItemEffectCategory
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, WeaponStats
 from features.shared.statuseffect import *
 
 from typing import Dict, List, TYPE_CHECKING, Tuple
 if TYPE_CHECKING:
-    from features.shared.effect import Effect
     from features.expertise import Expertise
     from features.shared.ability import Ability
     from features.shared.effect import ItemEffects

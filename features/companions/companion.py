@@ -654,7 +654,7 @@ class GnashtuskBoarCompanion(Companion):
         if self._level >= 40:
             return Effect(
                 EffectType.DmgBuffBleeding,
-                effect_value=0.05,
+                effect_value=0.25,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[]
@@ -662,7 +662,7 @@ class GnashtuskBoarCompanion(Companion):
         elif self._level >= 30:
             return Effect(
                 EffectType.DmgBuffBleeding,
-                effect_value=0.1,
+                effect_value=0.2,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[]
@@ -678,7 +678,7 @@ class GnashtuskBoarCompanion(Companion):
         elif self._level >= 10:
             return Effect(
                 EffectType.DmgBuffBleeding,
-                effect_value=0.2,
+                effect_value=0.1,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[]
@@ -686,7 +686,7 @@ class GnashtuskBoarCompanion(Companion):
         else:
             return Effect(
                 EffectType.DmgBuffBleeding,
-                effect_value=0.25,
+                effect_value=0.05,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[]
@@ -1406,7 +1406,7 @@ class VerdantSlithererCompanion(Companion):
         if self._level >= 40:
             return Effect(
                 EffectType.DmgBuffPoisoned,
-                effect_value=0.05,
+                effect_value=0.25,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[]
@@ -1414,7 +1414,7 @@ class VerdantSlithererCompanion(Companion):
         elif self._level >= 30:
             return Effect(
                 EffectType.DmgBuffPoisoned,
-                effect_value=0.1,
+                effect_value=0.2,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[]
@@ -1430,7 +1430,7 @@ class VerdantSlithererCompanion(Companion):
         elif self._level >= 10:
             return Effect(
                 EffectType.DmgBuffPoisoned,
-                effect_value=0.2,
+                effect_value=0.1,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[]
@@ -1438,7 +1438,7 @@ class VerdantSlithererCompanion(Companion):
         else:
             return Effect(
                 EffectType.DmgBuffPoisoned,
-                effect_value=0.25,
+                effect_value=0.05,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[]
