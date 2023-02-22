@@ -39,10 +39,10 @@ from features.player import Player
 from features.stats import StatCategory, StatView
 from features.shared.enums import ClassTag, CompanionKey
 from features.shared.item import Item, LOADED_ITEMS, ItemKey, Rarity
-from features.stories.forest import ForestStory
-from features.stories.ocean import OceanStory
+from features.stories.forest.forest import ForestStory
+from features.stories.ocean.ocean import OceanStory
 from features.stories.story import Story
-from features.stories.underworld import UnderworldStory
+from features.stories.underworld.underworld import UnderworldStory
 from features.trainers import TrainerView
 from games.knucklebones import Knucklebones
 

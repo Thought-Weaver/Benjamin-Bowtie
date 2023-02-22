@@ -1764,6 +1764,20 @@ class SkipButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
+class ContinueButton(discord.ui.Button):
+    def __init__(self, new_view: discord.ui.View):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Continue")
+
+        self._new_view = new_view
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        embed = self._new_view.get_initial_embed()
+        await interaction.response.edit_message(content=None, embed=embed, view=self._new_view)
+
+
 class DuelView(discord.ui.View):
     # Using a data class instead of a tuple to make the code more readable
     @dataclass
@@ -1771,7 +1785,7 @@ class DuelView(discord.ui.View):
         game_won: bool
         winners: List[Player | NPC] | None
 
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, users: List[discord.User], allies: List[Player | NPC], enemies: List[Player | NPC], skip_init_updates: bool=False, companion_battle:bool=False):
+    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, users: List[discord.User], allies: List[Player | NPC], enemies: List[Player | NPC], skip_init_updates: bool=False, companion_battle:bool=False, player_victory_post_view:discord.ui.View | None=None, player_loss_post_view:discord.ui.View | None=None):
         super().__init__(timeout=None)
 
         self._bot = bot
@@ -1784,6 +1798,10 @@ class DuelView(discord.ui.View):
         self._turn_index: int = 0
 
         self._companion_battle: bool = companion_battle
+
+        # These are both used during dungeons to trigger associated win and loss event screens
+        self._player_victory_post_view: discord.ui.View | None = player_victory_post_view
+        self._player_loss_post_view: discord.ui.View | None = player_loss_post_view
 
         self._intent: (Intent | None) = None
         self._selected_targets: List[Player | NPC] = []
@@ -2106,6 +2124,9 @@ class DuelView(discord.ui.View):
 
                 entity.get_expertise().level_up_check()
 
+            if self._player_loss_post_view is not None:
+                self.add_item(ContinueButton(self._player_loss_post_view))
+
             return Embed(
                 title="Victory for Both and Neither",
                 description="A hard-fought battle resulting in a tie. Neither side emerges truly victorious and yet both have defeated their enemies."
@@ -2206,6 +2227,14 @@ class DuelView(discord.ui.View):
 
             return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\nPractice for the journeys yet to come.")
         elif all(isinstance(entity, NPC) for entity in self._enemies):
+
+            if all(isinstance(entity, Player) for entity in duel_result.winners):
+                if self._player_victory_post_view is not None:
+                    self.add_item(ContinueButton(self._player_victory_post_view))
+            else:
+                if self._player_loss_post_view is not None:
+                    self.add_item(ContinueButton(self._player_loss_post_view))
+
             winner_str = ""
             winner_xp = ceil(0.25 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
