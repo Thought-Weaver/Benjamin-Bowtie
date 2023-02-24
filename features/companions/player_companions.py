@@ -70,7 +70,7 @@ class NamingModal(discord.ui.Modal):
         if not self._companion.custom_named:
             self._companion.add_companion_points(COMPANION_NAMING_POINTS)
             self._companion.custom_named = True
-            additional_info = " and your bond is growing stronger!"
+            additional_info = " and your bond has grown much stronger!"
 
             player.get_stats().companions.bond_points_earned += COMPANION_NAMING_POINTS
 
