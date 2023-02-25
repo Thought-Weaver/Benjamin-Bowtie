@@ -25,6 +25,7 @@ class Player():
         self._dueling: Dueling = Dueling()
         self._house: House = House()
         self._companions: PlayerCompanions = PlayerCompanions(self.send_mail)
+        self._in_dungeon_run: bool = False
 
     def get_id(self):
         return self._id
@@ -62,6 +63,12 @@ class Player():
 
     def get_companions(self):
         return self._companions
+    
+    def is_in_dungeon_run(self):
+        return self._dungeon_run
+    
+    def set_is_in_dungeon_run(self, value: bool):
+        self._in_dungeon_run = value
 
     def __getstate__(self):
         return self.__dict__
@@ -76,3 +83,4 @@ class Player():
         self._dueling = state.get("_dueling", Dueling())
         self._house = state.get("_house", House())
         self._companions = state.get("_companions", PlayerCompanions(self.send_mail))
+        self._dungeon_run = state.get("_dungeon_run", None)

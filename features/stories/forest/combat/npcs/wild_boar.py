@@ -141,7 +141,7 @@ class WildBoar(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.BoarTusks))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.WildBoarTusks))
 
         self._expertise.update_stats(self.get_combined_attributes())
 

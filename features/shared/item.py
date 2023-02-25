@@ -554,6 +554,9 @@ class ItemKey(StrEnum):
     PileOfCoins = "items/valuable/pile_of_coins"
     BagOfCoins = "items/valuable/bag_of_coins"
 
+    # Dungeon NPC Weapons
+    WildBoarTusks = "items/weapon/dungeon_npcs/wild_boar_tusks"
+
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"
     GoldenKnucklebone = "items/equipment/offhand/golden_knucklebone"

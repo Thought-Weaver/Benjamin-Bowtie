@@ -2,14 +2,40 @@ import discord
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
-from discord.ext import commands
 from features.player import Player
 
 from typing import List
 
+from features.stories.dungeon_run import DungeonRun, RoomSelectionView
+from features.stories.story import Story
+
 # -----------------------------------------------------------------------------
 # FOREST DUNGEON ENTRANCE VIEW
 # -----------------------------------------------------------------------------
+
+class StartButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.green, label="Start")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: ForestDungeonEntranceView = self.view
+
+        if interaction.user.id != view.get_group_leader().id:
+            await interaction.response.edit_message(embed=view.get_initial_embed(), content="Error: You aren't the group leader and can't start this adventure!", view=view)
+            return
+        
+        if view.any_in_duels_currently():
+            await interaction.response.edit_message(embed=None, view=None, content="At least one person is in a duel. You cannot start this adventure.")
+            return
+        
+        room_select_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        initial_info: Embed = room_select_view.get_initial_embed()
+
+        await interaction.response.edit_message(embed=initial_info, view=room_select_view, content=None)
+
 
 class ForestDungeonEntranceView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User]):
@@ -20,6 +46,7 @@ class ForestDungeonEntranceView(discord.ui.View):
         self._guild_id = guild_id
         self._users = users
         self._group_leader = users[0]
+        self._dungeon_run = DungeonRun(Story.Forest, 20)
         
         self._display_initial_buttons()
 
@@ -27,10 +54,14 @@ class ForestDungeonEntranceView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="", description="")
+        return Embed(title="The Forest", description=f"Standing before the entrance to the old woods, your party stares down the path into the seemingly endless expanse of trees.\n\nYour group leader is {self._group_leader.display_name}. When your party is ready, you may enter the forest.")
 
     def _display_initial_buttons(self):
         self.clear_items()
+        self.add_item(StartButton())
+
+    def any_in_duels_currently(self):
+        return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)
 
     def get_bot(self):
         return self._bot
@@ -44,6 +75,12 @@ class ForestDungeonEntranceView(discord.ui.View):
     def get_guild_id(self):
         return self._guild_id
 
+    def get_group_leader(self):
+        return self._group_leader
+
+    def get_dungeon_run(self):
+        return self._dungeon_run
+
 # -----------------------------------------------------------------------------
 # FOREST STORY CLASS
 # -----------------------------------------------------------------------------
@@ -51,6 +88,26 @@ class ForestDungeonEntranceView(discord.ui.View):
 class ForestStory():
     def __init__(self):
         pass
+
+    @staticmethod
+    def generate_shopkeep_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
+        return discord.ui.View()
+
+    @staticmethod
+    def generate_rest_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
+        return discord.ui.View()
+    
+    @staticmethod
+    def generate_treasure_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
+        return discord.ui.View()
+
+    @staticmethod
+    def generate_combat_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
+        return discord.ui.View()
+
+    @staticmethod
+    def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
+        return discord.ui.View()
 
     def __getstate__(self):
         return self.__dict__
