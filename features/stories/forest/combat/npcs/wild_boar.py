@@ -163,7 +163,7 @@ class WildBoar(NPC):
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
         self._name = "Wild Boar"
-        self._role = NPCRoles.Companion
+        self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
         self._dueling_rewards = {
             ItemKey.Bones: 0.85,

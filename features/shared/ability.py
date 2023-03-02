@@ -6139,7 +6139,7 @@ class ToxicCloudIV(Ability):
         )
 
         for i in range(len(results)):
-            if not results[i].dodged and random() < 0.7:
+            if not results[i].dodged and random() < 0.9:
                 se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and {se_str}"
