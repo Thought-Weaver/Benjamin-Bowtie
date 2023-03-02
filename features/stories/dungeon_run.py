@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import discord
 import random
+from features.shared.enums import ForestSection, OceanSection, UnderworldSection
 
 from features.stories.forest.forest import ForestStory
 from features.stories.story import MYSTERY_COMBAT_BASE_PROB, MYSTERY_COMBAT_PROB_INCREASE, MYSTERY_ROOM_PROB, MYSTERY_SHOPKEEP_BASE_PROB, MYSTERY_SHOPKEEP_PROB_INCREASE, MYSTERY_TREASURE_BASE_PROB, MYSTERY_TREASURE_PROB_INCREASE, REST_ROOM_PROB, SHOPKEEP_ROOM_PROB, Story
@@ -15,9 +16,10 @@ if TYPE_CHECKING:
 # -----------------------------------------------------------------------------
 
 class DungeonRun():
-    def __init__(self, dungeon_type: Story, rooms_until_boss: int):
+    def __init__(self, dungeon_type: Story, rooms_until_boss: int, section: ForestSection | OceanSection | UnderworldSection):
         self.dungeon_type = dungeon_type
         self.rooms_until_boss = rooms_until_boss
+        self.section = section
         
         self.num_mystery_without_combat: int = 0
         self.num_mystery_without_treasure: int = 0

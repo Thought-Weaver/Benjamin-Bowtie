@@ -127,3 +127,24 @@ class CompanionTier(StrEnum):
     Good = "Good"
     Great = "Great"
     Best = "Best"
+
+# -----------------------------------------------------------------------------
+# DUNGEON RUN ENUMS
+# -----------------------------------------------------------------------------
+
+class ForestSection(StrEnum):
+    QuietGrove = "QuietGrove"
+    WhisperingWoods = "WhisperingWoods"
+    ScreamingCopse = "ScreamingCopse"
+
+
+class OceanSection(StrEnum):
+    TidewaterShallows = "TidewaterShallows"
+    CoralForest = "CoralForest"
+    EndlessTorrents = "EndlessTorrents"
+
+
+class UnderworldSection(StrEnum):
+    MistyTunnels = "MistyTunnels"
+    AbyssalCaverns = "AbyssalCaverns"
+    TombsIngress = "TombsIngress"
