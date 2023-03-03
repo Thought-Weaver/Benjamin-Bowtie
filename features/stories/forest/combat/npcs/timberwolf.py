@@ -11,7 +11,7 @@ from features.shared.ability import Ability, BidedAttackIII, SecondWindIII
 from features.shared.constants import BLEED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import Bleeding, TurnSkipChance
+from features.shared.statuseffect import Bleeding, DexBuff, DexDebuff, DmgBuff, StatusEffectKey, StrBuff, TurnSkipChance
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -23,18 +23,18 @@ if TYPE_CHECKING:
 # ABILITIES
 # -----------------------------------------------------------------------------
 
-class Gore(Ability):
+class SavageBite(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE78",
-            name="Gore",
+            name="Savage Bite",
             class_key=ExpertiseClass.Guardian,
             description="Deal 10-15 damage with a 75% chance to cause Bleeding for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
             num_targets=1,
-            level_requirement=0,
+            level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
             scaling=[Attribute.Strength]
@@ -67,33 +67,88 @@ class Gore(Ability):
         self.__init__() # type: ignore
 
 
-class Charge(Ability):
+class PackTactics(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83D\uDD31",
-            name="Charge",
+            icon="\uD83D\uDC3A",
+            name="Pack Tactics",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 5-10 damage and cause Faltering with a 50% chance for 2 turns.",
+            description="All allies gain a 25% damage bonus, +5 Strength, and +3 Dexterity for 3 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
-            num_targets=1,
-            level_requirement=0,
-            target_own_group=False,
+            cooldown=1,
+            num_targets=-1,
+            level_requirement=20,
+            target_own_group=True,
             purchase_cost=0,
-            scaling=[Attribute.Strength]
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        debuff = TurnSkipChance(
-            turns_remaining=2,
-            value=0.5,
+        dmg_buff = DmgBuff(
+            turns_remaining=3,
+            value=0.25,
             source_str=self.get_icon_and_name()
         )
 
-        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(5, 6), [debuff])
+        str_buff = StrBuff(
+            turns_remaining=3,
+            value=5,
+            source_str=self.get_icon_and_name()
+        )
+
+        dex_buff = DexBuff(
+            turns_remaining=3,
+            value=3,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [dmg_buff, str_buff, dex_buff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class ScentForBlood(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDE78",
+            name="Scent for Blood",
+            class_key=ExpertiseClass.Guardian,
+            description="Decrease the Dexterity of all enemies with Bleeding by 5 for 2 turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=1,
+            num_targets=-1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        dex_debuff = DexDebuff(
+            turns_remaining=5,
+            value=2,
+            source_str=self.get_icon_and_name()
+        )
+
+        filtered_targets = [target for target in targets for se in target.get_dueling().status_effects if se.key == StatusEffectKey.Bleeding]
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, filtered_targets, [dex_debuff])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -107,13 +162,12 @@ class Charge(Ability):
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class WildBoar(NPC):
+class Timberwolf(NPC):
     def __init__(self):
-        super().__init__("Wild Boar", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+        super().__init__("Timberwolf", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
-            ItemKey.RawBoarMeat: 0.9,
-            ItemKey.IronDagger: 0.05,
-            ItemKey.IronSpear: 0.15
+            ItemKey.RawWolfMeat: 0.9,
+            ItemKey.IronDagger: 0.05
         })
 
         self._setup_npc_params()
@@ -129,12 +183,12 @@ class WildBoar(NPC):
             self._equipment = Equipment()
         
         self.level = 25
-        self._expertise.constitution = 11
-        self._expertise.strength = 5
-        self._expertise.dexterity = 5
+        self._expertise.constitution = 12
+        self._expertise.strength = 10
+        self._expertise.dexterity = 0
         self._expertise.intelligence = 0
         self._expertise.luck = 0
-        self._expertise.memory = 4
+        self._expertise.memory = 3
 
     def _setup_equipment(self):
         if self._expertise is None:
@@ -142,7 +196,7 @@ class WildBoar(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.WildBoarTusks))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.TimberwolfCanines))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -150,7 +204,7 @@ class WildBoar(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [Gore(), BidedAttackIII(), SecondWindIII(), Charge()]
+        self._dueling.abilities = [PackTactics(), SavageBite(), ScentForBlood()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -163,14 +217,13 @@ class WildBoar(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Wild Boar"
+        self._name = "Timberwolf"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
         self._dueling_rewards = {
             ItemKey.Bones: 0.85,
-            ItemKey.RawBoarMeat: 0.9,
-            ItemKey.IronDagger: 0.05,
-            ItemKey.IronSpear: 0.15
+            ItemKey.RawWolfMeat: 0.9,
+            ItemKey.IronDagger: 0.05
         }
         
         self._inventory: Inventory | None = state.get("_inventory")

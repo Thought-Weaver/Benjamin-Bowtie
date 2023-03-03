@@ -242,6 +242,7 @@ class SmallSnake(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
+        self.level = 20
         self._expertise.constitution = 8
         self._expertise.strength = 0
         self._expertise.dexterity = 0
@@ -255,7 +256,7 @@ class SmallSnake(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.WildBoarTusks))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.SmallSnakeFangs))
 
         self._expertise.update_stats(self.get_combined_attributes())
 

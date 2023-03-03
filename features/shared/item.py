@@ -555,6 +555,9 @@ class ItemKey(StrEnum):
     BagOfCoins = "items/valuable/bag_of_coins"
 
     # Dungeon NPC Weapons
+    GiantSnakeFangs = "items/weapon/dungeon_npcs/giant_snake_fangs"
+    SmallSnakeFangs = "items/weapon/dungeon_npcs/small_snake_fangs"
+    TimberwolfCanines = "items/weapon/dungeon_npcs/timberwolf_canines"
     WildBoarTusks = "items/weapon/dungeon_npcs/wild_boar_tusks"
 
     # Misc

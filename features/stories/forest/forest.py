@@ -89,6 +89,8 @@ class ForestRestView(discord.ui.View):
 
                     player.get_stats().companions.companions_found += 1
 
+        self.rested_users.append(user)
+
         return self.get_initial_embed(companion_result_str)
 
     def get_bot(self):
