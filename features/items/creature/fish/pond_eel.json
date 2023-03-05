@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/pond_eel",
+    "icon": "\uD83D\uDC0D",
+    "name": "Pond Eel",
+    "value": 120,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

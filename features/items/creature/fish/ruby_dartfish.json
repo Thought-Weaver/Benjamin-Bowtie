@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/ruby_dartfish",
+    "icon": "\uD83D\uDC20",
+    "name": "Ruby Dartfish",
+    "value": 100,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

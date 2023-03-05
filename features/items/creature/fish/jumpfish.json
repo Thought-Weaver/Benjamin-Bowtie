@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/jumpfish",
+    "icon": "\uD83D\uDC20",
+    "name": "Jumpfish",
+    "value": 20,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

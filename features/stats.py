@@ -36,6 +36,7 @@ class Stats():
             self.uncommon_fish_caught: int = 0
             self.rare_fish_caught: int = 0
             self.epic_fish_caught: int = 0
+            self.legendary_fish_caught: int = 0
 
         def get_name(self):
             return "Fish Stats"
@@ -47,7 +48,8 @@ class Stats():
                 f"Common Fish Caught: *{self.common_fish_caught}*\n"
                 f"Uncommon Fish Caught: *{self.uncommon_fish_caught}*\n"
                 f"Rare Fish Caught: *{self.rare_fish_caught}*\n"
-                f"Epic Fish Caught: *{self.epic_fish_caught}*"
+                f"Epic Fish Caught: *{self.epic_fish_caught}*\n"
+                f"Legendary Fish Caught: *{self.legendary_fish_caught}*"
             )
 
         def __getstate__(self):
@@ -56,10 +58,12 @@ class Stats():
         def __setstate__(self, state: dict):
             self.common_items_caught = state.get("common_items_caught", 0)
             self.rare_items_caught = state.get("rare_items_caught", 0)
+            
             self.common_fish_caught = state.get("common_fish_caught", 0)
             self.uncommon_fish_caught = state.get("uncommon_fish_caught", 0)
             self.rare_fish_caught = state.get("rare_fish_caught", 0)
             self.epic_fish_caught = state.get("epic_fish_caught", 0)
+            self.legendary_fish_caught = state.get("legendary_fish_caught", 0)
 
     class MailStats():
         def __init__(self):

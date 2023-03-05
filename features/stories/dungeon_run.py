@@ -32,6 +32,7 @@ class DungeonRun():
         self.shopkeeps_encountered: int = 0
         self.events_encountered: int = 0
         self.rests_taken: int = 0
+        self.bosses_defeated: int = 0
 
 # -----------------------------------------------------------------------------
 # ROOM SELECTION VIEW

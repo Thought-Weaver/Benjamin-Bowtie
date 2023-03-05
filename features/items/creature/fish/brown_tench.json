@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/brown_tench",
+    "icon": "\uD83D\uDC21",
+    "name": "Brown Tench",
+    "value": 8,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

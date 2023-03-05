@@ -67,6 +67,18 @@ class ItemKey(StrEnum):
     Squid = "items/creature/fish/squid"
     TatteredBoot = "items/misc/junk/tattered_boot"
 
+    # Pond Fish
+    Algaefish = "items/creature/fish/algaefish"
+    Beefish = "items/creature/fish/beefish"
+    Blackscale = "items/creature/fish/blackscale"
+    BrownTench = "items/creature/fish/brown_tench"
+    GoldenTench = "items/creature/fish/golden_tench"
+    Jumpfish = "items/creature/fish/jumpfish"
+    PondEel = "items/creature/fish/pond_eel"
+    PondGuppy = "items/creature/fish/pond_guppy"
+    RubyDartfish = "items/creature/fish/ruby_dartfish"
+    Wyvernfish = "items/creature/fish/wyvernfish"
+
     # Sunless Set
     SunlessSteps = "items/equipment/boots/sunless_steps"
     SunlessHeart = "items/equipment/chest_armor/sunless_heart"
@@ -556,6 +568,7 @@ class ItemKey(StrEnum):
 
     # Dungeon NPC Weapons
     GiantSnakeFangs = "items/weapon/dungeon_npcs/giant_snake_fangs"
+    JackalopeHorns = "items/weapon/dungeon_npcs/jackalope_horns"
     SmallSnakeFangs = "items/weapon/dungeon_npcs/small_snake_fangs"
     TimberwolfCanines = "items/weapon/dungeon_npcs/timberwolf_canines"
     WildBoarTusks = "items/weapon/dungeon_npcs/wild_boar_tusks"

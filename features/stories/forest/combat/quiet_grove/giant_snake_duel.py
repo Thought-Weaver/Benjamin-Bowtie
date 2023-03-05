@@ -1,13 +1,10 @@
 import discord
-import features.companions.companion
-import random
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from features.dueling import DuelView
-from features.shared.enums import CompanionKey
 from features.stories.dungeon_run import RoomSelectionView
-from features.stories.forest.combat.npcs.wild_boar import WildBoar
+from features.stories.forest.combat.npcs.giant_snake import GiantSnake
 from features.stories.forest.forest import ForestDefeatView
 
 from typing import TYPE_CHECKING, List
@@ -55,24 +52,8 @@ class VictoryView(discord.ui.View):
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
-    def _find_companion(self):
-        companion_result_str: str = ""
-        for user in self._users:
-            player = self._get_player(user.id)
-            if random.random() < 0.25:
-                companions = player.get_companions()
-                if CompanionKey.GnashtuskBoar not in companions.companions.keys():
-                    companions.companions[CompanionKey.GnashtuskBoar] = features.companions.companion.GnashtuskBoarCompanion()
-                    companions.companions[CompanionKey.GnashtuskBoar].set_id(player.get_id())
-                    companion_result_str += f"\n\nFrom the brush, initially to your dismay, {user.display_name}, another, smaller boar appears! This one, however, seems much friendlier and wants to follow you. It's been added as a companion in b!companions."
-
-                    player.get_stats().companions.companions_found += 1
-        
-        return companion_result_str
-
     def get_initial_embed(self):
-        companion_result_str: str = self._find_companion()
-        return Embed(title="What a Boar", description=f"With the boars vanquished, the rest of the woods await.{companion_result_str}")
+        return Embed(title="The Hissing Fades", description=f"With the giant snake vanquished, the rest of the woods await.")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -111,7 +92,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: WildBoarDuelView = self.view
+        view: GiantSnakeDuelView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the duel.")
@@ -124,13 +105,13 @@ class ContinueButton(discord.ui.Button):
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         defeat_view: ForestDefeatView = ForestDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
 
-        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [WildBoar(), WildBoar()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
+        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [GiantSnake()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
         initial_info: Embed = duel_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)
 
 
-class WildBoarDuelView(discord.ui.View):
+class GiantSnakeDuelView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -147,7 +128,7 @@ class WildBoarDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Angry Snorting", description="From behind you, suddenly you become aware of some furious squealing and snorting as two wild boar charge from the brush!")
+        return Embed(title="Hanging in the Trees", description="From above, you suddenly become aware of a gigantic snake descending on your party!")
 
     def _display_initial_buttons(self):
         self.clear_items()

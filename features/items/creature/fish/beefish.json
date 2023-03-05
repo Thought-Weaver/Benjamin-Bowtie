@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/beefish",
+    "icon": "\uD83D\uDC1D",
+    "name": "Beefish",
+    "value": 250,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

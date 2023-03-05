@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/algaefish",
+    "icon": "\uD83D\uDC1F",
+    "name": "Algaefish",
+    "value": 15,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}
