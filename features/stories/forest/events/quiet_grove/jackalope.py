@@ -191,8 +191,8 @@ class AttackButton(discord.ui.Button):
 
 
 class EnterFeedButton(discord.ui.Button):
-    def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Feed", row=row)
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Feed")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -285,11 +285,12 @@ class JackalopeView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="A Rare Sight", description="In a small clearing beside the path, suddenly one of you spots something most unusual: A small brown rabbit with wings folded against its flank and two protruding elk-like horns. A few options occur to you:")
+        return Embed(title="A Rare Sight", description="In a small clearing beside the path, suddenly one of you spots something most unusual: A small brown rabbit with wings folded against its flank and two protruding elk-like horns.\n\nA few options occur to you:")
 
     def _display_initial_buttons(self):
         self.clear_items()
         self.add_item(AttackButton())
+        self.add_item(EnterFeedButton())
         self.add_item(LeaveButton())
 
     def any_in_duels_currently(self):

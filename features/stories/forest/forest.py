@@ -142,7 +142,7 @@ class ForestRestView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self, additional_info: str=""):
-        return Embed(title="A Warm Bonfire", description=f"You all gather around a fire and rest for a moment among the trees.{additional_info}")
+        return Embed(title="A Warm Bonfire", description=f"You all gather around a fire and rest for a moment among the trees.\n\n{len(self.rested_users)}/{len(self._users)} rested{additional_info}")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -300,33 +300,35 @@ class ForestStory():
 
     @staticmethod
     def generate_combat_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
-        rand_val: int = random.randint(0, 8)
-        if rand_val == 0:
-            return BrigandMysticDuelView(bot, database, guild_id, users, dungeon_run)
-        elif rand_val == 1:
-            return BearDuelView(bot, database, guild_id, users, dungeon_run)
-        elif rand_val == 2:
-            return EvokerBrigandThiefDuelView(bot, database, guild_id, users, dungeon_run)
-        elif rand_val == 3:
-            return EvokerMysticDuelView(bot, database, guild_id, users, dungeon_run)
-        elif rand_val == 4:
-            return GiantSnakeDuelView(bot, database, guild_id, users, dungeon_run)
-        elif rand_val == 5:
-            return ThiefMarauderDuelView(bot, database, guild_id, users, dungeon_run)
-        elif rand_val == 6:
-            return TimberwolvesDuelView(bot, database, guild_id, users, dungeon_run)
-        elif rand_val == 7:
-            return TripleSnakeDuelView(bot, database, guild_id, users, dungeon_run)
-        else:
-            return WildBoarDuelView(bot, database, guild_id, users, dungeon_run)
+        if dungeon_run.section == ForestSection.QuietGrove:
+            rand_val: int = random.randint(0, 8)
+            if rand_val == 0:
+                return BrigandMysticDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 1:
+                return BearDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 2:
+                return EvokerBrigandThiefDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 3:
+                return EvokerMysticDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 4:
+                return GiantSnakeDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 5:
+                return ThiefMarauderDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 6:
+                return TimberwolvesDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 7:
+                return TripleSnakeDuelView(bot, database, guild_id, users, dungeon_run)
+            else:
+                return WildBoarDuelView(bot, database, guild_id, users, dungeon_run)
 
     @staticmethod
     def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
-        rand_val: int = random.randint(0, 1)
-        if rand_val == 0:
-            return FishingPondView(bot, database, guild_id, users, dungeon_run)
-        else:
-            return JackalopeView(bot, database, guild_id, users, dungeon_run)
+        if dungeon_run.section == ForestSection.QuietGrove:
+            rand_val: int = random.randint(0, 1)
+            if rand_val == 0:
+                return FishingPondView(bot, database, guild_id, users, dungeon_run)
+            else:
+                return JackalopeView(bot, database, guild_id, users, dungeon_run)
 
     def __getstate__(self):
         return self.__dict__
