@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 
 from uuid import uuid4
@@ -182,7 +184,7 @@ class Timberwolf(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self.level = 25
+        self._expertise.add_xp_to_class_until_level(25, ExpertiseClass.Guardian)
         self._expertise.constitution = 12
         self._expertise.strength = 10
         self._expertise.dexterity = 0

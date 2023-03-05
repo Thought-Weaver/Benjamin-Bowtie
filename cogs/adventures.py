@@ -39,7 +39,7 @@ from features.player import Player
 from features.stats import StatCategory, StatView
 from features.shared.enums import ClassTag, CompanionKey
 from features.shared.item import Item, LOADED_ITEMS, ItemKey, Rarity
-from features.stories.forest.forest import ForestStory
+from features.stories.forest.forest import ForestDungeonEntranceView, ForestStory
 from features.stories.ocean.ocean import OceanStory
 from features.stories.story import Story
 from features.stories.underworld.underworld import UnderworldStory
@@ -1114,6 +1114,48 @@ class Adventures(commands.Cog):
         pvp_duel = CompanionBattleView(self._bot, self._database, context.guild.id, [context.author, *users])
 
         await context.send(embed=pvp_duel.get_info_embed(), view=pvp_duel)
+
+    @commands.command(name="forest", help="Gather players to enter the depths of the forest")
+    async def group_duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+        assert(context.guild is not None)
+
+        users = [] if users is None else users
+
+        if len(set(users)) != len(users):
+            await context.send("You can't @ another player multiple times for an adventure.")
+            return
+
+        if context.author in users:
+            await context.send("You're automatically the group leader for the adventure and don't need to include yourself.")
+            return
+            
+        if any(user.bot for user in users):
+            await context.send("You can't bring a bot on an adventure.")
+            return
+            
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        for user in users:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't start an adventure.")
+            return
+
+        challenged_players: List[Player] = [self._get_player(context.guild.id, user.id) for user in users]
+        if any(player.get_dueling().is_in_combat for player in challenged_players):
+            await context.send(f"At least one of those players is in a duel.")
+            return
+
+        if any(player.get_expertise().hp != player.get_expertise().max_hp for player in challenged_players) or author_player.get_expertise().hp != author_player.get_expertise().max_hp:
+            await context.send("At least one of those players isn't at full health.")
+            return
+
+        forest = ForestDungeonEntranceView(self._bot, self._database, context.guild.id, [context.author, *users])
+
+        await context.send(embed=forest.get_initial_embed(), view=forest)
+
 
 async def setup(bot: BenjaminBowtieBot):
     await bot.add_cog(Adventures(bot))

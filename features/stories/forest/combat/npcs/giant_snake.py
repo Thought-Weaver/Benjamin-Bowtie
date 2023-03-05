@@ -1,10 +1,10 @@
-import random
+from __future__ import annotations
 
 from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Expertise
+from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.enums import ClassTag
@@ -34,7 +34,7 @@ class GiantSnake(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self.level = 55
+        self._expertise.add_xp_to_class_until_level(55, ExpertiseClass.Alchemist)
         self._expertise.constitution = 20
         self._expertise.strength = 0
         self._expertise.dexterity = 10

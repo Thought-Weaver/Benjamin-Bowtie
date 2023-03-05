@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Expertise
+from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import CleanseI, IncenseII, RegenerationI, SmokescreenI
@@ -35,7 +37,7 @@ class Mystic(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self.level = 50
+        self._expertise.add_xp_to_class_until_level(50, ExpertiseClass.Fisher)
         self._expertise.constitution = 15
         self._expertise.strength = 0
         self._expertise.dexterity = 0

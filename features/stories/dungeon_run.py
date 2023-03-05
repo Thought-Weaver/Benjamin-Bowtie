@@ -40,7 +40,7 @@ class DungeonRun():
 
 class RoomButton(discord.ui.Button):
     def __init__(self, icon: str, next_view: discord.ui.View):
-        super().__init__(style=discord.ButtonStyle.green, emoji=icon)
+        super().__init__(style=discord.ButtonStyle.secondary, emoji=icon)
 
         self._next_view = next_view
 

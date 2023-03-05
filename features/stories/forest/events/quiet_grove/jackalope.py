@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import discord
+import features.stories.forest.forest as forest
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
@@ -9,7 +12,6 @@ from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
 from features.stories.forest.combat.npcs.jackalope import Jackalope
-from features.stories.forest.forest import ForestDefeatView
 from strenum import StrEnum
 
 from typing import List, TYPE_CHECKING
@@ -180,7 +182,7 @@ class AttackButton(discord.ui.Button):
             return
 
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-        defeat_view: ForestDefeatView = ForestDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        defeat_view: forest.ForestDefeatView = forest.ForestDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
 
         duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [Jackalope()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
         initial_info: Embed = duel_view.get_initial_embed()

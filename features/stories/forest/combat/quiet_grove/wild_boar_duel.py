@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import discord
 import features.companions.companion
+import features.stories.forest.forest as forest
 import random
 
 from bot import BenjaminBowtieBot
@@ -8,7 +11,6 @@ from features.dueling import DuelView
 from features.shared.enums import CompanionKey
 from features.stories.dungeon_run import RoomSelectionView
 from features.stories.forest.combat.npcs.wild_boar import WildBoar
-from features.stories.forest.forest import ForestDefeatView
 
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
@@ -122,7 +124,7 @@ class ContinueButton(discord.ui.Button):
             return
 
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-        defeat_view: ForestDefeatView = ForestDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        defeat_view: forest.ForestDefeatView = forest.ForestDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
 
         duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [WildBoar(), WildBoar()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
         initial_info: Embed = duel_view.get_initial_embed()

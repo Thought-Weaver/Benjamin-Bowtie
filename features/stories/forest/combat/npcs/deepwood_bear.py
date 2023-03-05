@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from math import ceil
 from uuid import uuid4
 
@@ -170,7 +172,7 @@ class DeepwoodBear(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self.level = 70
+        self._expertise.add_xp_to_class_until_level(70, ExpertiseClass.Guardian)
         self._expertise.constitution = 45
         self._expertise.strength = 22
         self._expertise.dexterity = 0

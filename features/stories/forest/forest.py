@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import discord
 import random
 
@@ -9,6 +11,17 @@ from features.npcs.mysterious_merchant import MysteriousMerchantView
 from features.player import Player
 from features.shared.enums import CompanionKey, ForestSection
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
+from features.stories.forest.combat.quiet_grove.brigand_mystic_duel import BrigandMysticDuelView
+from features.stories.forest.combat.quiet_grove.deepwood_bear_duel import BearDuelView
+from features.stories.forest.combat.quiet_grove.evoker_brigand_thief_duel import EvokerBrigandThiefDuelView
+from features.stories.forest.combat.quiet_grove.evoker_mystic_duel import EvokerMysticDuelView
+from features.stories.forest.combat.quiet_grove.giant_snake_duel import GiantSnakeDuelView
+from features.stories.forest.combat.quiet_grove.thief_marauder_duel import ThiefMarauderDuelView
+from features.stories.forest.combat.quiet_grove.timberwolves_duel import TimberwolvesDuelView
+from features.stories.forest.combat.quiet_grove.triple_snake_duel import TripleSnakeDuelView
+from features.stories.forest.combat.quiet_grove.wild_boar_duel import WildBoarDuelView
+from features.stories.forest.events.quiet_grove.fishing_pond import FishingPondView
+from features.stories.forest.events.quiet_grove.jackalope import JackalopeView
 from features.stories.forest.treasure.quiet_grove_treasure import QuietGroveTreasureRoomView
 from features.stories.forest.treasure.screaming_copse_treasure import ScreamingCopseTreasureRoomView
 from features.stories.forest.treasure.whispering_woods_treasure import WhisperingWoodsTreasureRoomView
@@ -287,11 +300,33 @@ class ForestStory():
 
     @staticmethod
     def generate_combat_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
-        return discord.ui.View()
+        rand_val: int = random.randint(0, 8)
+        if rand_val == 0:
+            return BrigandMysticDuelView(bot, database, guild_id, users, dungeon_run)
+        elif rand_val == 1:
+            return BearDuelView(bot, database, guild_id, users, dungeon_run)
+        elif rand_val == 2:
+            return EvokerBrigandThiefDuelView(bot, database, guild_id, users, dungeon_run)
+        elif rand_val == 3:
+            return EvokerMysticDuelView(bot, database, guild_id, users, dungeon_run)
+        elif rand_val == 4:
+            return GiantSnakeDuelView(bot, database, guild_id, users, dungeon_run)
+        elif rand_val == 5:
+            return ThiefMarauderDuelView(bot, database, guild_id, users, dungeon_run)
+        elif rand_val == 6:
+            return TimberwolvesDuelView(bot, database, guild_id, users, dungeon_run)
+        elif rand_val == 7:
+            return TripleSnakeDuelView(bot, database, guild_id, users, dungeon_run)
+        else:
+            return WildBoarDuelView(bot, database, guild_id, users, dungeon_run)
 
     @staticmethod
     def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
-        return discord.ui.View()
+        rand_val: int = random.randint(0, 1)
+        if rand_val == 0:
+            return FishingPondView(bot, database, guild_id, users, dungeon_run)
+        else:
+            return JackalopeView(bot, database, guild_id, users, dungeon_run)
 
     def __getstate__(self):
         return self.__dict__

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 
 from math import ceil
@@ -242,7 +244,7 @@ class SmallSnake(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self.level = 20
+        self._expertise.add_xp_to_class_until_level(20, ExpertiseClass.Alchemist)
         self._expertise.constitution = 8
         self._expertise.strength = 0
         self._expertise.dexterity = 0

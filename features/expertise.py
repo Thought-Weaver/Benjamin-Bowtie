@@ -165,6 +165,18 @@ class Expertise():
         self.luck = 0
         self.memory = 0
 
+    def add_xp_to_class_until_level(self, level: int, expertise_class: ExpertiseClass):
+        if expertise_class == ExpertiseClass.Alchemist:
+            self._alchemist.add_xp(self._alchemist.get_xp_to_level(level))
+        elif expertise_class == ExpertiseClass.Fisher:
+            self._fisher.add_xp(self._fisher.get_xp_to_level(level))
+        elif expertise_class == ExpertiseClass.Guardian:
+            self._guardian.add_xp(self._guardian.get_xp_to_level(level))
+        elif expertise_class == ExpertiseClass.Merchant:
+            self._merchant.add_xp(self._merchant.get_xp_to_level(level))
+
+        self.level = self._fisher.get_level() + self._merchant.get_level() + self._guardian.get_level() + self._alchemist.get_level()
+
     def add_xp_to_class(self, xp: int, expertise_class: ExpertiseClass, equipment: Equipment):
         levels_gained: int = 0
 

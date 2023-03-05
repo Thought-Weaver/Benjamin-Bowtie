@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 
 from uuid import uuid4
@@ -128,7 +130,7 @@ class WildBoar(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self.level = 25
+        self._expertise.add_xp_to_class_until_level(25, ExpertiseClass.Guardian)
         self._expertise.constitution = 11
         self._expertise.strength = 5
         self._expertise.dexterity = 5
