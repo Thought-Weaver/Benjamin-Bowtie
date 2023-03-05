@@ -283,7 +283,7 @@ class ForestStory():
 
     @staticmethod
     def generate_shopkeep_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
-        return MysteriousMerchantView(bot, database, guild_id, users)
+        return MysteriousMerchantView(bot, database, guild_id, users, dungeon_run)
 
     @staticmethod
     def generate_rest_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
