@@ -1,7 +1,7 @@
 {
-    "key": "items/weapon/dungeon_npcs/deepwood_bear_claws",
-    "icon": "\uD83D\uDC3B",
-    "name": "Deepwood Bear Claws",
+    "key": "items/weapon/dungeon_npcs/dreameaters_grasp",
+    "icon": "\u2728",
+    "name": "Dreameater's Grasp",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
@@ -11,8 +11,8 @@
     "count": 1,
     "level_requirement": 0,
     "weapon_stats": {
-        "min_damage": 10,
-        "max_damage": 17,
-        "num_targets": 2
+        "min_damage": 3,
+        "max_damage": 5,
+        "num_targets": 5
     }
 }

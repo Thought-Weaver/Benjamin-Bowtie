@@ -1,0 +1,55 @@
+{
+    "key": "items/consumable/potions/memory_of_victory",
+    "icon": "\u2728",
+    "name": "Memory of Victory",
+    "value": 0,
+    "rarity": "Artifact",
+    "description": "Can be used while dueling or outside duels.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 0,
+        "target_own_group": true
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ConMod",
+                "effect_value": 5,
+                "effect_time": 4,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "StrMod",
+                "effect_value": 5,
+                "effect_time": 4,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "DexMod",
+                "effect_value": 5,
+                "effect_time": 4,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "IntMod",
+                "effect_value": 5,
+                "effect_time": 4,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "LckMod",
+                "effect_value": 5,
+                "effect_time": 4,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

@@ -83,7 +83,7 @@ class FishingPondView(discord.ui.View):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)
 
     def fish(self, user: discord.User):
-        player = self._get_player(user)
+        player = self._get_player(user.id)
         player_stats = player.get_stats()
 
         LUCK_MOD = 0.005 # Luck adjusts total bias by 0.5% per point

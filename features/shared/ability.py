@@ -287,7 +287,6 @@ class Ability():
 
     def _use_negative_status_effect_ability(self, caster: Player | NPC, targets: List[Player | NPC], status_effects: List[StatusEffect]) -> List[NegativeAbilityResult]:
         results: List[NegativeAbilityResult] = []
-        status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
 
         caster_equipment = caster.get_equipment()
 
@@ -310,11 +309,12 @@ class Ability():
                         results.append(NegativeAbilityResult(result_str, False))
 
             mapped_ses = list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
+            final_se_strs = []
             for se in mapped_ses:
-                target.get_dueling().add_status_effect_with_resist(se, target, i + 1)
+                final_se_strs.append(target.get_dueling().add_status_effect_with_resist(se, target, i + 1))
             target.get_expertise().update_stats(target.get_combined_attributes())
 
-            results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" is now {status_effects_str}", False))
+            results.append(NegativeAbilityResult("\n".join(final_se_strs), False))
         
         result_str = self.remove_mana_and_set_cd(caster)
         if result_str is not None:
@@ -324,16 +324,15 @@ class Ability():
 
     def _use_damage_and_effect_ability(self, caster: Player | NPC, targets: List[Player | NPC], dmg_range: range, status_effects: List[StatusEffect]) -> List[NegativeAbilityResult]:
         results = self._use_damage_ability(caster, targets, dmg_range)
-        status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
 
         for i in range(len(results)):
             if not results[i].dodged:
                 mapped_ses = list(map(lambda se: se.set_trigger_first_turn(targets[i] != caster), status_effects))
                 for se in mapped_ses:
-                    targets[i].get_dueling().add_status_effect_with_resist(se, targets[i], i + 1)
+                    se_str = targets[i].get_dueling().add_status_effect_with_resist(se, targets[i], i + 1)
+                    results[i].target_str += f" and {se_str}"
 
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and is now {status_effects_str}"
         
         return results
 

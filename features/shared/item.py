@@ -567,11 +567,16 @@ class ItemKey(StrEnum):
     BagOfCoins = "items/valuable/bag_of_coins"
 
     # Dungeon NPC Weapons
+    DeepwoodBearClaws = "items/weapon/dungeon_npcs/deepwood_bear_claws"
+    DreameatersGrasp = "items/weapon/dungeon_npcs/dreameaters_grasp"
     GiantSnakeFangs = "items/weapon/dungeon_npcs/giant_snake_fangs"
     JackalopeHorns = "items/weapon/dungeon_npcs/jackalope_horns"
     SmallSnakeFangs = "items/weapon/dungeon_npcs/small_snake_fangs"
     TimberwolfCanines = "items/weapon/dungeon_npcs/timberwolf_canines"
     WildBoarTusks = "items/weapon/dungeon_npcs/wild_boar_tusks"
+
+    # Dungeon NPC Special Rewards
+    MemoryOfVictory = "items/consumable/potions/memory_of_victory"
 
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"
