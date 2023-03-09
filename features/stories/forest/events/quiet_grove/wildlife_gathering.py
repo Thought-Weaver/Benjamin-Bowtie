@@ -43,7 +43,7 @@ class TurtleButton(discord.ui.Button):
             return
         
         view: WildlifeGatheringView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.choose_animal(CompanionKey.SunbaskTurtle)
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
@@ -57,7 +57,7 @@ class OwlButton(discord.ui.Button):
             return
         
         view: WildlifeGatheringView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.choose_animal(CompanionKey.SilverwingOwl)
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
@@ -71,7 +71,7 @@ class FoxButton(discord.ui.Button):
             return
         
         view: WildlifeGatheringView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.choose_animal(CompanionKey.FlyingFox)
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
@@ -118,7 +118,7 @@ class WildlifeGatheringView(discord.ui.View):
         return Embed(title="Stone Statue", description="Your party approaches the statue and its eyes begin to glow. Suddenly, a wind picks up around you and a small companion appears before each of you! A new companion has been added to b!companions.")
 
     def get_initial_embed(self):
-        return Embed(title="The Path is Lost", description="In the fading light of day and a dense thicket, you find yourselves uncertain how to get back on the path.\n\nA couple options come to mind:")
+        return Embed(title="Wildlife Gathering", description="Along the path, you come across three stone statues carved in the likeness of common animals. There's something intriguing about these statues, though you can't quite say what.\n\nYou could approach a statue or leave without bothering them.")
 
     def _display_initial_buttons(self):
         self.clear_items()

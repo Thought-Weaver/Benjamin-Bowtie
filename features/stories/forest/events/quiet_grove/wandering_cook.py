@@ -44,7 +44,7 @@ class AcceptButton(discord.ui.Button):
             return
         
         view: WanderingCookView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.accept()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 

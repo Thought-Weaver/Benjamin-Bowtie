@@ -39,7 +39,7 @@ class JoinThemButton(discord.ui.Button):
             return
         
         view: CampOfFoolsView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.join_them()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 

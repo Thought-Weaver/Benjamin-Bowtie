@@ -190,7 +190,7 @@ class AestivalLightRestButton(discord.ui.Button):
             return
         
         view: AestivalLightView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.rest()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 

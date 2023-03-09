@@ -39,7 +39,7 @@ class TurnBackButton(discord.ui.Button):
             return
         
         view: ThePathIsLostView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.turn_back()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
@@ -53,7 +53,7 @@ class PushForwardButton(discord.ui.Button):
             return
         
         view: ThePathIsLostView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.push_forward()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
