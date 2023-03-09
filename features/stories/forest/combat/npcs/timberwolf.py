@@ -106,8 +106,8 @@ class PackTactics(Ability):
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [dmg_buff, str_buff, dex_buff])
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dmg_buff, str_buff, dex_buff])
+        result_str += "\n".join(results)
 
         caster.get_stats().dueling.guardian_abilities_used += 1
 
@@ -144,7 +144,7 @@ class ScentForBlood(Ability):
             source_str=self.get_icon_and_name()
         )
 
-        filtered_targets = [target for target in targets for se in target.get_dueling().status_effects if se.key == StatusEffectKey.Bleeding]
+        filtered_targets = [target for target in targets if any(se.key == StatusEffectKey.Bleeding for se in target.get_dueling().status_effects)]
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, filtered_targets, [dex_debuff])
