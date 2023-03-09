@@ -1,4 +1,5 @@
 from __future__ import annotations
+import random
 
 import discord
 from features.stories.forest.combat.npcs.dreameater import Dreameater
@@ -132,7 +133,7 @@ class DreameaterDuelView(discord.ui.View):
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(ContinueButton())
+        self.add_item(DuelContinueButton())
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)
@@ -158,6 +159,10 @@ class DreameaterDuelView(discord.ui.View):
     def get_dungeon_run(self):
         return self._dungeon_run
 
+# -----------------------------------------------------------------------------
+# AESTIVAL LIGHT VIEW
+# -----------------------------------------------------------------------------
+
 class ContinueButton(discord.ui.Button):
     def __init__(self):
         super().__init__(style=discord.ButtonStyle.blurple, label="Continue")
@@ -177,10 +182,6 @@ class ContinueButton(discord.ui.Button):
 
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
 
-# -----------------------------------------------------------------------------
-# AESTIVAL LIGHT VIEW
-# -----------------------------------------------------------------------------
-
 class AestivalLightRestButton(discord.ui.Button):
     def __init__(self):
         super().__init__(style=discord.ButtonStyle.secondary, label="Rest")
@@ -191,8 +192,14 @@ class AestivalLightRestButton(discord.ui.Button):
         
         view: AestivalLightView = self.view
         if interaction.user.id == view.get_group_leader().id:
-            response = view.rest()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
+            if random.random() < 0.2 * view.rests_taken:
+                duel_room = DreameaterDuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+                initial_info: Embed = duel_room.get_initial_embed()
+
+                await interaction.response.edit_message(embed=initial_info, view=duel_room, content=None)
+            else:
+                response = view.rest()
+                await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 class AestivalLightView(discord.ui.View):
@@ -223,6 +230,8 @@ class AestivalLightView(discord.ui.View):
 
             player_expertise.heal(int(player_expertise.max_hp / 10))
             player_expertise.restore_mana(int(player_expertise.max_mana / 10))
+
+        self.rests_taken += 1
         
         return self.get_initial_embed("\n\nYou party rests, restoring part of their health and mana. You could keep resting to heal further.")
 

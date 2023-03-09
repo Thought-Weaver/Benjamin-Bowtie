@@ -7,7 +7,7 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import BidedAttackIII, CounterstrikeII, EvadeII
+from features.shared.ability import BidedAttackII, CounterstrikeI, EvadeI
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
 from features.stats import Stats
@@ -66,7 +66,7 @@ class Thief(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [EvadeII(), CounterstrikeII(), BidedAttackIII()]
+        self._dueling.abilities = [EvadeI(), CounterstrikeI(), BidedAttackII()]
 
     def _setup_npc_params(self):
         self._setup_inventory()

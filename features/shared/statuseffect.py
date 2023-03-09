@@ -101,6 +101,7 @@ POSITIVE_STATUS_EFFECTS_ON_SELF: List[StatusEffectKey] = [
     StatusEffectKey.Undying,
     StatusEffectKey.DmgReflect,
     StatusEffectKey.BonusDamageOnAttack,
+    StatusEffectKey.AttackingChanceToApplyStatus,
     StatusEffectKey.RegenerateArmor
 ]
 

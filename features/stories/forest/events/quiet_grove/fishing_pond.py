@@ -48,9 +48,8 @@ class FishButton(discord.ui.Button):
             mail_message = view.fish(interaction.user)
             
             await interaction.response.edit_message(content=None, embed=view.get_initial_embed(), view=view)
-            if interaction.followup.user is not None:
-                await interaction.followup.user.send(mail_message)
-
+            await interaction.user.send(mail_message)
+            
 
 class FishingPondView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):

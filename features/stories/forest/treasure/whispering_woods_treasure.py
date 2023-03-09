@@ -66,9 +66,9 @@ class WhisperingWoodsTreasureRoomView(discord.ui.View):
                         self._possible_rewards.append(item_key)
         self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
 
-        self._treasure_result_str = self._generate_and_add_treasure()
+        self._EXTRA_REWARD_LUCK_PROB = 0.01
 
-        self._SECOND_REWARD_LUCK_PROB = 0.01
+        self._treasure_result_str = self._generate_and_add_treasure()
 
         self._display_initial_buttons()
 
@@ -82,7 +82,7 @@ class WhisperingWoodsTreasureRoomView(discord.ui.View):
             player = self._get_player(user.id)
             total_luck = player.get_combined_attributes().luck
 
-            get_additional_reward = random.random() < total_luck * self._SECOND_REWARD_LUCK_PROB
+            get_additional_reward = random.random() < total_luck * self._EXTRA_REWARD_LUCK_PROB
             rewards = random.choices(self._possible_rewards, k=2 if get_additional_reward else 1, weights=self._weights)
             
             for reward_key in rewards:

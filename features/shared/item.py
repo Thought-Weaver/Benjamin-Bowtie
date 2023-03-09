@@ -566,10 +566,12 @@ class ItemKey(StrEnum):
     PileOfCoins = "items/valuable/pile_of_coins"
     BagOfCoins = "items/valuable/bag_of_coins"
 
-    # Dungeon NPC Weapons
+    # Dungeon NPC Weapons and Armor
     DeepwoodBearClaws = "items/weapon/dungeon_npcs/deepwood_bear_claws"
     DreameatersGrasp = "items/weapon/dungeon_npcs/dreameaters_grasp"
     GiantSnakeFangs = "items/weapon/dungeon_npcs/giant_snake_fangs"
+    GolemicFists = "items/weapon/dungeon_npcs/golemic_fists"
+    GolemicHeart = "items/equipment/chest_armor/golemic_heart"
     JackalopeHorns = "items/weapon/dungeon_npcs/jackalope_horns"
     SmallSnakeFangs = "items/weapon/dungeon_npcs/small_snake_fangs"
     TimberwolfCanines = "items/weapon/dungeon_npcs/timberwolf_canines"

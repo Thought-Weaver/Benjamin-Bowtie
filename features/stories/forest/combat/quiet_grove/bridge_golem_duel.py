@@ -63,7 +63,7 @@ class WhisperingWoodsIntroView(discord.ui.View):
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(DuelVictoryContinueButton())
+        self.add_item(WhisperingWoodsContinueButton())
 
     def get_bot(self):
         return self._bot
@@ -139,7 +139,7 @@ class BridgeGolemTreasureRoomView(discord.ui.View):
         for item_key in ItemKey:
             item = LOADED_ITEMS.get_new_item(item_key)
             if any(tag in item.get_class_tags() for tag in self._valid_class_tags):
-                if Rarity.Common < item.get_rarity() < Rarity.Cursed:
+                if Rarity.Uncommon < item.get_rarity() < Rarity.Cursed:
                     if ClassTag.Equipment.Equipment in item.get_class_tags():
                         if self._min_level <= item.get_level_requirement() <= self._max_level:
                             self._possible_rewards.append(item_key)
@@ -147,9 +147,9 @@ class BridgeGolemTreasureRoomView(discord.ui.View):
                         self._possible_rewards.append(item_key)
         self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
 
-        self._treasure_result_str = self._generate_and_add_treasure()
-
         self._EXTRA_REWARD_LUCK_PROB = 0.01
+
+        self._treasure_result_str = self._generate_and_add_treasure()
 
         self._display_initial_buttons()
 
@@ -180,7 +180,7 @@ class BridgeGolemTreasureRoomView(discord.ui.View):
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(ContinueButton())
+        self.add_item(TreasureRoomContinueButton())
 
     def get_bot(self):
         return self._bot
@@ -316,7 +316,7 @@ class BridgeGolemDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Bridge", description="At last, your party exits the quiet grove to find a river and the bridge towards the next section of the forest you all were seeking. The river rushes loudly and it seems the only option is to cross the bridge decorated with mossy, grey stones of various sizes.\n\nBut as you all begin to step forward towards the bridge, suddenly there's a rumbling. Those very stones begin to shift and roll off the bridge, clustering together as glowing ribbons of mana alight on their surfaces. Assembled into a gigantic form, the singular, blazing eye on the stone that constitutes its head looks down towards you. The sentinel of this place has awoken, seeking to stop any who would venture further into the woods!")
+        return Embed(title="The Bridge", description="At last, your party exits the quiet grove to find a river and the bridge towards the next section of the forest you all were seeking. The river rushes loudly and it seems the only option is to cross the bridge decorated with mossy, grey stones of various sizes.\n\nBut as you all begin to step forward towards the bridge, suddenly there's a rumbling. Those very stones begin to shift and roll off the bridge, clustering together as glowing ribbons of mana alight on their surfaces.\n\nAssembled into a gigantic form, the singular, blazing eye on the stone that constitutes its head looks down towards you. The sentinel of this place has awoken, seeking to stop any who would venture further into the woods!")
 
     def _display_initial_buttons(self):
         self.clear_items()

@@ -57,8 +57,8 @@ class StoneSwarm(Ability):
 class EruptingEarth(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83D\uDD31",
-            name="Charge",
+            icon="\uD83C\uDF0B",
+            name="Erupting Earth",
             class_key=ExpertiseClass.Guardian,
             description="Deal 15-20 damage and cause Faltering with a 30% chance for 3 turns.",
             flavor_text="",
@@ -97,10 +97,10 @@ class Reform(Ability):
             icon="\uD83D\uDD04",
             name="Reform",
             class_key=ExpertiseClass.Guardian,
-            description="Regenerate 15% of your max armor every turn for 5 turns.",
+            description="Regenerate 5% of your max armor every turn for 5 turns.",
             flavor_text="",
             mana_cost=40,
-            cooldown=9,
+            cooldown=10,
             num_targets=0,
             level_requirement=20,
             target_own_group=True,
@@ -111,7 +111,7 @@ class Reform(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = RegenerateArmor(
             turns_remaining=5,
-            value=0.15,
+            value=0.05,
             source_str=self.get_icon_and_name()
         )
 
@@ -165,7 +165,13 @@ class BridgeGolem(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.WildBoarTusks))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.GolemicFists))
+
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.OrichalcumPlateHelmet))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.OrichalcumPlateGauntlets))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.GolemicHeart))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.OrichalcumPlateLeggings))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.OrichalcumPlateGreaves))
 
         self._expertise.update_stats(self.get_combined_attributes())
 

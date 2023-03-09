@@ -7,7 +7,7 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import CounterstrikeIII, HeavySlamII, SecondWindIII
+from features.shared.ability import CounterstrikeI, HeavySlamI, SecondWindII
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
 from features.stats import Stats
@@ -64,7 +64,7 @@ class Brigand(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [SecondWindIII(), HeavySlamII(), CounterstrikeIII()]
+        self._dueling.abilities = [SecondWindII(), HeavySlamI(), CounterstrikeI()]
 
     def _setup_npc_params(self):
         self._setup_inventory()

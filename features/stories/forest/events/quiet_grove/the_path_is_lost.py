@@ -32,7 +32,7 @@ class ContinueButton(discord.ui.Button):
 
 class TurnBackButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Accept")
+        super().__init__(style=discord.ButtonStyle.secondary, label="Turn Back")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -46,7 +46,7 @@ class TurnBackButton(discord.ui.Button):
 
 class PushForwardButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Accept")
+        super().__init__(style=discord.ButtonStyle.secondary, label="Push Forward")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:

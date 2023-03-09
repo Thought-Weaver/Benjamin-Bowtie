@@ -82,8 +82,8 @@ class RoomSelectionView(discord.ui.View):
         if self._dungeon_run.rooms_until_boss == -1:
             # TODO: Show button for boss room intro
             if self._dungeon_run.section == ForestSection.QuietGrove:
-                self._dungeon_run.section = ForestSection.WhisperingWoods
-                self._dungeon_run.rooms_until_boss = FOREST_ROOMS
+                room = forest.ForestStory.generate_boss_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
+                self.add_item(RoomButton("\u2620\uFE0F", room))
             elif self._dungeon_run.section == ForestSection.WhisperingWoods:
                 self._dungeon_run.section = ForestSection.ScreamingCopse
                 self._dungeon_run.rooms_until_boss = FOREST_ROOMS

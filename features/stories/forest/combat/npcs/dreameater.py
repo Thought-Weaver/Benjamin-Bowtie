@@ -33,7 +33,7 @@ class Siphon(Ability):
             description="Reduce a target's Dexterity and Strength by 2 and increase your own by the same amount for the rest of the duel.",
             flavor_text="",
             mana_cost=5,
-            cooldown=0,
+            cooldown=1,
             num_targets=1,
             level_requirement=100,
             target_own_group=False,
@@ -73,7 +73,8 @@ class Siphon(Ability):
         )
 
         buff_result = self._use_positive_status_effect_ability(caster, [caster], [dex_buff, str_buff])
-        result_str += "\n".join(buff_result)
+        buff_result = [s.replace("{1}", "{0}") for s in buff_result]
+        result_str += "\n" + "\n".join(buff_result)
 
         caster.get_stats().dueling.fisher_abilities_used += 1
 

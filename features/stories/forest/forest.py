@@ -12,6 +12,7 @@ from features.player import Player
 from features.shared.constants import FOREST_ROOMS
 from features.shared.enums import CompanionKey, ForestSection
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
+from features.stories.forest.combat.quiet_grove.bridge_golem_duel import BridgeGolemDuelView
 from features.stories.forest.combat.quiet_grove.brigand_mystic_duel import BrigandMysticDuelView
 from features.stories.forest.combat.quiet_grove.deepwood_bear_duel import BearDuelView
 from features.stories.forest.combat.quiet_grove.evoker_brigand_thief_duel import EvokerBrigandThiefDuelView
@@ -416,6 +417,14 @@ class ForestStory():
                 return WildHerbsView(bot, database, guild_id, users, dungeon_run)
             else:
                 return WildlifeGatheringView(bot, database, guild_id, users, dungeon_run)
+
+    @staticmethod
+    def generate_boss_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
+        if dungeon_run.section == ForestSection.QuietGrove:
+            return BridgeGolemDuelView(bot, database, guild_id, users, dungeon_run)
+        else:
+            # TODO: Replace this later with other bosses
+            return discord.ui.View()
 
     def __getstate__(self):
         return self.__dict__
