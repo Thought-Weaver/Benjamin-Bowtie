@@ -249,11 +249,11 @@ class QuietGroveEntranceView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Quiet Grove", description="The wind stirs through the expanse of trees in this first section of the forest as you all prepare to journey forwards. Soft chirping from birds and rustling in the bushes pervades the air with a normal tranquility that forests often invite. Though the path ahead will certainly be rife with dangers, from wild animals to bandits, the path ahead to the bridge into the deeper woods beyond is clear.\n\nIt's time for the adventure to begin!")
+        return Embed(title="The Quiet Grove", description="The wind stirs through the expanse of trees in this first section of the forest as you all prepare to journey forwards. Soft chirping from birds and rustling in the bushes pervades the air with a normal tranquility that forests often invite.\n\nThough this journey will certainly be rife with dangers, from wild animals to bandits, the path ahead to the bridge into the deeper woods beyond is clear.\n\nIt's time for the adventure to begin!")
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(StartButton())
+        self.add_item(ContinueButton())
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)

@@ -1980,7 +1980,7 @@ class DuelView(discord.ui.View):
         heals_from_poison: bool = any(se.key == StatusEffectKey.PoisonHeals for se in entity.get_dueling().status_effects)
         max_sleeping_chance: float = 0
 
-        max_armor: int = entity.get_equipment().get_total_reduced_armor()
+        max_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level, entity.get_expertise().get_all_attributes() + entity.get_equipment().get_total_attribute_mods())
     
         for se in entity.get_dueling().status_effects:
             if se.turns_remaining > 0 or se.turns_remaining == -1:
