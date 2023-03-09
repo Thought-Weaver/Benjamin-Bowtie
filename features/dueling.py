@@ -2016,13 +2016,14 @@ class DuelView(discord.ui.View):
                 self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)} had {start_heals} health restored! "
 
-        pre_armor: int = entity.get_dueling().armor
-        entity.get_dueling().armor = max(entity.get_dueling().armor + start_armor_restore, max_armor)
-        armor_restore_diff: int = entity.get_dueling().armor - pre_armor
-        if armor_restore_diff != 0:
-            if self._additional_info_string_data != "":
-                self._additional_info_string_data += "\n"
-            self._additional_info_string_data += f"{self.get_name(entity)} had {armor_restore_diff} armor restored! "
+        if start_armor_restore != 0:
+            pre_armor: int = entity.get_dueling().armor
+            entity.get_dueling().armor = min(entity.get_dueling().armor + start_armor_restore, max_armor)
+            armor_restore_diff: int = entity.get_dueling().armor - pre_armor
+            if armor_restore_diff != 0:
+                if self._additional_info_string_data != "":
+                    self._additional_info_string_data += "\n"
+                self._additional_info_string_data += f"{self.get_name(entity)} had {armor_restore_diff} armor restored! "
 
         if random() < max_should_skip_chance:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
