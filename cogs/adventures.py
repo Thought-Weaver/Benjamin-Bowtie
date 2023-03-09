@@ -824,6 +824,7 @@ class Adventures(commands.Cog):
             "**Eureka:** Potions used are more powerful\n"
             "**Absorbing:** Poison damage heals\n"
             "**Regenerating:** Restore x% max health at the start of each turn\n"
+            "**Reforming:** Restore x% max armor at the start of each turn\n"
             "**Acervophilic:** You can only use items this turn\n\n"
             "**Charmed:** Your enemies are your allies and vice versa\n"
             "**Atrophied:** You can't attack\n"

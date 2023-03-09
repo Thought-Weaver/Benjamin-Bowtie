@@ -1975,9 +1975,12 @@ class DuelView(discord.ui.View):
         
         start_damage: int = 0
         start_heals: int = 0
+        start_armor_restore: int = 0
         max_should_skip_chance: float = 0
         heals_from_poison: bool = any(se.key == StatusEffectKey.PoisonHeals for se in entity.get_dueling().status_effects)
         max_sleeping_chance: float = 0
+
+        max_armor: int = entity.get_equipment().get_total_reduced_armor()
     
         for se in entity.get_dueling().status_effects:
             if se.turns_remaining > 0 or se.turns_remaining == -1:
@@ -1992,6 +1995,8 @@ class DuelView(discord.ui.View):
                         start_damage += ceil(entity.get_expertise().max_hp * se.value)
                 if se.key == StatusEffectKey.RegenerateHP:
                     start_heals += ceil(entity.get_expertise().max_hp * se.value)
+                if se.key == StatusEffectKey.RegenerateArmor:
+                    start_armor_restore += ceil(max_armor * se.value)
                 # Only take the largest chance to skip the turn
                 if se.key == StatusEffectKey.TurnSkipChance:
                     max_should_skip_chance = max(se.value, max_should_skip_chance)
@@ -2010,6 +2015,14 @@ class DuelView(discord.ui.View):
             if self._additional_info_string_data != "":
                 self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)} had {start_heals} health restored! "
+
+        pre_armor: int = entity.get_dueling().armor
+        entity.get_dueling().armor = max(entity.get_dueling().armor + start_armor_restore, max_armor)
+        armor_restore_diff: int = entity.get_dueling().armor - pre_armor
+        if armor_restore_diff != 0:
+            if self._additional_info_string_data != "":
+                self._additional_info_string_data += "\n"
+            self._additional_info_string_data += f"{self.get_name(entity)} had {armor_restore_diff} armor restored! "
 
         if random() < max_should_skip_chance:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)

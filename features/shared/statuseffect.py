@@ -72,6 +72,8 @@ class StatusEffectKey(StrEnum):
 
     AttackingChanceToApplyStatus = "AttackingChanceToApplyStatus"
 
+    RegenerateArmor = "RegenerateArmor"
+
     # TODO: For charging abilities, I should add a Charging status which
     # is a requirement to cast an associated ability (referenced by class perhaps?)
     # and is consumed in order to cast it. 
@@ -98,7 +100,8 @@ POSITIVE_STATUS_EFFECTS_ON_SELF: List[StatusEffectKey] = [
     StatusEffectKey.DmgBuff,
     StatusEffectKey.Undying,
     StatusEffectKey.DmgReflect,
-    StatusEffectKey.BonusDamageOnAttack
+    StatusEffectKey.BonusDamageOnAttack,
+    StatusEffectKey.RegenerateArmor
 ]
 
 NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
@@ -711,6 +714,19 @@ class AttackingChanceToApplyStatus(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: You have a {self.value * 100}% to apply {self.status_effect.name} on successful attacks for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class RegenerateArmor(StatusEffect):
+    def __init__(self, turns_remaining: int, value: float, source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Restoring", StatusEffectKey.RegenerateArmor, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: You regain {self.value * 100}% of your armor for the next {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

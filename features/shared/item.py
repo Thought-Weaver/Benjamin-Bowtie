@@ -576,6 +576,8 @@ class ItemKey(StrEnum):
     WildBoarTusks = "items/weapon/dungeon_npcs/wild_boar_tusks"
 
     # Dungeon NPC Special Rewards
+    GolemicAssembly = "items/equipment/chest_armor/golemic_assembly"
+    GolemsEye = "items/weapon/staff/golems_eye"
     MemoryOfVictory = "items/consumable/potions/memory_of_victory"
 
     # Misc

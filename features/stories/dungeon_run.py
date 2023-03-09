@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import discord
+from features.shared.constants import FOREST_ROOMS
 import features.stories.forest.forest as forest
 import random
 
@@ -54,6 +55,10 @@ class RoomButton(discord.ui.Button):
             await interaction.response.edit_message(embed=view.get_initial_embed(), content="Error: You aren't the group leader and can't select the next room!", view=view)
             return
         
+        # TODO: Also update other stats when the button is pressed -- will need to pass
+        # some kind of enum for that to determine the type of room.
+        view.get_dungeon_run().rooms_until_boss -= 1
+
         initial_info: discord.Embed = self._next_view.get_initial_embed() # type: ignore
 
         await interaction.response.edit_message(embed=initial_info, view=self._next_view, content=None)
@@ -70,9 +75,22 @@ class RoomSelectionView(discord.ui.View):
         self._group_leader = users[0]
         self._dungeon_run = dungeon_run
 
-        self.setup_rooms()
+        if self._dungeon_run.dungeon_type == Story.Forest:
+            self.setup_forest_rooms()
 
-    def setup_rooms(self):
+    def setup_forest_rooms(self):
+        if self._dungeon_run.rooms_until_boss == -1:
+            # TODO: Show button for boss room intro
+            if self._dungeon_run.section == ForestSection.QuietGrove:
+                self._dungeon_run.section = ForestSection.WhisperingWoods
+                self._dungeon_run.rooms_until_boss = FOREST_ROOMS
+            elif self._dungeon_run.section == ForestSection.WhisperingWoods:
+                self._dungeon_run.section = ForestSection.ScreamingCopse
+                self._dungeon_run.rooms_until_boss = FOREST_ROOMS
+            elif self._dungeon_run.section == ForestSection.ScreamingCopse:
+                pass
+            return
+
         if self._dungeon_run.rooms_until_boss == 0:
             room = forest.ForestStory.generate_rest_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
             self.add_item(RoomButton("\uD83D\uDD25", room))
@@ -145,3 +163,6 @@ class RoomSelectionView(discord.ui.View):
 
     def get_group_leader(self):
         return self._group_leader
+    
+    def get_dungeon_run(self):
+        return self._dungeon_run

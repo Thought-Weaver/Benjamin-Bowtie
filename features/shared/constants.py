@@ -49,3 +49,9 @@ COMPANION_NAMING_POINTS = 25
 COMPANION_FEEDING_POINTS = 1
 COMPANION_PREFERRED_FOOD_BONUS_POINTS = 5
 COMPANION_BATTLE_POINTS = 3
+
+# -----------------------------------------------------------------------------
+# DUNGEON RUN CONSTANTS
+# -----------------------------------------------------------------------------
+
+FOREST_ROOMS = 20
