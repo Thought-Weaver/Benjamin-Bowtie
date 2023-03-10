@@ -116,8 +116,8 @@ class Reform(Ability):
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [buff])
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
+        result_str += "\n".join(results)
 
         caster.get_stats().dueling.guardian_abilities_used += 1
 
@@ -136,8 +136,8 @@ class Reform(Ability):
 # Idea: Since the reward system doesn't support "a random rare item" well, perhaps
 # I could link to a post-boss treasure room before moving to the next section?
 class BridgeGolem(NPC):
-    def __init__(self):
-        super().__init__("Bridge Golem", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Bridge Golem" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()
 

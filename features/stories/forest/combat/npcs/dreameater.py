@@ -246,8 +246,8 @@ class Deterioration(Ability):
 # -----------------------------------------------------------------------------
 
 class Dreameater(NPC):
-    def __init__(self):
-        super().__init__("Dreameater", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Dreameater" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.MemoryOfVictory: 1
         })
 

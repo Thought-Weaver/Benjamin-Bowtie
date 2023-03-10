@@ -226,9 +226,9 @@ class Camouflage(Ability):
 # -----------------------------------------------------------------------------
 
 class SmallSnake(NPC):
-    def __init__(self):
+    def __init__(self, name_suffix: str=""):
         persona = NPCDuelingPersonas.Mage if random.random() < 0.67 else NPCDuelingPersonas.Specialist
-        super().__init__("Small Snake", NPCRoles.DungeonEnemy, persona, {
+        super().__init__("Small Snake" + name_suffix, NPCRoles.DungeonEnemy, persona, {
             ItemKey.LesserPoison: 0.9
         })
 

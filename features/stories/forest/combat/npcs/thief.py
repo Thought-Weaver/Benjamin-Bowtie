@@ -17,8 +17,8 @@ from features.stats import Stats
 # -----------------------------------------------------------------------------
 
 class Thief(NPC):
-    def __init__(self):
-        super().__init__("Thief", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Thief" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {
             ItemKey.IronDagger: 0.5,
             ItemKey.IronDagger: 0.5,
             ItemKey.LesserDexterityPotion: 0.2,

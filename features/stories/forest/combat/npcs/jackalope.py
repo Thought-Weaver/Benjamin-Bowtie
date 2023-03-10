@@ -17,8 +17,8 @@ from features.stats import Stats
 # -----------------------------------------------------------------------------
 
 class Jackalope(NPC):
-    def __init__(self):
-        super().__init__("Jackalope", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Jackalope" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {
             ItemKey.Bones: 0.85,
             ItemKey.JackalopeHorns: 1,
         })

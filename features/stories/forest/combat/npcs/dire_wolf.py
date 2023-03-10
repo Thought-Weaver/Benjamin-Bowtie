@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from math import ceil
+import random
+
 from uuid import uuid4
 
 from features.dueling import Dueling
@@ -8,11 +9,11 @@ from features.equipment import Equipment
 from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import Ability
-from features.shared.constants import STR_DMG_SCALE
+from features.shared.ability import Ability, BidedAttackIII, SecondWindIII
+from features.shared.constants import BLEED_PERCENT_HP
 from features.shared.enums import ClassTag
-from features.shared.item import LOADED_ITEMS, ItemKey, WeaponStats
-from features.shared.statuseffect import DmgReduction, TurnSkipChance
+from features.shared.item import LOADED_ITEMS, ItemKey
+from features.shared.statuseffect import Bleeding, DexBuff, DexDebuff, DmgBuff, DmgDebuff, StatusEffectKey, StrBuff, TurnSkipChance
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -24,32 +25,88 @@ if TYPE_CHECKING:
 # ABILITIES
 # -----------------------------------------------------------------------------
 
-class BearDown(Ability):
+class SavageBite(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83D\uDCA8",
-            name="Bear Down",
+            icon="\uD83E\uDE78",
+            name="Savage Bite",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 75% resistance to all damage until your next turn.",
+            description="Deal 25-30 damage with a 75% chance to cause Bleeding for 2 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
-            num_targets=0,
-            level_requirement=50,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[Attribute.Strength]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(25, 30))
+        
+        bleed = Bleeding(
+            turns_remaining=2,
+            value=BLEED_PERCENT_HP,
+            source_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged and random.random() < 0.75:
+                se_str = targets[i].get_dueling().add_status_effect_with_resist(bleed, targets[i], i + 1)
+                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
+                results[i].target_str += f" and {se_str}"
+                
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class PackTactics(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDC3A",
+            name="Pack Tactics",
+            class_key=ExpertiseClass.Guardian,
+            description="All allies gain a 25% damage bonus, +5 Strength, and +3 Dexterity for 3 turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=1,
+            num_targets=-1,
+            level_requirement=20,
             target_own_group=True,
             purchase_cost=0,
             scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        dex_buff = DmgReduction(
-            turns_remaining=1,
-            value=0.75,
+        dmg_buff = DmgBuff(
+            turns_remaining=3,
+            value=0.25,
+            source_str=self.get_icon_and_name()
+        )
+
+        str_buff = StrBuff(
+            turns_remaining=3,
+            value=5,
+            source_str=self.get_icon_and_name()
+        )
+
+        dex_buff = DexBuff(
+            turns_remaining=3,
+            value=3,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dex_buff])
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dmg_buff, str_buff, dex_buff])
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -63,79 +120,32 @@ class BearDown(Ability):
         self.__init__() # type: ignore
 
 
-class Swipe(Ability):
+class Snarl(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83C\uDF2A\uFE0F",
-            name="Swipe",
+            icon="\uD83D\uDDEF\uFE0F",
+            name="Snarl",
             class_key=ExpertiseClass.Guardian,
-            description="Swipe with your claws, dealing 150% of your weapon damage to all enemies.",
+            description="Decrease the damage all enemies deal by 15% for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
             num_targets=-1,
-            level_requirement=50,
-            target_own_group=False,
-            purchase_cost=0,
-            scaling=[Attribute.Strength]
-        )
-
-    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster_equipment: Equipment = caster.get_equipment()
-        caster_attrs = caster.get_combined_attributes()
-
-        main_hand_item = caster_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
-        level_req: int = main_hand_item.get_level_requirement() if main_hand_item is not None else 0
-        
-        unarmed_strength_bonus = int(caster_attrs.strength / 2)
-        weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
-
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = ceil(base_damage * 1.5)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
-
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().dueling.guardian_abilities_used += 1
-
-        return result_str
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, state: dict):
-        self.__init__() # type: ignore
-
-
-class Roar(Ability):
-    def __init__(self):
-        super().__init__(
-            icon="\uD83D\uDDEF\uFE0F",
-            name="Roar",
-            class_key=ExpertiseClass.Guardian,
-            description="Roar at all enemies and cause Faltering for 2 turns with a 25% chance of skipping their turns.",
-            flavor_text="",
-            mana_cost=0,
-            cooldown=1,
-            num_targets=-1,
-            level_requirement=50,
+            level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
             scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        falter = TurnSkipChance(
+        dmg_debuff = DmgDebuff(
             turns_remaining=2,
-            value=0.25,
+            value=0.15,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [falter])
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [dmg_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -152,12 +162,12 @@ class Roar(Ability):
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class DeepwoodBear(NPC):
+class DireWolf(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Deepwood Bear" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+        super().__init__("Dire Wolf" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
-            ItemKey.IronSword: 0.1,
-            ItemKey.IronSpear: 0.05
+            ItemKey.RawWolfMeat: 0.9,
+            ItemKey.IronDagger: 0.05
         })
 
         self._setup_npc_params()
@@ -172,12 +182,12 @@ class DeepwoodBear(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(70, ExpertiseClass.Guardian)
-        self._expertise.constitution = 45
-        self._expertise.strength = 22
-        self._expertise.dexterity = 0
+        self._expertise.add_xp_to_class_until_level(80, ExpertiseClass.Guardian)
+        self._expertise.constitution = 30
+        self._expertise.strength = 25
+        self._expertise.dexterity = 10
         self._expertise.intelligence = 0
-        self._expertise.luck = 0
+        self._expertise.luck = 12
         self._expertise.memory = 3
 
     def _setup_equipment(self):
@@ -186,7 +196,7 @@ class DeepwoodBear(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.DeepwoodBearClaws))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.DireWolfCanines))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -194,7 +204,7 @@ class DeepwoodBear(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [BearDown(), Swipe(), Roar()]
+        self._dueling.abilities = [PackTactics(), SavageBite(), Snarl()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -207,13 +217,13 @@ class DeepwoodBear(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Deepwood Bear"
+        self._name = "Dire Wolf"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
         self._dueling_rewards = {
             ItemKey.Bones: 0.85,
-            ItemKey.IronSword: 0.1,
-            ItemKey.IronSpear: 0.05
+            ItemKey.RawWolfMeat: 0.9,
+            ItemKey.IronDagger: 0.05
         }
         
         self._inventory: Inventory | None = state.get("_inventory")

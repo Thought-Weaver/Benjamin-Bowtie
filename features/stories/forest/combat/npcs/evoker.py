@@ -17,8 +17,8 @@ from features.stats import Stats
 # -----------------------------------------------------------------------------
 
 class Evoker(NPC):
-    def __init__(self):
-        super().__init__("Evoker", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Evoker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.WrathbarkStaff: 0.6,
             ItemKey.LesserManaPotion: 0.2,
             ItemKey.BattleStaffOfTheOccult: 0.02,

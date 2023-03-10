@@ -17,8 +17,8 @@ from features.stats import Stats
 # -----------------------------------------------------------------------------
 
 class Mystic(NPC):
-    def __init__(self):
-        super().__init__("Mystic", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Mystic" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {
             ItemKey.WrathbarkStaff: 0.6,
             ItemKey.LesserManaPotion: 0.2,
             ItemKey.PileOfCoins: 0.4,

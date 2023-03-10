@@ -17,8 +17,8 @@ from features.stories.forest.combat.npcs.small_snake import Camouflage, Lunge, T
 # -----------------------------------------------------------------------------
 
 class GiantSnake(NPC):
-    def __init__(self):
-        super().__init__("Giant Snake", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Giant Snake" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.LesserPoison: 0.9
         })
 

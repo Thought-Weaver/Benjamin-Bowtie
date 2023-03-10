@@ -44,7 +44,7 @@ class SavageBite(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(5, 6))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(10, 15))
         
         bleed = Bleeding(
             turns_remaining=2,
@@ -165,8 +165,8 @@ class ScentForBlood(Ability):
 # -----------------------------------------------------------------------------
 
 class Timberwolf(NPC):
-    def __init__(self):
-        super().__init__("Timberwolf", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Timberwolf" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
             ItemKey.RawWolfMeat: 0.9,
             ItemKey.IronDagger: 0.05

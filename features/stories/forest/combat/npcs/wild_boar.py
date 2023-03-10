@@ -110,8 +110,8 @@ class Charge(Ability):
 # -----------------------------------------------------------------------------
 
 class WildBoar(NPC):
-    def __init__(self):
-        super().__init__("Wild Boar", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Wild Boar" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
             ItemKey.RawBoarMeat: 0.9,
             ItemKey.IronDagger: 0.05,

@@ -17,8 +17,8 @@ from features.stats import Stats
 # -----------------------------------------------------------------------------
 
 class Brigand(NPC):
-    def __init__(self):
-        super().__init__("Brigand", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Brigand" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.IronGreatsword: 0.6,
             ItemKey.LesserHealthPotion: 0.2,
             ItemKey.Leather: 0.8,

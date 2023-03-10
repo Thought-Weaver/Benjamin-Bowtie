@@ -17,8 +17,8 @@ from features.stats import Stats
 # -----------------------------------------------------------------------------
 
 class Marauder(NPC):
-    def __init__(self):
-        super().__init__("Marauder", NPCRoles.DungeonEnemy, NPCDuelingPersonas.Tank, {
+    def __init__(self, name_suffix: str=""):
+        super().__init__("Marauder" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Tank, {
             ItemKey.IronSword: 0.6,
             ItemKey.LesserConstitutionPotion: 0.2,
             ItemKey.Leather: 0.8,
