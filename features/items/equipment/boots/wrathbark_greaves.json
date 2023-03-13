@@ -1,0 +1,19 @@
+{
+    "key": "items/equipment/boots/wrathbark_greaves",
+    "icon": "\uD83E\uDD7E",
+    "name": "Wrathbark Greaves",
+    "value": 360,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Boots"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 22,
+    "armor_stats": {
+        "armor_amount": 15
+    },
+    "attr_requirements:": {
+        "constitution": 8
+    }
+}

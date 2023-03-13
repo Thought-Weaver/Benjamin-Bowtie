@@ -12,7 +12,7 @@ from features.shared.ability import Ability
 from features.shared.constants import POISONED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import Poisoned, RegenerateArmor, TurnSkipChance
+from features.shared.statuseffect import CannotUseAbilities, DmgReflect, FixedDmgTick, Poisoned, RegenerateArmor, TurnSkipChance
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -24,17 +24,17 @@ if TYPE_CHECKING:
 # ABILITIES
 # -----------------------------------------------------------------------------
 
-class VenomousStrike(Ability):
+class SplinterStrike(Ability):
     def __init__(self):
         super().__init__(
-            icon="\u2620\uFE0F",
-            name="Venomous Strike",
+            icon="\uD83C\uDF32",
+            name="Splinter Strike",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 20-25 damage with a 75% chance to cause Poisoned for 2 turns.",
+            description="Deal 25-30 damage and cause 5 damage to tick every turn for 3 turns on up to 3 enemies.",
             flavor_text="",
             mana_cost=0,
-            cooldown=2,
-            num_targets=1,
+            cooldown=3,
+            num_targets=3,
             level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
@@ -43,20 +43,14 @@ class VenomousStrike(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(20, 25))
-        
-        poisoned = Poisoned(
-            turns_remaining=2,
-            value=POISONED_PERCENT_HP,
+
+        fixed_dmg_tick = FixedDmgTick(
+            turns_remaining=3,
+            value=5,
             source_str=self.get_icon_and_name()
         )
 
-        for i in range(len(results)):
-            if not results[i].dodged and random.random() < 0.75:
-                se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
-                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and {se_str}"
-                
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(25, 30), [fixed_dmg_tick])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -70,16 +64,16 @@ class VenomousStrike(Ability):
         self.__init__() # type: ignore
 
 
-class Regenerate(Ability):
+class FormThorns(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83D\uDD04",
-            name="Regenerate",
+            icon="\uD83C\uDF39",
+            name="Form Thorns",
             class_key=ExpertiseClass.Guardian,
-            description="Regenerate 10% of your max armor every turn for 3 turns.",
+            description="Gain 25% damage reflection for 2 turns.",
             flavor_text="",
-            mana_cost=15,
-            cooldown=7,
+            mana_cost=0,
+            cooldown=5,
             num_targets=0,
             level_requirement=20,
             target_own_group=True,
@@ -88,9 +82,9 @@ class Regenerate(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        buff = RegenerateArmor(
-            turns_remaining=3,
-            value=0.1,
+        buff = DmgReflect(
+            turns_remaining=2,
+            value=0.25,
             source_str=self.get_icon_and_name()
         )
 
@@ -109,17 +103,17 @@ class Regenerate(Ability):
         self.__init__() # type: ignore
 
 
-class Constriction(Ability):
+class HollowStare(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83D\uDC1B",
-            name="Constriction",
+            icon="\uD83D\uDC41\uFE0F",
+            name="Hollow Stare",
             class_key=ExpertiseClass.Guardian,
-            description="Cause Faltering on an enemy for 2 turns.",
+            description="Cause up to 2 enemies to become Enfeebled for 2 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=4,
-            num_targets=1,
+            cooldown=5,
+            num_targets=2,
             level_requirement=0,
             target_own_group=False,
             purchase_cost=0,
@@ -127,14 +121,14 @@ class Constriction(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        faltering = TurnSkipChance(
+        debuff = CannotUseAbilities(
             turns_remaining=2,
             value=1,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [faltering])
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -151,9 +145,9 @@ class Constriction(Ability):
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class ArmoredCentipede(NPC):
+class BurlyTreant(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Armored Centipede" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Burly Treant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()
 
@@ -167,12 +161,12 @@ class ArmoredCentipede(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(120, ExpertiseClass.Guardian)
-        self._expertise.constitution = 50
+        self._expertise.add_xp_to_class_until_level(125, ExpertiseClass.Guardian)
+        self._expertise.constitution = 65
         self._expertise.strength = 30
         self._expertise.dexterity = 0
-        self._expertise.intelligence = 20
-        self._expertise.luck = 17
+        self._expertise.intelligence = 0
+        self._expertise.luck = 27
         self._expertise.memory = 3
 
     def _setup_equipment(self):
@@ -181,13 +175,13 @@ class ArmoredCentipede(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.CentipedeMandibles))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.TreantClaws))
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronPlateHelmet))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronPlateGauntlets))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronPlateCuirass))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.IronPlateLeggings))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.IronPlateGreaves))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.WrathbarkHelmet))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.WrathbarkGauntlets))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.WrathbarkCuirass))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.WrathbarkLeggings))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.WrathbarkGreaves))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -195,7 +189,7 @@ class ArmoredCentipede(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [Regenerate(), VenomousStrike(), Constriction()]
+        self._dueling.abilities = [SplinterStrike(), FormThorns(), HollowStare()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -208,7 +202,7 @@ class ArmoredCentipede(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Armored Centipede"
+        self._name = "Burly Treant"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
         self._dueling_rewards = {}

@@ -91,7 +91,7 @@ class TerrifyingHiss(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        dex_debuff = IntDebuff(
+        int_debuff = IntDebuff(
             turns_remaining=2,
             value=-5,
             source_str=self.get_icon_and_name()
@@ -110,7 +110,7 @@ class TerrifyingHiss(Ability):
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [dex_debuff, str_debuff, lck_debuff])
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, lck_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.alchemist_abilities_used += 1

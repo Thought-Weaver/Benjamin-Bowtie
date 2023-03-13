@@ -577,7 +577,13 @@ class ItemKey(StrEnum):
     JackalopeHorns = "items/weapon/dungeon_npcs/jackalope_horns"
     SmallSnakeFangs = "items/weapon/dungeon_npcs/small_snake_fangs"
     TimberwolfCanines = "items/weapon/dungeon_npcs/timberwolf_canines"
+    TreantClaws = "items/weapon/dungeon_npcs/treant_claws"
     WildBoarTusks = "items/weapon/dungeon_npcs/wild_boar_tusks"
+    WrathbarkHelmet = "items/equipment/boots/wrathbark_helmet"
+    WrathbarkGauntlets = "items/equipment/boots/wrathbark_gauntlets"
+    WrathbarkCuirass = "items/equipment/boots/wrathbark_cuirass"
+    WrathbarkLeggings = "items/equipment/boots/wrathbark_leggings"
+    WrathbarkGreaves = "items/equipment/boots/wrathbark_greaves"
 
     # Dungeon NPC Special Rewards
     GolemicAssembly = "items/equipment/chest_armor/golemic_assembly"

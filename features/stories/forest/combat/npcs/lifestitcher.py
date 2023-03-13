@@ -7,7 +7,7 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import HookI, SeaSprayII, ThunderingTorrentI, WhirlpoolI, WrathOfTheWavesI
+from features.shared.ability import CleanseI, IncenseII, IncenseIII, RegenerationI, RegenerationII, SmokescreenI
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
 from features.stats import Stats
@@ -16,12 +16,11 @@ from features.stats import Stats
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class Evoker(NPC):
+class Lifestitcher(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Evoker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+        super().__init__("Lifestitcher" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {
             ItemKey.WrathbarkStaff: 0.6,
             ItemKey.LesserManaPotion: 0.2,
-            ItemKey.BattleStaffOfTheOccult: 0.02,
             ItemKey.PileOfCoins: 0.4,
             ItemKey.AFewCoins: 1,
         })
@@ -38,13 +37,13 @@ class Evoker(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(50, ExpertiseClass.Fisher)
-        self._expertise.constitution = 15
+        self._expertise.add_xp_to_class_until_level(80, ExpertiseClass.Fisher)
+        self._expertise.constitution = 30
         self._expertise.strength = 0
-        self._expertise.dexterity = 5
-        self._expertise.intelligence = 25
+        self._expertise.dexterity = 16
+        self._expertise.intelligence = 30
         self._expertise.luck = 0
-        self._expertise.memory = 5
+        self._expertise.memory = 4
 
     def _setup_equipment(self):
         if self._expertise is None:
@@ -52,13 +51,13 @@ class Evoker(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.BattleStaffOfTheOccult))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.BoneStaffOfHealing))
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.LeatherHelmet))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.LeatherGloves))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.LeatherJerkin))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.LeatherLeggings))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.LeatherBoots))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.AmberiteHelmet))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.AmberiteGauntlets))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.AmberiteCuirass))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.AmberiteLeggings))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.AmberiteGreaves))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -66,7 +65,7 @@ class Evoker(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [SeaSprayII(), HookI(), ThunderingTorrentI(), WhirlpoolI(), WrathOfTheWavesI()]
+        self._dueling.abilities = [IncenseIII(), CleanseI(), SmokescreenI(), RegenerationII()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -79,13 +78,12 @@ class Evoker(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Evoker"
+        self._name = "Mystic"
         self._role = NPCRoles.DungeonEnemy
-        self._dueling_persona = NPCDuelingPersonas.Mage
+        self._dueling_persona = NPCDuelingPersonas.Healer
         self._dueling_rewards = {
             ItemKey.WrathbarkStaff: 0.6,
             ItemKey.LesserManaPotion: 0.2,
-            ItemKey.BattleStaffOfTheOccult: 0.02,
             ItemKey.PileOfCoins: 0.4,
             ItemKey.AFewCoins: 1,
         }

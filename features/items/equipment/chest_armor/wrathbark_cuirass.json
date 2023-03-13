@@ -1,0 +1,19 @@
+{
+    "key": "items/equipment/chest_armor/wrathbark_cuirass",
+    "icon": "\uD83D\uDC55",
+    "name": "Wrathbark Cuirass",
+    "value": 1100,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Chest_Armor"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 22,
+    "armor_stats": {
+        "armor_amount": 35
+    },
+    "attr_requirements:": {
+        "constitution": 8
+    }
+}

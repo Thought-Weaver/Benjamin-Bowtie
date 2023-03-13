@@ -7,7 +7,7 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import ScarArmorII, TauntIII, UnbreakingII
+from features.shared.ability import ScarArmorI, TauntII, UnbreakingI
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
 from features.stats import Stats
@@ -52,13 +52,19 @@ class Marauder(NPC):
 
         self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.BroadswordOfRejuvenation))
 
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.OrichalcumHelmet))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.OrichalcumGauntlets))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.OrichalcumCuirass))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.OrichalcumLeggings))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.OrichalcumGreaves))
+
         self._expertise.update_stats(self.get_combined_attributes())
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [TauntIII(), ScarArmorII(), UnbreakingII()]
+        self._dueling.abilities = [TauntII(), ScarArmorI(), UnbreakingI()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
