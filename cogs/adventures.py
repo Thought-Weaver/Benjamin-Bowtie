@@ -619,7 +619,7 @@ class Adventures(commands.Cog):
         # 99.5% base chance of getting nothing
         if rand_val == 0:
             companion_result_str: str = ""
-            if random.random() < 0.001:
+            if random.random() < 0.002:
                 companions = author_player.get_companions()
                 if CompanionKey.ShadowfootRaccoon not in companions.companions.keys():
                     companions.companions[CompanionKey.ShadowfootRaccoon] = ShadowfootRaccoonCompanion()
