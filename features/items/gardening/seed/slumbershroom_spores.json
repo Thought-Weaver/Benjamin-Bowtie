@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/slumbershroom_spores",
+    "icon": "\uD83C\uDF44",
+    "name": "Slumbershroom Spores",
+    "value": 50,
+    "rarity": "Epic",
+    "description": "When planted, grows a slumbershroom.",
+    "flavor_text": "Only located in the nests of dangerous mushroom creatures, they would do well in a late-night stew before falling asleep.",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}

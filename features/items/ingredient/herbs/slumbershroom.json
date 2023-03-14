@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/slumbershroom",
+    "icon": "\uD83C\uDF44",
+    "name": "Slumbershroom",
+    "value": 150,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "Only located in the nests of dangerous mushroom creatures, they would do well in a late-night stew before falling asleep.",
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

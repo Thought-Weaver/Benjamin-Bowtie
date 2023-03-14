@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/potions/sleeping_draught_with_slumbershroom",
+    "icon": "\u2697\uFE0F",
+    "name": "Sleeping Draught",
+    "value": 860,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/slumbershroom": 2
+    },
+    "outputs": {
+        "items/consumable/potions/sleeping_draught": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

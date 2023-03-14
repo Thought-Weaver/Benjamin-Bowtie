@@ -98,6 +98,7 @@ class RecipeKey(StrEnum):
     PotionOfDecay = "recipes/consumable/potions/potion_of_decay"
     SappingPotion = "recipes/consumable/potions/sapping_potion"
     SleepingDraught = "recipes/consumable/potions/sleeping_draught"
+    SleepingDraughtWithSlumbershroom = "recipes/consumable/potions/sleeping_draught_with_slumbershroom"
     Smokebomb = "recipes/consumable/potions/smokebomb"
     StrengthPotion = "recipes/consumable/potions/strength_potion"
     SuperiorAtrophyPotion = "recipes/consumable/potions/superior_atrophy_potion"

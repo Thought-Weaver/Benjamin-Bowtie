@@ -90,6 +90,7 @@ SEED_DATA: MappingProxyType[ItemKey, SeedData] = MappingProxyType({
     ItemKey.ShelterfoilSeed: SeedData(3, 4, 20, ItemKey.Shelterfoil, 0.4, 2, "\uD83C\uDF31", 4),
     ItemKey.ShiverrootSeed: SeedData(2, 3, 15, ItemKey.Shiverroot, 0.6, 1, "\uD83C\uDF31", 2),
     ItemKey.SirensKissSeed: SeedData(5, 10, 15, ItemKey.SirensKiss, 0.1, 2, "\uD83C\uDF31", 25),
+    ItemKey.SlumbershroomSpores: SeedData(4, 4, 14, ItemKey.Slumbershroom, 0.1, 2, "\uD83C\uDF31", 25),
     ItemKey.SnowdewSeed: SeedData(1, 2, 6, ItemKey.Snowdew, 0.9, 1, "\uD83C\uDF31", 1),
     ItemKey.SpeckledCapSpores: SeedData(2, 2, 6, ItemKey.SpeckledCap, 0.5, 3, "\uD83C\uDF31", 1),
     ItemKey.SpidersGroveSpores: SeedData(7, 7, 24, ItemKey.SpidersGrove, 0.1, 2, "\uD83C\uDF31", 12),
