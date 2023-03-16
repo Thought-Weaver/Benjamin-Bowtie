@@ -1,0 +1,36 @@
+{
+    "key": "items/weapon/dungeon_npcs/cursemakers_claws",
+    "icon": "\uD83C\uDF32",
+    "name": "Cursemaker's Claws",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 30,
+        "max_damage": 35
+    },
+    "item_effects": {
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [
+            {
+                "effect_type": "ManaSteal",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    }
+}

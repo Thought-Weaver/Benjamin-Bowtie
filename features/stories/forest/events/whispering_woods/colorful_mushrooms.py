@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import discord
+from features.stories.forest.combat.npcs.furious_mushroom import FuriousMushroom
 import features.stories.forest.forest as forest
 import random
 
@@ -9,7 +10,6 @@ from discord.embeds import Embed
 from features.dueling import DuelView
 from features.player import Player
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
-from features.stories.forest.combat.npcs.dreameater import Dreameater
 
 from typing import List
 
@@ -54,7 +54,7 @@ class VictoryView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="You Awaken", description=f"With a start, the nightmare fades and your group ventures on from the warmth and comfort of this place.")
+        return Embed(title="Boil 'Em, Mash 'Em", description=f"With the mushroom creatures vanquished, the rest of the woods await.")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -93,7 +93,7 @@ class DuelContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: DreameaterDuelView = self.view
+        view: FuriousMushroomsDuelView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the duel.")
@@ -106,13 +106,13 @@ class DuelContinueButton(discord.ui.Button):
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         defeat_view: forest.ForestDefeatView = forest.ForestDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
 
-        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [Dreameater()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
+        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [FuriousMushroom(), FuriousMushroom()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
         initial_info: Embed = duel_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)
 
 
-class DreameaterDuelView(discord.ui.View):
+class FuriousMushroomsDuelView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -129,7 +129,7 @@ class DreameaterDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="In Your Sleep", description="Their emissaries welcome thee, mortal flesh. Let us take the dream away. Let us consume it all.")
+        return Embed(title="Beneath the Ground", description="As you try to pick the mushrooms, from below the earth there's suddenly a rumbling. The mushrooms, soil, and grass explode outwards as gigantic mushroom creatures emerge. Their teal and orange spotted caps lead to a thick, fibrous torso with no discernible head, arms, or legs -- instead, tendrils move towards your party, ready to strike!")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -160,7 +160,7 @@ class DreameaterDuelView(discord.ui.View):
         return self._dungeon_run
 
 # -----------------------------------------------------------------------------
-# AESTIVAL LIGHT VIEW
+# COLORFUL MUSHROOMS VIEW
 # -----------------------------------------------------------------------------
 
 class ContinueButton(discord.ui.Button):
@@ -171,7 +171,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: AestivalLightView = self.view
+        view: ColorfulMushroomsView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -182,27 +182,27 @@ class ContinueButton(discord.ui.Button):
 
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
 
-class AestivalLightRestButton(discord.ui.Button):
+class EatButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Rest")
+        super().__init__(style=discord.ButtonStyle.secondary, label="Eat")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
         
-        view: AestivalLightView = self.view
+        view: ColorfulMushroomsView = self.view
         if interaction.user.id == view.get_group_leader().id:
-            if random.random() < 0.2 * view.rests_taken:
-                duel_room = DreameaterDuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+            if random.random() < 0.3:
+                duel_room = FuriousMushroomsDuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
                 initial_info: Embed = duel_room.get_initial_embed()
 
                 await interaction.response.edit_message(embed=initial_info, view=duel_room, content=None)
             else:
-                response = view.rest()
+                response = view.eat_mushrooms()
                 await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
-class AestivalLightView(discord.ui.View):
+class ColorfulMushroomsView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -212,32 +212,31 @@ class AestivalLightView(discord.ui.View):
         self._users = users
         self._group_leader = users[0]
         self._dungeon_run = dungeon_run
-
-        self.rests_taken: int = 0
         
         self._display_initial_buttons()
 
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
-    def get_initial_embed(self, additional_info: str=""):
-        return Embed(title="Aestival Light", description=f"The path opens here into a beautiful clearing where it seems summer has not faded. Something about the lackadaisical wind rustling through verdant grass makes it feel eternal.\n\nYou could rest here for as long as you'd like or continue onwards.{additional_info}")
+    def get_initial_embed(self):
+        return Embed(title="Colorful Mushrooms", description=f"Along the path, you come across a large outcropping of variegated mushrooms. At first glance, you think they might provide some sustenance, but it is a tad strange to see so many different types gathered in one place.")
 
-    def rest(self):
+    def eat_mushrooms(self):
+        self.clear_items()
+        self.add_item(ContinueButton())
+
         for user in self._users:
             player = self._get_player(user.id)
             player_expertise = player.get_expertise()
 
-            player_expertise.heal(int(player_expertise.max_hp / 10))
-            player_expertise.restore_mana(int(player_expertise.max_mana / 10))
-
-        self.rests_taken += 1
+            player_expertise.heal(int(player_expertise.max_hp / 4))
+            player_expertise.remove_mana(int(player_expertise.max_mana / 4))
         
-        return self.get_initial_embed("\n\nYour party rests, restoring part of their health and mana. You could keep resting to heal further.")
-
+        return Embed(title="Colorful Mushrooms", description=f"You distribute the mushrooms among the party and munch on them quickly. The good news is that they're definitely filling you up -- the bad news is that they seem to have sapped some other power from you in the process.")
+    
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(AestivalLightRestButton())
+        self.add_item(EatButton())
         self.add_item(ContinueButton())
 
     def get_bot(self):

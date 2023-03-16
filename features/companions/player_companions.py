@@ -41,7 +41,8 @@ class NamingModal(discord.ui.Modal):
         self._name_input: discord.ui.TextInput = discord.ui.TextInput(
             label="Name",
             default=companion_name,
-            required=True
+            required=True,
+            max_length=50
         )
         self.add_item(self._name_input)
 
