@@ -511,7 +511,7 @@ class GardenView(discord.ui.View):
             return Embed(title="Plant Seed", description="Choose a seed to plant in this plot.\n\nNavigate through the items using the Prev and Next buttons." + additional)
         if self._intent == Intent.UseItem:
             return Embed(title="Use Item", description="Choose an item to use on this plot.\n\nNavigate through the items using the Prev and Next buttons." + additional)
-        return Embed(title="Garden", description="You enter the garden, where you can plant seeds and harvest crops. The garden plots tick every hour." + additional)
+        return Embed(title="Garden", description="You enter the garden, where you can plant seeds and harvest crops. Certain plants can crossbreed when mature and grow a new plant in an adjacent empty space. The garden plots tick every hour." + additional)
 
     def _display_initial_buttons(self):
         self.clear_items()
