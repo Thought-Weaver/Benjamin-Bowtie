@@ -577,6 +577,8 @@ class ItemKey(StrEnum):
     GolemicFists = "items/weapon/dungeon_npcs/golemic_fists"
     GolemicHeart = "items/equipment/chest_armor/golemic_heart"
     JackalopeHorns = "items/weapon/dungeon_npcs/jackalope_horns"
+    ShamblersBones = "items/weapon/dungeon_npcs/shamblers_bones"
+    ShamblersForm = "items/equipment/offhand/shamblers_form"
     SmallSnakeFangs = "items/weapon/dungeon_npcs/small_snake_fangs"
     SnapdragonSkulls = "items/weapon/dungeon_npcs/snapdragon_skulls"
     TimberwolfCanines = "items/weapon/dungeon_npcs/timberwolf_canines"
