@@ -253,8 +253,7 @@ class Adventures(commands.Cog):
         # TODO: Redo earnings analysis with luck later
 
         LUCK_MOD = 0.005 # Luck adjusts total bias by 0.5% per point
-        # More than 50 might break the game, so let's just cap that
-        total_luck: int = min(author_player.get_combined_attributes().luck, 50)
+        total_luck: int = min(author_player.get_combined_attributes().luck, 100)
         rand_val = random.choices(
             [0, 1, 2, 3, 4, 5], k=1,
             weights=[
@@ -599,8 +598,7 @@ class Adventures(commands.Cog):
         #   50 -> E(X) = 0.945 * -1 + 0.0115 * 125 -> 355 per hour
 
         LUCK_MOD = 0.001 # Luck adjusts total bias by 0.1% per point
-        # More than 50 might break the game, so let's just cap that
-        total_luck: int = min(author_player.get_combined_attributes().luck, 50)
+        total_luck: int = min(author_player.get_combined_attributes().luck, 100)
         rand_val = random.choices(
             [0, 1, 2, 3], k=1,
             weights=[
