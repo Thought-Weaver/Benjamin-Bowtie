@@ -1114,8 +1114,10 @@ class Adventures(commands.Cog):
 
         await context.send(embed=pvp_duel.get_info_embed(), view=pvp_duel)
 
+    # TODO: Remove when released
+    @commands.is_owner()
     @commands.command(name="forest", help="Gather players to enter the depths of the forest")
-    async def group_duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+    async def forest_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
         assert(context.guild is not None)
 
         users = [] if users is None else users
