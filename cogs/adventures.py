@@ -1068,7 +1068,7 @@ class Adventures(commands.Cog):
         await context.send(embed=embed, view=companions_view)
 
     @commands.command(name="companionbattle", help="Gather players to choose teams for a companion battle", aliases=["petbattle"])
-    async def group_duel_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+    async def companion_battle_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
         assert(context.guild is not None)
 
         if users is None:
@@ -1110,9 +1110,9 @@ class Adventures(commands.Cog):
             await context.send(f"At least one of those players (or yourself) doesn't have a chosen companion.")
             return
 
-        pvp_duel = CompanionBattleView(self._bot, self._database, context.guild.id, [context.author, *users])
+        companion_battle = CompanionBattleView(self._bot, self._database, context.guild.id, [context.author, *users])
 
-        await context.send(embed=pvp_duel.get_info_embed(), view=pvp_duel)
+        await context.send(embed=companion_battle.get_info_embed(), view=companion_battle)
 
     # TODO: Remove when released
     @commands.is_owner()
