@@ -94,7 +94,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: DireWolvesDuelView = self.view
+        view: MadKnightsDuelView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the duel.")
@@ -113,7 +113,7 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)
 
 
-class DireWolvesDuelView(discord.ui.View):
+class MadKnightsDuelView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 

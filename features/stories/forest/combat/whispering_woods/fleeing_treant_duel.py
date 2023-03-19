@@ -6,9 +6,7 @@ import features.stories.forest.forest as forest
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from features.dueling import DuelView
-from features.stories.dungeon_run import RoomSelectionView
-from features.stories.forest.combat.npcs.bladedancer import Bladedancer
-from features.stories.forest.combat.npcs.stormcaller import Stormcaller
+from features.stories.forest.combat.whispering_woods.shambling_bones_duel import ShamblingBonesDuelView
 
 from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
@@ -33,10 +31,10 @@ class DuelVictoryContinueButton(discord.ui.Button):
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
             return
 
-        room_selection_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-        initial_info: Embed = room_selection_view.get_initial_embed()
+        next_view: ShamblingBonesDuelView = ShamblingBonesDuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        initial_info: Embed = next_view.get_initial_embed()
 
-        await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
+        await interaction.response.edit_message(embed=initial_info, view=next_view, content=None)
 
 
 class VictoryView(discord.ui.View):
@@ -56,7 +54,7 @@ class VictoryView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Take That, Bandits!", description=f"With the bandits vanquished, the rest of the woods await.")
+        return Embed(title="Crashing Down", description=f"The treant falls, but before you can celebrate, there's suddenly a horrible noise not far in the distance...")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -95,7 +93,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: BladedancerStormcallerDuelView = self.view
+        view: FleeingTreantDuelView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the duel.")
@@ -108,13 +106,13 @@ class ContinueButton(discord.ui.Button):
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         defeat_view: forest.ForestDefeatView = forest.ForestDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
 
-        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [Bladedancer(), Stormcaller()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
+        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [FleeingTreant()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
         initial_info: Embed = duel_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)
 
 
-class BladedancerStormcallerDuelView(discord.ui.View):
+class FleeingTreantDuelView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -131,7 +129,7 @@ class BladedancerStormcallerDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="It's a Trap!", description="Along the trail, suddenly a tree comes crashing down in front of you, followed by the shouting and clamoring of bandits!")
+        return Embed(title="The Edge of the Forest", description="As your party begins to approach the edge of the Whispering Woods, the trees begin to give way to burnt and cracked trees in a landscape of destruction. There's an undeniable sense that more than just natural disaster happened here -- that something is wrong at its center. As you begin to contemplate this further, however, from the dead brush and trees comes a giant treant fleeing that place. Its hollow eyes seem not to see you at first, then panics and charges forward in its escape!")
 
     def _display_initial_buttons(self):
         self.clear_items()
