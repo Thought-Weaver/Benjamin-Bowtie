@@ -18,7 +18,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: TheSoundView = self.view
+        view: ANearbyRoarView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -30,7 +30,7 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
 
 
-class TheSoundView(discord.ui.View):
+class ANearbyRoarView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -47,7 +47,7 @@ class TheSoundView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Sound", description="The skies suddenly crack with a noise like the shattering of earth and the roar of the void, like the sun screaming as it fades into oblivion and the moment of descent into complete madness. And then it's gone.")
+        return Embed(title="A Nearby Roar", description="The skies suddenly crack with a noise like the shattering of earth and the roar of the void, like the sun screaming as it fades into oblivion and the moment of descent into complete madness. And then it's gone.\n\nCloser now to its source, you could swear there was something animalistic about it -- like the roar of some otherworldly creature.")
 
     def _display_initial_buttons(self):
         self.clear_items()

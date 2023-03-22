@@ -31,7 +31,7 @@ class SavageBite(Ability):
             icon="\uD83E\uDE78",
             name="Savage Bite",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 25-30 damage with a 75% chance to cause Bleeding for 2 turns.",
+            description="Deal 35-40 damage with a 75% chance to cause Bleeding for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -44,7 +44,7 @@ class SavageBite(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(25, 30))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(35, 40))
         
         bleed = Bleeding(
             turns_remaining=2,
@@ -75,7 +75,7 @@ class PackTactics(Ability):
             icon="\uD83D\uDC3A",
             name="Pack Tactics",
             class_key=ExpertiseClass.Guardian,
-            description="All allies gain a 25% damage bonus, +5 Strength, and +3 Dexterity for 3 turns.",
+            description="All allies gain a 25% damage bonus, +8 Strength, and +5 Dexterity for 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
@@ -95,13 +95,13 @@ class PackTactics(Ability):
 
         str_buff = StrBuff(
             turns_remaining=3,
-            value=5,
+            value=8,
             source_str=self.get_icon_and_name()
         )
 
         dex_buff = DexBuff(
             turns_remaining=3,
-            value=3,
+            value=5,
             source_str=self.get_icon_and_name()
         )
 
@@ -126,10 +126,10 @@ class Snarl(Ability):
             icon="\uD83D\uDDEF\uFE0F",
             name="Snarl",
             class_key=ExpertiseClass.Guardian,
-            description="Decrease the damage all enemies deal by 15% for 2 turns.",
+            description="Decrease the damage all enemies deal by 25% for 2 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=4,
             num_targets=-1,
             level_requirement=20,
             target_own_group=False,
@@ -140,7 +140,7 @@ class Snarl(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dmg_debuff = DmgDebuff(
             turns_remaining=2,
-            value=0.15,
+            value=0.25,
             source_str=self.get_icon_and_name()
         )
 
@@ -162,9 +162,9 @@ class Snarl(Ability):
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class DireWolf(NPC):
+class StarvingDireWolf(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Dire Wolf" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+        super().__init__("Starving Dire Wolf" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
             ItemKey.RawWolfMeat: 0.9,
             ItemKey.IronDagger: 0.05
@@ -182,12 +182,12 @@ class DireWolf(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(80, ExpertiseClass.Guardian)
-        self._expertise.constitution = 30
-        self._expertise.strength = 25
+        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Guardian)
+        self._expertise.constitution = 140
+        self._expertise.strength = 30
         self._expertise.dexterity = 10
         self._expertise.intelligence = 0
-        self._expertise.luck = 12
+        self._expertise.luck = 17
         self._expertise.memory = 3
 
     def _setup_equipment(self):
@@ -217,7 +217,7 @@ class DireWolf(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Dire Wolf"
+        self._name = "Starving Dire Wolf"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
         self._dueling_rewards = {

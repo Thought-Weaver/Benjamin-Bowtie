@@ -117,7 +117,7 @@ class ForestDefeatView(discord.ui.View):
 # FOREST REST VIEW
 # -----------------------------------------------------------------------------
 
-class ContinueButton(discord.ui.Button):
+class RestContinueButton(discord.ui.Button):
     def __init__(self):
         super().__init__(style=discord.ButtonStyle.blurple, label="Continue")
 
@@ -176,7 +176,7 @@ class ForestRestView(discord.ui.View):
     def _display_initial_buttons(self):
         self.clear_items()
         self.add_item(ForestRestButton())
-        self.add_item(ContinueButton())
+        self.add_item(RestContinueButton())
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)

@@ -5,6 +5,8 @@ import discord
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from features.player import Player
+from features.shared.constants import POISONED_PERCENT_HP
+from features.shared.statuseffect import DexDebuff, Poisoned
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
 
 from typing import List
@@ -18,7 +20,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: TheSoundView = self.view
+        view: DangerousUndergrowthView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -30,7 +32,35 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
 
 
-class TheSoundView(discord.ui.View):
+class CrossItButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Cross It")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: DangerousUndergrowthView = self.view
+        if interaction.user.id == view.get_group_leader().id:
+            response = view.cross_it()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class GoAroundButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Go Around")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: DangerousUndergrowthView = self.view
+        if interaction.user.id == view.get_group_leader().id:
+            response = view.go_around()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class DangerousUndergrowthView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -47,11 +77,37 @@ class TheSoundView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Sound", description="The skies suddenly crack with a noise like the shattering of earth and the roar of the void, like the sun screaming as it fades into oblivion and the moment of descent into complete madness. And then it's gone.")
+        return Embed(title="Stagnant Water", description="")
 
     def _display_initial_buttons(self):
         self.clear_items()
+        self.add_item(CrossItButton())
+        self.add_item(GoAroundButton())
+
+    def cross_it(self):
+        self.clear_items()
         self.add_item(ContinueButton())
+
+        for user in self._users:
+            player = self._get_player(user.id)
+
+            debuff = Poisoned(
+                turns_remaining=5,
+                value=POISONED_PERCENT_HP,
+                source_str="Stagnant Water"
+            )
+
+            player.get_dueling().status_effects.append(debuff)
+        
+        return Embed(title="Cross It", description=f"")
+
+    def go_around(self):
+        self.clear_items()
+        self.add_item(ContinueButton())
+
+        self._dungeon_run.rooms_until_boss += 1
+
+        return Embed(title="Go Around", description="")
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)

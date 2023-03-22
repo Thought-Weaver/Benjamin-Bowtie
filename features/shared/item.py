@@ -591,6 +591,7 @@ class ItemKey(StrEnum):
     WrathbarkGreaves = "items/equipment/boots/wrathbark_greaves"
 
     # Dungeon NPC Special Rewards
+    CoiledSword = "items/weapon/sword/coiled_sword"
     GolemicAssembly = "items/equipment/chest_armor/golemic_assembly"
     GolemsEye = "items/weapon/staff/golems_eye"
     MemoryOfVictory = "items/consumable/potions/memory_of_victory"
