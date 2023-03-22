@@ -77,7 +77,7 @@ class DangerousUndergrowthView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Stagnant Water", description="")
+        return Embed(title="Stagnant Water", description="Here the dead grass gives way to muck and mire; before you all is a large marshland from which you can clearly see protruding bones. You could go around it, though that'd make the journey longer, or you could try wading through the bog and risk infection.")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -99,15 +99,15 @@ class DangerousUndergrowthView(discord.ui.View):
 
             player.get_dueling().status_effects.append(debuff)
         
-        return Embed(title="Cross It", description=f"")
+        return Embed(title="Cross It", description=f"Though you count yourselves lucky nothing finds you in this poisonous marsh, it nevertheless takes its toll on your party.")
 
     def go_around(self):
         self.clear_items()
         self.add_item(ContinueButton())
 
-        self._dungeon_run.rooms_until_boss += 1
+        self._dungeon_run.rooms_until_boss += 2
 
-        return Embed(title="Go Around", description="")
+        return Embed(title="Go Around", description="The trek will be long, but it's better than risking going directly through this marsh. Your party sets off around the region and further onwards towards the heart of the forest.")
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)
