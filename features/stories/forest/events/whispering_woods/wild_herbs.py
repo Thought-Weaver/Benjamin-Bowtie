@@ -21,7 +21,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: WildHerbsView = self.view
+        view: WhisperingWoodsWildHerbsView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -33,7 +33,7 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
 
 
-class WildHerbsView(discord.ui.View):
+class WhisperingWoodsWildHerbsView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 

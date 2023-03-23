@@ -20,7 +20,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: DangerousUndergrowthView = self.view
+        view: StagnantWaterView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -40,7 +40,7 @@ class CrossItButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: DangerousUndergrowthView = self.view
+        view: StagnantWaterView = self.view
         if interaction.user.id == view.get_group_leader().id:
             response = view.cross_it()
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -54,13 +54,13 @@ class GoAroundButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: DangerousUndergrowthView = self.view
+        view: StagnantWaterView = self.view
         if interaction.user.id == view.get_group_leader().id:
             response = view.go_around()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
-class DangerousUndergrowthView(discord.ui.View):
+class StagnantWaterView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 

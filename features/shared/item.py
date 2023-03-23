@@ -569,6 +569,7 @@ class ItemKey(StrEnum):
     BagOfCoins = "items/valuable/bag_of_coins"
 
     # Dungeon NPC Weapons and Armor
+    BriarThorns = "items/weapon/dungeon_npcs/briar_thorns"
     CentipedeMandibles = "items/weapon/dungeon_npcs/centipede_mandibles"
     DeepwoodBearClaws = "items/weapon/dungeon_npcs/deepwood_bear_claws"
     DireWolfCanines = "items/weapon/dungeon_npcs/dire_wolf_canines"

@@ -21,7 +21,7 @@ class RestContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: ForestRestView = self.view
+        view: DarkBetweenTheStarsView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -41,7 +41,7 @@ class ForestRestButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: ForestRestView = self.view
+        view: DarkBetweenTheStarsView = self.view
         if interaction.user not in view.rested_users:
             response = view.rest(interaction.user)
             await interaction.response.edit_message(content=None, embed=response, view=view)
@@ -55,13 +55,13 @@ class StargazeButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: ForestRestView = self.view
+        view: DarkBetweenTheStarsView = self.view
         if interaction.user not in view.rested_users:
             response = view.stargaze()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
-class ForestRestView(discord.ui.View):
+class DarkBetweenTheStarsView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 

@@ -1,0 +1,18 @@
+{
+    "key": "items/weapon/dungeon_npcs/briar_thorns",
+    "icon": "\uD83E\uDD40",
+    "name": "Briar Thorns",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 25,
+        "max_damage": 30,
+        "num_targets": 3
+    }
+}

@@ -23,7 +23,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: WhisperingWoodsFishingPondView = self.view
+        view: ScreamingCopseFishingPondView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -43,7 +43,7 @@ class FishButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: WhisperingWoodsFishingPondView = self.view
+        view: ScreamingCopseFishingPondView = self.view
         if interaction.user not in view.fished_users:
             mail_message = view.fish(interaction.user)
             
@@ -51,7 +51,7 @@ class FishButton(discord.ui.Button):
             await interaction.user.send(mail_message)
             
 
-class WhisperingWoodsFishingPondView(discord.ui.View):
+class ScreamingCopseFishingPondView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 

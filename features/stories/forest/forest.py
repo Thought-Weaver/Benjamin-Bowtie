@@ -39,8 +39,16 @@ from features.stories.forest.events.quiet_grove.fishing_pond import QuietGroveFi
 from features.stories.forest.events.quiet_grove.jackalope import JackalopeView
 from features.stories.forest.events.quiet_grove.the_path_is_lost import ThePathIsLostView
 from features.stories.forest.events.quiet_grove.wandering_cook import WanderingCookView
-from features.stories.forest.events.quiet_grove.wild_herbs import WildHerbsView
+from features.stories.forest.events.quiet_grove.wild_herbs import QuietGroveWildHerbsView, WildHerbsView
 from features.stories.forest.events.quiet_grove.wildlife_gathering import WildlifeGatheringView
+from features.stories.forest.events.screaming_copse.a_nearby_roar import ANearbyRoarView
+from features.stories.forest.events.screaming_copse.dangerous_undergrowth import DangerousUndergrowthView
+from features.stories.forest.events.screaming_copse.dark_between_the_stars import DarkBetweenTheStarsView
+from features.stories.forest.events.screaming_copse.fishing_pond import ScreamingCopseFishingPondView
+from features.stories.forest.events.screaming_copse.hallucinatory_smoke import HallucinatorySmokeView
+from features.stories.forest.events.screaming_copse.stagnant_water import StagnantWaterView
+from features.stories.forest.events.screaming_copse.sword_in_an_old_bonfire import SwordInAnOldBonfireView
+from features.stories.forest.events.screaming_copse.wild_herbs import ScreamingCopseWildHerbsView
 from features.stories.forest.events.whispering_woods.chorus_of_the_wind import ChorusOfTheWindView
 from features.stories.forest.events.whispering_woods.colorful_mushrooms import ColorfulMushroomsView
 from features.stories.forest.events.whispering_woods.fishing_pond import WhisperingWoodsFishingPondView
@@ -50,6 +58,7 @@ from features.stories.forest.events.whispering_woods.petrifying_plant import Pet
 from features.stories.forest.events.whispering_woods.riddle_bird import RiddleBirdView
 from features.stories.forest.events.whispering_woods.the_sound import TheSoundView
 from features.stories.forest.events.whispering_woods.unnamed_grave import UnnamedGraveView
+from features.stories.forest.events.whispering_woods.wild_herbs import WhisperingWoodsWildHerbsView
 from features.stories.forest.events.whispering_woods.witch_of_the_woods import WitchOfTheWoodsView
 from features.stories.forest.treasure.quiet_grove_treasure import QuietGroveTreasureRoomView
 from features.stories.forest.treasure.screaming_copse_treasure import ScreamingCopseTreasureRoomView
@@ -438,7 +447,7 @@ class ForestStory():
             elif rand_val == 8:
                 return TreantsDuelView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 9:
-                return TripleStormcallerDuelView(bot, database, guild_id, users, dungeon_run)
+                return TripleStormcallerDuelView(bot, database, guild_id, users, dungeon_run)            
 
     @staticmethod
     def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
@@ -457,7 +466,7 @@ class ForestStory():
             elif rand_val == 5:
                 return WanderingCookView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 6:
-                return WildHerbsView(bot, database, guild_id, users, dungeon_run)
+                return QuietGroveWildHerbsView(bot, database, guild_id, users, dungeon_run)
             else:
                 return WildlifeGatheringView(bot, database, guild_id, users, dungeon_run)
         elif dungeon_run.section == ForestSection.WhisperingWoods:
@@ -481,9 +490,27 @@ class ForestStory():
             elif rand_val == 8:
                 return UnnamedGraveView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 9:
-                return WildHerbsView(bot, database, guild_id, users, dungeon_run)
+                return WhisperingWoodsWildHerbsView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 10:
                 return WitchOfTheWoodsView(bot, database, guild_id, users, dungeon_run)
+        elif dungeon_run.section == ForestSection.ScreamingCopse:
+            rand_val = random.randint(0, 7)
+            if rand_val == 0:
+                return ANearbyRoarView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 1:
+                return DangerousUndergrowthView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 2:
+                return DarkBetweenTheStarsView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 3:
+                return ScreamingCopseFishingPondView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 4:
+                return HallucinatorySmokeView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 5:
+                return StagnantWaterView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 6:
+                return SwordInAnOldBonfireView(bot, database, guild_id, users, dungeon_run)
+            else:
+                return ScreamingCopseWildHerbsView(bot, database, guild_id, users, dungeon_run)
 
     @staticmethod
     def generate_boss_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
