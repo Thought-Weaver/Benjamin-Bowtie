@@ -1,20 +1,19 @@
 from __future__ import annotations
 
-from math import ceil
 from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Expertise, ExpertiseClass
+from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import FixedDmgTick
+from features.shared.statuseffect import POSITIVE_STATUS_EFFECTS_ON_SELF, CannotAttack, CannotUseAbilities, DmgVulnerability, FixedDmgTick, TurnSkipChance, Undying
 from features.stats import Stats
 
-from typing import List, TYPE_CHECKING
+from typing import List, TYPE_CHECKING, Set
 if TYPE_CHECKING:
     from features.player import Player
     from features.shared.ability import NegativeAbilityResult
@@ -23,28 +22,27 @@ if TYPE_CHECKING:
 # ABILITIES
 # -----------------------------------------------------------------------------
 
-class BonePierce(Ability):
+class VoidBreath(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDDB4",
-            name="Bone Pierce",
+            icon="\uD83C\uDF0C",
+            name="Void Breath",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 5% of an enemy's max health to them.",
+            description="Deal 70-100 damage to all enemies.",
             flavor_text="",
-            mana_cost=0,
-            cooldown=1,
-            num_targets=1,
+            mana_cost=100,
+            cooldown=8,
+            num_targets=-2,
             level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
-            scaling=[]
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = ceil(0.05 * targets[0].get_expertise().max_hp)
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(70, 100))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -58,36 +56,78 @@ class BonePierce(Ability):
         self.__init__() # type: ignore
 
 
-class GraspOfTheStarved(Ability):
+class TailSlam(Ability):
     def __init__(self):
         super().__init__(
-            icon="\u26B0\uFE0F",
-            name="Grasp of the Starved",
+            icon="\uD83D\uDCA5",
+            name="Tail Slam",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 50-60 damage to a target and cause 10 damage tick for 4 turns.",
+            description="Deal 30-40 damage to up to 2 enemies and cause Faltering with a 50% chance for 2 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=5,
+            cooldown=4,
+            num_targets=2,
+            level_requirement=0,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[Attribute.Strength]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        debuff = TurnSkipChance(
+            turns_remaining=2,
+            value=0.5,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(30, 40), [debuff])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class Consume(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDD25",
+            name="Consume",
+            class_key=ExpertiseClass.Guardian,
+            description="Cause Faltering with a 100% chance on an enemy for 2 turns and cause a fixed damage tick of 10 per turn for 2 turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=4,
             num_targets=1,
-            level_requirement=20,
+            level_requirement=0,
             target_own_group=False,
             purchase_cost=0,
             scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        debuff = TurnSkipChance(
+            turns_remaining=2,
+            value=1,
+            source_str=self.get_icon_and_name()
+        )
 
-        fixed_dmg_tick = FixedDmgTick(
-            turns_remaining=4,
+        dmg_tick = FixedDmgTick(
+            turns_remaining=2,
             value=10,
             source_str=self.get_icon_and_name()
         )
 
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(50, 60), [fixed_dmg_tick])
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff, dmg_tick])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().dueling.guardian_abilities_used += 1
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -98,13 +138,13 @@ class GraspOfTheStarved(Ability):
         self.__init__() # type: ignore
 
 
-class ShamblingForm(Ability):
+class Boneweaving(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDC80",
-            name="Shambling Form",
+            name="Boneweaving",
             class_key=ExpertiseClass.Guardian,
-            description="Restore and increase max armor by 50.",
+            description="Restore and increase your max armor by 100.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -118,9 +158,59 @@ class ShamblingForm(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        caster.get_dueling().armor += 50
+        caster.get_dueling().armor += 100
 
-        result_str += "{0} gained 50 armor and increased their max armor by 50."
+        result_str += "{0} gained 100 armor and increased their max armor by 100."
+
+        mana_and_cd_str: str | None = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += mana_and_cd_str
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class TerrifyingRoar(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDDEF\uFE0F",
+            name="Terrifying Roar",
+            class_key=ExpertiseClass.Guardian,
+            description="Remove all positive status effects from all enemies.",
+            flavor_text="",
+            mana_cost=150,
+            cooldown=10,
+            num_targets=-1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+
+        target_result_strs: List[str] = []
+        for i, target in enumerate(targets):
+            removed_se_strs: Set[str] = set()
+            for se_key in POSITIVE_STATUS_EFFECTS_ON_SELF:
+                for se in target.get_dueling().status_effects:
+                    if se.key == se_key:
+                        removed_se_strs.add(se.key)
+                target.get_dueling().status_effects = list(filter(lambda se: se.key != se_key, target.get_dueling().status_effects))
+            
+            if len(removed_se_strs) > 0:
+                final_str: str = ", ".join(removed_se_strs)
+                target_result_strs.append("{" + f"{i + 1}" + "} had " + f"{final_str} removed")
+
+        result_str += "\n\n".join(target_result_strs)
 
         mana_and_cd_str: str | None = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -140,9 +230,9 @@ class ShamblingForm(Ability):
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class HulkingBoneShambler(NPC):
+class Wilderdragon(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Hulking Bone Shambler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Wilderdragon" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()
 
@@ -156,13 +246,13 @@ class HulkingBoneShambler(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(300, ExpertiseClass.Guardian)
-        self._expertise.constitution = 200
-        self._expertise.strength = 40
+        self._expertise.add_xp_to_class_until_level(1500, ExpertiseClass.Guardian)
+        self._expertise.constitution = 450
+        self._expertise.strength = 100
         self._expertise.dexterity = 0
-        self._expertise.intelligence = 0
-        self._expertise.luck = 40
-        self._expertise.memory = 3
+        self._expertise.intelligence = 350
+        self._expertise.luck = 25
+        self._expertise.memory = 5
 
     def _setup_equipment(self):
         if self._expertise is None:
@@ -179,7 +269,7 @@ class HulkingBoneShambler(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [BonePierce(), ShamblingForm(), GraspOfTheStarved()]
+        self._dueling.abilities = [VoidBreath(), TailSlam(), Consume(), Boneweaving(), TerrifyingRoar()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -192,9 +282,9 @@ class HulkingBoneShambler(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Hulking Bone Shambler"
+        self._name = "Wilderdragon"
         self._role = NPCRoles.DungeonEnemy
-        self._dueling_persona = NPCDuelingPersonas.Bruiser
+        self._dueling_persona = NPCDuelingPersonas.Mage
         self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")

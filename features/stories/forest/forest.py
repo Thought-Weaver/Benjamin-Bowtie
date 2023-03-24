@@ -22,6 +22,11 @@ from features.stories.forest.combat.quiet_grove.thief_marauder_duel import Thief
 from features.stories.forest.combat.quiet_grove.timberwolves_duel import TimberwolvesDuelView
 from features.stories.forest.combat.quiet_grove.triple_snake_duel import TripleSnakeDuelView
 from features.stories.forest.combat.quiet_grove.wild_boar_duel import WildBoarDuelView
+from features.stories.forest.combat.screaming_copse.horrifying_bone_amalgam_duel import HorrifyingBoneAmalgamDuelView
+from features.stories.forest.combat.screaming_copse.starving_dire_wolves_duel import StarvingDireWolvesDuelView
+from features.stories.forest.combat.screaming_copse.undead_treants_duel import UndeadTreantsDuelView
+from features.stories.forest.combat.screaming_copse.voidburnt_treant_duel import VoidburntTreantDuelView
+from features.stories.forest.combat.screaming_copse.wailing_bones_duel import WailingBonesDuelView
 from features.stories.forest.combat.whispering_woods.armored_centipede_duel import ArmoredCentipedeDuelView
 from features.stories.forest.combat.whispering_woods.bladedancer_stormcaller_duel import BladedancerStormcallerDuelView
 from features.stories.forest.combat.whispering_woods.dire_wolves_duel import DireWolvesDuelView
@@ -39,7 +44,7 @@ from features.stories.forest.events.quiet_grove.fishing_pond import QuietGroveFi
 from features.stories.forest.events.quiet_grove.jackalope import JackalopeView
 from features.stories.forest.events.quiet_grove.the_path_is_lost import ThePathIsLostView
 from features.stories.forest.events.quiet_grove.wandering_cook import WanderingCookView
-from features.stories.forest.events.quiet_grove.wild_herbs import QuietGroveWildHerbsView, WildHerbsView
+from features.stories.forest.events.quiet_grove.wild_herbs import QuietGroveWildHerbsView
 from features.stories.forest.events.quiet_grove.wildlife_gathering import WildlifeGatheringView
 from features.stories.forest.events.screaming_copse.a_nearby_roar import ANearbyRoarView
 from features.stories.forest.events.screaming_copse.dangerous_undergrowth import DangerousUndergrowthView
@@ -447,7 +452,19 @@ class ForestStory():
             elif rand_val == 8:
                 return TreantsDuelView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 9:
-                return TripleStormcallerDuelView(bot, database, guild_id, users, dungeon_run)            
+                return TripleStormcallerDuelView(bot, database, guild_id, users, dungeon_run)
+        elif dungeon_run.section == ForestSection.ScreamingCopse:
+            rand_val: int = random.randint(0, 4)
+            if rand_val == 0:
+                return HorrifyingBoneAmalgamDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 1:
+                return StarvingDireWolvesDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 2:
+                return UndeadTreantsDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 3:
+                return VoidburntTreantDuelView(bot, database, guild_id, users, dungeon_run)
+            elif rand_val == 4:
+                return WailingBonesDuelView(bot, database, guild_id, users, dungeon_run)
 
     @staticmethod
     def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):

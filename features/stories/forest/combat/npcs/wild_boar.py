@@ -94,7 +94,7 @@ class Charge(Ability):
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(5, 6), [debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(5, 10), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
