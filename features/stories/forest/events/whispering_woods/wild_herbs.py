@@ -57,7 +57,8 @@ class WhisperingWoodsWildHerbsView(discord.ui.View):
         for item_key in ItemKey:
             item = LOADED_ITEMS.get_new_item(item_key)
             if any(tag in item.get_class_tags() for tag in self._valid_class_tags):
-                self._possible_rewards.append(item_key)
+                if Rarity.Common < item.get_rarity() < Rarity.Cursed:
+                    self._possible_rewards.append(item_key)
         self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
 
         self._display_initial_buttons()

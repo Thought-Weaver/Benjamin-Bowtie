@@ -148,3 +148,12 @@ class UnderworldSection(StrEnum):
     MistyTunnels = "MistyTunnels"
     AbyssalCaverns = "AbyssalCaverns"
     TombsIngress = "TombsIngress"
+
+
+class RoomType(StrEnum):
+    Combat = "Combat"
+    Shopkeep = "Shopkeep"
+    Treasure = "Treasure"
+    Event = "Event"
+    Boss = "Boss"
+    Rest = "Rest"

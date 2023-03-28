@@ -48,7 +48,8 @@ class SapBlood(Ability):
         heal_results: List[str] = self._use_heal_ability(caster, [caster], range(damage, damage))
 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-        result_str += "\n".join(heal_results)
+        result_str += "\n"
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in heal_results])
 
         caster.get_stats().dueling.fisher_abilities_used += 1
 

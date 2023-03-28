@@ -659,7 +659,7 @@ class DmgReflect(StatusEffect):
         super().__init__(turns_remaining, value, "Reflecting", StatusEffectKey.DmgReflect, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: You reflect {self.value} damage you take for {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: You reflect {self.value * 100}% damage you take for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

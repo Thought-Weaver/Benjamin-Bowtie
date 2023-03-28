@@ -186,7 +186,7 @@ class ForestRestView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self, additional_info: str=""):
-        return Embed(title="A Warm Bonfire", description=f"You all gather around a fire and can rest for a moment among the trees, restoring part of your health and mana.\n\n{len(self.rested_users)}/{len(self._users)} players have rested.{additional_info}")
+        return Embed(title="A Warm Bonfire", description=f"You all gather around a fire and can rest for a moment among the trees, restoring 50% of your health and mana.\n\n{len(self.rested_users)}/{len(self._users)} players have rested.{additional_info}")
 
     def _display_initial_buttons(self):
         self.clear_items()

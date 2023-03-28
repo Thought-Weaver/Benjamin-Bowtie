@@ -47,7 +47,7 @@ class TheSoundView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Sound", description="The skies suddenly crack with a noise like the shattering of earth and the roar of the void, like the sun screaming as it fades into oblivion and the moment of descent into complete madness. And then it's gone.")
+        return Embed(title="The Sound", description="The skies suddenly crack with a noise like the shattering of earth and the roar of the void, like the sun screaming as it fades into oblivion, and the moment of descent into complete madness. And then it's gone.")
 
     def _display_initial_buttons(self):
         self.clear_items()

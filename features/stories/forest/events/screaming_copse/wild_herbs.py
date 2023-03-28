@@ -21,7 +21,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: WildHerbsView = self.view
+        view: ScreamingCopseWildHerbsView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -56,7 +56,7 @@ class ScreamingCopseWildHerbsView(discord.ui.View):
         for item_key in ItemKey:
             item = LOADED_ITEMS.get_new_item(item_key)
             if any(tag in item.get_class_tags() for tag in self._valid_class_tags):
-                if item.get_rarity() >= Rarity.Rare:
+                if Rarity.Uncommon < item.get_rarity() < Rarity.Cursed:
                     self._possible_rewards.append(item_key)
         self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
 

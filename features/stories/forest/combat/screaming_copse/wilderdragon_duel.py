@@ -34,8 +34,20 @@ class ForestFinalWordsView(discord.ui.View):
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
+    def _generate_run_info(self):
+        info_str: str = (
+            f"Rooms Explored: {self._dungeon_run.rooms_explored}\n\n"
+            f"Combat Encounters: {self._dungeon_run.combat_encounters}\n"
+            f"Treasure Rooms Found: {self._dungeon_run.treasure_rooms_encountered}\n"
+            f"Shopkeeps Met: {self._dungeon_run.shopkeeps_encountered}\n"
+            f"Events Encountered: {self._dungeon_run.events_encountered}\n\n"
+            f"Rests Taken: {self._dungeon_run.rests_taken}\n"
+            f"Bosses Defeated: {self._dungeon_run.bosses_defeated}"
+        )
+        return info_str
+
     def get_initial_embed(self):
-        return Embed(title="The Journey Home", description="With the forest freed of the evil power that grasped it, you all begin the long journey back to the village. Your party is victorious!")
+        return Embed(title="The Journey Home", description=f"With the forest freed of the evil power that grasped it, you all begin the long journey back to the village. Your party is victorious!\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{post_run_info_str}")
 
     def get_bot(self):
         return self._bot

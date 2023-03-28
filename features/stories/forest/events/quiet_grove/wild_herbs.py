@@ -45,8 +45,9 @@ class QuietGroveWildHerbsView(discord.ui.View):
         self._dungeon_run = dungeon_run
         
         self._prob_map = {
-            Rarity.Uncommon: 0.45,
-            Rarity.Rare: 0.4,
+            Rarity.Common: 0.4,
+            Rarity.Uncommon: 0.3,
+            Rarity.Rare: 0.15,
             Rarity.Epic: 0.1,
             Rarity.Legendary: 0.05
         }

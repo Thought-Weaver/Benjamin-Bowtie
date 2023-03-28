@@ -27,6 +27,34 @@ class Intent(StrEnum):
     Sell = "Sell" # TODO: Implement this
 
 
+class PrevButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MysteriousMerchantView = self.view
+        if interaction.user.id != view.get_group_leader().id:
+            response = view.prev_page()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class NextButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: MysteriousMerchantView = self.view
+        if interaction.user.id != view.get_group_leader().id:
+            response = view.next_page()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class ContinueButton(discord.ui.Button):
     def __init__(self):
         super().__init__(style=discord.ButtonStyle.blurple, label="Continue")
