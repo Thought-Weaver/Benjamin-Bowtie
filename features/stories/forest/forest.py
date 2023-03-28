@@ -71,7 +71,7 @@ from features.stories.forest.treasure.screaming_copse_treasure import ScreamingC
 from features.stories.forest.treasure.whispering_woods_treasure import WhisperingWoodsTreasureRoomView
 from features.stories.story import Story
 
-from typing import List
+from typing import List, Set
 
 # -----------------------------------------------------------------------------
 # FOREST DEFEAT VIEW
@@ -341,6 +341,19 @@ class StartButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=entrance_view, content=None)
 
 
+class AcceptButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Accept")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: ForestDungeonEntranceView = self.view
+        view.accepted_users.add(interaction.user.id)
+        await interaction.response.edit_message(embed=view.get_initial_embed(), view=view, content=None)
+
+
 class ForestDungeonEntranceView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User]):
         super().__init__(timeout=900)
@@ -352,17 +365,23 @@ class ForestDungeonEntranceView(discord.ui.View):
         self._group_leader = users[0]
         self._dungeon_run = DungeonRun(Story.Forest, FOREST_ROOMS, ForestSection.QuietGrove)
         
+        self.accepted_users: Set[int] = set()
+
         self._display_initial_buttons()
 
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Forest", description=f"Standing before the entrance to the old woods, your party stares down the path into the seemingly endless expanse of trees.\n\nYour group leader is {self._group_leader.display_name}. When your party is ready, you may enter the forest.")
+        if len(self._users) == len(self.accepted_users):
+            self.clear_items()
+            self.add_item(StartButton())
+
+        return Embed(title="The Forest", description=f"Standing before the entrance to the old woods, your party stares down the path into the seemingly endless expanse of trees.\n\nYour group leader is {self._group_leader.display_name}. When your party is ready, you may enter the forest.\n\n{len(self.accepted_users)}/{len(self._users)} are ready to begin the journey.")
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(StartButton())
+        self.add_item(AcceptButton())
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import discord
-from features.shared.constants import FOREST_ROOMS
 import features.stories.forest.forest as forest
 import random
 
