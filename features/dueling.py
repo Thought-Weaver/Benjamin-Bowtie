@@ -3187,7 +3187,7 @@ class DuelView(discord.ui.View):
                     dueling_copy._selected_targets = [dueling_copy._turn_order[dueling_copy._turn_index]]
                     dueling_copy.attack_selected_targets()
 
-                    copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                    copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                     dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                     dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                     fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
@@ -3206,7 +3206,7 @@ class DuelView(discord.ui.View):
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.attack_selected_targets()
 
-                    copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                    copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                     dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                     dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                     fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
@@ -3220,21 +3220,21 @@ class DuelView(discord.ui.View):
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.attack_selected_targets()
 
-                        copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                        copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                         dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                         dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                         fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
 
                         update_optimal_fitness(fitness_score, Intent.Attack, None, -1, None, -1, list(targets))
                     elif len(enemies) > 0:
-                        combinations = list(itertools.combinations(enemies, self._targets_remaining))
+                        combinations = list(itertools.combinations(enemies, min(self._targets_remaining, len(enemies))))
                         for targets in combinations:
                             dueling_copy: DuelView = self.create_copy()
                             target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
                             dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                             dueling_copy.attack_selected_targets()
 
-                            copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                            copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                             dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                             dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                             fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
@@ -3274,7 +3274,7 @@ class DuelView(discord.ui.View):
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.use_ability_on_selected_targets()
 
-                        copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                        copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                         dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                         dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                         fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
@@ -3291,7 +3291,7 @@ class DuelView(discord.ui.View):
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.use_ability_on_selected_targets()
 
-                        copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                        copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                         dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                         dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                         fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
@@ -3318,7 +3318,7 @@ class DuelView(discord.ui.View):
                                     targets.remove(se.cant_target)
 
                         if len(targets) > 0:
-                            combinations = list(itertools.combinations(targets, self._targets_remaining))
+                            combinations = list(itertools.combinations(targets, min(self._targets_remaining, len(enemies))))
                             for targets in combinations:
                                 dueling_copy: DuelView = self.create_copy()
 
@@ -3329,7 +3329,7 @@ class DuelView(discord.ui.View):
                                 dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                                 dueling_copy.use_ability_on_selected_targets()
 
-                                copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                                copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                                 dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                                 dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                                 fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
@@ -3373,7 +3373,7 @@ class DuelView(discord.ui.View):
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.use_item_on_selected_targets()
 
-                    copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                    copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                     dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                     dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                     fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
@@ -3390,7 +3390,7 @@ class DuelView(discord.ui.View):
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.use_item_on_selected_targets()
 
-                    copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                    copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                     dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                     dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                     fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
@@ -3417,7 +3417,7 @@ class DuelView(discord.ui.View):
                                 targets.remove(se.cant_target)
 
                     if len(targets) > 0:
-                        combinations = list(itertools.combinations(enemies, self._targets_remaining))
+                        combinations = list(itertools.combinations(enemies, min(self._targets_remaining, len(enemies))))
                         for targets in combinations:
                             dueling_copy: DuelView = self.create_copy()
 
@@ -3428,7 +3428,7 @@ class DuelView(discord.ui.View):
                             dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                             dueling_copy.use_item_on_selected_targets()
 
-                            copy_cur_npc: NPC = dueling_copy._turn_order[dueling_copy._turn_index] # type: ignore
+                            copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
                             dueling_copy_allies = dueling_copy._allies if copy_cur_npc in dueling_copy._allies else dueling_copy._enemies
                             dueling_copy_enemies = dueling_copy._enemies if copy_cur_npc in dueling_copy._allies else dueling_copy._allies
                             fitness_score = copy_cur_npc.get_fitness_for_persona(cur_npc, dueling_copy_allies, dueling_copy_enemies)
