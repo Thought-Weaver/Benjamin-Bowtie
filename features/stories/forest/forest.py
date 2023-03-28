@@ -22,6 +22,7 @@ from features.stories.forest.combat.quiet_grove.thief_marauder_duel import Thief
 from features.stories.forest.combat.quiet_grove.timberwolves_duel import TimberwolvesDuelView
 from features.stories.forest.combat.quiet_grove.triple_snake_duel import TripleSnakeDuelView
 from features.stories.forest.combat.quiet_grove.wild_boar_duel import WildBoarDuelView
+from features.stories.forest.combat.screaming_copse.briar_wall_duel import BriarWallDuelView
 from features.stories.forest.combat.screaming_copse.horrifying_bone_amalgam_duel import HorrifyingBoneAmalgamDuelView
 from features.stories.forest.combat.screaming_copse.starving_dire_wolves_duel import StarvingDireWolvesDuelView
 from features.stories.forest.combat.screaming_copse.undead_treants_duel import UndeadTreantsDuelView
@@ -535,9 +536,8 @@ class ForestStory():
             return BridgeGolemDuelView(bot, database, guild_id, users, dungeon_run)
         elif dungeon_run.section == ForestSection.WhisperingWoods:
             return FleeingTreantDuelView(bot, database, guild_id, users, dungeon_run)
-        else:
-            # TODO: Replace this later with other bosses
-            return discord.ui.View()
+        elif dungeon_run.section == ForestSection.ScreamingCopse:
+            return BriarWallDuelView(bot, database, guild_id, users, dungeon_run)
 
     def __getstate__(self):
         return self.__dict__

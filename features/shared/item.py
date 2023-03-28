@@ -585,10 +585,10 @@ class ItemKey(StrEnum):
     TimberwolfCanines = "items/weapon/dungeon_npcs/timberwolf_canines"
     TreantClaws = "items/weapon/dungeon_npcs/treant_claws"
     WildBoarTusks = "items/weapon/dungeon_npcs/wild_boar_tusks"
-    WrathbarkHelmet = "items/equipment/boots/wrathbark_helmet"
-    WrathbarkGauntlets = "items/equipment/boots/wrathbark_gauntlets"
-    WrathbarkCuirass = "items/equipment/boots/wrathbark_cuirass"
-    WrathbarkLeggings = "items/equipment/boots/wrathbark_leggings"
+    WrathbarkHelmet = "items/equipment/helmet/wrathbark_helmet"
+    WrathbarkGauntlets = "items/equipment/gloves/wrathbark_gauntlets"
+    WrathbarkCuirass = "items/equipment/chest_armor/wrathbark_cuirass"
+    WrathbarkLeggings = "items/equipment/leggings/wrathbark_leggings"
     WrathbarkGreaves = "items/equipment/boots/wrathbark_greaves"
 
     # Dungeon NPC Special Rewards
