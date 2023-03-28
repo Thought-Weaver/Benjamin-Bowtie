@@ -54,4 +54,4 @@ COMPANION_BATTLE_POINTS = 3
 # DUNGEON RUN CONSTANTS
 # -----------------------------------------------------------------------------
 
-FOREST_ROOMS = 20
+FOREST_ROOMS = 15

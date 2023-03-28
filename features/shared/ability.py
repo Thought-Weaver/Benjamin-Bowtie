@@ -5988,7 +5988,6 @@ class ToxicCloudI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(1, 3))
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         poisoned = Poisoned(
             turns_remaining=2,
@@ -6002,6 +6001,8 @@ class ToxicCloudI(Ability):
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and {se_str}"
         
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
         return result_str
@@ -6035,7 +6036,6 @@ class ToxicCloudII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 4))
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         poisoned = Poisoned(
             turns_remaining=2,
@@ -6048,7 +6048,9 @@ class ToxicCloudII(Ability):
                 se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and {se_str}"
-        
+
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
         return result_str
@@ -6082,7 +6084,6 @@ class ToxicCloudIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(3, 5))
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         poisoned = Poisoned(
             turns_remaining=2,
@@ -6095,7 +6096,9 @@ class ToxicCloudIII(Ability):
                 se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and {se_str}"
-        
+
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
         return result_str
@@ -6129,7 +6132,6 @@ class ToxicCloudIV(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(4, 6))
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         poisoned = Poisoned(
             turns_remaining=2,
@@ -6142,6 +6144,8 @@ class ToxicCloudIV(Ability):
                 se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and {se_str}"
+        
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
         
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
