@@ -220,6 +220,29 @@ class Adventures(commands.Cog):
                 player.get_stats().dueling.duels_tied += 1
         await context.send("The duel has been ended for those players.")
 
+    @commands.is_owner()
+    @commands.command(name="enddungeonrun", help="Ends dungeon run for specific members", hidden=True)
+    async def end_dungeon_run_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
+        assert(context.guild is not None)
+
+        if users is None:
+            await context.send("You need to @ a member to use b!enddungeonrun.")
+            return
+
+        players: List[Player] = []
+        for user in users:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+            players.append(self._get_player(context.guild.id, user.id))
+
+        if any(player.get_dueling().is_in_combat for player in players):
+            await self.end_duel_handler(context, users)
+
+        for player in players:
+            player.set_is_in_dungeon_run(False)
+            player.set_is_in_rest_area(False)
+        
+        await context.send("The dungeon run has been ended for those players.")
+
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items", aliases=["ghoti"])
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def fish_handler(self, context: commands.Context):
