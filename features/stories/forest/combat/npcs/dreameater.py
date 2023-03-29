@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-from math import ceil
 from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Attribute, Expertise, ExpertiseClass
+from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
-from features.shared.constants import STR_DMG_SCALE
 from features.shared.enums import ClassTag
-from features.shared.item import LOADED_ITEMS, ItemKey, WeaponStats
-from features.shared.statuseffect import DexBuff, DexDebuff, DmgReduction, StrBuff, StrDebuff, TurnSkipChance
+from features.shared.item import LOADED_ITEMS, ItemKey
+from features.shared.statuseffect import DexBuff, DexDebuff, StrBuff, StrDebuff
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING

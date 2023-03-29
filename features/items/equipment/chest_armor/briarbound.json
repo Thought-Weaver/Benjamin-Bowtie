@@ -1,36 +1,38 @@
 {
-    "key": "items/equipment/offhand/snapdragon_head",
-    "icon": "\uD83D\uDC80",
-    "name": "Snapdragon Head",
-    "value": 1500,
+    "key": "items/equipment/chest_armor/briarbound",
+    "icon": "\ud83e\udde5",
+    "name": "Briarbound",
+    "value": 6000,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
     "class_tags": [
         "Equipment",
-        "Off_Hand"
+        "Chest_Armor"
     ],
     "state_tags": [],
     "count": 1,
-    "level_requirement": 20,
-    "altering_item_keys": [],
+    "level_requirement": 30,
+    "altering_item_keys": [
+        "",
+        ""
+    ],
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "ResistStatusEffect",
-                "effect_value": 0.3,
+                "effect_type": "DmgReflect",
+                "effect_value": 0.2,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
-                "associated_status_effect": "Taunted"
+                "associated_status_effect": null
             },
             {
-                "effect_type": "ResistStatusEffect",
-                "effect_value": 0.3,
+                "effect_type": "ConMod",
+                "effect_value": 5,
                 "effect_time": -1,
                 "conditions": [],
-                "condition_values": [],
-                "associated_status_effect": "Charmed"
+                "condition_values": []
             }
         ],
         "on_turn_start": [],
@@ -40,5 +42,11 @@
         "on_successful_attack": [],
         "on_attacked": [],
         "on_ability_used_against": []
+    },
+    "armor_stats": {
+        "armor_amount": 125
+    },
+    "attr_requirements": {
+        "constitution": 10
     }
 }

@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/treant_cuttings",
+    "icon": "\uD83C\uDF3F",
+    "name": "Treant Cuttings",
+    "value": 300,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

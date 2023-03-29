@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/voidseen_bone",
+    "icon": "\uD83E\uDDB4",
+    "name": "Voidseen Bone",
+    "value": 500,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

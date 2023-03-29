@@ -200,7 +200,12 @@ class PiercingWail(Ability):
 
 class WailingBones(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Wailing Bones" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Wailing Bones" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.Bones: 0.9,
+            ItemKey.Bones: 0.7,
+            ItemKey.Bones: 0.5,
+            ItemKey.VoidseenBone: 0.8
+        })
 
         self._setup_npc_params()
 
@@ -253,7 +258,12 @@ class WailingBones(NPC):
         self._name = "Wailing Bones"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Bones: 0.9,
+            ItemKey.Bones: 0.7,
+            ItemKey.Bones: 0.5,
+            ItemKey.VoidseenBone: 0.8
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

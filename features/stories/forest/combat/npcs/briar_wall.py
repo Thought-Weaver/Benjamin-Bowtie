@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import random
+
 from uuid import uuid4
 
 from features.dueling import Dueling
@@ -146,7 +148,12 @@ class RollingFog(Ability):
 
 class BriarWall(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Briar Wall" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        artifact_reward = random.choice([ItemKey.Briarbound, ItemKey.Briareyes, ItemKey.Briarfists, ItemKey.Briarfold, ItemKey.Briarpierce, ItemKey.Briarsteps])
+        super().__init__("Briar Wall" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.BagOfCoins: 0.9,
+            ItemKey.BagOfCoins: 0.6,
+            artifact_reward: 0.75
+        })
 
         self._setup_npc_params()
 

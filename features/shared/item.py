@@ -592,10 +592,24 @@ class ItemKey(StrEnum):
     WrathbarkGreaves = "items/equipment/boots/wrathbark_greaves"
 
     # Dungeon NPC Special Rewards
+    Briarbound = "items/equipment/chest_armor/briarbound"
+    Briareyes = "items/equipment/helmet/briareyes"
+    Briarfists = "items/equipment/gloves/briarfists"
+    Briarfold = "items/equipment/leggings/briarfold"
+    Briarpierce = "items/weapon/spear/briarpierce"
+    Briarsteps = "items/equipment/boots/briarsteps"
+    CentipedeArmorPlating = "items/valuable/centipede_armor_plating"
+    CentipedeCarapace = "items/equipment/chest_armor/centipede_carapace"
+    CharredUndeadWood = "items/valuable/charred_undead_wood"
     CoiledSword = "items/weapon/sword/coiled_sword"
+    DoomCharm = "items/equipment/offhand/doom_charm"
     GolemicAssembly = "items/equipment/chest_armor/golemic_assembly"
     GolemsEye = "items/weapon/staff/golems_eye"
     MemoryOfVictory = "items/consumable/potions/memory_of_victory"
+    SnapdragonHead = "items/equipment/offhand/snapdragon_head"
+    TreantCuttings = "items/valuable/treant_cuttings"
+    TreantSap = "items/consumable/potions/treant_sap"
+    VoidseenBone = "items/valuable/voidseen_bone"
 
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"

@@ -145,7 +145,12 @@ class HollowStare(Ability):
 
 class ColossalUndeadTreant(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Colossal Undead Treant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Colossal Undead Treant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.Wrathbark: 0.9,
+            ItemKey.Wrathbark: 0.8,
+            ItemKey.Wrathbark: 0.7,
+            ItemKey.TreantCuttings: 0.8
+        })
 
         self._setup_npc_params()
 
@@ -203,7 +208,12 @@ class ColossalUndeadTreant(NPC):
         self._name = "Colossal Undead Treant"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Wrathbark: 0.9,
+            ItemKey.Wrathbark: 0.8,
+            ItemKey.Wrathbark: 0.7,
+            ItemKey.TreantCuttings: 0.8
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

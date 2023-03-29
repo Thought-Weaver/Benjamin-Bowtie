@@ -142,7 +142,9 @@ class AlluringSong(Ability):
 
 class SongOfTheWoods(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Song of the Woods" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Song of the Woods" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.SnapdragonHead: 1,
+        })
 
         self._setup_npc_params()
 
@@ -194,7 +196,9 @@ class SongOfTheWoods(NPC):
         self._name = "Song of the Woods"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.SnapdragonHead: 1,
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

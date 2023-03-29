@@ -153,7 +153,11 @@ class Constriction(Ability):
 
 class ArmoredCentipede(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Armored Centipede" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Armored Centipede" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.LesserPoison: 0.7,
+            ItemKey.CentipedeArmorPlating: 0.9,
+            ItemKey.CentipedeCarapace: 0.05
+        })
 
         self._setup_npc_params()
 
@@ -211,7 +215,11 @@ class ArmoredCentipede(NPC):
         self._name = "Armored Centipede"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.LesserPoison: 0.7,
+            ItemKey.CentipedeArmorPlating: 0.9,
+            ItemKey.CentipedeCarapace: 0.05
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import random
+
 from uuid import uuid4
 
 from features.dueling import Dueling
@@ -137,7 +139,12 @@ class Reform(Ability):
 # I could link to a post-boss treasure room before moving to the next section?
 class BridgeGolem(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Bridge Golem" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        artifact_reward = random.choice([ItemKey.GolemsEye, ItemKey.GolemicAssembly])
+        super().__init__("Bridge Golem" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {    
+            ItemKey.BagOfCoins: 0.9,
+            ItemKey.BagOfCoins: 0.6,
+            artifact_reward: 0.3,
+        })
 
         self._setup_npc_params()
 

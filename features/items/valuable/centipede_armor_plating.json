@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/centipede_armor_plating",
+    "icon": "\uD83D\uDEE1\uFE0F",
+    "name": "Centipede Armor Plating",
+    "value": 200,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

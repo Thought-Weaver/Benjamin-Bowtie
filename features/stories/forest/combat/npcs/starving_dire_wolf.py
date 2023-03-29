@@ -166,8 +166,8 @@ class StarvingDireWolf(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Starving Dire Wolf" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
-            ItemKey.RawWolfMeat: 0.9,
-            ItemKey.IronDagger: 0.05
+            ItemKey.Bones: 0.6,
+            ItemKey.RawWolfMeat: 0.9
         })
 
         self._setup_npc_params()
@@ -222,8 +222,8 @@ class StarvingDireWolf(NPC):
         self._dueling_persona = NPCDuelingPersonas.Bruiser
         self._dueling_rewards = {
             ItemKey.Bones: 0.85,
-            ItemKey.RawWolfMeat: 0.9,
-            ItemKey.IronDagger: 0.05
+            ItemKey.Bones: 0.6,
+            ItemKey.RawWolfMeat: 0.9
         }
         
         self._inventory: Inventory | None = state.get("_inventory")

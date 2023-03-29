@@ -102,7 +102,12 @@ class KnitBones(Ability):
 
 class HorrifyingBoneAmalgam(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Horrifying Bone Amalgam" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Horrifying Bone Amalgam" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.Bones: 0.9,
+            ItemKey.Bones: 0.7,
+            ItemKey.Bones: 0.5,
+            ItemKey.VoidseenBone: 0.8
+        })
 
         self._setup_npc_params()
 
@@ -155,7 +160,12 @@ class HorrifyingBoneAmalgam(NPC):
         self._name = "Horrifying Bone Amalgam"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Bones: 0.9,
+            ItemKey.Bones: 0.7,
+            ItemKey.Bones: 0.5,
+            ItemKey.VoidseenBone: 0.8
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

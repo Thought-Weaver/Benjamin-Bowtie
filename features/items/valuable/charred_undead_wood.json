@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/charred_undead_wood",
+    "icon": "\uD83E\uDEB5",
+    "name": "Charred Undead Wood",
+    "value": 350,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

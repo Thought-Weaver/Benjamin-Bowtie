@@ -152,7 +152,12 @@ class UndeadResolve(Ability):
 
 class WhirlingBoneShambler(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Whirling Bone Shambler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Specialist, {})
+        super().__init__("Whirling Bone Shambler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Specialist, {
+            ItemKey.Bones: 0.9,
+            ItemKey.Bones: 0.7,
+            ItemKey.Bones: 0.5,
+            ItemKey.VoidseenBone: 0.8
+        })
 
         self._setup_npc_params()
 
@@ -205,7 +210,12 @@ class WhirlingBoneShambler(NPC):
         self._name = "Whirling Bone Shambler"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Specialist
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Bones: 0.9,
+            ItemKey.Bones: 0.7,
+            ItemKey.Bones: 0.5,
+            ItemKey.VoidseenBone: 0.8
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

@@ -145,7 +145,13 @@ class HollowStare(Ability):
 
 class LitheTreant(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Lithe Treant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Lithe Treant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.Lithewood: 0.9,
+            ItemKey.Lithewood: 0.8,
+            ItemKey.Lithewood: 0.7,
+            ItemKey.TreantCuttings: 0.5,
+            ItemKey.TreantSap: 0.3
+        })
 
         self._setup_npc_params()
 
@@ -201,7 +207,13 @@ class LitheTreant(NPC):
         self._name = "Lithe Treant"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Lithewood: 0.9,
+            ItemKey.Lithewood: 0.8,
+            ItemKey.Lithewood: 0.7,
+            ItemKey.TreantCuttings: 0.5,
+            ItemKey.TreantSap: 0.3
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

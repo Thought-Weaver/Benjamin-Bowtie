@@ -144,7 +144,17 @@ class HollowStare(Ability):
 
 class Cursemaker(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Cursemaker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Cursemaker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.Wrathbark: 0.9,
+            ItemKey.Wrathbark: 0.6,
+            ItemKey.Lithewood: 0.9,
+            ItemKey.Lithewood: 0.6,
+            ItemKey.MagesBaneSeed: 0.9,
+            ItemKey.MagesBaneSeed: 0.7,
+            ItemKey.MagesBaneSeed: 0.5,
+            ItemKey.TreantCuttings: 0.5,
+            ItemKey.DoomCharm: 0.1
+        })
 
         self._setup_npc_params()
 
@@ -200,7 +210,17 @@ class Cursemaker(NPC):
         self._name = "Lithe Treant"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Wrathbark: 0.9,
+            ItemKey.Wrathbark: 0.6,
+            ItemKey.Lithewood: 0.9,
+            ItemKey.Lithewood: 0.6,
+            ItemKey.MagesBaneSeed: 0.9,
+            ItemKey.MagesBaneSeed: 0.7,
+            ItemKey.MagesBaneSeed: 0.5,
+            ItemKey.TreantCuttings: 0.5,
+            ItemKey.DoomCharm: 0.1
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
