@@ -238,6 +238,10 @@ class Adventures(commands.Cog):
             await context.send(f"You're in a duel and can't fish.")
             return
         
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't fish.")
+            return
+
         player_stats: Stats = author_player.get_stats()
         player_xp: Expertise = author_player.get_expertise()
 
@@ -392,6 +396,10 @@ class Adventures(commands.Cog):
             await context.send(f"You're in a duel and can't play knucklebones.")
             return
 
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't play knucklebones.")
+            return
+
         challenged_player: Player | NPC = MrBones()
         challenged_player_name = "Someone"
         use_luck = True
@@ -496,6 +504,10 @@ class Adventures(commands.Cog):
             await context.send(f"You're in a duel and can't send mail.")
             return
 
+        if player.is_in_dungeon_run() and not player.is_in_rest_area():
+            await context.send(f"You're on an adventure and haven't reached a rest area, so you can't send mail.")
+            return
+
         coins_str = player.get_inventory().get_coins_str()
         embed = Embed(
             title=f"{context.author.display_name}'s Inventory",
@@ -527,6 +539,10 @@ class Adventures(commands.Cog):
         if author_dueling.is_in_combat:
             await context.send(f"You're in a duel and can't visit the market.")
             return
+        
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit the market.")
+            return
 
         embed = Embed(
             title="Welcome to the Market!",
@@ -544,6 +560,10 @@ class Adventures(commands.Cog):
         author_dueling: Dueling = author_player.get_dueling()
         if author_dueling.is_in_combat:
             await context.send(f"You're in a duel and can't visit your mailbox.")
+            return
+        
+        if author_player.is_in_dungeon_run() and not author_player.is_in_rest_area():
+            await context.send(f"You're on an adventure and haven't reached a rest area, so you can't visit your mailbox.")
             return
         
         embed = Embed(
@@ -578,6 +598,10 @@ class Adventures(commands.Cog):
         author_dueling: Dueling = author_player.get_dueling()
         if author_dueling.is_in_combat:
             await context.send(f"You're in a duel and can't visit the wishing well.")
+            return
+        
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit the wishing well.")
             return
 
         author_inv: Inventory = author_player.get_inventory()
@@ -718,6 +742,10 @@ class Adventures(commands.Cog):
         author_player: Player = self._get_player(context.guild.id, context.author.id)
         author_dueling: Dueling = author_player.get_dueling()
 
+        if author_player.is_in_dungeon_run() and not author_player.is_in_rest_area():
+            await context.send(f"You're on an adventure and haven't reached a rest area where you can change your equipment.")
+            return
+
         equipment_view = EquipmentView(self._bot, self._database, context.guild.id, display_user, not author_dueling.is_in_combat and display_user == context.author)
         embed = equipment_view.get_initial_info()
         await context.send(embed=embed, view=equipment_view)
@@ -768,6 +796,10 @@ class Adventures(commands.Cog):
         challenged_players: List[Player | NPC] = [(self._get_player(context.guild.id, user.id) if isinstance(user, User) else user) for user in mapped_users]
         if any(player.get_dueling().is_in_combat for player in challenged_players):
             await context.send("At least one of those players is already in a duel.")
+            return
+        
+        if any(isinstance(player, Player) and player.is_in_dungeon_run() for player in [author_player, *challenged_players]):
+            await context.send(f"At least one of those players is on an adventure and can't enter a duel.")
             return
 
         if any(player.get_expertise().hp != player.get_expertise().max_hp for player in challenged_players) or author_player.get_expertise().hp != author_player.get_expertise().max_hp:
@@ -856,6 +888,10 @@ class Adventures(commands.Cog):
         if author_dueling.is_in_combat:
             await context.send(f"You're in a duel and can't visit the trainers or change your abilities.")
             return
+        
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit the trainers or change your abilities.")
+            return
 
         equipment_view = TrainerView(self._bot, self._database, context.guild.id, context.author)
         embed = equipment_view.get_initial_info()
@@ -898,6 +934,10 @@ class Adventures(commands.Cog):
         challenged_players: List[Player] = [self._get_player(context.guild.id, user.id) for user in users]
         if any(player.get_dueling().is_in_combat for player in challenged_players):
             await context.send(f"At least one of those players is already in a duel.")
+            return
+        
+        if any(player.is_in_dungeon_run() for player in [author_player, *challenged_players]):
+            await context.send(f"At least one of those players is on an adventure and can't enter a duel.")
             return
 
         if any(player.get_expertise().hp != player.get_expertise().max_hp for player in challenged_players) or author_player.get_expertise().hp != author_player.get_expertise().max_hp:
@@ -942,6 +982,10 @@ class Adventures(commands.Cog):
             await context.send(f"You're in a duel and can't visit your house.")
             return
         
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit your house.")
+            return
+        
         house_view: HouseView = HouseView(self._bot, self._database, context.guild.id, context.author, context)
         await context.send(embed=house_view.get_initial_embed(), view=house_view)
 
@@ -955,6 +999,10 @@ class Adventures(commands.Cog):
         author_dueling: Dueling = author_player.get_dueling()
         if author_dueling.is_in_combat:
             await context.send(f"You're in a duel and can't visit your garden.")
+            return
+
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit your garden.")
             return
 
         companion_result_str: str = ""
@@ -983,6 +1031,10 @@ class Adventures(commands.Cog):
             await context.send(f"You're in a duel and can't visit your study.")
             return
         
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit your study.")
+            return
+        
         view = StudyView(self._bot, self._database, context.guild.id, context.author, None)
         embed = view.get_embed_for_intent()
         await context.send(embed=embed, view=view)
@@ -997,6 +1049,10 @@ class Adventures(commands.Cog):
         author_dueling: Dueling = author_player.get_dueling()
         if author_dueling.is_in_combat:
             await context.send(f"You're in a duel and can't visit your workshop.")
+            return
+        
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit your workshop.")
             return
         
         view = WorkshopView(self._bot, self._database, context.guild.id, context.author, None)
@@ -1015,6 +1071,10 @@ class Adventures(commands.Cog):
             await context.send(f"You're in a duel and can't visit your alchemy chamber.")
             return
         
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit your alchemy chamber.")
+            return
+        
         view = AlchemyChamberView(self._bot, self._database, context.guild.id, context.author, None)
         embed = view.get_embed_for_intent()
         await context.send(embed=embed, view=view)
@@ -1029,6 +1089,10 @@ class Adventures(commands.Cog):
         author_dueling: Dueling = author_player.get_dueling()
         if author_dueling.is_in_combat:
             await context.send(f"You're in a duel and can't visit your kitchen.")
+            return
+        
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit your kitchen.")
             return
         
         view = KitchenView(self._bot, self._database, context.guild.id, context.author, None)
@@ -1047,6 +1111,10 @@ class Adventures(commands.Cog):
             await context.send(f"You're in a duel and can't visit your storage.")
             return
         
+        if author_player.is_in_dungeon_run():
+            await context.send(f"You're on an adventure and can't visit your storage.")
+            return
+        
         view = StorageView(self._bot, self._database, context.guild.id, context.author, None, context)
         embed = view.get_embed_for_intent()
         await context.send(embed=embed, view=view)
@@ -1060,7 +1128,11 @@ class Adventures(commands.Cog):
         author_player: Player = self._get_player(context.guild.id, context.author.id)
         author_dueling: Dueling = author_player.get_dueling()
         if author_dueling.is_in_combat:
-            await context.send(f"You're in a duel and can't visit your storage.")
+            await context.send(f"You're in a duel and can't visit your companions.")
+            return
+        
+        if author_player.is_in_dungeon_run() and not author_player.is_in_rest_area():
+            await context.send(f"You're on an adventure and haven't reached a rest area where you can visit your companions.")
             return
         
         companions_view = PlayerCompanionsView(self._bot, self._database, context.guild.id, context.author, context)
@@ -1105,6 +1177,10 @@ class Adventures(commands.Cog):
         if any(player.get_dueling().is_in_combat for player in challenged_players):
             await context.send(f"At least one of those players is in a duel.")
             return
+        
+        if any(player.is_in_dungeon_run() for player in [author_player, *challenged_players]):
+            await context.send(f"At least one of those players is on an adventure.")
+            return
 
         if any(player.get_companions().current_companion is None for player in [self._get_player(context.guild.id, context.author.id), *challenged_players]):
             await context.send(f"At least one of those players (or yourself) doesn't have a chosen companion.")
@@ -1114,8 +1190,6 @@ class Adventures(commands.Cog):
 
         await context.send(embed=companion_battle.get_info_embed(), view=companion_battle)
 
-    # TODO: Remove when released
-    @commands.is_owner()
     @commands.command(name="forest", help="Gather players to enter the depths of the forest")
     async def forest_handler(self, context: commands.Context, users: commands.Greedy[User]=None):
         assert(context.guild is not None)
@@ -1147,6 +1221,10 @@ class Adventures(commands.Cog):
         challenged_players: List[Player] = [self._get_player(context.guild.id, user.id) for user in users]
         if any(player.get_dueling().is_in_combat for player in challenged_players):
             await context.send(f"At least one of those players is in a duel.")
+            return
+        
+        if any(player.is_in_dungeon_run() for player in [author_player, *challenged_players]):
+            await context.send(f"At least one of those players is on an adventure.")
             return
 
         if any(player.get_expertise().hp != player.get_expertise().max_hp for player in challenged_players) or author_player.get_expertise().hp != author_player.get_expertise().max_hp:

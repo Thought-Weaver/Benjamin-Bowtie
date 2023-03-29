@@ -10,6 +10,7 @@ from features.stories.story import MYSTERY_COMBAT_BASE_PROB, MYSTERY_COMBAT_PROB
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
+    from features.player import Player
 
 # -----------------------------------------------------------------------------
 # DUNGEON RUN VARIABLES
@@ -59,12 +60,18 @@ class RoomButton(discord.ui.Button):
             view.get_dungeon_run().combat_encounters += 1
         elif self._room_type == RoomType.Shopkeep:
             view.get_dungeon_run().shopkeeps_encountered += 1
+
+            for player in view.get_players():
+                player.set_is_in_rest_area(True)
         elif self._room_type == RoomType.Treasure:
             view.get_dungeon_run().treasure_rooms_encountered += 1
         elif self._room_type == RoomType.Event:
             view.get_dungeon_run().events_encountered += 1
         elif self._room_type == RoomType.Rest:
             view.get_dungeon_run().rests_taken += 1
+
+            for player in view.get_players():
+                player.set_is_in_rest_area(True)
         
         view.get_dungeon_run().rooms_explored += 1
         view.get_dungeon_run().rooms_until_boss -= 1
@@ -87,6 +94,9 @@ class RoomSelectionView(discord.ui.View):
 
         if self._dungeon_run.dungeon_type == Story.Forest:
             self.setup_forest_rooms()
+
+    def _get_player(self, user_id: int) -> Player:
+        return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def setup_forest_rooms(self):
         if self._dungeon_run.rooms_until_boss == -1:
@@ -169,3 +179,6 @@ class RoomSelectionView(discord.ui.View):
     
     def get_dungeon_run(self):
         return self._dungeon_run
+    
+    def get_players(self):
+        return [self._get_player(user.id) for user in self._users]

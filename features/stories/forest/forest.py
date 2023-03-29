@@ -88,6 +88,10 @@ class ForestDefeatView(discord.ui.View):
         self._group_leader = users[0]
         self._dungeon_run = dungeon_run
         
+        for user in self._users:
+            player = self._get_player(user.id)
+            player.set_is_in_dungeon_run(False)
+
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
@@ -145,6 +149,9 @@ class RestContinueButton(discord.ui.Button):
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
             return
+
+        for player in view.get_players():
+            player.set_is_in_rest_area(False)
 
         room_selection_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_selection_view.get_initial_embed()
@@ -245,6 +252,9 @@ class ForestRestView(discord.ui.View):
     def get_dungeon_run(self):
         return self._dungeon_run
 
+    def get_players(self):
+        return [self._get_player(user.id) for user in self._users]
+
 # -----------------------------------------------------------------------------
 # QUIET GROVE ENTRANCE VIEW
 # -----------------------------------------------------------------------------
@@ -335,6 +345,13 @@ class StartButton(discord.ui.Button):
             await interaction.response.edit_message(embed=None, view=None, content="At least one person is in a duel. You cannot start this adventure.")
             return
         
+        if view.any_in_dungeons_currently():
+            await interaction.response.edit_message(embed=None, view=None, content="At least one person is already on an adventure. You cannot start this adventure.")
+            return
+
+        for player in view.get_players():
+            player.set_is_in_dungeon_run(True)
+
         entrance_view: QuietGroveEntranceView = QuietGroveEntranceView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = entrance_view.get_initial_embed()
 
@@ -386,6 +403,9 @@ class ForestDungeonEntranceView(discord.ui.View):
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)
 
+    def any_in_dungeons_currently(self):
+        return any(self._get_player(user.id).is_in_dungeon_run() for user in self._users)
+
     def get_bot(self):
         return self._bot
 
@@ -403,6 +423,9 @@ class ForestDungeonEntranceView(discord.ui.View):
 
     def get_dungeon_run(self):
         return self._dungeon_run
+    
+    def get_players(self):
+        return [self._get_player(user.id) for user in self._users]
 
 # -----------------------------------------------------------------------------
 # FOREST STORY CLASS

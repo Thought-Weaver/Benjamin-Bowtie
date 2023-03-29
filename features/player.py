@@ -25,7 +25,10 @@ class Player():
         self._dueling: Dueling = Dueling()
         self._house: House = House()
         self._companions: PlayerCompanions = PlayerCompanions(self.send_mail)
+        
+        # These are two variables specific to dungeon run adventures
         self._in_dungeon_run: bool = False
+        self._in_rest_area: bool = False
 
     def get_id(self):
         return self._id
@@ -65,10 +68,16 @@ class Player():
         return self._companions
     
     def is_in_dungeon_run(self):
-        return self._dungeon_run
+        return self._in_dungeon_run
     
     def set_is_in_dungeon_run(self, value: bool):
         self._in_dungeon_run = value
+
+    def is_in_rest_area(self):
+        return self._in_rest_area
+    
+    def set_is_in_rest_area(self, value: bool):
+        self._in_rest_area = value
 
     def __getstate__(self):
         return self.__dict__
@@ -83,4 +92,5 @@ class Player():
         self._dueling = state.get("_dueling", Dueling())
         self._house = state.get("_house", House())
         self._companions = state.get("_companions", PlayerCompanions(self.send_mail))
-        self._dungeon_run = state.get("_dungeon_run", None)
+        self._in_dungeon_run = state.get("_in_dungeon_run", False)
+        self._in_rest_area = state.get("_in_rest_area", False)

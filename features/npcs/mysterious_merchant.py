@@ -69,6 +69,9 @@ class ContinueButton(discord.ui.Button):
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
             return
 
+        for player in view.get_players():
+            player.set_is_in_rest_area(False)
+
         room_selection_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_selection_view.get_initial_embed()
 
@@ -253,8 +256,8 @@ class MysteriousMerchantView(discord.ui.View):
 
         self.show_initial_buttons()
         
-    def _get_player(self) -> Player:
-        return self._database[str(self._guild_id)]["members"][str(self._users[0].id)]
+    def _get_player(self, user_id: int) -> Player:
+        return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
         return Embed(
@@ -281,7 +284,7 @@ class MysteriousMerchantView(discord.ui.View):
         return self.get_initial_embed()
 
     def display_item_info(self):
-        player: Player = self._get_player()
+        player: Player = self._get_player(self._group_leader.id)
 
         if self._selected_item is None or not (0 <= self._selected_item_index < len(self._wares) and self._wares[self._selected_item_index] == self._selected_item):
             self._get_wares_page_buttons()
@@ -317,7 +320,7 @@ class MysteriousMerchantView(discord.ui.View):
     def _get_wares_page_buttons(self):
         self.clear_items()
         
-        player: Player = self._get_player()
+        player: Player = self._get_player(self._group_leader.id)
         inventory: Inventory = player.get_inventory()
         all_slots = self._wares
 
@@ -336,7 +339,7 @@ class MysteriousMerchantView(discord.ui.View):
         self.add_item(ExitToMainButton(min(4, len(page_slots))))
 
     def _purchase_item(self):
-        player: Player = self._get_player()
+        player: Player = self._get_player(self._group_leader.id)
         inventory: Inventory = player.get_inventory()
 
         if self._selected_item is not None and self._wares[self._selected_item_index] == self._selected_item:
