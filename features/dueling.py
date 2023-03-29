@@ -2194,9 +2194,6 @@ class DuelView(discord.ui.View):
         for loser in losers:
             loser.get_stats().dueling.duels_fought += 1
 
-        for entity in self._turn_order:
-            self._remove_companion_ability(entity)
-
         if all(isinstance(entity, Player) for entity in self._turn_order):
             # This should only happen in a PvP duel
             winner_str = ""
@@ -2219,6 +2216,18 @@ class DuelView(discord.ui.View):
 
                 winner_str += f"{self.get_name(winner)} *(+{final_winner_xp} Guardian xp)*\n"
 
+                companion_xp_str: str = ""
+                if isinstance(winner, Player):
+                    companion_key = winner.get_companions().current_companion
+                    if companion_key is not None:
+                        companion = winner.get_companions().companions[companion_key]
+                        companion.add_xp(companion.duel_xp_gain)
+
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                
+                if companion_xp_str != "":
+                    winner_str += f"{companion_xp_str}\n"
+
             loser_str = ""
             loser_xp = ceil(sum(winner.get_expertise().level for winner in duel_result.winners) / (4 * len(losers)))
             for loser in losers:
@@ -2238,6 +2247,18 @@ class DuelView(discord.ui.View):
                 loser_expertise.level_up_check()
 
                 loser_str += f"{self.get_name(loser)} *(+{final_loser_xp} Guardian xp)*\n"
+
+                companion_xp_str: str = ""
+                if isinstance(loser, Player):
+                    companion_key = loser.get_companions().current_companion
+                    if companion_key is not None:
+                        companion = loser.get_companions().companions[companion_key]
+                        companion.add_xp(companion.duel_xp_gain)
+
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                
+                if companion_xp_str != "":
+                    loser_str += f"{companion_xp_str}\n"
 
             return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\nPractice for the journeys yet to come.")
         elif all(isinstance(entity, NPC) for entity in self._enemies):
@@ -2267,6 +2288,17 @@ class DuelView(discord.ui.View):
                     winner_expertise.level_up_check()
 
                     winner_str += f"{self.get_name(winner)} *(+{final_winner_xp} Guardian xp)*\n"
+
+                    companion_xp_str: str = ""
+                    companion_key = winner.get_companions().current_companion
+                    if companion_key is not None:
+                        companion = winner.get_companions().companions[companion_key]
+                        companion.add_xp(companion.duel_xp_gain)
+
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                
+                    if companion_xp_str != "":
+                        winner_str += f"{companion_xp_str}\n"
                 else:
                     winner_expertise = winner.get_expertise()
                     winner_dueling = winner.get_dueling()
@@ -2289,6 +2321,17 @@ class DuelView(discord.ui.View):
                     loser_dueling.is_in_combat = False
 
                     loser_expertise.update_stats(loser.get_combined_attributes())
+
+                    companion_xp_str: str = ""
+                    companion_key = loser.get_companions().current_companion
+                    if companion_key is not None:
+                        companion = loser.get_companions().companions[companion_key]
+                        companion.add_xp(companion.duel_xp_gain)
+
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                
+                    if companion_xp_str != "":
+                        winner_str += f"{companion_xp_str}\n"
                 else:
                     loser_expertise = loser.get_expertise()
                     loser_dueling = loser.get_dueling()
@@ -2336,6 +2379,17 @@ class DuelView(discord.ui.View):
                     winner_expertise.level_up_check()
 
                     winner_str += f"{self.get_name(winner)} *(+{final_winner_xp} Guardian xp)*\n"
+
+                    companion_xp_str: str = ""
+                    companion_key = winner.get_companions().current_companion
+                    if companion_key is not None:
+                        companion = winner.get_companions().companions[companion_key]
+                        companion.add_xp(companion.duel_xp_gain)
+
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                
+                    if companion_xp_str != "":
+                        winner_str += f"{companion_xp_str}\n"
                 else:
                     winner_expertise = winner.get_expertise()
                     winner_dueling = winner.get_dueling()
@@ -2366,6 +2420,17 @@ class DuelView(discord.ui.View):
                     loser_expertise.level_up_check()
 
                     loser_str += f"{self.get_name(loser)} *(+{final_loser_xp} Guardian xp)*\n"
+
+                    companion_xp_str: str = ""
+                    companion_key = loser.get_companions().current_companion
+                    if companion_key is not None:
+                        companion = loser.get_companions().companions[companion_key]
+                        companion.add_xp(companion.duel_xp_gain)
+
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                
+                    if companion_xp_str != "":
+                        loser_str += f"{companion_xp_str}\n"
                 else:
                     loser_expertise = loser.get_expertise()
                     loser_dueling = loser.get_dueling()
@@ -2765,9 +2830,6 @@ class DuelView(discord.ui.View):
             class_key: ExpertiseClass = self._selected_ability.get_class_key()
             final_xp = caster.get_expertise().add_xp_to_class(xp_to_add, class_key, caster.get_equipment())
             xp_str = f"\n\n*You gained {final_xp} {class_key} xp!*"
-
-        # TODO: In special case for companion battles, handle incrementing companion ability
-        # use stats and XP gain
 
         return result_str.format(*names) + xp_str
 
