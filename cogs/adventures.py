@@ -864,7 +864,7 @@ class Adventures(commands.Cog):
             "**Unlucky:** Luck is reduced\n"
             "**Forgetful:** Memory is reduced\n\n"
             "**Protected:** +x% damage reduction (up to 75%)\n"
-            "**Vulnerable:** +x% additional damage taken (up to 25%)\n"
+            "**Vulnerable:** +x% additional damage taken (up to 50%)\n"
             "**Empowered:** Deal x% additional damage\n"
             "**Diminished:** Deal x% less damage\n\n"
             "**Faltering:** x% chance to skip your turn\n"
