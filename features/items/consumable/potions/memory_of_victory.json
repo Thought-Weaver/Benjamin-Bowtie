@@ -5,7 +5,7 @@
     "value": 0,
     "rarity": "Artifact",
     "description": "Can be used while dueling or outside duels.",
-    "flavor_text": "",
+    "flavor_text": "Tastes like something from a dream. Ephemeral. A bit confusing.",
     "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
     "state_tags": [],
     "count": 1,

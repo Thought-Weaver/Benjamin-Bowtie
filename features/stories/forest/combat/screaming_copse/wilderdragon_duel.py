@@ -120,7 +120,13 @@ class WilderdragonTreasureRoomView(discord.ui.View):
         self._min_level = 20
         self._max_level = 30
         self._valid_class_tags = [ClassTag.Equipment.Equipment, ClassTag.Valuable.Gemstone, ClassTag.Consumable.Potion]
-        self._possible_rewards: List[ItemKey] = [ItemKey.EldritchBane, ItemKey.FontOfIchor, ItemKey.HeraldOfDeath, ItemKey.PrecisionsWeave, ItemKey.Giantcrushers, ItemKey.Windwalkers, ItemKey.CloakOfTheThreeEyedSerpent, ItemKey.Mindclasp, ItemKey.EndureTheEnd, ItemKey.HerbwovenMask, ItemKey.MortalBlow, ItemKey.StoneMitts, ItemKey.FalseShield, ItemKey.SacrificialNeedle, ItemKey.PoisonwoodStaff, ItemKey.EdgeOfGlory, ItemKey.WarlocksPactblade]
+        self._possible_rewards: List[ItemKey] = [
+            ItemKey.EldritchBane, ItemKey.FontOfIchor, ItemKey.HeraldOfDeath, ItemKey.PrecisionsWeave,
+            ItemKey.Giantcrushers, ItemKey.Windwalkers, ItemKey.CloakOfTheThreeEyedSerpent, ItemKey.Mindclasp,
+            ItemKey.EndureTheEnd, ItemKey.HerbwovenMask, ItemKey.MortalBlow, ItemKey.StoneMitts, ItemKey.FalseShield,
+            ItemKey.SacrificialNeedle, ItemKey.PoisonwoodStaff, ItemKey.EdgeOfGlory, ItemKey.WarlocksPactblade,
+            ItemKey.InnerFocus
+        ]
         for item_key in ItemKey:
             item = LOADED_ITEMS.get_new_item(item_key)
             if any(tag in item.get_class_tags() for tag in self._valid_class_tags):

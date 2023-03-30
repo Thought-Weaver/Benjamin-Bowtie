@@ -10,7 +10,7 @@ from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import POSITIVE_STATUS_EFFECTS_ON_SELF, CannotAttack, CannotUseAbilities, DmgVulnerability, FixedDmgTick, TurnSkipChance, Undying
+from features.shared.statuseffect import POSITIVE_STATUS_EFFECTS_ON_SELF, FixedDmgTick, TurnSkipChance
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING, Set

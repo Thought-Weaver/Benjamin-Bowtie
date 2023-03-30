@@ -3,7 +3,7 @@
     "icon": "\ud83e\udd4a",
     "name": "Awoken Cestus",
     "value": 5890,
-    "rarity": "Artifact",
+    "rarity": "Legendary",
     "description": "",
     "flavor_text": "",
     "class_tags": [
@@ -21,7 +21,7 @@
         "permanent": [
             {
                 "effect_type": "ResistStatusEffect",
-                "effect_value": 0.45,
+                "effect_value": 0.4,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
