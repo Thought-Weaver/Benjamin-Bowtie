@@ -720,8 +720,6 @@ class Dueling():
         # it's based off the target_own_group parameter. This fails to correctly indicate that there may be allies
         # in the mix if num_targets = -2. Passing the is_ally function could fix this.
         
-        result_strs: List[str] = []
-
         # The first element in the tuple is the percent chance of receiving the effect and the
         # second element is the time it'll last.
         chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]] = {}
@@ -749,6 +747,38 @@ class Dueling():
                             current_resist_info = resist_status_effect.get(se_key, (0, []))
                             resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
 
+        return self._apply_status_effect_results([], item_effect_cat, chance_status_effect, resist_status_effect, target, self_entity, target_index, self_index, target_is_ally)
+
+    def apply_chance_status_effect_from_item(self, item_effect_cat: ItemEffectCategory, item: Item, target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool | None):
+        # The first element in the tuple is the percent chance of receiving the effect and the
+        # second element is the time it'll last.
+        chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]] = {}
+        # The first element in the tuple is the percent chance of resisting the effect and the
+        # second element is the list of item names that contributed to resisting.
+        resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]] = {}
+
+        item_effects = item.get_item_effects()
+        if item_effects is not None:
+            item_effects_arr: List[Effect] = self.map_item_effect_cat_to_arr(item_effects, item_effect_cat)
+
+            for item_effect in item_effects_arr:
+                if not item_effect.meets_conditions(self_entity, item) or not item.meets_requirements(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes()):
+                    continue
+
+                if item_effect.effect_type == EffectType.ChanceStatusEffect:
+                    se_key: StatusEffectKey | None = item_effect.associated_status_effect
+                    if se_key is not None:
+                        current_effect_info = chance_status_effect.get(se_key, (0, 0))
+                        chance_status_effect[se_key] = (item_effect.effect_value + current_effect_info[0], max(item_effect.effect_time, current_effect_info[1]))
+                elif item_effect.effect_type == EffectType.ResistStatusEffect:
+                    se_key: StatusEffectKey | None = item_effect.associated_status_effect
+                    if se_key is not None:
+                        current_resist_info = resist_status_effect.get(se_key, (0, []))
+                        resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
+
+        return self._apply_status_effect_results([], item_effect_cat, chance_status_effect, resist_status_effect, target, self_entity, target_index, self_index, target_is_ally)
+
+    def _apply_status_effect_results(self, result_strs: List[str], item_effect_cat: ItemEffectCategory, chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]], resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]], target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool | None):
         chance_poisoned, turns_poisoned = chance_status_effect.get(StatusEffectKey.Poisoned, (0, 0))
         if random() < chance_poisoned:
             status_effect = Poisoned(
@@ -2871,7 +2901,7 @@ class DuelView(discord.ui.View):
         result_strs = []
         for target in self._selected_targets:
             target_name = self.get_name(target)
-            result_strs += [s.format(target_name, applicator_name) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.Permanent, target, applicator, 0, 1, self._is_ally(target))]
+            result_strs += [s.format(target_name, applicator_name) for s in target.get_dueling().apply_chance_status_effect_from_item(ItemEffectCategory.Permanent, self._selected_item, target, applicator, 0, 1, self._is_ally(target))]
             item_effects = self._selected_item.get_item_effects()
             if item_effects is not None:
                 for effect in item_effects.permanent:
