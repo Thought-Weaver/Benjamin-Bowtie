@@ -87,10 +87,6 @@ class ForestDefeatView(discord.ui.View):
         self._users = users
         self._group_leader = users[0]
         self._dungeon_run = dungeon_run
-        
-        for user in self._users:
-            player = self._get_player(user.id)
-            player.set_is_in_dungeon_run(False)
 
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]

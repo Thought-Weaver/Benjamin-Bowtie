@@ -1776,16 +1776,22 @@ class SkipButton(discord.ui.Button):
 
 
 class ContinueButton(discord.ui.Button):
-    def __init__(self, new_view: discord.ui.View):
+    def __init__(self, new_view: discord.ui.View, player_loss: bool):
         super().__init__(style=discord.ButtonStyle.blurple, label="Continue")
 
         self._new_view = new_view
+        self._player_loss = player_loss
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
         
-        embed = self._new_view.get_initial_embed()
+        if self._player_loss:
+            view: DuelView = self.view
+            for player in view.get_players():
+                player.set_is_in_dungeon_run(False)
+
+        embed = self._new_view.get_initial_embed() # type: ignore
         await interaction.response.edit_message(content=None, embed=embed, view=self._new_view)
 
 
@@ -1852,6 +1858,12 @@ class DuelView(discord.ui.View):
                 self.show_actions()
             else:
                 self._npc_initial_embed = self.take_npc_turn()
+
+    def get_players(self):
+        return [self._get_player(user.id) for user in self._users]
+    
+    def _get_player(self, user_id: int) -> Player:
+        return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_user_from_player(self, player: Player | NPC):
         for user in self._users:
@@ -2150,7 +2162,7 @@ class DuelView(discord.ui.View):
                 entity.get_expertise().level_up_check()
 
             if self._player_loss_post_view is not None:
-                self.add_item(ContinueButton(self._player_loss_post_view))
+                self.add_item(ContinueButton(self._player_loss_post_view, True))
 
             return Embed(
                 title="Victory for Both and Neither",
@@ -2276,10 +2288,10 @@ class DuelView(discord.ui.View):
 
             if all(isinstance(entity, Player) for entity in duel_result.winners):
                 if self._player_victory_post_view is not None:
-                    self.add_item(ContinueButton(self._player_victory_post_view))
+                    self.add_item(ContinueButton(self._player_victory_post_view, False))
             else:
                 if self._player_loss_post_view is not None:
-                    self.add_item(ContinueButton(self._player_loss_post_view))
+                    self.add_item(ContinueButton(self._player_loss_post_view, True))
 
             winner_str = ""
             winner_xp = ceil(0.25 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
