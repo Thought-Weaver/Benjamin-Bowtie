@@ -235,12 +235,36 @@ class Adventures(commands.Cog):
             players.append(self._get_player(context.guild.id, user.id))
 
         if any(player.get_dueling().is_in_combat for player in players):
-            await self.end_duel_handler(context, users)
+            for player in players:
+                player_dueling = player.get_dueling()
+                player_expertise = player.get_expertise()
+                
+                if player_dueling.is_in_combat:
+                    player_dueling.status_effects = []
+                    player_dueling.is_in_combat = False
+                    player_dueling.reset_ability_cds()
+
+                    player_expertise.update_stats(player.get_combined_attributes())
+                    player_expertise.hp = player_expertise.max_hp
+                    player_expertise.mana = player_expertise.max_mana
+
+                    companions = player.get_companions()
+                    if companions.current_companion is not None:
+                        companion_ability = companions.companions[companions.current_companion].get_dueling_ability(effect_category=None)
+                        
+                        if isinstance(companion_ability, Ability):
+                            try:
+                                player.get_dueling().abilities.remove(companion_ability)
+                            except:
+                                pass
+                    
+                    player.get_stats().dueling.duels_fought += 1
+                    player.get_stats().dueling.duels_tied += 1
 
         for player in players:
             player.set_is_in_dungeon_run(False)
             player.set_is_in_rest_area(False)
-        
+
         await context.send("The dungeon run has been ended for those players.")
 
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items", aliases=["ghoti"])
