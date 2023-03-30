@@ -1554,8 +1554,51 @@ class Dueling():
             return "{1}" + f" restored {restoration} mana from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.Damage:
-            damage_dealt = target_entity.get_expertise().damage(int(item_effect.effect_value), target_entity.get_dueling(), percent_reduct=target_entity.get_dueling().get_total_percent_dmg_reduct(), ignore_armor=False)
-            return "{0}" + f" dealt {damage_dealt} damage to " + "{1}" + f" using {item.get_full_name()}"
+            result_strs: List[str] = []
+
+            damage: int = int(item_effect.effect_value)
+            target_dueling: Dueling = target_entity.get_dueling()
+
+            percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
+
+            org_armor = target_dueling.armor
+            actual_damage_dealt = target_entity.get_expertise().damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+
+            self_entity.get_stats().dueling.damage_dealt += actual_damage_dealt
+            target_entity.get_stats().dueling.damage_taken += actual_damage_dealt
+            target_entity.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+
+            dmg_reflect: float = 0
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.AttrBuffOnDamage:
+                    assert(isinstance(se, AttrBuffOnDamage))
+                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(self_entity != target_entity), se.on_being_hit_buffs))
+                    result_strs.append("{1}" + f" gained {se.get_buffs_str()}")
+
+                if se.key == StatusEffectKey.DmgReflect:
+                    dmg_reflect += se.value
+
+            if dmg_reflect > 0:
+                reflected_damage: int = ceil(damage * dmg_reflect)
+                attacker_dmg_reduct = self_entity.get_dueling().get_total_percent_dmg_reduct()
+
+                attacker_org_armor = self_entity.get_dueling().armor
+                actual_reflected_damage = self_entity.get_expertise().damage(reflected_damage, self_entity.get_dueling(), attacker_dmg_reduct, ignore_armor=False)
+                attacker_cur_armor = self_entity.get_dueling().armor
+                
+                attacker_dmg_reduct_str = f" ({attacker_dmg_reduct * 100}% Reduction)" if attacker_dmg_reduct != 0 else ""
+                reflect_armor_str = f" ({attacker_cur_armor - attacker_org_armor} Armor)" if attacker_cur_armor - attacker_org_armor < 0 else ""
+
+                result_strs.append("{1}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{attacker_dmg_reduct_str} back to " + "{0}")
+
+            target_entity.get_expertise().update_stats(target_entity.get_combined_attributes())
+
+            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            armor_str = f" ({target_dueling.armor - org_armor} Armor)" if target_dueling.armor - org_armor < 0 else ""
+
+            result_strs.append("{0}" + f" dealt {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str} damage to " + "{1}")
+
+            return "\n".join(result_strs)
         
         return ""
 
