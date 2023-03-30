@@ -84,7 +84,7 @@ class Dueling():
             if status_effect.key == StatusEffectKey.DmgReduction:
                 total_percent_reduction = min(0.75, total_percent_reduction + status_effect.value)
             if status_effect.key == StatusEffectKey.DmgVulnerability:
-                total_percent_reduction = max(-0.25, total_percent_reduction + status_effect.value)
+                total_percent_reduction = max(-0.25, total_percent_reduction - status_effect.value)
         return total_percent_reduction
 
     def reset_ability_cds(self):
