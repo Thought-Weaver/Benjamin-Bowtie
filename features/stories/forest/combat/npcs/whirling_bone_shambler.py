@@ -193,6 +193,7 @@ class WhirlingBoneShambler(NPC):
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
+            self._dueling.is_legendary = True
         
         self._dueling.abilities = [TerrifyingCage(), DeathWish(), UndeadResolve()]
 
