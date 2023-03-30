@@ -53,6 +53,9 @@ class Dueling():
         # is done to the entity's health.
         self.armor: int = 0
 
+        # Special NPCs are regarded as legendary
+        self.is_legendary: bool = False
+
     def damage_armor(self, damage: int):
         # This function returns the damage remaining to deal to the entity's
         # health.
@@ -169,6 +172,8 @@ class Dueling():
         self.actions_remaining = state.get("actions_remaining", 1)
 
         self.armor = state.get("armor", 0)
+        
+        self.is_legendary = state.get("is_legendary", False)
 
     def map_item_effect_cat_to_arr(self, item_effects: ItemEffects, item_effect_cat: ItemEffectCategory):
         if item_effect_cat == ItemEffectCategory.Permanent:
@@ -371,7 +376,13 @@ class Dueling():
                 f"+{additional_dmg} damage from {source_str}"
             )            
 
-        # TODO: When legendary enemies are implemented, I'll need to handle that here
+        if item_effect.effect_type == EffectType.DmgBuffLegends:
+            if other_entity.get_dueling().is_legendary:
+                additional_dmg = int(damage_dealt * item_effect.effect_value)
+                return (
+                    damage_dealt + additional_dmg,
+                    f"+{additional_dmg} damage from {source_str}"
+                )
 
         if item_effect.effect_type == EffectType.DmgBuffPoisoned:
             if any(status_effect.key == StatusEffectKey.Poisoned for status_effect in other_entity.get_dueling().status_effects):
