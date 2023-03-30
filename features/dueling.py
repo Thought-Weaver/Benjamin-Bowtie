@@ -2048,27 +2048,28 @@ class DuelView(discord.ui.View):
                     self._additional_info_string_data += "\n"
                 self._additional_info_string_data += f"{self.get_name(entity)} had {armor_restore_diff} armor restored! "
 
+        turn_skipped: bool = False
         if random() < max_should_skip_chance:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
             if self._additional_info_string_data != "":
                 self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)}'s turn was skipped!"
-            for se in entity.get_dueling().status_effects:
-                # This is a special case to make sure that Faltering doesn't always skip the entity; if it triggers,
-                # then it has to be decremented to avoid potentially skipping their turn forever
-                if se.key == StatusEffectKey.TurnSkipChance:
-                    se.decrement_turns_remaining()
+            # This is a special case to make sure that Faltering doesn't always skip the entity; if it triggers,
+            # then it has to be decremented to avoid potentially skipping their turn forever
+            entity.get_dueling().decrement_all_ability_cds()
+            entity.get_dueling().decrement_statuses_time_remaining()
+            entity.get_expertise().update_stats(entity.get_combined_attributes())
 
-        if random() < max_sleeping_chance:
+        if random() < max_sleeping_chance and not turn_skipped:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
             if self._additional_info_string_data != "":
                 self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)} is Sleeping and their turn was skipped!"
-            for se in entity.get_dueling().status_effects:
-                # This is a special case to make sure that Faltering doesn't always skip the entity; if it triggers,
-                # then it has to be decremented to avoid potentially skipping their turn forever
-                if se.key == StatusEffectKey.Sleeping:
-                    se.decrement_turns_remaining()
+            # This is a special case to make sure that Sleeping doesn't always skip the entity; if it triggers,
+            # then it has to be decremented to avoid potentially skipping their turn forever
+            entity.get_dueling().decrement_all_ability_cds()
+            entity.get_dueling().decrement_statuses_time_remaining()
+            entity.get_expertise().update_stats(entity.get_combined_attributes())
 
         duel_result = self.check_for_win()
         if duel_result.game_won:
