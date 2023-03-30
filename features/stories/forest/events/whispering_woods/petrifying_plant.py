@@ -5,7 +5,7 @@ import discord
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from features.player import Player
-from features.shared.statuseffect import ConBuff, DmgVulnerability, TurnSkipChance
+from features.shared.statuseffect import ConBuff, TurnSkipChance
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
 
 from typing import List
@@ -64,7 +64,7 @@ class PetrifyingPlantView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Curious Plant", description=f"")
+        return Embed(title="Curious Plant", description=f"\"What an interesting plant!\" one of you can't help but say, as indeed you all pass by a small flower. It has a greyish-blue hue to its six sharp petals and seems to be the only one of its kind in the nearby vicinity.\n\nIf you wanted, you could pick the flower, or you could simply continue on your way:")
 
     def pick_flower(self):
         self.clear_items()

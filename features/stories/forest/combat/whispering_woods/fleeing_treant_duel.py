@@ -130,7 +130,7 @@ class FleeingTreantDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Edge of the Forest", description="As your party begins to approach the edge of the Whispering Woods, the trees begin to give way to burnt and cracked trees in a landscape of destruction. There's an undeniable sense that more than just natural disaster happened here -- that something is wrong at its center. As you begin to contemplate this further, however, from the dead brush and trees comes a giant treant fleeing that place. Its hollow eyes seem not to see you at first, then panics and charges forward in its escape!")
+        return Embed(title="The Edge of the Forest", description="As your party begins to approach the edge of the Whispering Woods, the trees begin to give way to burnt and cracked trees in a landscape of destruction. There's an undeniable sense that more than just natural disaster happened here -- that something is wrong at its center.\n\nAs you begin to contemplate this further, however, from the dead brush and trees comes a giant treant fleeing that place. Its hollow eyes seem not to see you at first, then panics and charges forward in its escape!")
 
     def _display_initial_buttons(self):
         self.clear_items()

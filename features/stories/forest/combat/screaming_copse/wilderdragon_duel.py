@@ -48,7 +48,7 @@ class ForestFinalWordsView(discord.ui.View):
 
     def get_initial_embed(self):
         post_run_info_str: str = self._generate_run_info()
-        return Embed(title="The Journey Home", description=f"With the forest freed of the evil power that grasped it, you all begin the long journey back to the village. Your party is victorious!\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{post_run_info_str}")
+        return Embed(title="The Journey Home", description=f"With the forest freed of the terrifying power that grasped it, you all begin the long journey back to the village. Your party is victorious!\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{post_run_info_str}")
 
     def get_bot(self):
         return self._bot
@@ -168,7 +168,7 @@ class WilderdragonTreasureRoomView(discord.ui.View):
         return result_str
 
     def get_initial_embed(self):
-        return Embed(title="Wilderdragon's Treasure", description=f"In the wilderdragon's lair, you find some incredible items!\n\n{self._treasure_result_str}")
+        return Embed(title="Wilderdragon's Treasure", description=f"In the Wilderdragon's lair, you find some incredible items!\n\n{self._treasure_result_str}")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -236,7 +236,7 @@ class VictoryView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Fire Snuffed Out", description="The Wilderdragon lays before you in pieces, its fire faded away, and suddenly you all become aware of silence. Eerie silence. There is no shifting of the briars, no shambling of the undead, nothing at all. It would seem, having defeated this being, whatever effects it was causing on the forest around it have likewise ended -- the curse has been destroyed.")
+        return Embed(title="The Fire Snuffed Out", description="The Wilderdragon remains before you in pieces, its fire faded away, and suddenly you all become aware of the silence. Eerie silence. There is no shifting of the briars, no shambling of the undead, nothing at all. It would seem, having defeated this creature, whatever effects it was causing on the forest have likewise ended -- the curse has been destroyed.")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -311,7 +311,7 @@ class WilderdragonDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Flame and the Void", description="Pressing through the remains of the briar wall, a warm clearing -- though still far from the greenery and life of the outer woods -- opens before your party. There, in the center of the woods, you see what razed this land to the ground: An animated draconic creature, formed from the dead wood; its six eyes and gaping maw are lit by a burning, dark purplish flame and its antler-like horns seem to actually be bone, stretching down and woven throughout its entire body. It roars an unearthly cry as you enter and unfurls bony wings that extend outwards to the sky!")
+        return Embed(title="The Flame and the Void", description="Pressing through the remains of the briar wall, a warm clearing -- though still far from the greenery and life of the outer woods -- opens before your party. There, in the center of the woods, you see what razed this land to the ground: An animated draconic creature, formed from the dead wood; its six eyes and gaping maw are lit by a burning, dark purplish flame and its antler-like horns seem to actually be bone, stretching down and woven throughout its entire body.\n\nIt roars an unearthly cry as you enter and unfurls bony wings that extend outwards to the sky!")
 
     def _display_initial_buttons(self):
         self.clear_items()

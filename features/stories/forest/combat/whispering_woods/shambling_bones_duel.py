@@ -60,7 +60,7 @@ class ScreamingCopseIntroView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Screaming Copse", description=f"Dread hangs in the air, foreboding and cut through by the screams of creatures and people alike who ventured in like yourselves or were simply trying to escape. This part of the forest has died -- or, better said, did die and has been reanimated by some unknown power. That power, you suspect awaits you here, if you dare to venture further.")
+        return Embed(title="The Screaming Copse", description=f"Dread hangs in the air, foreboding and cut through by the screams of creatures and people alike who ventured in like yourselves or were simply trying to escape. This part of the forest has died -- or, better said, did die and has been reanimated by some unknown power.\n\nThat power, you suspect awaits you here, if you dare to venture further.")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -317,7 +317,7 @@ class ShamblingBonesDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Horrors of Bone", description="It doesn't take you long to piece together what the treant was fleeing: From the dead trees now emerges something from a nightmare, two creatures of fused bones from hundreds of creatures. One has a deer skull and bones flow around it with the wind; the other seems to have three or four heads and is much larger, featuring at least six prominent appendages that look like they could crush you in an instant.")
+        return Embed(title="Horrors of Bone", description="It doesn't take you long to piece together what the treant was fleeing: From the dead trees now emerges something from a nightmare, two creatures of fused bones from hundreds of creatures.\n\nOne has a deer skull and bones flow around it with the wind; the other seems to have three or four heads and is much larger, featuring at least six prominent appendages that look like they could crush you in an instant.")
 
     def _display_initial_buttons(self):
         self.clear_items()
