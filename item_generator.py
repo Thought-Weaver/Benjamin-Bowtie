@@ -2962,7 +2962,7 @@ if __name__ == "__main__":
         }
 
         if rarity == Rarity.Artifact:
-            item["class_tags"].append(ClassTag.Misc.NeedsIdentification)
+            item["class_tags"].append(StateTag.NeedsIdentification)
 
         if len(item_effects) > 0:
             item["item_effects"] = {}

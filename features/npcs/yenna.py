@@ -5,7 +5,6 @@ import discord
 import re
 
 from discord import Embed
-from discord.ext import tasks
 from strenum import StrEnum
 from features.dueling import Dueling
 from features.equipment import Equipment
@@ -13,7 +12,7 @@ from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, ShatteringStormIII, SilkspeakingI, ThunderingTorrentIII, VitalityTransferIII
-from features.shared.enums import ClassTag
+from features.shared.enums import ClassTag, StateTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -474,7 +473,7 @@ class YennaView(discord.ui.View):
         inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
-        filtered_indices = inventory.filter_inventory_slots([ClassTag.Misc.NeedsIdentification])
+        filtered_indices = inventory.filter_inventory_slots([StateTag.NeedsIdentification])
         filtered_items = [inventory_slots[i] for i in filtered_indices]
 
         page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]

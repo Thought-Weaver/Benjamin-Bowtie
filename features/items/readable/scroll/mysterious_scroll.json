@@ -6,7 +6,7 @@
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Readable", "Scroll", "Needs_Identification"],
-    "state_tags": [],
+    "class_tags": ["Readable", "Scroll"],
+    "state_tags": ["Needs_Identification"],
     "count": 1
 }

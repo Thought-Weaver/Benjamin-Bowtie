@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import json
 
-from aenum import Enum
 from random import randint
 from strenum import StrEnum
 
 from features.shared.attributes import Attributes
 from features.shared.constants import WEAPON_OVERLEVELED_DEBUFF
 from features.shared.effect import ConditionType, EffectType, ItemEffects
-from features.shared.enums import ClassTag
+from features.shared.enums import ClassTag, StateTag
 from types import MappingProxyType
 
 from typing import List
@@ -43,10 +42,6 @@ class Rarity(StrEnum):
     def __geq__(self, rarity: Rarity) -> bool:
         ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Cursed, Rarity.Artifact, Rarity.Unknown]
         return ordering.index(self) >= ordering.index(rarity)
-
-
-class StateTag(Enum):
-    pass
 
 
 class ItemKey(StrEnum):
@@ -3277,7 +3272,7 @@ class Item():
 
         display_string += "\n\n"
 
-        if ClassTag.Misc.NeedsIdentification in self._class_tags:
+        if StateTag.NeedsIdentification in self._state_tags:
             display_string += "???\n\n*Needs Identification*"
         
         if self._armor_stats is not None:

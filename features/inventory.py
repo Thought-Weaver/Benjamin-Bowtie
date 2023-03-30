@@ -4,7 +4,7 @@ import discord
 
 from discord.embeds import Embed
 from features.house.recipe import LOADED_RECIPES
-from features.shared.enums import ClassTag
+from features.shared.enums import ClassTag, StateTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -109,14 +109,15 @@ class Inventory():
     def get_inventory_slots(self):
         return self._inventory_slots
     
-    def filter_inventory_slots(self, tags: List[ClassTag], player_level: int | None=None, require_enchantable_equipment=False, require_craftable=False):
+    def filter_inventory_slots(self, tags: List[ClassTag | StateTag], player_level: int | None=None, require_enchantable_equipment=False, require_craftable=False):
         item_indices: List[int] = []
         for i, item in enumerate(self._inventory_slots):
             item_class_tags: List[ClassTag] = item.get_class_tags()
-            if any(tag in item_class_tags for tag in tags):
+            item_state_tags: List[StateTag] = item.get_state_tags()
+            if any(tag in [*item_class_tags, *item_state_tags] for tag in tags):
                 if player_level is not None and player_level < item.get_level_requirement():
                     continue
-                if require_enchantable_equipment and ClassTag.Equipment.Equipment in item.get_class_tags() and len(item.get_altering_item_keys()) == 0:
+                if require_enchantable_equipment and ClassTag.Equipment.Equipment in item_class_tags and len(item.get_altering_item_keys()) == 0:
                     continue
                 if require_craftable:
                     found = False

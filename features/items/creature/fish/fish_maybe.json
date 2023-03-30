@@ -6,7 +6,7 @@
     "rarity": "Epic",
     "description": "",
     "flavor_text": "Is it staring at you?",
-    "class_tags": ["Creature", "Needs_Identification"],
-    "state_tags": [],
+    "class_tags": ["Creature"],
+    "state_tags": ["Needs_Identification"],
     "count": 1
 }

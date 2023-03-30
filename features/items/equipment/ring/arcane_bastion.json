@@ -8,10 +8,9 @@
     "flavor_text": "Passed around by less-than-honorable students to help get ahead on their classes.",
     "class_tags": [
         "Equipment",
-        "Ring",
-        "Needs_Identification"
+        "Ring"
     ],
-    "state_tags": [],
+    "state_tags": ["Needs_Identification"],
     "count": 1,
     "level_requirement": 30,
     "altering_item_keys": [

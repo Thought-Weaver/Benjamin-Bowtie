@@ -83,9 +83,10 @@ class ClassTag(Enum):
     @skip
     class Misc(StrEnum):
         IsUnique = "Is_Unique"
-        NeedsIdentification = "Needs_Identification"
         Junk = "Junk"
 
+class StateTag(StrEnum):
+    NeedsIdentification = "Needs_Identification"
 
 class HouseRoom(StrEnum):
     Unknown = "Unknown"
