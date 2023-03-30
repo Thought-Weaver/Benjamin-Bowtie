@@ -374,7 +374,7 @@ class Dueling():
             return (
                 damage_dealt + additional_dmg,
                 f"+{additional_dmg} damage from {source_str}"
-            )            
+            )
 
         if item_effect.effect_type == EffectType.DmgBuffLegends:
             if other_entity.get_dueling().is_legendary:
