@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 class Crush(Ability):
     def __init__(self):
         super().__init__(
-            icon="\u2620",
+            icon="\u2620\uFE0F",
             name="Crush",
             class_key=ExpertiseClass.Guardian,
             description="Deal 10% of an enemy's max health as damage to them.",
