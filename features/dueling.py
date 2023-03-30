@@ -1523,6 +1523,10 @@ class Dueling():
             self_entity.get_expertise().restore_mana(restoration)
             return "{1}" + f" restored {restoration} mana from {item.get_full_name()}"
 
+        if item_effect.effect_type == EffectType.Damage:
+            damage_dealt = target_entity.get_expertise().damage(item_effect.effect_value, target_entity.get_dueling(), percent_reduct=target_entity.get_dueling().get_total_percent_dmg_reduct(), ignore_armor=False)
+            return "{0}" + f" dealt {damage_dealt} damage to " + "{1}" + f" using {item.get_full_name()}"
+        
         return ""
 
 # -----------------------------------------------------------------------------
