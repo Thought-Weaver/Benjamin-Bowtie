@@ -1596,7 +1596,7 @@ class Dueling():
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({target_dueling.armor - org_armor} Armor)" if target_dueling.armor - org_armor < 0 else ""
 
-            result_strs.append("{0}" + f" dealt {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str} damage to " + "{1}")
+            result_strs.append("{0}" + f" dealt {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str} damage to " + "{1}" + f" from {item.get_full_name()}")
 
             return "\n".join(result_strs)
         
