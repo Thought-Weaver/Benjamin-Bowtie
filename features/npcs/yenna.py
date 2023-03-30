@@ -512,12 +512,11 @@ class YennaView(discord.ui.View):
                 )
             )
 
+        self._selected_item.get_state_tags().remove(StateTag.NeedsIdentification)
+
         if ClassTag.Equipment.Equipment in self._selected_item.get_class_tags():
-            # TODO: Implement this when random items based on rarity happens
-            # inventory.remove_coins(self._IDENTIFY_COST)
-            # inventory.remove_item(self._selected_item_index)
-            # Then add a new item randomly generated based on the selected item's rarity
-            pass
+            inventory.remove_coins(self._IDENTIFY_COST)
+            return Embed(title="A Precious Artifact!", description=f"\"An exceptional item... I can only wonder where you found it.\"\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{self._selected_item}")
         
         if self._selected_item.get_key() == ItemKey.MysteriousScroll:
             return self._yenna.identify_scroll(player, self._selected_item_index, self._user.display_name, self._IDENTIFY_COST)
