@@ -6,8 +6,6 @@ import random
 from discord import Embed
 from strenum import StrEnum
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
-from features.shared.nextbutton import NextButton
-from features.shared.prevbutton import PrevButton
 from features.stories.dungeon_run import RoomSelectionView
 
 from typing import TYPE_CHECKING, List
@@ -36,7 +34,7 @@ class PrevButton(discord.ui.Button):
             return
         
         view: MysteriousMerchantView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.prev_page()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
@@ -50,7 +48,7 @@ class NextButton(discord.ui.Button):
             return
         
         view: MysteriousMerchantView = self.view
-        if interaction.user.id != view.get_group_leader().id:
+        if interaction.user.id == view.get_group_leader().id:
             response = view.next_page()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 

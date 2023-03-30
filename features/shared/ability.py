@@ -2602,7 +2602,7 @@ class WhirlpoolII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
-            base_damage = randint(10, 15)
+            base_damage = randint(15, 25)
 
             damage = base_damage
             damage = min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
@@ -2753,7 +2753,7 @@ class WhirlpoolIII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
-            base_damage = randint(10, 15)
+            base_damage = randint(3000, 3000)
 
             damage = base_damage
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)

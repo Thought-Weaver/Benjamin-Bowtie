@@ -47,6 +47,7 @@ class ForestFinalWordsView(discord.ui.View):
         return info_str
 
     def get_initial_embed(self):
+        post_run_info_str: str = self._generate_run_info()
         return Embed(title="The Journey Home", description=f"With the forest freed of the evil power that grasped it, you all begin the long journey back to the village. Your party is victorious!\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{post_run_info_str}")
 
     def get_bot(self):

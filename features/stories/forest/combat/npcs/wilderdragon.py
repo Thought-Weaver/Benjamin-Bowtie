@@ -32,7 +32,7 @@ class VoidBreath(Ability):
             flavor_text="",
             mana_cost=100,
             cooldown=8,
-            num_targets=-2,
+            num_targets=-1,
             level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
@@ -203,7 +203,7 @@ class TerrifyingRoar(Ability):
             for se_key in POSITIVE_STATUS_EFFECTS_ON_SELF:
                 for se in target.get_dueling().status_effects:
                     if se.key == se_key:
-                        removed_se_strs.add(se.key)
+                        removed_se_strs.add(se.name)
                 target.get_dueling().status_effects = list(filter(lambda se: se.key != se_key, target.get_dueling().status_effects))
             
             if len(removed_se_strs) > 0:
@@ -260,8 +260,8 @@ class Wilderdragon(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.ShamblersBones))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.OffHand, LOADED_ITEMS.get_new_item(ItemKey.ShamblersForm))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.WilderdragonClaws))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.OffHand, LOADED_ITEMS.get_new_item(ItemKey.FormOfFlameAndVoid))
 
         self._expertise.update_stats(self.get_combined_attributes())
 

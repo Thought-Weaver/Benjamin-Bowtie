@@ -90,7 +90,7 @@ class DeathWish(Ability):
 
         debuff = DmgVulnerability(
             turns_remaining=2,
-            value=0.01 * targets[0].get_expertise().hp / targets[0].get_expertise().max_hp,
+            value=round(0.01 * targets[0].get_expertise().hp / targets[0].get_expertise().max_hp, 2),
             source_str=self.get_icon_and_name()
         )
 
