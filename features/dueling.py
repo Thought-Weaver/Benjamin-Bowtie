@@ -2457,7 +2457,7 @@ class DuelView(discord.ui.View):
                             item_winner.get_inventory().add_item(new_item)
                             winner_str += f"{self.get_name(item_winner)} received {new_item.get_full_name_and_count()}\n"
 
-            if winner_str != "":
+            if any(isinstance(entity, Player) for entity in duel_result.winners):
                 return Embed(title="Duel Finished", description=f"You are victorious:\n\n{winner_str}")
             else:
                 return Embed(title="Duel Finished", description=f"You have been vanquished!")

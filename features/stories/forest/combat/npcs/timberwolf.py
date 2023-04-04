@@ -9,7 +9,7 @@ from features.equipment import Equipment
 from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import Ability, BidedAttackIII, SecondWindIII
+from features.shared.ability import Ability
 from features.shared.constants import BLEED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
