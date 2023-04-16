@@ -46,8 +46,26 @@ class ForestFinalWordsView(discord.ui.View):
         )
         return info_str
 
+    def _update_player_stats(self):
+        for user in self._users:
+            player = self._get_player(user.id)
+            ps = player.get_stats().dungeon_runs
+
+            ps.forest_rooms_explored += self._dungeon_run.rooms_explored
+            ps.forest_combat_encounters += self._dungeon_run.combat_encounters
+            ps.forest_treasure_rooms_encountered += self._dungeon_run.treasure_rooms_encountered
+            ps.forest_shopkeeps_encountered += self._dungeon_run.shopkeeps_encountered
+            ps.forest_events_encountered += self._dungeon_run.events_encountered
+            ps.forest_rests_taken += self._dungeon_run.rests_taken
+            ps.forest_bosses_defeated += self._dungeon_run.bosses_defeated
+            ps.forest_adventures_won += 1
+            ps.forest_adventures_played += 1
+
     def get_initial_embed(self):
         post_run_info_str: str = self._generate_run_info()
+
+        self._update_player_stats()
+
         return Embed(title="The Journey Home", description=f"With the forest freed of the terrifying power that grasped it, you all begin the long journey back to the village. Your party is victorious!\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{post_run_info_str}")
 
     def get_bot(self):

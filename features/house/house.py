@@ -303,7 +303,7 @@ class HouseView(discord.ui.View):
         player_expertise.mana = player_expertise.max_mana
 
         companion_result_str: str = ""
-        if random.random() < 0.0002:
+        if random.random() < 0.001:
             companions = player.get_companions()
             if random.random() < 0.5:
                 if CompanionKey.VoidseenCat not in companions.companions.keys():

@@ -19,6 +19,7 @@ class StatCategory(StrEnum):
     Garden = "garden"
     Crafting = "crafting"
     Companions = "companions"
+    Adventures = "adventures"
 
 # Based on the command names; the user will do b!stats [name] or omit the name
 # and get all of them at once. I'm using a class to help with deserializing the
@@ -481,7 +482,50 @@ class Stats():
 
             self.companion_battles_fought = state.get("companion_battles_fought", 0)
             self.companion_battles_won = state.get("companion_battles_won", 0)
-            self.companion_battles_tied = state.get("companion_battles_tied", 0)            
+            self.companion_battles_tied = state.get("companion_battles_tied", 0)
+
+    class DungeonRunStats():
+        def __init__(self):
+            self.forest_rooms_explored: int = 0
+            self.forest_combat_encounters: int = 0
+            self.forest_treasure_rooms_encountered: int = 0
+            self.forest_shopkeeps_encountered: int = 0
+            self.forest_events_encountered: int = 0
+            self.forest_rests_taken: int = 0
+            self.forest_bosses_defeated: int = 0
+            self.forest_adventures_won: int = 0
+            self.forest_adventures_played: int = 0
+
+        def get_name(self):
+            return "Adventure Stats"
+
+        def get_stats_str(self):
+            return (
+                f"**Forest:**\n\n"
+                f"Rooms Explored: *{self.forest_rooms_explored}*\n"
+                f"Combat Encounters: *{self.forest_combat_encounters}*\n"
+                f"Treasure Rooms Found: *{self.forest_treasure_rooms_encountered}*\n"
+                f"Shopkeepers Met: *{self.forest_shopkeeps_encountered}*\n"
+                f"Events Encountered: *{self.forest_events_encountered}*\n"
+                f"Rests Taken: *{self.forest_rests_taken}*\n"
+                f"Bosses Defeated: *{self.forest_bosses_defeated}*\n"
+                f"Adventures Won: *{self.forest_adventures_won}*\n"
+                f"Adventures Played: *{self.forest_adventures_played}*"
+            )
+
+        def __getstate__(self):
+            return self.__dict__
+
+        def __setstate__(self, state: dict):
+            self.forest_rooms_explored = state.get("forest_rooms_explored", 0)
+            self.forest_combat_encounters = state.get("forest_combat_encounters", 0)
+            self.forest_treasure_rooms_encountered = state.get("forest_treasure_rooms_encountered", 0)
+            self.forest_shopkeeps_encountered = state.get("forest_shopkeeps_encountered", 0)
+            self.forest_events_encountered = state.get("forest_events_encountered", 0)
+            self.forest_rests_taken = state.get("forest_rests_taken", 0)
+            self.forest_bosses_defeated = state.get("forest_bosses_defeated", 0)
+            self.forest_adventures_won = state.get("forest_adventures_won", 0)
+            self.forest_adventures_played = state.get("forest_adventures_played", 0)
 
     def __init__(self):
         self.fish = self.FishStats()
@@ -493,6 +537,7 @@ class Stats():
         self.garden = self.GardenStats()
         self.crafting = self.CraftingStats()
         self.companions = self.CompanionsStats()
+        self.dungeon_runs = self.DungeonRunStats()
 
     def category_to_class(self, category: StatCategory):
         if category == category.Fish:
@@ -513,11 +558,13 @@ class Stats():
             return self.crafting
         if category == category.Companions:
             return self.companions
+        if category == category.Adventures:
+            return self.dungeon_runs
 
     def list(self):
         # Can simply change the order of this list if I want the pages
         # to be organized differently.
-        return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell, self.dueling, self.garden, self.crafting, self.companions]
+        return [self.fish, self.mail, self.market, self.knucklebones, self.wishingwell, self.dueling, self.garden, self.crafting, self.companions, self.dungeon_runs]
 
     def __getstate__(self):
         return self.__dict__
@@ -532,6 +579,7 @@ class Stats():
         self.garden = state.get("garden", self.GardenStats())
         self.crafting = state.get("crafting", self.CraftingStats())
         self.companions = state.get("companions", self.CompanionsStats())
+        self.dungeon_runs = state.get("dungeon_runs", self.DungeonRunStats())
 
 
 class StatView(discord.ui.View):

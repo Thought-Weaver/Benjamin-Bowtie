@@ -103,8 +103,25 @@ class ForestDefeatView(discord.ui.View):
         )
         return info_str
 
+    def _update_player_stats(self):
+        for user in self._users:
+            player = self._get_player(user.id)
+            ps = player.get_stats().dungeon_runs
+
+            ps.forest_rooms_explored += self._dungeon_run.rooms_explored
+            ps.forest_combat_encounters += self._dungeon_run.combat_encounters
+            ps.forest_treasure_rooms_encountered += self._dungeon_run.treasure_rooms_encountered
+            ps.forest_shopkeeps_encountered += self._dungeon_run.shopkeeps_encountered
+            ps.forest_events_encountered += self._dungeon_run.events_encountered
+            ps.forest_rests_taken += self._dungeon_run.rests_taken
+            ps.forest_bosses_defeated += self._dungeon_run.bosses_defeated
+            ps.forest_adventures_played += 1
+
     def get_initial_embed(self):
         post_run_info_str: str = self._generate_run_info()
+        
+        self._update_player_stats()
+        
         return Embed(title="Flee the Forest", description=f"With your party defeated, you all flee the forest barely alive.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{post_run_info_str}")
 
     def any_in_duels_currently(self):
@@ -209,7 +226,7 @@ class ForestRestView(discord.ui.View):
         player_expertise.restore_mana(int(player_expertise.max_mana / 2))
 
         companion_result_str: str = ""
-        if random.random() < 0.0002:
+        if random.random() < 0.001:
             companions = player.get_companions()
             if random.random() < 0.5:
                 if CompanionKey.VoidseenCat not in companions.companions.keys():
