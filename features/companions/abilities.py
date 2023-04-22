@@ -2255,7 +2255,7 @@ class SneakyManeuversI(Ability):
             icon="\uD83D\uDCB0",
             name="Sneaky Maneuvers I",
             class_key=ExpertiseClass.Merchant,
-            description="Gain 1 coin.",
+            description="Gain 1 coin for each enemy.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -2267,7 +2267,7 @@ class SneakyManeuversI(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        adjusted_coins: int = 1
+        adjusted_coins: int = 1 * len(targets)
         caster.get_inventory().add_coins(adjusted_coins)
         
         tarnished_value = 0
@@ -2313,7 +2313,7 @@ class SneakyManeuversII(Ability):
             icon="\uD83D\uDCB0",
             name="Sneaky Maneuvers II",
             class_key=ExpertiseClass.Merchant,
-            description="Gain 2 coins.",
+            description="Gain 2 coins for each enemy.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -2325,7 +2325,7 @@ class SneakyManeuversII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        adjusted_coins: int = 2
+        adjusted_coins: int = 2 * len(targets)
         caster.get_inventory().add_coins(adjusted_coins)
 
         tarnished_value = 0
@@ -2371,7 +2371,7 @@ class SneakyManeuversIII(Ability):
             icon="\uD83D\uDCB0",
             name="Sneaky Maneuvers III",
             class_key=ExpertiseClass.Merchant,
-            description="Gain 3 coins.",
+            description="Gain 3 coins for each enemy.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -2383,7 +2383,7 @@ class SneakyManeuversIII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        adjusted_coins: int = 3
+        adjusted_coins: int = 3 * len(targets)
         caster.get_inventory().add_coins(adjusted_coins)
 
         tarnished_value = 0
@@ -2429,7 +2429,7 @@ class SneakyManeuversIV(Ability):
             icon="\uD83D\uDCB0",
             name="Sneaky Maneuvers IV",
             class_key=ExpertiseClass.Merchant,
-            description="Gain 4 coins.",
+            description="Gain 4 coins for each enemy.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -2441,7 +2441,7 @@ class SneakyManeuversIV(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        adjusted_coins: int = 4
+        adjusted_coins: int = 4 * len(targets)
         caster.get_inventory().add_coins(adjusted_coins)
 
         tarnished_value = 0
@@ -2487,7 +2487,7 @@ class SneakyManeuversV(Ability):
             icon="\uD83D\uDCB0",
             name="Sneaky Maneuvers V",
             class_key=ExpertiseClass.Merchant,
-            description="Gain 5 coins.",
+            description="Gain 5 coins for each enemy.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -2499,7 +2499,7 @@ class SneakyManeuversV(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        adjusted_coins: int = 5
+        adjusted_coins: int = 5 * len(targets)
         caster.get_inventory().add_coins(adjusted_coins)
 
         tarnished_value = 0
