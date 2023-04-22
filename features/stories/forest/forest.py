@@ -226,7 +226,7 @@ class ForestRestView(discord.ui.View):
         player_expertise.restore_mana(int(player_expertise.max_mana / 2))
 
         companion_result_str: str = ""
-        if random.random() < 0.001:
+        if random.random() < 0.001 + (0.001 * player.get_combined_attributes().luck) / 10:
             companions = player.get_companions()
             if random.random() < 0.5:
                 if CompanionKey.VoidseenCat not in companions.companions.keys():

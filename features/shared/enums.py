@@ -109,7 +109,7 @@ class CompanionKey(StrEnum):
     FlyingFox = "FlyingFox"
     GiantTowerBeetle = "GiantTowerBeetle"
     GnashtuskBoar = "GnashtuskBoar"
-    MinatureBoneGolem = "MiniatureBoneGolem"
+    MiniatureBoneGolem = "MiniatureBoneGolem"
     PaleWalkerSpider = "PaleWalkerSpider"
     PondloverFrog = "PondloverFrog"
     ScuttledarkScorpion = "ScuttledarkScorpion"

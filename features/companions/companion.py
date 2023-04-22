@@ -730,7 +730,7 @@ class MiniatureBoneGolemCompanion(Companion):
         super().__init__(
             icon="\uD83D\uDC80",
             display_name="Miniature Bone Golem",
-            key=CompanionKey.MinatureBoneGolem,
+            key=CompanionKey.MiniatureBoneGolem,
             rarity=Rarity.Legendary,
             value=2500,
             has_active_ability=True,

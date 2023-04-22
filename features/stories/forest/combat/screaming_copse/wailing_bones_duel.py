@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import discord
+import features.companions.companion
 import features.stories.forest.forest as forest
+import random
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from features.dueling import DuelView
+from features.shared.enums import CompanionKey
 from features.stories.dungeon_run import RoomSelectionView
 from features.stories.forest.combat.npcs.wailing_bones import WailingBones
 
@@ -54,8 +57,24 @@ class VictoryView(discord.ui.View):
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
+    def _find_companion(self):
+        companion_result_str: str = ""
+        for user in self._users:
+            player = self._get_player(user.id)
+            if random.random() < 0.01 + (0.01 * player.get_combined_attributes().luck) / 10:
+                companions = player.get_companions()
+                if CompanionKey.MiniatureBoneGolem not in companions.companions.keys():
+                    companions.companions[CompanionKey.MiniatureBoneGolem] = features.companions.companion.MiniatureBoneGolemCompanion()
+                    companions.companions[CompanionKey.MiniatureBoneGolem].set_id(player.get_id())
+                    companion_result_str += f"\n\nA spike a fear runs through your system as the bones begin to move again, but instead a smaller creature is formed from the remaining pile: a miniature bone golem! Unlike the one you just faced, it seems rather interested in joining your adventure. It's been added as a companion in b!companions."
+
+                    player.get_stats().companions.companions_found += 1
+        
+        return companion_result_str
+
     def get_initial_embed(self):
-        return Embed(title="Silenced at Last", description=f"With the wailing bones vanquished, the rest of the woods await.")
+        companion_result_str: str = self._find_companion()
+        return Embed(title="Silenced at Last", description=f"With the wailing bones vanquished, the rest of the woods await.{companion_result_str}")
 
     def _display_initial_buttons(self):
         self.clear_items()

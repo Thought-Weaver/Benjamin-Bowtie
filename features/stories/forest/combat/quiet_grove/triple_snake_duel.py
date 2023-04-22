@@ -61,7 +61,7 @@ class VictoryView(discord.ui.View):
         companion_result_str: str = ""
         for user in self._users:
             player = self._get_player(user.id)
-            if random.random() < 0.25:
+            if random.random() < 0.25 + (0.01 * player.get_combined_attributes().luck) / 10:
                 companions = player.get_companions()
                 if CompanionKey.VerdantSlitherer not in companions.companions.keys():
                     companions.companions[CompanionKey.VerdantSlitherer] = features.companions.companion.VerdantSlithererCompanion()

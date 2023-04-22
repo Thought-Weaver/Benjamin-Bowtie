@@ -385,7 +385,7 @@ class Adventures(commands.Cog):
             player_stats.fish.epic_fish_caught += 1
         
         companion_result_str: str = ""
-        if fishing_result is not None and fishing_result.get_key() == ItemKey.Crab and random.random() < 0.1:
+        if fishing_result is not None and fishing_result.get_key() == ItemKey.Crab and random.random() < 0.1 + (LUCK_MOD * total_luck) / 10:
             companions = author_player.get_companions()
             if CompanionKey.TidewaterCrab not in companions.companions.keys():
                 companions.companions[CompanionKey.TidewaterCrab] = TidewaterCrabCompanion()
@@ -688,7 +688,7 @@ class Adventures(commands.Cog):
         # 99.5% base chance of getting nothing
         if rand_val == 0:
             companion_result_str: str = ""
-            if random.random() < 0.004:
+            if random.random() < 0.004 + (LUCK_MOD * total_luck) / 10:
                 companions = author_player.get_companions()
                 if CompanionKey.ShadowfootRaccoon not in companions.companions.keys():
                     companions.companions[CompanionKey.ShadowfootRaccoon] = ShadowfootRaccoonCompanion()
@@ -1053,7 +1053,7 @@ class Adventures(commands.Cog):
             return
 
         companion_result_str: str = ""
-        if random.random() < 0.01:
+        if random.random() < 0.01 + (0.01 * author_player.get_combined_attributes().luck) / 10:
             companions = author_player.get_companions()
             if CompanionKey.BlueFlitterwingButterfly not in companions.companions.keys():
                 companions.companions[CompanionKey.BlueFlitterwingButterfly] = BlueFlitterwingButterflyCompanion()
