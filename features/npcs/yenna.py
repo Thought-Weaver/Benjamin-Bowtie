@@ -512,9 +512,19 @@ class YennaView(discord.ui.View):
                 )
             )
 
-        self._selected_item.get_state_tags().remove(StateTag.NeedsIdentification)
-
         if ClassTag.Equipment.Equipment in self._selected_item.get_class_tags():
+            single_item = self._selected_item.remove_amount(1)
+            if single_item is None:
+                return Embed(
+                    title="Identify Item",
+                    description=(
+                        f"You have {inventory.get_coins_str()}.\n\n"
+                        "Navigate through your items using the Prev and Next buttons.\n\n"
+                        "*Error: Something about that item changed or it's no longer available.*"
+                    )
+                )
+
+            single_item.get_state_tags().remove(StateTag.NeedsIdentification)
             inventory.remove_coins(self._IDENTIFY_COST)
             return Embed(title="A Precious Artifact!", description=f"\"An exceptional item... I can only wonder where you found it.\"\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{self._selected_item}")
         
