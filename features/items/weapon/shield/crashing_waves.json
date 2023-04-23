@@ -9,8 +9,7 @@
     "class_tags": [
         "Equipment",
         "Shield",
-        "Spear",
-        "Main_Hand"
+        "Off_Hand"
     ],
     "state_tags": ["Needs_Identification"],
     "count": 1,

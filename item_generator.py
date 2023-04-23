@@ -27,7 +27,7 @@ CLASS_TAGS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[ClassTag.Weapon | Cl
     ClassTag.Weapon.Knuckles: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Knuckles, ClassTag.Equipment.MainHand],
     ClassTag.Weapon.Spear: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Spear, ClassTag.Equipment.MainHand],
     ClassTag.Weapon.Staff: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Staff, ClassTag.Equipment.MainHand],
-    ClassTag.Weapon.Shield: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Shield, ClassTag.Weapon.Spear, ClassTag.Equipment.MainHand],
+    ClassTag.Weapon.Shield: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Shield, ClassTag.Equipment.OffHand],
 
     ClassTag.Equipment.Helmet: [ClassTag.Equipment.Equipment, ClassTag.Equipment.Helmet],
     ClassTag.Equipment.ChestArmor: [ClassTag.Equipment.Equipment, ClassTag.Equipment.ChestArmor],
