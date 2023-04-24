@@ -69,7 +69,7 @@ class Swipe(Ability):
             icon="\uD83C\uDF2A\uFE0F",
             name="Swipe",
             class_key=ExpertiseClass.Guardian,
-            description="Swipe with your claws, dealing 150% of your weapon damage to all enemies.",
+            description="Swipe with your claws, dealing 100% of your weapon damage to all enemies.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -92,7 +92,7 @@ class Swipe(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = ceil(base_damage * 1.5)
+        damage = base_damage
         damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -172,8 +172,8 @@ class DeepwoodBear(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(70, ExpertiseClass.Guardian)
-        self._expertise.constitution = 45
+        self._expertise.add_xp_to_class_until_level(65, ExpertiseClass.Guardian)
+        self._expertise.constitution = 40
         self._expertise.strength = 22
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0
