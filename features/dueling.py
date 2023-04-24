@@ -2748,6 +2748,8 @@ class DuelView(discord.ui.View):
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
             damage += bonus_damage
 
+            final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
+
             # Doing these after damage computation because the player doesn't get an indication the effect occurred
             # until the Continue screen, so it feels slightly more natural to have them not affect damage dealt. I
             # may reverse this decision later.
@@ -2799,8 +2801,9 @@ class DuelView(discord.ui.View):
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            piercing_damage_dealt = target_expertise.damage(final_piercing_dmg, target_dueling, percent_dmg_reduct, ignore_armor=True)
 
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 or piercing_damage_dealt > 0:
                 result_strs += [s.format(attacker_name, target_name) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, attacker, target, 0, 1, self._is_ally(target))]
                 for item in target_equipment.get_all_equipped_items():
                     other_item_effects = item.get_item_effects()
@@ -2822,9 +2825,9 @@ class DuelView(discord.ui.View):
                             if result_str != "":
                                 result_strs.append(result_str.format(attacker_name, target_name))
 
-            attacker.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
-            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
+            attacker.get_stats().dueling.damage_dealt += actual_damage_dealt + piercing_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt + piercing_damage_dealt
+            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt + final_piercing_dmg - piercing_damage_dealt
 
             dmg_reflect: float = 0
             for se in target_dueling.status_effects:
@@ -2862,8 +2865,9 @@ class DuelView(discord.ui.View):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({target_dueling.armor - org_armor} Armor)" if target_dueling.armor - org_armor < 0 else ""
+            piercing_str = f" (+{piercing_damage_dealt} piercing damage)" if piercing_damage_dealt > 0 else ""
 
-            result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage to {target_name}{generating_string}")
+            result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage to {target_name}{generating_string}")
         
             attacker.get_stats().dueling.attacks_done += 1
         

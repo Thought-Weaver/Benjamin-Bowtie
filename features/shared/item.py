@@ -3273,17 +3273,21 @@ class Item():
             display_string += " / " + ", ".join(equipment_tags)
 
         display_string += "\n\n"
+        any_strs_before_effects = False
 
         if StateTag.NeedsIdentification in self._state_tags:
             display_string += "???\n\n*Needs Identification*"
+            any_strs_before_effects = True
         
         if self._armor_stats is not None:
             has_any_stats = True
             display_string += f"{self._armor_stats.get_armor_amount()} Armor\n"
+            any_strs_before_effects = True
 
         if self._weapon_stats is not None:
             has_any_stats = True
             display_string += f"{self._weapon_stats.get_range_str()} {self._weapon_stats.get_num_targets_str()}\n"
+            any_strs_before_effects = True
 
         if self._consumable_stats is not None:
             has_any_stats = True
@@ -3297,13 +3301,16 @@ class Item():
             if self._consumable_stats._num_targets > 1:
                 target_str = f"1-{self._consumable_stats._num_targets} Targets\n"
             display_string += target_str
+            any_strs_before_effects = True
 
         if self._item_effects is not None:
             item_effects_str = str(self._item_effects)
             # There are some cases where I'd rather use a custom description
             if item_effects_str != "":
                 has_any_stats = True
-                display_string += f"\n{self._item_effects}\n"
+                if any_strs_before_effects:
+                    display_string += "\n"
+                display_string += f"{self._item_effects}\n"
 
         if has_any_stats:
             display_string += "\n"

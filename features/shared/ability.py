@@ -145,7 +145,7 @@ class Ability():
                     if se.key == StatusEffectKey.AttrBuffOnDamage:
                         assert(isinstance(se, AttrBuffOnDamage))
                         caster.get_dueling().status_effects += list(map(lambda s: s.set_trigger_first_turn(False), se.on_being_hit_buffs))
-                        result_str = "\n{0}" + f"gained {se.get_buffs_str()}"
+                        result_str = "\n{0}" + f" gained {se.get_buffs_str()}"
                 caster.get_expertise().update_stats(caster.get_combined_attributes())
 
                 return f"You took {damage} damage to cast this from Contract: Mana to Blood" + result_str

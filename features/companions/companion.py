@@ -176,7 +176,7 @@ class Companion():
         display_string += f"Level: {self._level} *({self.get_xp_to_level(self._level + 1) - self._xp} xp to next)*\n"
         display_string += f"{self.get_tier_str()} *({self.get_points_to_next_tier_str()})*"
 
-        display_string += "\n\n﹋﹋﹋﹋﹋﹋﹋﹋\n"
+        display_string += "\n\n•••••••••••••••••••••••••••••••\n"
         
         dueling_ability = self.get_dueling_ability(effect_category=None)
         if self._has_active_ability:
@@ -185,7 +185,7 @@ class Companion():
             display_string += "**Passive Dueling Ability**\n\n"
         display_string += "᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n" + str(dueling_ability) + "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
 
-        display_string += "\n\n﹋﹋﹋﹋﹋﹋﹋﹋\n"
+        display_string += "\n\n•••••••••••••••••••••••••••••••\n"
 
         pet_battle_entity = self.get_pet_battle_entity()
         expertise = pet_battle_entity.get_expertise()
@@ -199,7 +199,7 @@ class Companion():
             f"Memory: {expertise.memory}"
         )
 
-        display_string += "\n\n﹋﹋﹋﹋﹋﹋﹋﹋\n"
+        display_string += "\n\n•••••••••••••••••••••••••••••••\n"
 
         abilities = []
         if use_base_abilities:
@@ -208,8 +208,10 @@ class Companion():
             abilities = pet_battle_entity.get_dueling().abilities
         
         display_string += "**Companion Battle Abilities**\n\n" + "\n".join([f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(ability)}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆" for ability in abilities])
+        if len(abilities) == 0:
+            display_string += "*Level up your companion and it'll learn new abilities you can use in companion battles!*"
 
-        display_string += "\n\n﹋﹋﹋﹋﹋﹋﹋﹋\n"
+        display_string += "\n\n•••••••••••••••••••••••••••••••\n"
 
         display_string += (
             f"**Weapon**\n\n"

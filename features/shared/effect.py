@@ -628,7 +628,8 @@ class Effect():
         # For now, specifically skip ResurrectOnce, since it's in the item description.
 
         if self.effect_time > 0:
-            display_string += f" for {self.effect_time} turns"
+            turn_str = "turn" if self.effect_time == 1 else "turns"
+            display_string += f" for {self.effect_time} {turn_str}"
 
         # TODO: This does assume all conditions are conjunctive. I should devise a
         # neat way to do disjunctive conditions in the future.
