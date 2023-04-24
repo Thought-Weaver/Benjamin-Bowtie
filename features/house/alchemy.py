@@ -301,7 +301,7 @@ class ConfirmRecipeButton(discord.ui.Button):
 
 class ConfirmRecipeAllButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.green, label=f"Cook All", row=row)
+        super().__init__(style=discord.ButtonStyle.green, label=f"Alchemize All", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
