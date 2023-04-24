@@ -102,7 +102,7 @@ class Reform(Ability):
             description="Regenerate 5% of your max armor every turn for 5 turns.",
             flavor_text="",
             mana_cost=40,
-            cooldown=10,
+            cooldown=15,
             num_targets=0,
             level_requirement=20,
             target_own_group=True,
