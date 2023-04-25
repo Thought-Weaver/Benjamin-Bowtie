@@ -1915,6 +1915,8 @@ class DuelView(discord.ui.View):
 
         self._additional_info_string_data = ""
 
+        self._companion_abilities: Dict[str, Ability] = {}
+
         if not skip_init_updates:
             for entity in allies + enemies:
                 entity.get_dueling().is_in_combat = True
@@ -1929,6 +1931,7 @@ class DuelView(discord.ui.View):
                     companion_ability = companions.companions[companions.current_companion].get_dueling_ability(effect_category=None)
                     
                     if isinstance(companion_ability, Ability):
+                        self._companion_abilities[cur_entity.get_id()] = companion_ability
                         cur_entity.get_dueling().abilities.append(companion_ability)
                 
             if isinstance(cur_entity, Player) or self._companion_battle:
@@ -2207,15 +2210,9 @@ class DuelView(discord.ui.View):
 
     def _remove_companion_ability(self, entity: Player | NPC):
         if isinstance(entity, Player):
-            companions = entity.get_companions()
-            if companions.current_companion is not None:
-                companion_ability = companions.companions[companions.current_companion].get_dueling_ability(effect_category=None)
-                
-                if isinstance(companion_ability, Ability):
-                    try:
-                        entity.get_dueling().abilities.remove(companion_ability)
-                    except:
-                        pass
+            companion_ability = self._companion_abilities.get(entity.get_id())
+            if companion_ability is not None:
+                entity.get_dueling().abilities.remove(companion_ability)
 
     def get_victory_screen(self, duel_result: DuelResult):
         self.clear_items()
