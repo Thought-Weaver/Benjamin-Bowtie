@@ -2863,7 +2863,7 @@ class DuelView(discord.ui.View):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({target_dueling.armor - org_armor} Armor)" if target_dueling.armor - org_armor < 0 else ""
-            piercing_str = f" (+{piercing_damage_dealt} piercing damage)" if piercing_damage_dealt > 0 else ""
+            piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
             result_strs.append(f"{attacker_name} dealt {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage to {target_name}{generating_string}")
         
