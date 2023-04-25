@@ -2031,7 +2031,7 @@ class DuelView(discord.ui.View):
             for item_effect in item_effects.on_turn_end:
                 result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, previous_entity, self.get_name(previous_entity), is_turn_start=False, source_str=item.get_full_name())
                 if result_str != "":
-                    self._additional_info_string_data += result_str
+                    self._additional_info_string_data += result_str + "\n"
 
         if isinstance(previous_entity, Player):
             companions = previous_entity.get_companions()
@@ -2042,7 +2042,7 @@ class DuelView(discord.ui.View):
                 if isinstance(companion_effect, Effect):
                     result_str = previous_entity.get_dueling().apply_on_turn_start_or_end_effects(None, companion_effect, previous_entity, self.get_name(previous_entity), is_turn_start=False, source_str=current_companion.get_icon_and_name())
                     if result_str != "":
-                        self._additional_info_string_data += result_str
+                        self._additional_info_string_data += result_str + "\n"
 
         self._turn_index = (self._turn_index + 1) % len(self._turn_order)
         while self._turn_order[self._turn_index].get_expertise().hp == 0:
@@ -2063,7 +2063,7 @@ class DuelView(discord.ui.View):
             for item_effect in item_effects.on_turn_start:
                 result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(item, item_effect, entity, self.get_name(entity), is_turn_start=True, source_str=item.get_full_name())
                 if result_str != "":
-                    self._additional_info_string_data += result_str
+                    self._additional_info_string_data += result_str + "\n"
         
         if isinstance(entity, Player):
             companions = entity.get_companions()
@@ -2074,7 +2074,7 @@ class DuelView(discord.ui.View):
                 if isinstance(companion_effect, Effect):
                     result_str = entity.get_dueling().apply_on_turn_start_or_end_effects(None, companion_effect, entity, self.get_name(entity), is_turn_start=True, source_str=current_companion.get_icon_and_name())
                     if result_str != "":
-                        self._additional_info_string_data += result_str
+                        self._additional_info_string_data += result_str + "\n"
         
         start_damage: int = 0
         start_heals: int = 0

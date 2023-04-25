@@ -328,7 +328,7 @@ class PlayerCompanionsView(discord.ui.View):
         return Embed(
             title="Companions",
             description=(
-                f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{str(self._selected_companion)}\n\n"
+                f"•••••••••••••••••••••••••••••••\n{str(self._selected_companion)}\n"
                 "Navigate through your companions using the Prev and Next buttons."
             )
         )

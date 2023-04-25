@@ -218,7 +218,7 @@ class Companion():
             f"{pet_battle_entity.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)}"
         )
 
-        display_string += "\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
+        display_string += "\n\n•••••••••••••••••••••••••••••••"
 
         return display_string
 
