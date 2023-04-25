@@ -2584,6 +2584,7 @@ class DuelView(discord.ui.View):
                 taunt_target = se.forced_to_attack
                 break
         if taunt_target is not None:
+            self._intent = Intent.Attack
             self._selected_targets = [taunt_target]
             return self.do_action_on_selected_targets()
 
