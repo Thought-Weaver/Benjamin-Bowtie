@@ -5360,7 +5360,7 @@ class UnseenRichesI(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches I",
             class_key=ExpertiseClass.Merchant,
-            description="Generate coins equal to 25% of your total Luck. These coins are not added to your inventory.",
+            description="Generate coins equal to 25% of your total Luck. Half these coins are added to your inventory.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -5374,7 +5374,8 @@ class UnseenRichesI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
         adjusted_coins: int = int(0.25 * coins_to_add)
-        
+        caster.get_inventory().add_coins(int(0.5 * adjusted_coins))
+
         tarnished_value = 0
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.Tarnished:
@@ -5420,7 +5421,7 @@ class UnseenRichesII(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches II",
             class_key=ExpertiseClass.Merchant,
-            description="Generate coins equal to 50% of your total Luck. These coins are not added to your inventory.",
+            description="Generate coins equal to 50% of your total Luck. Half these coins are added to your inventory.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -5434,6 +5435,7 @@ class UnseenRichesII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
         adjusted_coins: int = int(0.5 * coins_to_add)
+        caster.get_inventory().add_coins(int(0.5 * adjusted_coins))
 
         tarnished_value = 0
         for se in caster.get_dueling().status_effects:
@@ -5480,7 +5482,7 @@ class UnseenRichesIII(Ability):
             icon="\uD83D\uDC8E",
             name="Unseen Riches III",
             class_key=ExpertiseClass.Merchant,
-            description="Generate coins equal to 75% of your total Luck. These coins are not added to your inventory.",
+            description="Generate coins equal to 75% of your total Luck. Half these coins are added to your inventory.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -5494,7 +5496,8 @@ class UnseenRichesIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         coins_to_add: int = caster.get_combined_attributes().luck
         adjusted_coins: int = int(0.75 * coins_to_add)
-        
+        caster.get_inventory().add_coins(int(0.5 * adjusted_coins))
+
         tarnished_value = 0
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.Tarnished:
