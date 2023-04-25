@@ -226,7 +226,16 @@ class Ability():
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
-
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
             org_armor = target_dueling.armor
@@ -280,7 +289,7 @@ class Ability():
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_ability_used_against_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         result_str = self.remove_mana_and_set_cd(caster)
@@ -314,13 +323,24 @@ class Ability():
                     if result_str != "":
                         on_attack_or_ability_effects_str += f"\n{result_str}"
 
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    _, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, 0, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             mapped_ses = list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
             final_se_strs = []
             for se in mapped_ses:
                 final_se_strs.append(target.get_dueling().add_status_effect_with_resist(se, target, i + 1))
             target.get_expertise().update_stats(target.get_combined_attributes())
 
-            non_empty_strs = list(filter(lambda s: s != "", [se_on_ability_used_str, on_attack_or_ability_effects_str, *final_se_strs]))
+            non_empty_strs = list(filter(lambda s: s != "", [se_on_ability_used_str, on_attack_or_ability_effects_str, se_ability_used_against_str, on_ability_used_against_str, *final_se_strs]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
         
         result_str = self.remove_mana_and_set_cd(caster)
@@ -361,11 +381,22 @@ class Ability():
                     if result_str != "":
                         on_attack_or_ability_effects_str += f"\n{result_str}"
 
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    _, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, 0, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+
             target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             se_result_str = "{" + f"{i + 1}" + "}" + f" is now {status_effects_str}"
-            non_empty_strs = list(filter(lambda s: s != "", [se_result_str, se_on_ability_used_str, on_attack_or_ability_effects_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [se_result_str, se_on_ability_used_str, on_attack_or_ability_effects_str, se_ability_used_against_str, on_ability_used_against_str]))
             results.append("\n".join(non_empty_strs))
         
         result_str = self.remove_mana_and_set_cd(caster)
@@ -448,12 +479,23 @@ class Ability():
                     if result_str != "":
                         on_attack_or_ability_effects_str += f"\n{result_str}"
 
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    _, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, 0, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+
             target_expertise.heal(int(heal_amount))
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
 
             heal_str = "{" + f"{i + 1}" + "}" + f" was healed for {heal_amount}{critical_hit_str} HP"
-            non_empty_strs = list(filter(lambda s: s != "", [heal_str, se_on_ability_used_str, on_attack_or_ability_effects_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [heal_str, se_on_ability_used_str, on_attack_or_ability_effects_str, se_ability_used_against_str, on_ability_used_against_str]))
             results.append("\n".join(non_empty_strs))
         
         result_str = self.remove_mana_and_set_cd(caster)
@@ -1767,7 +1809,16 @@ class ThunderingTorrentI(Ability):
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
-
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
             org_armor = target_dueling.armor
@@ -1827,7 +1878,7 @@ class ThunderingTorrentI(Ability):
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
@@ -1928,7 +1979,16 @@ class ThunderingTorrentII(Ability):
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
-
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
             org_armor = target_dueling.armor
@@ -1988,7 +2048,7 @@ class ThunderingTorrentII(Ability):
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
@@ -2089,7 +2149,16 @@ class ThunderingTorrentIII(Ability):
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
-
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
             org_armor = target_dueling.armor
@@ -2149,7 +2218,7 @@ class ThunderingTorrentIII(Ability):
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
@@ -2227,7 +2296,16 @@ class DrownInTheDeepI(Ability):
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
-
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, 0, ignore_armor=True)
 
             se_on_damage_str = ""
@@ -2248,7 +2326,7 @@ class DrownInTheDeepI(Ability):
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
@@ -2323,7 +2401,16 @@ class DrownInTheDeepII(Ability):
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
-
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, 0, ignore_armor=True)
 
             se_on_damage_str = ""
@@ -2344,7 +2431,7 @@ class DrownInTheDeepII(Ability):
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
@@ -2419,7 +2506,16 @@ class DrownInTheDeepIII(Ability):
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
-
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, 0, ignore_armor=True)
 
             se_on_damage_str = ""
@@ -2440,7 +2536,7 @@ class DrownInTheDeepIII(Ability):
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
@@ -2546,6 +2642,15 @@ class WhirlpoolI(Ability):
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
 
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
@@ -2600,7 +2705,7 @@ class WhirlpoolI(Ability):
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
@@ -2703,7 +2808,16 @@ class WhirlpoolII(Ability):
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
-
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
             org_armor = target_dueling.armor
@@ -2757,7 +2871,7 @@ class WhirlpoolII(Ability):
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
@@ -2860,7 +2974,16 @@ class WhirlpoolIII(Ability):
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
-
+            on_ability_used_against_str = ""
+            for item in caster_equipment.get_all_equipped_items():
+                item_effects = item.get_item_effects()
+                if item_effects is None:
+                    continue
+                for item_effect in item_effects.on_ability_used_against:
+                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
+                    if result_str != "":
+                        on_ability_used_against_str += f"\n{result_str}"
+            
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
             org_armor = target_dueling.armor
@@ -2914,7 +3037,7 @@ class WhirlpoolIII(Ability):
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
@@ -4810,6 +4933,84 @@ class BoundToGetLuckyIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         lck_buff = LckBuff(
             turns_remaining=3,
+            value=50,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [lck_buff])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class BoundToGetLuckyIV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF40",
+            name="Bound to Get Lucky IV",
+            class_key=ExpertiseClass.Merchant,
+            description="Gain +50 Luck for the next 4 turns.",
+            flavor_text="",
+            mana_cost=15,
+            cooldown=4,
+            num_targets=0,
+            level_requirement=8,
+            target_own_group=True,
+            purchase_cost=800,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        lck_buff = LckBuff(
+            turns_remaining=4,
+            value=50,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [lck_buff])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class BoundToGetLuckyV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF40",
+            name="Bound to Get Lucky V",
+            class_key=ExpertiseClass.Merchant,
+            description="Gain +50 Luck for the next 5 turns.",
+            flavor_text="",
+            mana_cost=15,
+            cooldown=5,
+            num_targets=0,
+            level_requirement=8,
+            target_own_group=True,
+            purchase_cost=1600,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        lck_buff = LckBuff(
+            turns_remaining=5,
             value=50,
             source_str=self.get_icon_and_name()
         )
