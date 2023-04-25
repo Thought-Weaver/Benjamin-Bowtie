@@ -1924,16 +1924,16 @@ class DuelView(discord.ui.View):
                 # Make sure stats are correct.
                 entity.get_expertise().update_stats(entity.get_combined_attributes())
 
+                if isinstance(entity, Player):
+                    companions = entity.get_companions()
+                    if companions.current_companion is not None:
+                        companion_ability = companions.companions[companions.current_companion].get_dueling_ability(effect_category=None)
+                        
+                        if isinstance(companion_ability, Ability):
+                            self._companion_abilities[entity.get_id()] = companion_ability
+                            entity.get_dueling().abilities.append(companion_ability)
+
             cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
-            if isinstance(cur_entity, Player):
-                companions = cur_entity.get_companions()
-                if companions.current_companion is not None:
-                    companion_ability = companions.companions[companions.current_companion].get_dueling_ability(effect_category=None)
-                    
-                    if isinstance(companion_ability, Ability):
-                        self._companion_abilities[cur_entity.get_id()] = companion_ability
-                        cur_entity.get_dueling().abilities.append(companion_ability)
-                
             if isinstance(cur_entity, Player) or self._companion_battle:
                 self.show_actions()
             else:
@@ -2289,8 +2289,10 @@ class DuelView(discord.ui.View):
         for winner in duel_result.winners:
             winner.get_stats().dueling.duels_fought += 1
             winner.get_stats().dueling.duels_won += 1
+            self._remove_companion_ability(winner)
         for loser in losers:
             loser.get_stats().dueling.duels_fought += 1
+            self._remove_companion_ability(loser)
 
         if all(isinstance(entity, Player) for entity in self._turn_order):
             # This should only happen in a PvP duel
