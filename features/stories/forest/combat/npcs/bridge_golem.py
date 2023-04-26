@@ -30,7 +30,7 @@ class StoneSwarm(Ability):
             icon="\uD83E\uDEA8",
             name="Stone Swarm",
             class_key=ExpertiseClass.Guardian,
-            description="Summon a barrage of stones, dealing 30-40 to up to 3 enemies.",
+            description="Summon a barrage of stones, dealing 20-25 damage to up to 3 enemies.",
             flavor_text="",
             mana_cost=20,
             cooldown=3,
@@ -43,7 +43,7 @@ class StoneSwarm(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(30, 40))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(20, 25))
         
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
