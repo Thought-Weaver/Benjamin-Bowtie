@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from aenum import Enum, skip
 from strenum import StrEnum
 
@@ -128,6 +130,22 @@ class CompanionTier(StrEnum):
     Good = "Good"
     Great = "Great"
     Best = "Best"
+
+    def __lt__(self, rarity: CompanionTier) -> bool:
+        ordering = [CompanionTier.NoTier, CompanionTier.Good, CompanionTier.Great, CompanionTier.Best]
+        return ordering.index(self) < ordering.index(rarity)
+
+    def __gt__(self, rarity: CompanionTier) -> bool:
+        ordering = [CompanionTier.NoTier, CompanionTier.Good, CompanionTier.Great, CompanionTier.Best]
+        return ordering.index(self) > ordering.index(rarity)
+
+    def __leq__(self, rarity: CompanionTier) -> bool:
+        ordering = [CompanionTier.NoTier, CompanionTier.Good, CompanionTier.Great, CompanionTier.Best]
+        return ordering.index(self) <= ordering.index(rarity)
+
+    def __geq__(self, rarity: CompanionTier) -> bool:
+        ordering = [CompanionTier.NoTier, CompanionTier.Good, CompanionTier.Great, CompanionTier.Best]
+        return ordering.index(self) >= ordering.index(rarity)
 
 # -----------------------------------------------------------------------------
 # DUNGEON RUN ENUMS

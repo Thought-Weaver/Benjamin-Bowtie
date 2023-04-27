@@ -497,7 +497,7 @@ class PlayerCompanionsView(discord.ui.View):
 
         companion_points: int = COMPANION_FEEDING_POINTS
         message: str = f"Your companion eats the {self._selected_item.get_full_name()} and your bond grows stronger."
-        if removed_item.get_key() in self._selected_companion.preferred_foods and self._selected_companion.get_tier() == CompanionTier.Good:
+        if removed_item.get_key() in self._selected_companion.preferred_foods and self._selected_companion.get_tier() >= CompanionTier.Good:
             companion_points += COMPANION_PREFERRED_FOOD_BONUS_POINTS
             message += " They love it!"
         self._selected_companion.add_companion_points(companion_points)
