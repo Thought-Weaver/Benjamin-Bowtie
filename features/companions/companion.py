@@ -274,13 +274,15 @@ class BlueFlitterwingButterflyCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+        
+        if self._level >= 40 - great_bond_modifier:
             return ManaLeechV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return ManaLeechIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return ManaLeechIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return ManaLeechII()
         else:
             return ManaLeechI()
@@ -339,7 +341,9 @@ class DeepwoodCubCompanion(Companion):
         if effect_category is not None and effect_category != ItemEffectCategory.Permanent:
             return None
         
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.DmgResist,
                 effect_value=0.05,
@@ -347,7 +351,7 @@ class DeepwoodCubCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.DmgResist,
                 effect_value=0.04,
@@ -355,7 +359,7 @@ class DeepwoodCubCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return Effect(
                 EffectType.DmgResist,
                 effect_value=0.03,
@@ -363,7 +367,7 @@ class DeepwoodCubCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.DmgResist,
                 effect_value=0.02,
@@ -431,13 +435,15 @@ class FleetfootRabbitCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return QuickeningPaceV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return QuickeningPaceIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return QuickeningPaceIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return QuickeningPaceII()
         else:
             return QuickeningPaceI()
@@ -496,7 +502,9 @@ class FlyingFoxCompanion(Companion):
         if effect_category is not None and effect_category != ItemEffectCategory.Permanent:
             return None
         
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.DexMod,
                 effect_value=5,
@@ -504,7 +512,7 @@ class FlyingFoxCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.DexMod,
                 effect_value=4,
@@ -512,7 +520,7 @@ class FlyingFoxCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return Effect(
                 EffectType.DexMod,
                 effect_value=3,
@@ -520,7 +528,7 @@ class FlyingFoxCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.DexMod,
                 effect_value=2,
@@ -588,13 +596,15 @@ class GiantTowerBeetleCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return ToweringArmorV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return ToweringArmorIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return ToweringArmorIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return ToweringArmorII()
         else:
             return ToweringArmorI()
@@ -653,7 +663,9 @@ class GnashtuskBoarCompanion(Companion):
         if effect_category is not None and effect_category != ItemEffectCategory.OnSuccessfulAttack:
             return None
         
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.DmgBuffBleeding,
                 effect_value=0.25,
@@ -661,7 +673,7 @@ class GnashtuskBoarCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.DmgBuffBleeding,
                 effect_value=0.2,
@@ -669,7 +681,7 @@ class GnashtuskBoarCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return Effect(
                 EffectType.DmgBuffBleeding,
                 effect_value=0.15,
@@ -677,7 +689,7 @@ class GnashtuskBoarCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.DmgBuffBleeding,
                 effect_value=0.1,
@@ -745,13 +757,15 @@ class MiniatureBoneGolemCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return ThrowTheBonesV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return ThrowTheBonesIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return ThrowTheBonesIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return ThrowTheBonesII()
         else:
             return ThrowTheBonesI()
@@ -807,13 +821,15 @@ class PaleWalkerSpiderCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return VenomousBiteV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return VenomousBiteIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return VenomousBiteIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return VenomousBiteII()
         else:
             return VenomousBiteI()
@@ -869,13 +885,15 @@ class PondloverFrogCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return IsThatAFlyV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return IsThatAFlyIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return IsThatAFlyIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return IsThatAFlyII()
         else:
             return IsThatAFlyI()
@@ -934,7 +952,9 @@ class ScuttledarkScorpionCompanion(Companion):
         if effect_category is not None and effect_category != ItemEffectCategory.Permanent:
             return None
         
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.PiercingDmg,
                 effect_value=5,
@@ -942,7 +962,7 @@ class ScuttledarkScorpionCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.PiercingDmg,
                 effect_value=4,
@@ -950,7 +970,7 @@ class ScuttledarkScorpionCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return Effect(
                 EffectType.PiercingDmg,
                 effect_value=3,
@@ -958,7 +978,7 @@ class ScuttledarkScorpionCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.PiercingDmg,
                 effect_value=2,
@@ -1026,13 +1046,15 @@ class ShadowfootRaccoonCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return SneakyManeuversV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return SneakyManeuversIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return SneakyManeuversIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return SneakyManeuversII()
         else:
             return SneakyManeuversI()
@@ -1091,7 +1113,9 @@ class SilverwingOwlCompanion(Companion):
         if effect_category is not None and effect_category != ItemEffectCategory.OnTurnStart:
             return None
         
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.RestoreMana,
                 effect_value=5,
@@ -1099,7 +1123,7 @@ class SilverwingOwlCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.RestoreMana,
                 effect_value=4,
@@ -1107,7 +1131,7 @@ class SilverwingOwlCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return Effect(
                 EffectType.RestoreMana,
                 effect_value=3,
@@ -1115,7 +1139,7 @@ class SilverwingOwlCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.RestoreMana,
                 effect_value=2,
@@ -1186,7 +1210,9 @@ class SunbaskTurtleCompanion(Companion):
         if effect_category is not None and effect_category != ItemEffectCategory.Permanent:
             return None
         
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.DmgReflect,
                 effect_value=0.05,
@@ -1194,7 +1220,7 @@ class SunbaskTurtleCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.DmgReflect,
                 effect_value=0.04,
@@ -1202,7 +1228,7 @@ class SunbaskTurtleCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return Effect(
                 EffectType.DmgReflect,
                 effect_value=0.03,
@@ -1210,7 +1236,7 @@ class SunbaskTurtleCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.DmgReflect,
                 effect_value=0.02,
@@ -1278,13 +1304,15 @@ class TanglewebSpiderCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return WebShotV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return WebShotIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return WebShotIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return WebShotII()
         else:
             return WebShotI()
@@ -1340,13 +1368,15 @@ class TidewaterCrabCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return PINCHV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return PINCHIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return PINCHIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return PINCHII()
         else:
             return PINCHI()
@@ -1405,7 +1435,9 @@ class VerdantSlithererCompanion(Companion):
         if effect_category is not None and effect_category != ItemEffectCategory.OnSuccessfulAttack:
             return None
         
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.DmgBuffPoisoned,
                 effect_value=0.25,
@@ -1413,7 +1445,7 @@ class VerdantSlithererCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.DmgBuffPoisoned,
                 effect_value=0.2,
@@ -1421,7 +1453,7 @@ class VerdantSlithererCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return Effect(
                 EffectType.DmgBuffPoisoned,
                 effect_value=0.15,
@@ -1429,7 +1461,7 @@ class VerdantSlithererCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.DmgBuffPoisoned,
                 effect_value=0.1,
@@ -1500,7 +1532,9 @@ class VoidseenCatCompanion(Companion):
         if effect_category is not None and effect_category != ItemEffectCategory.Permanent:
             return None
         
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.ResistStatusEffect,
                 effect_value=1,
@@ -1509,7 +1543,7 @@ class VoidseenCatCompanion(Companion):
                 condition_values=[],
                 associated_status_effect=StatusEffectKey.Charmed
             )
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.ResistStatusEffect,
                 effect_value=0.8,
@@ -1518,7 +1552,7 @@ class VoidseenCatCompanion(Companion):
                 condition_values=[],
                 associated_status_effect=StatusEffectKey.Charmed
             )
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return Effect(
                 EffectType.ResistStatusEffect,
                 effect_value=0.6,
@@ -1527,7 +1561,7 @@ class VoidseenCatCompanion(Companion):
                 condition_values=[],
                 associated_status_effect=StatusEffectKey.Charmed
             )
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.ResistStatusEffect,
                 effect_value=0.4,
@@ -1597,13 +1631,15 @@ class VoidseenPupCompanion(Companion):
         )
 
     def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Ability:
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return MightOfTheVoidV()
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return MightOfTheVoidIV()
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return MightOfTheVoidIII()
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return MightOfTheVoidII()
         else:
             return MightOfTheVoidI()
@@ -1662,7 +1698,9 @@ class WanderboundRavenCompanion(Companion):
         if effect_category is not None and effect_category != ItemEffectCategory.Permanent:
             return None
         
-        if self._level >= 40:
+        great_bond_modifier = 10 if (self.get_tier() == CompanionTier.Great or self.get_tier() == CompanionTier.Best) else 0
+
+        if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.AdjustedManaCosts,
                 effect_value=-0.2,
@@ -1670,7 +1708,7 @@ class WanderboundRavenCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 30:
+        elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.AdjustedManaCosts,
                 effect_value=-0.16,
@@ -1678,7 +1716,7 @@ class WanderboundRavenCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 20:
+        elif self._level >= 20 - great_bond_modifier:
             return Effect(
                 EffectType.AdjustedManaCosts,
                 effect_value=-0.12,
@@ -1686,7 +1724,7 @@ class WanderboundRavenCompanion(Companion):
                 conditions=[],
                 condition_values=[]
             )
-        elif self._level >= 10:
+        elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.AdjustedManaCosts,
                 effect_value=-0.08,
