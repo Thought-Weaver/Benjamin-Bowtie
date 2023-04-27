@@ -5,7 +5,7 @@ from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import BidedAttackIII, BoundToGetLuckyIII, PiercingStrikeIII, PressTheAdvantageIII, SecondWindIII
+from features.shared.ability import BidedAttackIII, PiercingStrikeIII, PressTheAdvantageIII, SecondWindIII, TauntI
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
 from features.stats import Stats
@@ -74,7 +74,7 @@ class Galos(NPC):
 
         self._dueling.abilities = [
             PressTheAdvantageIII(), SecondWindIII(), PiercingStrikeIII(),
-            BoundToGetLuckyIII(), BidedAttackIII()
+            TauntI(), BidedAttackIII()
         ]
     
     def _setup_npc_params(self):

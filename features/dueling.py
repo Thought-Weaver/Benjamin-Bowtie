@@ -2555,11 +2555,34 @@ class DuelView(discord.ui.View):
         cannot_attack: bool = any(se.key == StatusEffectKey.CannotAttack for se in entity.get_dueling().status_effects)
         cannot_use_abilities: bool = any(se.key == StatusEffectKey.CannotUseAbilities for se in entity.get_dueling().status_effects)
 
+        taunt_target: Player | NPC | None = None
+        for se in entity.get_dueling().status_effects:
+            if se.key == StatusEffectKey.Taunted:
+                # TODO: Why not just check this instead of using keys? Is there
+                # any risk associated with it? Arguably, it's nicer to potentially
+                # have the enum moved to the new enums file and avoid import issues.
+                assert(isinstance(se, Taunted))
+                taunt_target = se.forced_to_attack
+                break
+
         if not restricted_to_items:
             if not cannot_attack:
                 self.add_item(AttackActionButton())
+                if taunt_target is not None:
+                    self._selecting_targets = False
+                    self._intent = Intent.Attack
+                    self._selected_targets = [taunt_target]
+                    return self.do_action_on_selected_targets()
+            else:
+                if taunt_target is not None:
+                    self.continue_turn(skip_turn=True)
+            
             if not cannot_use_abilities:
                 self.add_item(AbilityActionButton())
+        else:
+            if taunt_target is not None:
+                self.continue_turn(skip_turn=True)
+
         self.add_item(ItemActionButton())
         self.add_item(SkipButton())
 
@@ -2576,19 +2599,6 @@ class DuelView(discord.ui.View):
         self._selecting_targets = True
 
         cur_turn_entity: Player = self._turn_order[self._turn_index]
-        taunt_target: Player | NPC | None = None
-        for se in cur_turn_entity.get_dueling().status_effects:
-            if se.key == StatusEffectKey.Taunted:
-                # TODO: Why not just check this instead of using keys? Is there
-                # any risk associated with it? Arguably, it's nicer to potentially
-                # have the enum moved to the new enums file and avoid import issues.
-                assert(isinstance(se, Taunted))
-                taunt_target = se.forced_to_attack
-                break
-        if taunt_target is not None:
-            self._intent = Intent.Attack
-            self._selected_targets = [taunt_target]
-            return self.do_action_on_selected_targets()
 
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
         selected_targets_str = f"Selected Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
