@@ -1756,6 +1756,8 @@ class ConfirmItemButton(discord.ui.Button):
 class ContinueToNextActionButton(discord.ui.Button):
     def __init__(self):
         super().__init__(style=discord.ButtonStyle.blurple, label=f"Continue")
+
+        self._already_pressed: bool = False
         
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -1764,8 +1766,10 @@ class ContinueToNextActionButton(discord.ui.Button):
         view: DuelView = self.view
         cur_turn_user: discord.User | None = view.get_user_for_current_turn()
         if cur_turn_user is None or interaction.user == cur_turn_user:
-            response = view.continue_turn()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
+            if not self._already_pressed:
+                self._already_pressed = True
+                response = view.continue_turn()
+                await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 class BackUsingIntentButton(discord.ui.Button):
