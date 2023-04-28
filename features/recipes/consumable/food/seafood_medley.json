@@ -8,9 +8,12 @@
         "items/creature/fish/roughy": 1,
         "items/creature/fish/shark": 1,
         "items/creature/fish/shrimp": 3,
-        "items/creature/fish/oysters": 5
+        "items/creature/fish/oyster": 5
     },
     "outputs": {
         "items/consumable/food/seafood_medley": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 55
     }
 }
