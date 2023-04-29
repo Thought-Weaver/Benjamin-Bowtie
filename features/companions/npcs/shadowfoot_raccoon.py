@@ -3,7 +3,7 @@ from uuid import uuid4
 from features.companions.abilities import IntoTheShadowsI, IntoTheShadowsII, IntoTheShadowsIII, IntoTheShadowsIV, IntoTheShadowsV, LuckyPawsI, LuckyPawsII, LuckyPawsIII, LuckyPawsIV, LuckyPawsV, StrikeFromBehindI, StrikeFromBehindII, StrikeFromBehindIII, StrikeFromBehindIV, StrikeFromBehindV
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Expertise
+from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.shared.ability import Ability
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
@@ -13,8 +13,8 @@ from features.stats import Stats
 
 
 class ShadowfootRaccoon(NPC):
-    def __init__(self, companion_level: int):
-        super().__init__("Shadowfoot Raccoon", NPCRoles.Companion, NPCDuelingPersonas.Mage, {})
+    def __init__(self, companion_level: int, name: str):
+        super().__init__(name, NPCRoles.Companion, NPCDuelingPersonas.Mage, {})
 
         self._companion_level = companion_level
 
@@ -36,6 +36,8 @@ class ShadowfootRaccoon(NPC):
         self._expertise.intelligence = min(self._companion_level // 2, 40)
         self._expertise.luck = self._companion_level
         self._expertise.memory = self._companion_level // 5
+
+        self._expertise.add_xp_to_class_until_level(self._companion_level, ExpertiseClass.Merchant)
 
     def _setup_equipment(self):
         if self._expertise is None:

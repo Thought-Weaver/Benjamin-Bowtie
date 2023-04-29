@@ -93,6 +93,10 @@ class Companion():
         # Negative values indicate x per level rather than positive values which indicate 1 per x level
         pass
 
+    @abstractmethod
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        pass
+
     def get_xp_to_level(self, level: int) -> int:
         return ceil(5 + 15 * level * (level - 1) + (2 ** ((level - 1) / 15.0) - 1) / (1 - 2 ** (-1 / 15.0)))
 
@@ -179,11 +183,28 @@ class Companion():
         display_string += "\n\n•••••••••••••••••••••••••••••••\n"
         
         dueling_ability = self.get_dueling_ability(effect_category=None)
+        effect_category_str = ""
         if self._has_active_ability:
             display_string += "**Active Dueling Ability**\n\n"
         else:
             display_string += "**Passive Dueling Ability**\n\n"
-        display_string += "᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n" + str(dueling_ability) + "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
+            effect_category = self.get_ability_effect_category()
+            if effect_category is not None and effect_category != ItemEffectCategory.Permanent:
+                if effect_category == ItemEffectCategory.OnTurnStart:
+                    effect_category_str = "At the start of your turn:\n\n"
+                elif effect_category == ItemEffectCategory.OnTurnEnd:
+                    effect_category_str = "At the end of your turn:\n\n"
+                elif effect_category == ItemEffectCategory.OnDamaged:
+                    effect_category_str = "When you're damaged:\n\n"
+                elif effect_category == ItemEffectCategory.OnSuccessfulAbilityUsed:
+                    effect_category_str = "When you successfully use an ability:\n\n"
+                elif effect_category == ItemEffectCategory.OnSuccessfulAttack:
+                    effect_category_str = "When you successfully attack:\n\n"
+                elif effect_category == ItemEffectCategory.OnAttacked:
+                    effect_category_str = "When you're attacked:\n\n"
+                elif effect_category == ItemEffectCategory.OnAbilityUsedAgainst:
+                    effect_category_str = "When an ability is used on you:\n\n"
+        display_string += "᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n" + effect_category_str + str(dueling_ability) + "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
 
         display_string += "\n\n•••••••••••••••••••••••••••••••\n"
 
@@ -268,7 +289,7 @@ class BlueFlitterwingButterflyCompanion(Companion):
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.AzureberryJuice, ItemKey.CrownberryJuice, ItemKey.SundewDelight],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.ManaPotion, ItemKey.LesserManaPotion, ItemKey.AzureChrysalis],
             talisman=ItemKey.FlitterwingTalisman
         )
@@ -288,7 +309,7 @@ class BlueFlitterwingButterflyCompanion(Companion):
             return ManaLeechI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = BlueFlitterwingButterfly(self._level)
+        entity = BlueFlitterwingButterfly(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -297,6 +318,9 @@ class BlueFlitterwingButterflyCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(4, 5, 2, 1, 2, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -332,7 +356,7 @@ class DeepwoodCubCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Honeyfruit, ItemKey.Crownberry],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.Wrathbark, ItemKey.Lithewood, ItemKey.SpeckledCap, ItemKey.SpeckledCapSpores, ItemKey.Honeyfruit, ItemKey.Honey],
             talisman=ItemKey.DeepwoodTalisman
         )
@@ -385,7 +409,7 @@ class DeepwoodCubCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = DeepwoodCub(self._level)
+        entity = DeepwoodCub(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -394,6 +418,9 @@ class DeepwoodCubCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(1, 1, 5, 5, 3, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.Permanent
 
     def __getstate__(self):
         return self.__dict__
@@ -429,7 +456,7 @@ class FleetfootRabbitCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Fissureleaf, ItemKey.Sweetroot],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.CrackedJade, ItemKey.Jade, ItemKey.LuckPotion, ItemKey.Sweetroot, ItemKey.SweetrootCutting],
             talisman=ItemKey.LuckyPawTalisman
         )
@@ -449,7 +476,7 @@ class FleetfootRabbitCompanion(Companion):
             return QuickeningPaceI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = FleetfootRabbit(self._level)
+        entity = FleetfootRabbit(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -458,6 +485,9 @@ class FleetfootRabbitCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(4, 5, 1, 4, 1, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -493,7 +523,7 @@ class FlyingFoxCompanion(Companion):
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.FishCake, ItemKey.CookedMinnow, ItemKey.CookedRoughy],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.Graspleaf, ItemKey.GraspleafSeed, ItemKey.Fissureleaf, ItemKey.FissureleafSeed],
             talisman=ItemKey.FoxsFeatherTalisman
         )
@@ -546,7 +576,7 @@ class FlyingFoxCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = FlyingFox(self._level)
+        entity = FlyingFox(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -555,6 +585,9 @@ class FlyingFoxCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(3, 3, 1, 1, 2, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.Permanent
 
     def __getstate__(self):
         return self.__dict__
@@ -590,7 +623,7 @@ class GiantTowerBeetleCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Compost, ItemKey.Shellflower],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood, ClassTag.Gardening.Soil],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood, ClassTag.Gardening.Soil], # type: ignore
             best_tier_items=[ItemKey.Shellflower, ItemKey.ShellflowerSeed, ItemKey.CoralskinPotion],
             talisman=ItemKey.TowerTalisman
         )
@@ -610,7 +643,7 @@ class GiantTowerBeetleCompanion(Companion):
             return ToweringArmorI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = GiantTowerBeetle(self._level)
+        entity = GiantTowerBeetle(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -619,6 +652,9 @@ class GiantTowerBeetleCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(1, 1, 5, 5, 3, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -654,7 +690,7 @@ class GnashtuskBoarCompanion(Companion):
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.Sweetroot, ItemKey.Elsberries, ItemKey.Crownberry],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.IronCuirass, ItemKey.IronHelmet, ItemKey.IronGauntlets, ItemKey.IronLeggings, ItemKey.IronGreaves],
             talisman=ItemKey.GnashtuskTalisman
         )
@@ -707,7 +743,7 @@ class GnashtuskBoarCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = GnashtuskBoar(self._level)
+        entity = GnashtuskBoar(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -716,6 +752,9 @@ class GnashtuskBoarCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(1, 1, 4, 5, 4, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.OnSuccessfulAttack
 
     def __getstate__(self):
         return self.__dict__
@@ -751,7 +790,7 @@ class MiniatureBoneGolemCompanion(Companion):
             duel_xp_gain=2,
             pet_battle_xp_gain=4,
             preferred_foods=[ItemKey.CrackedQuartz, ItemKey.Quartz, ItemKey.FlawlessQuartz, ItemKey.Bones],
-            valid_food_categories=[ClassTag.Ingredient.CraftingMaterial, ClassTag.Equipment.Equipment, ClassTag.Misc.Junk],
+            valid_food_categories=[ClassTag.Ingredient.CraftingMaterial, ClassTag.Equipment.Equipment, ClassTag.Misc.Junk], # type: ignore
             best_tier_items=[ItemKey.BoneClub, ItemKey.BoneStaff, ItemKey.Bones],
             talisman=ItemKey.SkullTalisman
         )
@@ -771,7 +810,7 @@ class MiniatureBoneGolemCompanion(Companion):
             return ThrowTheBonesI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = MiniatureBoneGolem(self._level)
+        entity = MiniatureBoneGolem(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -780,6 +819,9 @@ class MiniatureBoneGolemCompanion(Companion):
     
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(2, 1, -2, 5, -2, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -815,7 +857,7 @@ class PaleWalkerSpiderCompanion(Companion):
             duel_xp_gain=2,
             pet_battle_xp_gain=4,
             preferred_foods=[ItemKey.Grub],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.LesserPoison, ItemKey.Poison, ItemKey.GreaterPoison, ItemKey.FoolsDelight, ItemKey.FoolsDelightSpores],
             talisman=ItemKey.PaleTalisman
         )
@@ -835,7 +877,7 @@ class PaleWalkerSpiderCompanion(Companion):
             return VenomousBiteI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = PaleWalkerSpider(self._level)
+        entity = PaleWalkerSpider(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -844,6 +886,9 @@ class PaleWalkerSpiderCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(3, 5, 1, 1, 1, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -879,7 +924,7 @@ class PondloverFrogCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Grub, ItemKey.Seaclover],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.Lithewood, ItemKey.GlowingWater, ItemKey.PondSludge],
             talisman=ItemKey.PondloverTalisman
         )
@@ -899,7 +944,7 @@ class PondloverFrogCompanion(Companion):
             return IsThatAFlyI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = PondloverFrog(self._level)
+        entity = PondloverFrog(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -908,6 +953,9 @@ class PondloverFrogCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(2, 4, 1, 2, 3, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -943,7 +991,7 @@ class ScuttledarkScorpionCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Grub],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.CrackedOnyx, ItemKey.LesserStrengthPotion, ItemKey.StrengthPotion, ItemKey.GreaterStrengthPotion],
             talisman=ItemKey.ScuttledarkTalisman
         )
@@ -996,7 +1044,7 @@ class ScuttledarkScorpionCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = ScuttledarkScorpion(self._level)
+        entity = ScuttledarkScorpion(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1005,6 +1053,9 @@ class ScuttledarkScorpionCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(2, 1, 4, 2, 4, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.Permanent
 
     def __getstate__(self):
         return self.__dict__
@@ -1040,7 +1091,7 @@ class ShadowfootRaccoonCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.CookedMinnow, ItemKey.CookedRoughy, ItemKey.FishCake],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.AFewCoins, ItemKey.PileOfCoins, ItemKey.BagOfCoins, ItemKey.CrackedEmerald, ItemKey.Emerald],
             talisman=ItemKey.LuckyRockTalisman
         )
@@ -1060,7 +1111,7 @@ class ShadowfootRaccoonCompanion(Companion):
             return SneakyManeuversI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = ShadowfootRaccoon(self._level)
+        entity = ShadowfootRaccoon(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1069,6 +1120,9 @@ class ShadowfootRaccoonCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(2, 4, 1, 2, 1, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -1104,7 +1158,7 @@ class SilverwingOwlCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Azureberries, ItemKey.Minnow, ItemKey.Roughy],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.Azureberries, ItemKey.AzureberrySeed, ItemKey.LesserIntelligencePotion, ItemKey.IntelligencePotion, ItemKey.GreaterIntelligencePotion],
             talisman=ItemKey.SilverwingFeatherTalisman
         )
@@ -1157,7 +1211,7 @@ class SilverwingOwlCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = SilverwingOwl(self._level)
+        entity = SilverwingOwl(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1166,6 +1220,9 @@ class SilverwingOwlCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(2, 4, 2, 1, 2, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.OnTurnStart
 
     def __getstate__(self):
         return self.__dict__
@@ -1201,7 +1258,7 @@ class SunbaskTurtleCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Crownberry, ItemKey.Honeyfruit, ItemKey.Stranglekelp],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.LesserConstitutionPotion, ItemKey.ConstitutionPotion, ItemKey.GreaterConstitutionPotion],
             talisman=ItemKey.SunbaskTalisman
         )
@@ -1254,7 +1311,7 @@ class SunbaskTurtleCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = SunbaskTurtle(self._level)
+        entity = SunbaskTurtle(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1263,6 +1320,9 @@ class SunbaskTurtleCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(1, 3, 4, 3, 1, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.Permanent
 
     def __getstate__(self):
         return self.__dict__
@@ -1298,7 +1358,7 @@ class TanglewebSpiderCompanion(Companion):
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.Grub],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.Spidersilk, ItemKey.LesserDexterityPotion, ItemKey.DexterityPotion, ItemKey.GreaterDexterityPotion],
             talisman=ItemKey.TanglewebTalisman
         )
@@ -1318,7 +1378,7 @@ class TanglewebSpiderCompanion(Companion):
             return WebShotI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = TanglewebSpider(self._level)
+        entity = TanglewebSpider(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1327,6 +1387,9 @@ class TanglewebSpiderCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(2, 4, 2, 1, 1, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -1362,7 +1425,7 @@ class TidewaterCrabCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Roughy, ItemKey.Minnow, ItemKey.Shrimp],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.Minnow, ItemKey.Roughy, ItemKey.Shrimp, ItemKey.Stranglekelp, ItemKey.SirensKiss],
             talisman=ItemKey.CrabTalisman
         )
@@ -1382,7 +1445,7 @@ class TidewaterCrabCompanion(Companion):
             return PINCHI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = TidewaterCrab(self._level)
+        entity = TidewaterCrab(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1391,6 +1454,9 @@ class TidewaterCrabCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(1, 1, 4, 3, 3, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -1426,7 +1492,7 @@ class VerdantSlithererCompanion(Companion):
             duel_xp_gain=4,
             pet_battle_xp_gain=6,
             preferred_foods=[ItemKey.RawBoarMeat, ItemKey.RawWolfMeat],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.LesserPoison, ItemKey.Poison, ItemKey.GreaterPoison],
             talisman=ItemKey.VerdantTalisman
         )
@@ -1479,7 +1545,7 @@ class VerdantSlithererCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = VerdantSlitherer(self._level)
+        entity = VerdantSlitherer(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1488,6 +1554,9 @@ class VerdantSlithererCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(3, 2, 2, 1, 3, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.OnSuccessfulAttack
 
     def __getstate__(self):
         return self.__dict__
@@ -1523,7 +1592,7 @@ class VoidseenCatCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.Azureberries, ItemKey.Minnow, ItemKey.Roughy],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.VoidseenOre, ItemKey.LesserIntelligencePotion, ItemKey.IntelligencePotion, ItemKey.GreaterIntelligencePotion],
             talisman=ItemKey.VoidmindTalisman
         )
@@ -1581,7 +1650,7 @@ class VoidseenCatCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = VoidseenCat(self._level)
+        entity = VoidseenCat(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1590,6 +1659,9 @@ class VoidseenCatCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(2, 3, 2, 1, -2, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.Permanent
 
     def __getstate__(self):
         return self.__dict__
@@ -1625,7 +1697,7 @@ class VoidseenPupCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=5,
             preferred_foods=[ItemKey.RawBoarMeat, ItemKey.RawWolfMeat],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.VoidseenOre, ItemKey.LesserStrengthPotion, ItemKey.StrengthPotion, ItemKey.GreaterStrengthPotion],
             talisman=ItemKey.VoidforceTalisman
         )
@@ -1645,7 +1717,7 @@ class VoidseenPupCompanion(Companion):
             return MightOfTheVoidI()
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = VoidseenPup(self._level)
+        entity = VoidseenPup(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1654,6 +1726,9 @@ class VoidseenPupCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(2, 1, 2, 3, -2, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return None
 
     def __getstate__(self):
         return self.__dict__
@@ -1689,7 +1764,7 @@ class WanderboundRavenCompanion(Companion):
             duel_xp_gain=3,
             pet_battle_xp_gain=4,
             preferred_foods=[ItemKey.Azureberries, ItemKey.AzureberryJuice],
-            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood], # type: ignore
             best_tier_items=[ItemKey.CopperOre, ItemKey.SilverOre, ItemKey.GoldOre, ItemKey.CrackedOpal, ItemKey.CrackedQuartz, ItemKey.Quartz, ItemKey.FlawlessQuartz],
             talisman=ItemKey.WanderboundTalisman
         )
@@ -1742,7 +1817,7 @@ class WanderboundRavenCompanion(Companion):
             )
 
     def get_pet_battle_entity(self) -> NPC:
-        entity = WanderboundRaven(self._level)
+        entity = WanderboundRaven(self._level, self._display_name)
         entity.set_id(self._id)
         return entity
 
@@ -1751,6 +1826,9 @@ class WanderboundRavenCompanion(Companion):
 
     def get_attribute_scaling(self) -> Attributes:
         return Attributes(3, 5, 1, 1, 4, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.Permanent
 
     def __getstate__(self):
         return self.__dict__
