@@ -87,6 +87,10 @@ class WitchOfTheWoodsView(discord.ui.View):
         self.add_item(ContinueButton())
 
         recipe: Recipe = random.choice(self._possible_recipes)
+        for user in self._users:
+            player = self._get_player(user.id)
+            if recipe.key not in player.get_house().crafting_recipes:
+                player.get_house().crafting_recipes.append(recipe)
         result_str: str = f"\n\nYou all learned how to make {recipe.get_name_and_icon()}!"
 
         return Embed(title="Witch of the Woods", description=f"You all approach the hut, careful but curious. From the warm firelight, an old woman with leaves and twigs tattered in her greying hair looks over all of you. She invites you inside for a time and teaches you something that might aid your future adventures: {result_str}\n\nAs you depart and are returning to the path, the hut sprouts giant spider legs and skitters deeper into the woods.")

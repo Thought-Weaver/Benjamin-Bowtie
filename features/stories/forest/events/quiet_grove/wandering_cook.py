@@ -87,6 +87,10 @@ class WanderingCookView(discord.ui.View):
         self.add_item(ContinueButton())
 
         recipe: Recipe = random.choice(self._possible_recipes)
+        for user in self._users:
+            player = self._get_player(user.id)
+            if recipe.key not in player.get_house().crafting_recipes:
+                player.get_house().crafting_recipes.append(recipe)
         result_str: str = f"\n\nYou all learned how to make {recipe.get_name_and_icon()}!"
 
         return Embed(title="A Delicious Meal", description=f"You join this journeyman, who you quickly discover is a cook, for a good meal. Between laughter and grand tales of his journeys, he also takes the time to teach you how to cook something yourselves: {result_str}")
