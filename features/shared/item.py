@@ -3067,7 +3067,7 @@ class ItemKey(StrEnum):
     VivifyingBlade = "items/weapon/sword/vivifying_blade"
     WaningFalchion = "items/weapon/sword/waning_falchion"
     WarlocksPactblade = "items/weapon/sword/warlocks_pactblade"
-    AbsorbingTokenOfNullification = "items/weapon/token/absorbing_token_of_Nullification"
+    AbsorbingTokenOfNullification = "items/weapon/token/absorbing_token_of_nullification"
     AcuteCoin = "items/weapon/token/acute_coin"
     AcuteRelic = "items/weapon/token/acute_relic"
     AlleviatingToken = "items/weapon/token/alleviating_token"
