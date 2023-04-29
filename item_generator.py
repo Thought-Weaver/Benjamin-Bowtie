@@ -9,7 +9,7 @@ from math import ceil
 from typing import Dict, List, Tuple
 from features.shared.attributes import Attributes
 from features.shared.effect import Effect, EffectType, ItemEffectCategory, ItemEffects
-from features.shared.enums import ClassTag
+from features.shared.enums import ClassTag, StateTag
 from features.shared.item import Rarity, WeaponStats, ArmorStats
 from features.shared.statuseffect import StatusEffectKey
 
@@ -21,6 +21,7 @@ def frange(start: float, stop: float, step: float) -> List[float]:
         return [start, stop]
 
 CLASS_TAGS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[ClassTag.Weapon | ClassTag.Equipment]] = {
+    ClassTag.Weapon.Bow: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Bow, ClassTag.Equipment.MainHand],
     ClassTag.Weapon.Dagger: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Dagger, ClassTag.Equipment.MainHand],
     ClassTag.Weapon.Sword: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Sword, ClassTag.Equipment.MainHand],
     ClassTag.Weapon.Greatsword: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Greatsword, ClassTag.Equipment.MainHand],
@@ -28,6 +29,7 @@ CLASS_TAGS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[ClassTag.Weapon | Cl
     ClassTag.Weapon.Spear: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Spear, ClassTag.Equipment.MainHand],
     ClassTag.Weapon.Staff: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Staff, ClassTag.Equipment.MainHand],
     ClassTag.Weapon.Shield: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Shield, ClassTag.Equipment.OffHand],
+    ClassTag.Weapon.Token: [ClassTag.Equipment.Equipment, ClassTag.Weapon.Weapon, ClassTag.Weapon.Token, ClassTag.Equipment.MainHand],
 
     ClassTag.Equipment.Helmet: [ClassTag.Equipment.Equipment, ClassTag.Equipment.Helmet],
     ClassTag.Equipment.ChestArmor: [ClassTag.Equipment.Equipment, ClassTag.Equipment.ChestArmor],
@@ -39,6 +41,16 @@ CLASS_TAGS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[ClassTag.Weapon | Cl
 }
 
 NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]]] = {
+    ClassTag.Weapon.Bow: [
+        ("Bow", "\uD83C\uDFF9"),
+        ("Longbow", "\uD83C\uDFF9"),
+        ("Recurve", "\uD83C\uDFF9"),
+        ("Crossbow", "\uD83C\uDFF9"),
+        ("Barebow", "\uD83C\uDFF9"),
+        ("Takedown Bow", "\uD83C\uDFF9"),
+        ("Flatbow", "\uD83C\uDFF9"),
+        ("Deflex Bow", "\uD83C\uDFF9"),
+    ],
     ClassTag.Weapon.Dagger: [
         ("Dagger", "\uD83D\uDDE1\uFE0F"),
         ("Shiv", "\uD83D\uDD2A"),
@@ -118,6 +130,14 @@ NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]
         ("Gilded Shield", "\uD83D\uDD30"),
         ("Crested Shield", "\uD83D\uDD30"),
         ("Kite Shield", "\uD83D\uDD30")
+    ],
+    ClassTag.Weapon.Token: [
+        ("Token", "\uD83E\uDE99"),
+        ("Symbol", "\uD83E\uDE99"),
+        ("Coin", "\uD83E\uDE99"),
+        ("Relic", "\uD83E\uDE99"),
+        ("Mark", "\uD83E\uDE99"),
+        ("Emblem", "\uD83E\uDE99")
     ],
 
     ClassTag.Equipment.Helmet: [
@@ -199,6 +219,7 @@ NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]
 
 # Note: These have +1 on the upper end since range is exclusive
 SLOTS_PER_ITEM_TYPE: Dict[ClassTag.Weapon | ClassTag.Equipment, range] = {
+    ClassTag.Weapon.Bow: range(0, 3),
     ClassTag.Weapon.Dagger: range(0, 3),
     ClassTag.Weapon.Sword: range(0, 4),
     ClassTag.Weapon.Greatsword: range(0, 4),
@@ -206,6 +227,7 @@ SLOTS_PER_ITEM_TYPE: Dict[ClassTag.Weapon | ClassTag.Equipment, range] = {
     ClassTag.Weapon.Spear: range(0, 4),
     ClassTag.Weapon.Staff: range(0, 4),
     ClassTag.Weapon.Shield: range(0, 4),
+    ClassTag.Weapon.Token: range(0, 4),
 
     ClassTag.Equipment.Helmet: range(0, 3),
     ClassTag.Equipment.ChestArmor: range(0, 4),
@@ -227,7 +249,7 @@ GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
     EffectType.MemMod: ["of Remembrance", "of Memory"],
 
     EffectType.DmgReflect: ["of Reflection", "of Mirrors", "of the Turtle", "of Brambles", "of Thorns"],
-    EffectType.DmgResist: ["of Absorption", "of Nullifcation", "of Endurance"],
+    EffectType.DmgResist: ["of Absorption", "of Nullification", "of Endurance"],
     EffectType.DmgBuff: ["of Force", "of the Storm", "of Brutality"],
     EffectType.DmgBuffSelfMaxHealth: ["of the Hemocrafter", "of the Butcher"],
     EffectType.DmgBuffSelfRemainingHealth: ["of the Hemocrafter", "of the Butcher"],
@@ -2643,7 +2665,7 @@ EFFECT_CHANCES: Dict[EffectType, float] = {
 }
 
 if __name__ == "__main__":
-    for item_index in range(2000):
+    for item_index in range(300):
         # Order should be as follows:
         #   (1) Choose random item type using a class tag, i.e. dagger, shield, etc.
         #   (2) Choose rarity at random from the list
@@ -2655,7 +2677,7 @@ if __name__ == "__main__":
         #   (7) Based on the item type and armor/weapon stats, give it attribute requirements
         #   (8) Based on the level requirement, rarity, and effects, assign it a value
         #   (9) Choose a random number of slots to give the item based on its type and assign other details
-        item_type = random.choice(list(CLASS_TAGS.keys()))
+        item_type = random.choice([ClassTag.Weapon.Token]) # list(CLASS_TAGS.keys())
         rarity = random.choices(
             [Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Artifact],
             [0.05, 0.4, 0.3, 0.2, 0.05],
@@ -2803,7 +2825,22 @@ if __name__ == "__main__":
 
         weapon_stats = None
         armor_stats = None
-        if item_type == ClassTag.Weapon.Dagger:
+        if item_type == ClassTag.Weapon.Bow:
+            min_damage = random.randint(1, 30)
+            max_damage = ceil(min_damage * 1.25) + 1
+            weapon_stats = WeaponStats(min_damage, max_damage, 2)
+
+            attr_reqs.dexterity = max_damage
+            level_req = int(3.5 * max_damage)
+
+            item_effects.permanent.append(Effect(
+                EffectType.DmgBuffFromDex,
+                0.025,
+                -1,
+                [],
+                []
+            ))
+        elif item_type == ClassTag.Weapon.Dagger:
             min_damage = random.randint(1, 40)
             max_damage = ceil(min_damage * 1.25) + 1
             weapon_stats = WeaponStats(min_damage, max_damage)
@@ -2861,6 +2898,21 @@ if __name__ == "__main__":
 
             attr_reqs.strength = max(max_damage - 5, 0)
             level_req = 2 * max_damage
+        elif item_type == ClassTag.Weapon.Token:
+            min_damage = random.randint(1, 50)
+            max_damage = ceil(min_damage * 1.25) + 1
+            weapon_stats = WeaponStats(min_damage, max_damage)
+
+            attr_reqs.luck = max(max_damage - 5, 0)
+            level_req = 2 * max_damage
+
+            item_effects.permanent.append(Effect(
+                EffectType.DmgBuffFromLck,
+                0.025,
+                -1,
+                [],
+                []
+            ))            
         elif item_type == ClassTag.Equipment.Helmet:
             armor = random.randint(5, 150)
             armor_stats = ArmorStats(armor)
@@ -2917,7 +2969,9 @@ if __name__ == "__main__":
 
         path_name = name.replace(" ", "_").replace("'", "").lower()
         key = ""
-        if item_type == ClassTag.Weapon.Dagger:
+        if item_type == ClassTag.Weapon.Bow:
+            key = f"items/weapon/bow/{path_name}"
+        elif item_type == ClassTag.Weapon.Dagger:
             key = f"items/weapon/dagger/{path_name}"
         elif item_type == ClassTag.Weapon.Greatsword:
             key = f"items/weapon/greatsword/{path_name}"
@@ -2929,6 +2983,8 @@ if __name__ == "__main__":
             key = f"items/weapon/staff/{path_name}"
         elif item_type == ClassTag.Weapon.Sword:
             key = f"items/weapon/sword/{path_name}"
+        elif item_type == ClassTag.Weapon.Token:
+            key = f"items/weapon/token/{path_name}"
         elif item_type == ClassTag.Equipment.Helmet:
             key = f"items/equipment/helmet/{path_name}"
         elif item_type == ClassTag.Equipment.ChestArmor:
@@ -2962,7 +3018,7 @@ if __name__ == "__main__":
         }
 
         if rarity == Rarity.Artifact:
-            item["class_tags"].append(StateTag.NeedsIdentification)
+            item["state_tags"].append(StateTag.NeedsIdentification)
 
         if len(item_effects) > 0:
             item["item_effects"] = {}

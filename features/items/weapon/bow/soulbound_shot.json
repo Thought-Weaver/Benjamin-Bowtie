@@ -1,0 +1,67 @@
+{
+    "key": "items/weapon/bow/soulbound_shot",
+    "icon": "\ud83c\udff9",
+    "name": "Soulbound Shot",
+    "value": 23120,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Bow",
+        "Main_Hand"
+    ],
+    "state_tags": [
+        "Needs_Identification"
+    ],
+    "count": 1,
+    "level_requirement": 133,
+    "altering_item_keys": [
+        ""
+    ],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "AdditionalXP",
+                "effect_value": 1.5,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "DmgBuffFromDex",
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.25,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Undying"
+            }
+        ],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 29,
+        "max_damage": 38,
+        "num_targets": 2
+    },
+    "attr_requirements": {
+        "dexterity": 38
+    }
+}

@@ -36,6 +36,7 @@ class ClassTag(Enum):
         Bow = "Bow"
         Staff = "Staff"
         Shield = "Shield"
+        Token = "Token"
 
     # Items that can be stacked and used for certain effects
     @skip

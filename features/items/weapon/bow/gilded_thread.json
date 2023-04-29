@@ -1,0 +1,74 @@
+{
+    "key": "items/weapon/bow/gilded_thread",
+    "icon": "\ud83c\udff9",
+    "name": "Gilded Thread",
+    "value": 4400,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Bow",
+        "Main_Hand"
+    ],
+    "state_tags": [
+        "Needs_Identification"
+    ],
+    "count": 1,
+    "level_requirement": 28,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "IntDebuff"
+            },
+            {
+                "effect_type": "DmgBuffFromDex",
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [
+            {
+                "effect_type": "RestorePercentMana",
+                "effect_value": 0.01,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [],
+        "on_successful_ability_used": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.25,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Tarnished"
+            }
+        ],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    },
+    "weapon_stats": {
+        "min_damage": 5,
+        "max_damage": 8,
+        "num_targets": 2
+    },
+    "attr_requirements": {
+        "dexterity": 8
+    }
+}
