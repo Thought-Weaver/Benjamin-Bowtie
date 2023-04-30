@@ -108,14 +108,14 @@ class Companion():
         return self._level - org_level
 
     def add_xp(self, xp_to_add: int) -> int:
-        org_level = self._level
+        final_xp: int = xp_to_add + ceil(self._level / 5)
 
-        self._xp = max(0, self._xp + xp_to_add + ceil(self._level / 5))
+        self._xp = max(0, self._xp + final_xp)
         self._remaining_xp = self.get_xp_to_level(self._level + 1) - self._xp
 
         self.level_up_check()
 
-        return self._level - org_level
+        return final_xp
 
     def add_companion_points(self, points: int):
         self._companion_tier_points += points
