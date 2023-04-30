@@ -41,8 +41,15 @@ class WildStrike(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, [*targets, caster], range(20, 30))
+
+        damage = range(20, 30)
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
+
+        self_damage_result: List[NegativeAbilityResult] = self._use_damage_ability(caster, [caster], damage)
+        self_damage_result_str: str = self_damage_result[0].target_str.replace("{1}", "{0}")
+
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        result_str += f"\n{self_damage_result_str}"
 
         caster.get_stats().dueling.guardian_abilities_used += 1
 
@@ -97,7 +104,7 @@ class MaddeningScream(Ability):
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [int_debuff, str_debuff, dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
-        caster.get_stats().dueling.alchemist_abilities_used += 1
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 

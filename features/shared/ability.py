@@ -343,9 +343,9 @@ class Ability():
             non_empty_strs = list(filter(lambda s: s != "", [se_on_ability_used_str, on_attack_or_ability_effects_str, se_ability_used_against_str, on_ability_used_against_str, *final_se_strs]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
         
-        result_str = self.remove_mana_and_set_cd(caster)
-        if result_str is not None:
-            results.append(NegativeAbilityResult(result_str, True))
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            results.append(NegativeAbilityResult(mana_and_cd_str, True))
 
         return results
 
