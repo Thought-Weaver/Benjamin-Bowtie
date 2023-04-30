@@ -5,8 +5,9 @@ from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.house.house import House
-from features.stats import Stats
 from features.inventory import Inventory
+from features.stats import Stats
+from features.stories.player_dungeon_run import PlayerDungeonRun
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -25,10 +26,7 @@ class Player():
         self._dueling: Dueling = Dueling()
         self._house: House = House()
         self._companions: PlayerCompanions = PlayerCompanions(self.send_mail)
-        
-        # These are two variables specific to dungeon run adventures
-        self._in_dungeon_run: bool = False
-        self._in_rest_area: bool = False
+        self._dungeon_run: PlayerDungeonRun = PlayerDungeonRun()
 
     def get_id(self):
         return self._id
@@ -67,17 +65,8 @@ class Player():
     def get_companions(self):
         return self._companions
     
-    def is_in_dungeon_run(self):
-        return self._in_dungeon_run
-    
-    def set_is_in_dungeon_run(self, value: bool):
-        self._in_dungeon_run = value
-
-    def is_in_rest_area(self):
-        return self._in_rest_area
-    
-    def set_is_in_rest_area(self, value: bool):
-        self._in_rest_area = value
+    def get_dungeon_run(self):
+        return self._dungeon_run
 
     def __getstate__(self):
         return self.__dict__
@@ -92,5 +81,4 @@ class Player():
         self._dueling = state.get("_dueling", Dueling())
         self._house = state.get("_house", House())
         self._companions = state.get("_companions", PlayerCompanions(self.send_mail))
-        self._in_dungeon_run = state.get("_in_dungeon_run", False)
-        self._in_rest_area = state.get("_in_rest_area", False)
+        self._dungeon_run = state.get("_dungeon_run", PlayerDungeonRun())

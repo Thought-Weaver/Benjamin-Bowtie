@@ -1756,8 +1756,6 @@ class ConfirmItemButton(discord.ui.Button):
 class ContinueToNextActionButton(discord.ui.Button):
     def __init__(self):
         super().__init__(style=discord.ButtonStyle.blurple, label=f"Continue")
-
-        self._already_pressed: bool = False
         
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -1765,11 +1763,10 @@ class ContinueToNextActionButton(discord.ui.Button):
         
         view: DuelView = self.view
         cur_turn_user: discord.User | None = view.get_user_for_current_turn()
-        if cur_turn_user is None or interaction.user == cur_turn_user:
-            if not self._already_pressed:
-                self._already_pressed = True
-                response = view.continue_turn()
-                await interaction.response.edit_message(content=None, embed=response, view=view)
+        last_player_turn_user: discord.User | None = view.get_last_player_turn_user()
+        if interaction.user == last_player_turn_user or interaction.user == cur_turn_user:
+            response = view.continue_turn()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 class BackUsingIntentButton(discord.ui.Button):
@@ -1870,7 +1867,7 @@ class ContinueButton(discord.ui.Button):
         if self._player_loss:
             view: DuelView = self.view
             for player in view.get_players():
-                player.set_is_in_dungeon_run(False)
+                player.get_dungeon_run().in_dungeon_run = False
 
         embed = self._new_view.get_initial_embed() # type: ignore
         await interaction.response.edit_message(content=None, embed=embed, view=self._new_view)
@@ -1894,8 +1891,10 @@ class DuelView(discord.ui.View):
         self._enemies: List[Player | NPC] = enemies
         self._turn_order: List[Player | NPC] = sorted(allies + enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
         self._turn_index: int = 0
+        self._last_player_turn_user: discord.User | None = next(self.get_user_from_player(entity) for entity in self._turn_order if isinstance(entity, Player))
 
         self._companion_battle: bool = companion_battle
+        self._companion_abilities: Dict[str, Ability] = {}
 
         # These are both used during dungeons to trigger associated win and loss event screens
         self._player_victory_post_view: discord.ui.View | None = player_victory_post_view
@@ -1918,8 +1917,6 @@ class DuelView(discord.ui.View):
         self._NUM_PER_PAGE = 4
 
         self._additional_info_string_data = ""
-
-        self._companion_abilities: Dict[str, Ability] = {}
 
         if not skip_init_updates:
             for entity in allies + enemies:
@@ -1960,6 +1957,9 @@ class DuelView(discord.ui.View):
         if isinstance(cur_turn_entity, Player) or self._companion_battle:
             return self.get_user_from_player(cur_turn_entity)
         return None
+    
+    def get_last_player_turn_user(self):
+        return self._last_player_turn_user
 
     def get_name(self, entity: Player | NPC):
         if isinstance(entity, NPC):
@@ -2053,6 +2053,9 @@ class DuelView(discord.ui.View):
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
 
         entity: Player | NPC = self._turn_order[self._turn_index]
+
+        if isinstance(entity, Player):
+            self._last_player_turn_user = self.get_user_from_player(entity)
 
         item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnStart, entity, entity, 0, 0, None)
         

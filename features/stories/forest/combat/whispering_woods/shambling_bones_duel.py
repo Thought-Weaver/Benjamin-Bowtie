@@ -36,6 +36,10 @@ class ScreamingCopseContinueButton(discord.ui.Button):
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
             return
+        
+        for player in view.get_players():
+            if player.get_dungeon_run().forest_best_act < ForestSection.ScreamingCopse:
+                player.get_dungeon_run().forest_best_act = ForestSection.ScreamingCopse
 
         room_select_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_select_view.get_initial_embed()

@@ -36,6 +36,10 @@ class WhisperingWoodsContinueButton(discord.ui.Button):
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
             return
 
+        for player in view.get_players():
+            if player.get_dungeon_run().forest_best_act < ForestSection.WhisperingWoods:
+                player.get_dungeon_run().forest_best_act = ForestSection.WhisperingWoods
+
         room_select_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_select_view.get_initial_embed()
 

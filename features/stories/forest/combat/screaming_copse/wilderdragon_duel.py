@@ -111,7 +111,7 @@ class TreasureRoomContinueButton(discord.ui.Button):
         dungeon_run.bosses_defeated += 1
         
         for player in view.get_players():
-            player.set_is_in_dungeon_run(False)
+            player.get_dungeon_run().in_dungeon_run = False
 
         next_view: ForestFinalWordsView = ForestFinalWordsView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = next_view.get_initial_embed()

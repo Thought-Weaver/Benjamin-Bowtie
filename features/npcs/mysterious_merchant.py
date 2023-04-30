@@ -68,7 +68,7 @@ class ContinueButton(discord.ui.Button):
             return
 
         for player in view.get_players():
-            player.set_is_in_rest_area(False)
+            player.get_dungeon_run().in_rest_area = False
 
         room_selection_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_selection_view.get_initial_embed()

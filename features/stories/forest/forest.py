@@ -12,7 +12,7 @@ from features.player import Player
 from features.shared.constants import FOREST_ROOMS
 from features.shared.enums import CompanionKey, ForestSection
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
-from features.stories.forest.combat.quiet_grove.bridge_golem_duel import BridgeGolemDuelView
+from features.stories.forest.combat.quiet_grove.bridge_golem_duel import BridgeGolemDuelView, WhisperingWoodsIntroView
 from features.stories.forest.combat.quiet_grove.brigand_mystic_duel import BrigandMysticDuelView
 from features.stories.forest.combat.quiet_grove.deepwood_bear_duel import BearDuelView
 from features.stories.forest.combat.quiet_grove.evoker_brigand_thief_duel import EvokerBrigandThiefDuelView
@@ -37,6 +37,7 @@ from features.stories.forest.combat.whispering_woods.ironbound_bladedancer_duel 
 from features.stories.forest.combat.whispering_woods.lifestitcher_ironbound_duel import LifestitcherIronboundDuelView
 from features.stories.forest.combat.whispering_woods.lifestitcher_shadowsneak_duel import LifestitcherShadowsneakDuelView
 from features.stories.forest.combat.whispering_woods.mad_knights_duel import MadKnightsDuelView
+from features.stories.forest.combat.whispering_woods.shambling_bones_duel import ScreamingCopseIntroView
 from features.stories.forest.combat.whispering_woods.treants_duel import TreantsDuelView
 from features.stories.forest.combat.whispering_woods.triple_stormcaller_duel import TripleStormcallerDuelView
 from features.stories.forest.events.quiet_grove.aestival_light import AestivalLightView
@@ -164,7 +165,7 @@ class RestContinueButton(discord.ui.Button):
             return
 
         for player in view.get_players():
-            player.set_is_in_rest_area(False)
+            player.get_dungeon_run().in_rest_area = False
 
         room_selection_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_selection_view.get_initial_embed()
@@ -363,12 +364,24 @@ class StartButton(discord.ui.Button):
             return
 
         for player in view.get_players():
-            player.set_is_in_dungeon_run(True)
+            player.get_dungeon_run().in_dungeon_run = False
 
-        entrance_view: QuietGroveEntranceView = QuietGroveEntranceView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-        initial_info: Embed = entrance_view.get_initial_embed()
+        starting_section: ForestSection | None = view.get_starting_section()
+        if starting_section is None or starting_section == ForestSection.QuietGrove:
+            qg_entrance_view: QuietGroveEntranceView = QuietGroveEntranceView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+            initial_info: Embed = qg_entrance_view.get_initial_embed()
 
-        await interaction.response.edit_message(embed=initial_info, view=entrance_view, content=None)
+            await interaction.response.edit_message(embed=initial_info, view=qg_entrance_view, content=None)
+        elif starting_section == ForestSection.WhisperingWoods:
+            ww_entrance_view: WhisperingWoodsIntroView = WhisperingWoodsIntroView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+            initial_info: Embed = ww_entrance_view.get_initial_embed()
+
+            await interaction.response.edit_message(embed=initial_info, view=ww_entrance_view, content=None)
+        elif starting_section == ForestSection.ScreamingCopse:
+            sc_entrance_view: ScreamingCopseIntroView = ScreamingCopseIntroView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+            initial_info: Embed = sc_entrance_view.get_initial_embed()
+
+            await interaction.response.edit_message(embed=initial_info, view=sc_entrance_view, content=None)
 
 
 class AcceptButton(discord.ui.Button):
@@ -385,7 +398,7 @@ class AcceptButton(discord.ui.Button):
 
 
 class ForestDungeonEntranceView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User]):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], starting_section: ForestSection | None):
         super().__init__(timeout=900)
 
         self._bot = bot
@@ -394,6 +407,7 @@ class ForestDungeonEntranceView(discord.ui.View):
         self._users = users
         self._group_leader = users[0]
         self._dungeon_run = DungeonRun(Story.Forest, FOREST_ROOMS, ForestSection.QuietGrove)
+        self._starting_section = starting_section
         
         self.accepted_users: Set[int] = set()
 
@@ -417,7 +431,7 @@ class ForestDungeonEntranceView(discord.ui.View):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)
 
     def any_in_dungeons_currently(self):
-        return any(self._get_player(user.id).is_in_dungeon_run() for user in self._users)
+        return any(self._get_player(user.id).get_dungeon_run().in_dungeon_run for user in self._users)
 
     def get_bot(self):
         return self._bot
@@ -439,6 +453,9 @@ class ForestDungeonEntranceView(discord.ui.View):
     
     def get_players(self):
         return [self._get_player(user.id) for user in self._users]
+    
+    def get_starting_section(self):
+        return self._starting_section
 
 # -----------------------------------------------------------------------------
 # FOREST STORY CLASS

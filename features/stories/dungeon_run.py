@@ -62,7 +62,7 @@ class RoomButton(discord.ui.Button):
             view.get_dungeon_run().shopkeeps_encountered += 1
 
             for player in view.get_players():
-                player.set_is_in_rest_area(True)
+                player.get_dungeon_run().in_rest_area = True
         elif self._room_type == RoomType.Treasure:
             view.get_dungeon_run().treasure_rooms_encountered += 1
         elif self._room_type == RoomType.Event:
@@ -71,7 +71,7 @@ class RoomButton(discord.ui.Button):
             view.get_dungeon_run().rests_taken += 1
 
             for player in view.get_players():
-                player.set_is_in_rest_area(True)
+                player.get_dungeon_run().in_rest_area = True
         
         view.get_dungeon_run().rooms_explored += 1
         view.get_dungeon_run().rooms_until_boss -= 1

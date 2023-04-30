@@ -157,17 +157,65 @@ class ForestSection(StrEnum):
     WhisperingWoods = "WhisperingWoods"
     ScreamingCopse = "ScreamingCopse"
 
+    def __lt__(self, section: ForestSection) -> bool:
+        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
+        return ordering.index(self) < ordering.index(section)
+
+    def __gt__(self, section: ForestSection) -> bool:
+        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
+        return ordering.index(self) > ordering.index(section)
+
+    def __leq__(self, section: ForestSection) -> bool:
+        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
+        return ordering.index(self) <= ordering.index(section)
+
+    def __geq__(self, section: ForestSection) -> bool:
+        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
+        return ordering.index(self) >= ordering.index(section)
+
 
 class OceanSection(StrEnum):
     TidewaterShallows = "TidewaterShallows"
     CoralForest = "CoralForest"
     EndlessTorrents = "EndlessTorrents"
 
+    def __lt__(self, section: OceanSection) -> bool:
+        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.EndlessTorrents]
+        return ordering.index(self) < ordering.index(section)
+
+    def __gt__(self, section: OceanSection) -> bool:
+        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.EndlessTorrents]
+        return ordering.index(self) > ordering.index(section)
+
+    def __leq__(self, section: OceanSection) -> bool:
+        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.EndlessTorrents]
+        return ordering.index(self) <= ordering.index(section)
+
+    def __geq__(self, section: OceanSection) -> bool:
+        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.EndlessTorrents]
+        return ordering.index(self) >= ordering.index(section)
+
 
 class UnderworldSection(StrEnum):
     MistyTunnels = "MistyTunnels"
     AbyssalCaverns = "AbyssalCaverns"
     TombsIngress = "TombsIngress"
+
+    def __lt__(self, section: UnderworldSection) -> bool:
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.AbyssalCaverns, UnderworldSection.TombsIngress]
+        return ordering.index(self) < ordering.index(section)
+
+    def __gt__(self, section: UnderworldSection) -> bool:
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.AbyssalCaverns, UnderworldSection.TombsIngress]
+        return ordering.index(self) > ordering.index(section)
+
+    def __leq__(self, section: UnderworldSection) -> bool:
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.AbyssalCaverns, UnderworldSection.TombsIngress]
+        return ordering.index(self) <= ordering.index(section)
+
+    def __geq__(self, section: UnderworldSection) -> bool:
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.AbyssalCaverns, UnderworldSection.TombsIngress]
+        return ordering.index(self) >= ordering.index(section)
 
 
 class RoomType(StrEnum):
