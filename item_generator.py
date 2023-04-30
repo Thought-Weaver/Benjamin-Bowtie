@@ -2731,7 +2731,7 @@ if __name__ == "__main__":
                     time_range = range(time_range.start, time_range.stop + 1)
                 effect_time: int = random.choice(list(time_range))
 
-                if random.random() < 0.1 and (len(BAD_PREFIXES.get(effect_type, [])) > 0 or len(BAD_SUFFIXES.get(effect_type, [])) > 0):
+                if random.random() < 0.3 and (len(BAD_PREFIXES.get(effect_type, [])) > 0 or len(BAD_SUFFIXES.get(effect_type, [])) > 0) and item_effect_cat == ItemEffectCategory.Permanent:
                     effect_value *= -1
                     rarity = Rarity.Cursed
                     possible_prefixes = BAD_PREFIXES.get(effect_type, [])
