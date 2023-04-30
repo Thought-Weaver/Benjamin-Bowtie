@@ -25,6 +25,14 @@
                 "conditions": [],
                 "condition_values": [],
                 "associated_status_effect": "Bleeding"
+            },
+            {
+                "effect_type": "StrMod",
+                "effect_value": -6,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
             }
         ],
         "on_turn_start": [],
@@ -33,16 +41,7 @@
         "on_successful_ability_used": [],
         "on_successful_attack": [],
         "on_attacked": [],
-        "on_ability_used_against": [
-            {
-                "effect_type": "StrMod",
-                "effect_value": -6,
-                "effect_time": 4,
-                "conditions": [],
-                "condition_values": [],
-                "associated_status_effect": null
-            }
-        ]
+        "on_ability_used_against": []
     },
     "armor_stats": {
         "armor_amount": 123
