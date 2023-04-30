@@ -214,7 +214,7 @@ class Ability():
 
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -225,7 +225,7 @@ class Ability():
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -245,7 +245,7 @@ class Ability():
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -312,7 +312,7 @@ class Ability():
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
-            se_on_ability_used_str: str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group))
+            se_on_ability_used_str: str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group))
             on_attack_or_ability_effects_str: str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -323,7 +323,7 @@ class Ability():
                     if result_str != "":
                         on_attack_or_ability_effects_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -370,7 +370,7 @@ class Ability():
         caster_equipment = caster.get_equipment()
 
         for i, target in enumerate(targets):
-            se_on_ability_used_str: str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group))
+            se_on_ability_used_str: str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group))
             on_attack_or_ability_effects_str: str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -381,7 +381,7 @@ class Ability():
                     if result_str != "":
                         on_attack_or_ability_effects_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -468,7 +468,7 @@ class Ability():
             if max_heal_amount is not None:
                 heal_amount = min(heal_amount, max_heal_amount)
 
-            se_on_ability_used_str: str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group))
+            se_on_ability_used_str: str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group))
             on_attack_or_ability_effects_str: str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -479,7 +479,7 @@ class Ability():
                     if result_str != "":
                         on_attack_or_ability_effects_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1200,7 +1200,7 @@ class WrathOfTheWavesI(Ability):
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             damage = ceil(damage * critical_hit_boost * bonus_percent_damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1211,7 +1211,7 @@ class WrathOfTheWavesI(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
 
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
@@ -1222,7 +1222,7 @@ class WrathOfTheWavesI(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -1340,7 +1340,7 @@ class WrathOfTheWavesII(Ability):
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             damage = ceil(damage * critical_hit_boost * bonus_percent_damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1351,7 +1351,7 @@ class WrathOfTheWavesII(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
 
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
@@ -1362,7 +1362,7 @@ class WrathOfTheWavesII(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -1480,7 +1480,7 @@ class WrathOfTheWavesIII(Ability):
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             damage = ceil(damage * critical_hit_boost * bonus_percent_damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1491,7 +1491,7 @@ class WrathOfTheWavesIII(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
 
             percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
 
@@ -1502,7 +1502,7 @@ class WrathOfTheWavesIII(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -1797,7 +1797,7 @@ class ThunderingTorrentI(Ability):
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1808,7 +1808,7 @@ class ThunderingTorrentI(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1828,7 +1828,7 @@ class ThunderingTorrentI(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -1967,7 +1967,7 @@ class ThunderingTorrentII(Ability):
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1978,7 +1978,7 @@ class ThunderingTorrentII(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -1998,7 +1998,7 @@ class ThunderingTorrentII(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -2137,7 +2137,7 @@ class ThunderingTorrentIII(Ability):
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
             
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2148,7 +2148,7 @@ class ThunderingTorrentIII(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2168,7 +2168,7 @@ class ThunderingTorrentIII(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -2284,7 +2284,7 @@ class DrownInTheDeepI(Ability):
             damage = ceil((1 * num_dex_reduce_effects) / 100 * target_max_hp)
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2295,7 +2295,7 @@ class DrownInTheDeepI(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2311,7 +2311,7 @@ class DrownInTheDeepI(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -2389,7 +2389,7 @@ class DrownInTheDeepII(Ability):
             damage = ceil((1.5 * num_dex_reduce_effects) / 100 * target_max_hp)
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2400,7 +2400,7 @@ class DrownInTheDeepII(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2416,7 +2416,7 @@ class DrownInTheDeepII(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -2494,7 +2494,7 @@ class DrownInTheDeepIII(Ability):
             damage = ceil((2 * num_dex_reduce_effects) / 100 * target_max_hp)
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2505,7 +2505,7 @@ class DrownInTheDeepIII(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2521,7 +2521,7 @@ class DrownInTheDeepIII(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -2630,7 +2630,7 @@ class WhirlpoolI(Ability):
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2641,7 +2641,7 @@ class WhirlpoolI(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2661,7 +2661,7 @@ class WhirlpoolI(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -2796,7 +2796,7 @@ class WhirlpoolII(Ability):
             damage = min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2807,7 +2807,7 @@ class WhirlpoolII(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2827,7 +2827,7 @@ class WhirlpoolII(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:
@@ -2962,7 +2962,7 @@ class WhirlpoolIII(Ability):
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
             damage = ceil(damage * critical_hit_final * bonus_percent_damage)
 
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, None if self._num_targets == 0 else self._target_own_group)) 
+            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2973,7 +2973,7 @@ class WhirlpoolIII(Ability):
                     if result_str != "":
                         on_attack_or_ability_effect_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
             on_ability_used_against_str = ""
             for item in caster_equipment.get_all_equipped_items():
                 item_effects = item.get_item_effects()
@@ -2993,7 +2993,7 @@ class WhirlpoolIII(Ability):
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
             if actual_damage_dealt > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, None if self._num_targets == 0 else self._target_own_group))
+                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
                     if item_effects is None:

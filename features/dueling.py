@@ -706,10 +706,7 @@ class Dueling():
 
         return (damage_dealt, "")
 
-    def apply_chance_status_effect_from_total_item_effects(self, item_effect_cat: ItemEffectCategory, target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool | None):
-        # Note: target_is_ally being None is a quick way of implying that target = self_entity and that any
-        # effects -- positive or negative -- should be conferred.
-
+    def apply_chance_status_effect_from_total_item_effects(self, item_effect_cat: ItemEffectCategory, target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool):
         # The reason this is abstracted is because we should only ever apply status effect conditions like this
         # once. If we were to do the aggregate repeatedly for each item that contributes that'd be too powerful,
         # and if we were to do each item separately, then it wouldn't actually be the sum of the probability which
@@ -746,9 +743,9 @@ class Dueling():
                             current_resist_info = resist_status_effect.get(se_key, (0, []))
                             resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
 
-        return self._apply_status_effect_results([], item_effect_cat, chance_status_effect, resist_status_effect, target, self_entity, target_index, self_index, target_is_ally)
+        return self._apply_status_effect_results([], chance_status_effect, resist_status_effect, target, self_entity, target_index, self_index, target_is_ally)
 
-    def apply_chance_status_effect_from_item(self, item_effect_cat: ItemEffectCategory, item: Item, target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool | None):
+    def apply_chance_status_effect_from_item(self, item_effect_cat: ItemEffectCategory, item: Item, target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool):
         # The first element in the tuple is the percent chance of receiving the effect and the
         # second element is the time it'll last.
         chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]] = {}
@@ -775,9 +772,9 @@ class Dueling():
                         current_resist_info = resist_status_effect.get(se_key, (0, []))
                         resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
 
-        return self._apply_status_effect_results([], item_effect_cat, chance_status_effect, resist_status_effect, target, self_entity, target_index, self_index, target_is_ally)
+        return self._apply_status_effect_results([], chance_status_effect, resist_status_effect, target, self_entity, target_index, self_index, target_is_ally)
 
-    def _apply_status_effect_results(self, result_strs: List[str], item_effect_cat: ItemEffectCategory, chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]], resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]], target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool | None):
+    def _apply_status_effect_results(self, result_strs: List[str], chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]], resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]], target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool):
         chance_poisoned, turns_poisoned = chance_status_effect.get(StatusEffectKey.Poisoned, (0, 0))
         if random() < chance_poisoned:
             status_effect = Poisoned(
@@ -877,7 +874,7 @@ class Dueling():
                 value=1,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -900,7 +897,7 @@ class Dueling():
                 value=percent_protected,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -935,7 +932,7 @@ class Dueling():
                 value=int(coins_generated),
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -948,7 +945,7 @@ class Dueling():
                 value=percent_tarnished,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -960,7 +957,7 @@ class Dueling():
                 value=1,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -972,7 +969,7 @@ class Dueling():
                 value=1,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -985,7 +982,7 @@ class Dueling():
                 value=percent_empowered,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -1021,7 +1018,7 @@ class Dueling():
                 value=con_buff,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -1043,7 +1040,7 @@ class Dueling():
                 value=str_buff,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -1065,7 +1062,7 @@ class Dueling():
                 value=dex_buff,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -1087,7 +1084,7 @@ class Dueling():
                 value=int_buff,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -1109,7 +1106,7 @@ class Dueling():
                 value=lck_buff,
                 trigger_first_turn=False
             )
-            if target_is_ally or target_is_ally is None:
+            if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
             else:
                 result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
@@ -2019,7 +2016,7 @@ class DuelView(discord.ui.View):
     def set_next_turn(self):
         previous_entity: Player | NPC = self._turn_order[self._turn_index]
         
-        item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnEnd, previous_entity, previous_entity, 0, 0, None)
+        item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnEnd, previous_entity, previous_entity, 0, 0, True)
         
         self._additional_info_string_data = ""
 
@@ -2056,7 +2053,7 @@ class DuelView(discord.ui.View):
         if isinstance(entity, Player):
             self._last_player_turn_user = self.get_user_from_player(entity)
 
-        item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnStart, entity, entity, 0, 0, None)
+        item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnStart, entity, entity, 0, 0, True)
         
         for result_str in item_status_effects:
             formatted_str = result_str.format(self.get_name(previous_entity))
@@ -2171,10 +2168,14 @@ class DuelView(discord.ui.View):
 
     def _is_ally(self, entity: Player | NPC):
         cur_turn_player = self._turn_order[self._turn_index]
-        if cur_turn_player in self._allies:
-            return entity in self._allies
+        
+        self_charmed: bool = any(se.key == StatusEffectKey.Charmed for se in cur_turn_player.get_dueling().status_effects)
+        entity_charmed: bool = any(se.key == StatusEffectKey.Charmed for se in entity.get_dueling().status_effects)
+
+        if cur_turn_player in self._allies and not self_charmed:
+            return entity in self._allies if not entity_charmed else entity in self._enemies
         else:
-            return entity in self._enemies
+            return entity in self._enemies if not entity_charmed else entity in self._allies
 
     def get_duel_info_str(self):
         info_str = "᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n"
