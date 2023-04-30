@@ -2430,9 +2430,9 @@ class DuelView(discord.ui.View):
                     companion_key = loser.get_companions().current_companion
                     if companion_key is not None:
                         companion = loser.get_companions().companions[companion_key]
-                        companion.add_xp(companion.duel_xp_gain)
+                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
                 
                     if companion_xp_str != "":
                         winner_str += f"{companion_xp_str}\n"
