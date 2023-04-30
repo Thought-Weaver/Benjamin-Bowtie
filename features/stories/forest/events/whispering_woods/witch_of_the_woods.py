@@ -89,7 +89,7 @@ class WitchOfTheWoodsView(discord.ui.View):
         recipe: Recipe = random.choice(self._possible_recipes)
         for user in self._users:
             player = self._get_player(user.id)
-            if recipe.key not in player.get_house().crafting_recipes:
+            if recipe not in player.get_house().crafting_recipes:
                 player.get_house().crafting_recipes.append(recipe)
         result_str: str = f"\n\nYou all learned how to make {recipe.get_name_and_icon()}!"
 
