@@ -2260,11 +2260,11 @@ class DuelView(discord.ui.View):
                     current_companion = player.get_companions().companions[companion_key]
 
                     xp_gained: int = ceil(4 * current_companion.pet_battle_xp_gain)
-                    current_companion.add_xp(xp_gained)
+                    final_xp: int = current_companion.add_xp(xp_gained)
 
                     current_companion.add_companion_points(COMPANION_BATTLE_POINTS)
 
-                    winner_str += f"{current_companion.get_icon_and_name()} *(+{xp_gained} xp)*\n"
+                    winner_str += f"{current_companion.get_icon_and_name()} *(+{final_xp} xp)*\n"
 
                     player.get_stats().companions.companion_battles_fought += 1
                     player.get_stats().companions.companion_battles_won += 1
@@ -2279,11 +2279,11 @@ class DuelView(discord.ui.View):
                     current_companion = player.get_companions().companions[companion_key]
                     
                     xp_gained: int = ceil(2 * current_companion.pet_battle_xp_gain)
-                    current_companion.add_xp(xp_gained)
+                    final_xp: int = current_companion.add_xp(xp_gained)
 
                     current_companion.add_companion_points(COMPANION_BATTLE_POINTS)
 
-                    loser_str += f"{current_companion.get_icon_and_name()} *(+{xp_gained} xp)*\n"
+                    loser_str += f"{current_companion.get_icon_and_name()} *(+{final_xp} xp)*\n"
 
                     player.get_stats().companions.companion_battles_fought += 1
 
@@ -2325,9 +2325,9 @@ class DuelView(discord.ui.View):
                     companion_key = winner.get_companions().current_companion
                     if companion_key is not None:
                         companion = winner.get_companions().companions[companion_key]
-                        companion.add_xp(companion.duel_xp_gain)
+                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
                 
                 if companion_xp_str != "":
                     winner_str += f"{companion_xp_str}\n"
@@ -2357,9 +2357,9 @@ class DuelView(discord.ui.View):
                     companion_key = loser.get_companions().current_companion
                     if companion_key is not None:
                         companion = loser.get_companions().companions[companion_key]
-                        companion.add_xp(companion.duel_xp_gain)
+                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
                 
                 if companion_xp_str != "":
                     loser_str += f"{companion_xp_str}\n"
@@ -2397,9 +2397,9 @@ class DuelView(discord.ui.View):
                     companion_key = winner.get_companions().current_companion
                     if companion_key is not None:
                         companion = winner.get_companions().companions[companion_key]
-                        companion.add_xp(companion.duel_xp_gain)
+                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
                 
                     if companion_xp_str != "":
                         winner_str += f"{companion_xp_str}\n"
@@ -2488,9 +2488,9 @@ class DuelView(discord.ui.View):
                     companion_key = winner.get_companions().current_companion
                     if companion_key is not None:
                         companion = winner.get_companions().companions[companion_key]
-                        companion.add_xp(companion.duel_xp_gain)
+                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
                 
                     if companion_xp_str != "":
                         winner_str += f"{companion_xp_str}\n"
@@ -2529,9 +2529,9 @@ class DuelView(discord.ui.View):
                     companion_key = loser.get_companions().current_companion
                     if companion_key is not None:
                         companion = loser.get_companions().companions[companion_key]
-                        companion.add_xp(companion.duel_xp_gain)
+                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{companion.duel_xp_gain} xp)*\n"
+                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
                 
                     if companion_xp_str != "":
                         loser_str += f"{companion_xp_str}\n"
