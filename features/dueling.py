@@ -2636,12 +2636,6 @@ class DuelView(discord.ui.View):
             target_str = "target" if self._targets_remaining == 1 else "targets"
             ally_or_op_str = "ally" if target_own_group else "opponent"
             description += f"{selected_targets_str}Choose an {ally_or_op_str}. {self._targets_remaining} {target_str} remaining."
-        
-        for se in cur_turn_entity.get_dueling().status_effects:
-            if se.key == StatusEffectKey.CannotTarget:
-                assert(isinstance(se, CannotTarget))
-                if se.cant_target in targets:
-                    targets.remove(se.cant_target)
 
         all_targets = targets[self._page * self._NUM_PER_PAGE:min(len(targets), (self._page + 1) * self._NUM_PER_PAGE)]
         filtered_targets = list(filter(lambda target: target.get_expertise().hp > 0, all_targets)) if not self._target_own_group else all_targets
@@ -3343,6 +3337,9 @@ class DuelView(discord.ui.View):
 
                 selected_targets = targets
 
+        def get_target_ids(targets: List[Player | NPC], cannot_target_ids: List[str]):
+            return list(filter(lambda x: x != "" and x not in cannot_target_ids, map(lambda x: x.get_id(), targets)))
+
         restricted_to_items: bool = any(se.key == StatusEffectKey.RestrictedToItems for se in npc_dueling.status_effects)
         cannot_attack: bool = any(se.key == StatusEffectKey.CannotAttack for se in npc_dueling.status_effects)
         taunt_targets: List[Player | NPC] = [se.forced_to_attack for se in npc_dueling.status_effects if isinstance(se, Taunted)]
@@ -3354,11 +3351,21 @@ class DuelView(discord.ui.View):
 
         enemies = self._allies if (cur_npc in self._enemies and not charmed) else self._enemies
 
+        cannot_target_ids: List[str] = []
         for se in npc_dueling.status_effects:
             if se.key == StatusEffectKey.CannotTarget:
                 assert(isinstance(se, CannotTarget))
                 if se.cant_target in enemies:
-                    enemies.remove(se.cant_target)
+                    cannot_target_ids.append(se.cant_target.get_id())
+
+        if all(enemy.get_id() in cannot_target_ids for enemy in enemies):
+            action_str = "skips their turn!"
+
+            self.clear_items()
+            self.add_item(ContinueToNextActionButton())
+
+            additional_info_str = f"{self._additional_info_string_data}\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if self._additional_info_string_data != "" else ""
+            return Embed(title=f"{cur_npc.get_name()} {action_str}", description=f"{additional_info_str}")
 
         # Step 1: Try attacking all enemies
         if not restricted_to_items:
@@ -3382,11 +3389,11 @@ class DuelView(discord.ui.View):
 
                     targets = []
                     if self._targets_remaining == -1:
-                        targets = self._enemies
+                        targets = enemies
                     elif self._targets_remaining == -2:
                         targets = self._turn_order
                     
-                    target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.attack_selected_targets()
 
@@ -3400,7 +3407,7 @@ class DuelView(discord.ui.View):
                     if len(taunt_targets) > 0:
                         targets = [choice(taunt_targets)]
                         dueling_copy: DuelView = self.create_copy()
-                        target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                        target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.attack_selected_targets()
 
@@ -3414,7 +3421,7 @@ class DuelView(discord.ui.View):
                         combinations = list(itertools.combinations(enemies, min(self._targets_remaining, len(enemies))))
                         for targets in combinations:
                             dueling_copy: DuelView = self.create_copy()
-                            target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                            target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
                             dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                             dueling_copy.attack_selected_targets()
 
@@ -3454,7 +3461,7 @@ class DuelView(discord.ui.View):
                                     targets = self._enemies
                         elif self._targets_remaining == -2:
                             targets = self._turn_order
-                        target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                        target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.use_ability_on_selected_targets()
 
@@ -3471,7 +3478,7 @@ class DuelView(discord.ui.View):
                         dueling_copy._selected_ability_index = i
 
                         targets = [cur_npc]
-                        target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                        target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.use_ability_on_selected_targets()
 
@@ -3495,12 +3502,6 @@ class DuelView(discord.ui.View):
                             else:
                                 targets = self._enemies
 
-                        for se in npc_dueling.status_effects:
-                            if se.key == StatusEffectKey.CannotTarget:
-                                assert(isinstance(se, CannotTarget))
-                                if se.cant_target in targets:
-                                    targets.remove(se.cant_target)
-
                         if len(targets) > 0:
                             combinations = list(itertools.combinations(targets, min(self._targets_remaining, len(enemies))))
                             for targets in combinations:
@@ -3509,7 +3510,7 @@ class DuelView(discord.ui.View):
                                 dueling_copy._selected_ability = dueling_copy._turn_order[dueling_copy._turn_index].get_dueling().abilities[i]
                                 dueling_copy._selected_ability_index = i
 
-                                target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                                target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
                                 dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                                 dueling_copy.use_ability_on_selected_targets()
 
@@ -3553,7 +3554,7 @@ class DuelView(discord.ui.View):
                                 targets = self._enemies
                     elif self._targets_remaining == -2:
                         targets = self._turn_order
-                    target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.use_item_on_selected_targets()
 
@@ -3570,7 +3571,7 @@ class DuelView(discord.ui.View):
                     dueling_copy._selected_item_index = i
 
                     targets = [cur_npc]
-                    target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.use_item_on_selected_targets()
 
@@ -3594,12 +3595,6 @@ class DuelView(discord.ui.View):
                         else:
                             targets = self._enemies
 
-                    for se in npc_dueling.status_effects:
-                        if se.key == StatusEffectKey.CannotTarget:
-                            assert(isinstance(se, CannotTarget))
-                            if se.cant_target in targets:
-                                targets.remove(se.cant_target)
-
                     if len(targets) > 0:
                         combinations = list(itertools.combinations(enemies, min(self._targets_remaining, len(enemies))))
                         for targets in combinations:
@@ -3608,7 +3603,7 @@ class DuelView(discord.ui.View):
                             dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
                             dueling_copy._selected_item_index = i
 
-                            target_ids: List[str] = list(filter(lambda x: x != "", map(lambda x: x.get_id(), targets)))
+                            target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
                             dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                             dueling_copy.use_item_on_selected_targets()
 
