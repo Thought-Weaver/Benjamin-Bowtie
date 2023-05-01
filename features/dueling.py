@@ -103,23 +103,24 @@ class Dueling():
                 remaining_effects.append(status_effect)
         self.status_effects = remaining_effects
 
-    def add_status_effect_with_resist(self, status_effect: StatusEffect, target: Player | NPC, target_index: int, resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]] | None=None) -> str:
-        if resist_status_effect is None:
-            resist_status_effect = {}
-        
-            for item in target.get_equipment().get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is not None:
-                    # Resistance effects should always be in the permanent category
-                    for item_effect in item_effects.permanent:
-                        if not item_effect.meets_conditions(target, item):
-                            continue
+    def add_status_effect_with_resist(self, status_effect: StatusEffect, target: Player | NPC, target_index: int) -> str:
+        # The first element in the tuple is the percent chance of resisting the effect and the
+        # second element is the list of item names that contributed to resisting.
+        resist_status_effect = {}
+    
+        for item in target.get_equipment().get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                # Resistance effects should always be in the permanent category
+                for item_effect in item_effects.permanent:
+                    if not item_effect.meets_conditions(target, item):
+                        continue
 
-                        if item_effect.effect_type == EffectType.ResistStatusEffect:
-                            se_key: StatusEffectKey | None = item_effect.associated_status_effect
-                            if se_key is not None:
-                                current_resist_info = resist_status_effect.get(se_key, (0, []))
-                                resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
+                    if item_effect.effect_type == EffectType.ResistStatusEffect:
+                        se_key: StatusEffectKey | None = item_effect.associated_status_effect
+                        if se_key is not None:
+                            current_resist_info = resist_status_effect.get(se_key, (0, []))
+                            resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
 
         chance_resist, resist_item_strs = resist_status_effect.get(status_effect.key, (0, []))
         if random() >= chance_resist:
@@ -719,9 +720,6 @@ class Dueling():
         # The first element in the tuple is the percent chance of receiving the effect and the
         # second element is the time it'll last.
         chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]] = {}
-        # The first element in the tuple is the percent chance of resisting the effect and the
-        # second element is the list of item names that contributed to resisting.
-        resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]] = {}
 
         for item in self_entity.get_equipment().get_all_equipped_items():
             item_effects = item.get_item_effects()
@@ -737,21 +735,13 @@ class Dueling():
                         if se_key is not None:
                             current_effect_info = chance_status_effect.get(se_key, (0, 0))
                             chance_status_effect[se_key] = (item_effect.effect_value + current_effect_info[0], max(item_effect.effect_time, current_effect_info[1]))
-                    elif item_effect.effect_type == EffectType.ResistStatusEffect:
-                        se_key: StatusEffectKey | None = item_effect.associated_status_effect
-                        if se_key is not None:
-                            current_resist_info = resist_status_effect.get(se_key, (0, []))
-                            resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
 
-        return self._apply_status_effect_results([], chance_status_effect, resist_status_effect, target, self_entity, target_index, self_index, target_is_ally)
+        return self._apply_status_effect_results([], chance_status_effect, target, self_entity, target_index, self_index, target_is_ally)
 
     def apply_chance_status_effect_from_item(self, item_effect_cat: ItemEffectCategory, item: Item, target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool):
         # The first element in the tuple is the percent chance of receiving the effect and the
         # second element is the time it'll last.
         chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]] = {}
-        # The first element in the tuple is the percent chance of resisting the effect and the
-        # second element is the list of item names that contributed to resisting.
-        resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]] = {}
 
         item_effects = item.get_item_effects()
         if item_effects is not None:
@@ -766,15 +756,10 @@ class Dueling():
                     if se_key is not None:
                         current_effect_info = chance_status_effect.get(se_key, (0, 0))
                         chance_status_effect[se_key] = (item_effect.effect_value + current_effect_info[0], max(item_effect.effect_time, current_effect_info[1]))
-                elif item_effect.effect_type == EffectType.ResistStatusEffect:
-                    se_key: StatusEffectKey | None = item_effect.associated_status_effect
-                    if se_key is not None:
-                        current_resist_info = resist_status_effect.get(se_key, (0, []))
-                        resist_status_effect[se_key] = (item_effect.effect_value + current_resist_info[0], current_resist_info[1] + [item.get_full_name()])
 
-        return self._apply_status_effect_results([], chance_status_effect, resist_status_effect, target, self_entity, target_index, self_index, target_is_ally)
+        return self._apply_status_effect_results([], chance_status_effect, target, self_entity, target_index, self_index, target_is_ally)
 
-    def _apply_status_effect_results(self, result_strs: List[str], chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]], resist_status_effect: Dict[StatusEffectKey, Tuple[float, List[str]]], target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool):
+    def _apply_status_effect_results(self, result_strs: List[str], chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]], target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool):
         chance_poisoned, turns_poisoned = chance_status_effect.get(StatusEffectKey.Poisoned, (0, 0))
         if random() < chance_poisoned:
             status_effect = Poisoned(
@@ -783,7 +768,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         chance_bleeding, turns_bleeding = chance_status_effect.get(StatusEffectKey.Bleeding, (0, 0))
         if random() < chance_bleeding:
@@ -793,7 +778,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         chance_faltering, turns_faltering = chance_status_effect.get(StatusEffectKey.TurnSkipChance, (0, 0))
         if random() < chance_faltering:
@@ -803,7 +788,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         chance_taunted, turns_taunted = chance_status_effect.get(StatusEffectKey.Taunted, (0, 0))
         if random() < chance_taunted:
@@ -813,7 +798,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         chance_convinced, turns_convinced = chance_status_effect.get(StatusEffectKey.CannotTarget, (0, 0))
         if random() < chance_convinced:
@@ -823,7 +808,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         chance_charmed, turns_charmed = chance_status_effect.get(StatusEffectKey.Charmed, (0, 0))
         if random() < chance_charmed:
@@ -833,7 +818,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         chance_atrophied, turns_atrophied = chance_status_effect.get(StatusEffectKey.CannotAttack, (0, 0))
         if random() < chance_atrophied:
@@ -843,7 +828,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         chance_sleeping, turns_sleeping = chance_status_effect.get(StatusEffectKey.Sleeping, (0, 0))
         if random() < chance_sleeping:
@@ -853,7 +838,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         # Decaying is a special case because the amount of the effect varies, so the first
         # element in the tuple represents the percent of decay.
@@ -865,7 +850,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         chance_undying, turns_undying = chance_status_effect.get(StatusEffectKey.Undying, (0, 0))
         if random() < chance_undying:
@@ -875,9 +860,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
 
         chance_enfeebled, turns_enfeebled = chance_status_effect.get(StatusEffectKey.CannotUseAbilities, (0, 0))
         if random() < chance_enfeebled:
@@ -887,7 +872,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         # Special case, similar to Decaying.
         percent_protected, turns_protected = chance_status_effect.get(StatusEffectKey.DmgReduction, (0, 0))
@@ -898,9 +883,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
         
         # Special case, similar to Decaying.
         percent_vulnerable, turns_vulnerable = chance_status_effect.get(StatusEffectKey.DmgVulnerability, (0, 0))
@@ -911,7 +896,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         # Special case, similar to Decaying.
         damage_per_turn, turns_echoing = chance_status_effect.get(StatusEffectKey.FixedDmgTick, (0, 0))
@@ -922,7 +907,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         # Special case, similar to Decaying.
         coins_generated, turns_generating = chance_status_effect.get(StatusEffectKey.Generating, (0, 0))
@@ -933,9 +918,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
         
         # Special case, similar to Decaying.
         percent_tarnished, turns_tarnished = chance_status_effect.get(StatusEffectKey.Tarnished, (0, 0))
@@ -946,9 +931,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
         
         chance_sanguinated, turns_sanguinated = chance_status_effect.get(StatusEffectKey.ManaToHP, (0, 0))
         if random() < chance_sanguinated:
@@ -958,9 +943,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
         
         chance_absorbing, turns_absorbing = chance_status_effect.get(StatusEffectKey.PoisonHeals, (0, 0))
         if random() < chance_absorbing:
@@ -970,9 +955,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
         
         # Special case, similar to Decaying.
         percent_empowered, turns_empowered = chance_status_effect.get(StatusEffectKey.DmgBuff, (0, 0))
@@ -983,9 +968,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
 
         # Special case, similar to Decaying.
         percent_diminished, turns_diminished = chance_status_effect.get(StatusEffectKey.DmgDebuff, (0, 0))
@@ -996,7 +981,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         # Special case, similar to Decaying.
         # TODO: Need to pass the source str into this function and then to the StackingDamage instance.
@@ -1009,7 +994,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         con_buff, turns_con_buff = chance_status_effect.get(StatusEffectKey.ConBuff, (0, 0))
         if con_buff != 0:
@@ -1019,9 +1004,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
 
         con_debuff, turns_con_debuff = chance_status_effect.get(StatusEffectKey.ConDebuff, (0, 0))
         if con_debuff != 0:
@@ -1031,7 +1016,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         str_buff, turns_str_buff = chance_status_effect.get(StatusEffectKey.StrBuff, (0, 0))
         if str_buff != 0:
@@ -1041,9 +1026,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
 
         str_debuff, turns_str_debuff = chance_status_effect.get(StatusEffectKey.StrDebuff, (0, 0))
         if str_debuff != 0:
@@ -1053,7 +1038,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         dex_buff, turns_dex_buff = chance_status_effect.get(StatusEffectKey.DexBuff, (0, 0))
         if dex_buff != 0:
@@ -1063,9 +1048,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
 
         dex_debuff, turns_dex_debuff = chance_status_effect.get(StatusEffectKey.DexDebuff, (0, 0))
         if dex_debuff != 0:
@@ -1075,7 +1060,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         int_buff, turns_int_buff = chance_status_effect.get(StatusEffectKey.IntBuff, (0, 0))
         if int_buff != 0:
@@ -1085,9 +1070,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
 
         int_debuff, turns_int_debuff = chance_status_effect.get(StatusEffectKey.IntDebuff, (0, 0))
         if int_debuff != 0:
@@ -1097,7 +1082,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         lck_buff, turns_lck_buff = chance_status_effect.get(StatusEffectKey.LckBuff, (0, 0))
         if lck_buff != 0:
@@ -1107,9 +1092,9 @@ class Dueling():
                 trigger_first_turn=False
             )
             if target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
             else:
-                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index, resist_status_effect))
+                result_strs.append(self_entity.get_dueling().add_status_effect_with_resist(status_effect, self_entity, self_index))
 
         lck_debuff, turns_lck_debuff = chance_status_effect.get(StatusEffectKey.LckDebuff, (0, 0))
         if lck_debuff != 0:
@@ -1119,7 +1104,7 @@ class Dueling():
                 trigger_first_turn=False
             )
             if not target_is_ally:
-                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index, resist_status_effect))
+                result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         return result_strs
 
