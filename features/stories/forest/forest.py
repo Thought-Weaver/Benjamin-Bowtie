@@ -406,7 +406,7 @@ class ForestDungeonEntranceView(discord.ui.View):
         self._guild_id = guild_id
         self._users = users
         self._group_leader = users[0]
-        self._dungeon_run = DungeonRun(Story.Forest, FOREST_ROOMS, ForestSection.QuietGrove)
+        self._dungeon_run = DungeonRun(Story.Forest, FOREST_ROOMS, starting_section if starting_section is not None else ForestSection.QuietGrove)
         self._starting_section = starting_section
         
         self.accepted_users: Set[int] = set()
