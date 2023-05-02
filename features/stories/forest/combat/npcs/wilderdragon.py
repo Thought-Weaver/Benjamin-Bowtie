@@ -249,9 +249,9 @@ class Wilderdragon(NPC):
         self._expertise.add_xp_to_class_until_level(1500, ExpertiseClass.Guardian)
         self._expertise.constitution = 450
         self._expertise.strength = 100
-        self._expertise.dexterity = 0
+        self._expertise.dexterity = 25
         self._expertise.intelligence = 350
-        self._expertise.luck = 25
+        self._expertise.luck = 40
         self._expertise.memory = 5
 
     def _setup_equipment(self):

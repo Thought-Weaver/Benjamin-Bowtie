@@ -94,7 +94,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: DireWolvesDuelView = self.view
+        view: StarvingDireWolvesDuelView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the duel.")
@@ -107,7 +107,7 @@ class ContinueButton(discord.ui.Button):
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         defeat_view: forest.ForestDefeatView = forest.ForestDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
 
-        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [StarvingDireWolf(), StarvingDireWolf()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
+        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [StarvingDireWolf(" 1"), StarvingDireWolf(" 2")], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
         initial_info: Embed = duel_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)

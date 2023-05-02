@@ -29,7 +29,7 @@ class BonePierce(Ability):
             icon="\uD83E\uDDB4",
             name="Bone Pierce",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 5% of an enemy's max health to them.",
+            description="Deal 10% of an enemy's max health to them.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
@@ -43,7 +43,7 @@ class BonePierce(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = ceil(0.05 * targets[0].get_expertise().max_hp)
+        damage = ceil(0.1 * targets[0].get_expertise().max_hp)
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
