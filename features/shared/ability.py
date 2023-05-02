@@ -6928,7 +6928,7 @@ class RegenerationI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         regenerating = RegenerateHP(
             turns_remaining=2,
-            value=0.05,
+            value=0.15,
             source_str=self.get_icon_and_name()
         )
 
@@ -6967,7 +6967,7 @@ class RegenerationII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         regenerating = RegenerateHP(
             turns_remaining=2,
-            value=0.08,
+            value=0.2,
             source_str=self.get_icon_and_name()
         )
 
@@ -7006,7 +7006,7 @@ class RegenerationIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         regenerating = RegenerateHP(
             turns_remaining=2,
-            value=0.1,
+            value=0.25,
             source_str=self.get_icon_and_name()
         )
 

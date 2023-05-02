@@ -70,7 +70,7 @@ class Dueling():
         return abs(min(diff, 0))
 
     def get_armor_string(self, max_reduced_armor: int):
-        armor_num_squares = ceil(self.armor / max_reduced_armor * 10)
+        armor_num_squares = ceil(self.armor / max_reduced_armor * 10) if max_reduced_armor > 0 else 10
         armor_squares_string = ""
 
         for i in range(1, 11):
