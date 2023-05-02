@@ -32,6 +32,11 @@ class DuelVictoryContinueButton(discord.ui.Button):
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
             return
 
+        for player in view.get_players():
+            player.get_dueling().status_effects = []
+            player.get_expertise().heal(int(player.get_expertise().max_hp))
+            player.get_expertise().restore_mana(int(player.get_expertise().max_mana))
+
         next_view: WilderdragonDuelView = WilderdragonDuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = next_view.get_initial_embed()
 

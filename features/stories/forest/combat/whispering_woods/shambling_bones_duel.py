@@ -41,6 +41,10 @@ class ScreamingCopseContinueButton(discord.ui.Button):
             if player.get_dungeon_run().forest_best_act < ForestSection.ScreamingCopse:
                 player.get_dungeon_run().forest_best_act = ForestSection.ScreamingCopse
 
+            player.get_dueling().status_effects = []
+            player.get_expertise().heal(int(player.get_expertise().max_hp))
+            player.get_expertise().restore_mana(int(player.get_expertise().max_mana))
+
         room_select_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_select_view.get_initial_embed()
 
