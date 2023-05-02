@@ -6,15 +6,18 @@ from discord.embeds import Embed
 from features.expertise import Expertise
 from features.shared.attributes import Attributes
 from features.shared.constants import ARMOR_OVERLEVELED_DEBUFF
+from features.shared.effect import EffectType
 from features.shared.enums import ClassTag
 from features.shared.item import Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
+from math import ceil
 
 from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
+    from features.npcs.npc import NPC
     from features.player import Player
     from features.shared.item import ArmorStats
 
@@ -209,6 +212,31 @@ class Equipment():
                 else:
                     result += item_effects
 
+        return result
+
+    def get_dmg_buff_effect_totals(self, entity: Player | NPC):
+        result: Dict[EffectType, float] = {
+            EffectType.DmgBuffSelfMaxHealth: 0,
+            EffectType.DmgBuffSelfRemainingHealth: 0,
+            EffectType.DmgBuffOtherMaxHealth: 0,
+            EffectType.DmgBuffOtherRemainingHealth: 0,
+            EffectType.DmgBuffLegends: 0,
+            EffectType.DmgBuffPoisoned: 0,
+            EffectType.DmgBuffBleeding: 0,
+            EffectType.CritDmgBuff: 0,
+            EffectType.CritDmgReduction: 0
+        }
+
+        for item in self.get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for item_effect in item_effects.permanent:
+                    if not item_effect.meets_conditions(entity, item):
+                        continue
+
+                    if item_effect.effect_type in result.keys():
+                        result[item_effect.effect_type] = result.get(item_effect.effect_type, 0) + item_effect.effect_value
+        
         return result
 
     def __getstate__(self):

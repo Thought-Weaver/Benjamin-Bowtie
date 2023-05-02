@@ -13,7 +13,7 @@ from features.shared.enums import ClassTag
 from features.shared.item import ItemKey, WeaponStats
 from features.shared.statuseffect import *
 
-from typing import List, TYPE_CHECKING
+from typing import Dict, List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.npcs.npc import NPC
     from features.player import Player
@@ -156,18 +156,9 @@ class Ability():
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
-        critical_hit_dmg_buff = 0
-        for item in caster_equipment.get_all_equipped_items():
-            item_effects = item.get_item_effects()
-            if item_effects is not None:
-                for item_effect in item_effects.permanent:
-                    if not item_effect.meets_conditions(caster, item):
-                        continue
-
-                    if item_effect.effect_type == EffectType.CritDmgBuff:
-                        critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
-                    if item_effect.effect_type == EffectType.CritDmgReduction:
-                        critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
 
         bonus_percent_damage: float = 1
         for se in caster.get_dueling().status_effects:
@@ -196,11 +187,22 @@ class Ability():
             base_damage = randint(dmg_range.start, dmg_range.stop)
 
             stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.StackingDamage:
                     assert(isinstance(se, StackingDamage))
                     if se.caster == caster and se.source_str == self.get_icon_and_name():
                         stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
 
             damage = ceil(base_damage * stacking_damage)
             if Attribute.Intelligence in self._scaling:
@@ -212,7 +214,9 @@ class Ability():
             if Attribute.Luck in self._scaling:
                 damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), base_damage)
 
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage)
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+            
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -1754,6 +1758,10 @@ class ThunderingTorrentI(Ability):
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
+
         bonus_percent_damage: float = 1
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
@@ -1772,19 +1780,6 @@ class ThunderingTorrentI(Ability):
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
-            critical_hit_dmg_buff = 0
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is not None:
-                    for item_effect in item_effects.permanent:
-                        if not item_effect.meets_conditions(caster, item):
-                            continue
-
-                        if item_effect.effect_type == EffectType.CritDmgBuff:
-                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
-                        if item_effect.effect_type == EffectType.CritDmgReduction:
-                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
-
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
@@ -1793,9 +1788,29 @@ class ThunderingTorrentI(Ability):
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(10, 15)
             
-            damage = base_damage
+            stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+            
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
+
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+
+            damage = ceil(base_damage * stacking_damage)
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage)
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -1924,6 +1939,10 @@ class ThunderingTorrentII(Ability):
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
+
         bonus_percent_damage: float = 1
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
@@ -1942,19 +1961,6 @@ class ThunderingTorrentII(Ability):
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
-            critical_hit_dmg_buff = 0
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is not None:
-                    for item_effect in item_effects.permanent:
-                        if not item_effect.meets_conditions(caster, item):
-                            continue
-
-                        if item_effect.effect_type == EffectType.CritDmgBuff:
-                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
-                        if item_effect.effect_type == EffectType.CritDmgReduction:
-                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
-
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
@@ -1963,9 +1969,29 @@ class ThunderingTorrentII(Ability):
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(12, 18)
             
-            damage = base_damage
+            stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+            
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
+
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+
+            damage = ceil(base_damage * stacking_damage)
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage)
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -2094,6 +2120,10 @@ class ThunderingTorrentIII(Ability):
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
+
         bonus_percent_damage: float = 1
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
@@ -2112,19 +2142,6 @@ class ThunderingTorrentIII(Ability):
                 results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
                 continue
 
-            critical_hit_dmg_buff = 0
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is not None:
-                    for item_effect in item_effects.permanent:
-                        if not item_effect.meets_conditions(caster, item):
-                            continue
-
-                        if item_effect.effect_type == EffectType.CritDmgBuff:
-                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
-                        if item_effect.effect_type == EffectType.CritDmgReduction:
-                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
-
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
@@ -2133,9 +2150,29 @@ class ThunderingTorrentIII(Ability):
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(15, 20)
             
-            damage = base_damage
+            stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+            
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
+
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+
+            damage = ceil(base_damage * stacking_damage)
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage)
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
             
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -2585,6 +2622,10 @@ class WhirlpoolI(Ability):
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
+
         bonus_percent_damage: float = 1
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
@@ -2605,19 +2646,6 @@ class WhirlpoolI(Ability):
             target_dueling = target.get_dueling()
             target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
 
-            critical_hit_dmg_buff = 0
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is not None:
-                    for item_effect in item_effects.permanent:
-                        if not item_effect.meets_conditions(caster, item):
-                            continue
-
-                        if item_effect.effect_type == EffectType.CritDmgBuff:
-                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
-                        if item_effect.effect_type == EffectType.CritDmgReduction:
-                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
-
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
@@ -2626,9 +2654,29 @@ class WhirlpoolI(Ability):
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(10, 20)
 
-            damage = base_damage
+            stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+            
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
+
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+            
+            damage = ceil(base_damage * stacking_damage)
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage)
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -2750,6 +2798,10 @@ class WhirlpoolII(Ability):
         
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
+        
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
 
         bonus_percent_damage: float = 1
         for se in caster.get_dueling().status_effects:
@@ -2771,19 +2823,6 @@ class WhirlpoolII(Ability):
             target_dueling = target.get_dueling()
             target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
 
-            critical_hit_dmg_buff = 0
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is not None:
-                    for item_effect in item_effects.permanent:
-                        if not item_effect.meets_conditions(caster, item):
-                            continue
-
-                        if item_effect.effect_type == EffectType.CritDmgBuff:
-                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
-                        if item_effect.effect_type == EffectType.CritDmgReduction:
-                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
-
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
@@ -2792,9 +2831,29 @@ class WhirlpoolII(Ability):
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(15, 25)
 
-            damage = base_damage
+            stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+            
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
+
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+
+            damage = ceil(base_damage * stacking_damage)
             damage = min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage)
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -2917,6 +2976,10 @@ class WhirlpoolIII(Ability):
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
+
         bonus_percent_damage: float = 1
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
@@ -2937,19 +3000,6 @@ class WhirlpoolIII(Ability):
             target_dueling = target.get_dueling()
             target_dueling.status_effects = list(filter(lambda x: x.key != StatusEffectKey.DmgReduction, target_dueling.status_effects))
 
-            critical_hit_dmg_buff = 0
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is not None:
-                    for item_effect in item_effects.permanent:
-                        if not item_effect.meets_conditions(caster, item):
-                            continue
-
-                        if item_effect.effect_type == EffectType.CritDmgBuff:
-                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
-                        if item_effect.effect_type == EffectType.CritDmgReduction:
-                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
-
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
 
             if critical_hit_boost > 1:
@@ -2958,9 +3008,29 @@ class WhirlpoolIII(Ability):
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
             base_damage = randint(20, 30)
 
-            damage = base_damage
+            stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+            
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
+
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+            
+            damage = ceil(base_damage * stacking_damage)
             damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage)
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""

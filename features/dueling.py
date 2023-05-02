@@ -376,14 +376,6 @@ class Dueling():
                 f"+{additional_dmg} damage from {source_str}"
             )
 
-        if item_effect.effect_type == EffectType.DmgBuffLegends:
-            if other_entity.get_dueling().is_legendary:
-                additional_dmg = int(damage_dealt * item_effect.effect_value)
-                return (
-                    damage_dealt + additional_dmg,
-                    f"+{additional_dmg} damage from {source_str}"
-                )
-
         if item_effect.effect_type == EffectType.DmgBuffPoisoned:
             if any(status_effect.key == StatusEffectKey.Poisoned for status_effect in other_entity.get_dueling().status_effects):
                 additional_dmg = int(damage_dealt * item_effect.effect_value)
@@ -2192,7 +2184,7 @@ class DuelView(discord.ui.View):
         equipment = self._current_target.get_equipment()
 
         max_reduced_armor: int = equipment.get_total_reduced_armor(expertise.level, expertise.get_all_attributes() + equipment.get_total_attribute_mods())
-        armor_str = f"\n{dueling.get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 or entity.get_dueling().armor > 0 else ""
+        armor_str = f"\n{dueling.get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 or dueling.armor > 0 else ""
 
         duel_string = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n({self._current_target_index + 1}) **{name}**\n\n{expertise.get_health_and_mana_string()}{armor_str}"
         if len(dueling.status_effects) > 0:
@@ -2673,16 +2665,26 @@ class DuelView(discord.ui.View):
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
-        splash_dmg = 0
-        splash_percent_dmg = 0
+        dmg_buff_effect_totals: Dict[EffectType, float] = attacker_equipment.get_dmg_buff_effect_totals(attacker)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * attacker.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * attacker.get_expertise().hp)
+
+        splash_dmg: int = 0
+        splash_percent_dmg: float = 0
+        piercing_dmg: int = 0
+        piercing_percent_dmg: float = 0
         for item in attacker_equipment.get_all_equipped_items():
             other_item_effects = item.get_item_effects()
             if other_item_effects is not None:
                 for item_effect in other_item_effects.permanent:
                     if item_effect.effect_type == EffectType.SplashDmg:
                         splash_dmg += int(item_effect.effect_value)
-                    if item_effect.effect_type == EffectType.SplashPercentMaxDmg:
+                    elif item_effect.effect_type == EffectType.SplashPercentMaxDmg:
                         splash_percent_dmg += ceil(weapon_stats.get_max_damage() * item_effect.effect_value)
+                    elif item_effect.effect_type == EffectType.PiercingDmg:
+                        piercing_dmg += int(item_effect.effect_value)
+                    elif item_effect.effect_type == EffectType.PiercingPercentDmg:
+                        piercing_percent_dmg += item_effect.effect_value
 
         result_strs = [f"{attacker_name} attacked using {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'}!\n"]
         for i, target in enumerate(self._selected_targets):
@@ -2703,46 +2705,34 @@ class DuelView(discord.ui.View):
 
             if critical_hit_boost > 1:
                 attacker.get_stats().dueling.critical_hit_successes += 1
-
-            piercing_dmg = 0
-            piercing_percent_dmg = 0
-            critical_hit_dmg_buff = 0
-            for item in attacker_equipment.get_all_equipped_items():
-                other_item_effects = item.get_item_effects()
-                if other_item_effects is not None:
-                    for item_effect in other_item_effects.permanent:
-                        if not item_effect.meets_conditions(attacker, item):
-                            continue
-
-                        if item_effect.effect_type == EffectType.PiercingDmg:
-                            piercing_dmg += int(item_effect.effect_value)
-                        if item_effect.effect_type == EffectType.PiercingPercentDmg:
-                            piercing_percent_dmg += item_effect.effect_value
-                        if item_effect.effect_type == EffectType.CritDmgBuff:
-                            critical_hit_dmg_buff = min(int(critical_hit_dmg_buff + item_effect.effect_value), 1)
-                        if item_effect.effect_type == EffectType.CritDmgReduction:
-                            critical_hit_dmg_buff = max(int(critical_hit_dmg_buff - item_effect.effect_value), 0)
-                        
+ 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1 
             base_damage = weapon_stats.get_random_damage(attacker_attrs, item_effects, max(0, level_req - attacker.get_expertise().level))
 
             stacking_damage: float = 1
-            if main_hand_item is not None:
-                for se in target_dueling.status_effects:
-                    if se.key == StatusEffectKey.StackingDamage:
-                        assert(isinstance(se, StackingDamage))
-                        if se.caster == attacker and se.source_str == main_hand_item.get_full_name():
-                            stacking_damage += se.value
-                    if se.key == StatusEffectKey.AttackingChanceToApplyStatus:
-                        assert(isinstance(se, AttackingChanceToApplyStatus))
-                        if random() < se.value:
-                            se_apply_str: str = target.get_dueling().add_status_effect_with_resist(se.status_effect, target, 0).format(target_name)
-                            result_strs.append(se_apply_str)
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == attacker and se.source_str == main_hand_item.get_full_name(): # type: ignore
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+            
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
 
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+            
             damage = ceil(base_damage * stacking_damage)
             damage += min(ceil(base_damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), base_damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage)
-            damage += bonus_damage
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) 
+            damage += bonus_damage + target_hp_dmg_buff + self_hp_dmg_buff
 
             final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
 
