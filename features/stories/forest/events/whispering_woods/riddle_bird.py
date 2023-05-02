@@ -15,14 +15,14 @@ from typing import List
 # -----------------------------------------------------------------------------
 
 class AnswerModal(discord.ui.Modal):
-    def __init__(self, database: dict, guild_id: int, users: List[discord.User], view: RiddleBirdView, message: discord.Message):
+    def __init__(self, database: dict, guild_id: int, users: List[discord.User], view: RiddleBirdView, adventure_message: discord.Message):
         super().__init__(title=f"Reply to the Riddle Bird")
 
         self._database = database
         self._guild_id = guild_id
         self._users = users
         self._view = view
-        self._message = message
+        self._adventure_message = adventure_message
 
         self._answer_input: discord.ui.TextInput = discord.ui.TextInput(
             label="Answer",
@@ -40,7 +40,7 @@ class AnswerModal(discord.ui.Modal):
 
         response_embed = Embed()
         if answer in self._view.answers:
-            coin = random.randint(100, 200)
+            coin = random.randint(200, 400)
             response_embed = Embed(
                 title="Riddle Bird",
                 description=f"The bird caws and cackles in delight at you having solved the riddle! Its eyes alight and before you a chest with {coin} coin is presented."
@@ -64,7 +64,7 @@ class AnswerModal(discord.ui.Modal):
         self._view.clear_items()
         self._view.add_item(ContinueButton())
 
-        await self._message.edit(view=self, embed=response_embed)
+        await self._view.refresh(self._adventure_message, response_embed)
         await interaction.response.defer()
 
     async def on_error(self, interaction: discord.Interaction, error: Exception):
@@ -190,6 +190,9 @@ class RiddleBirdView(discord.ui.View):
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)
+
+    async def refresh(self, adventure_message: discord.Message, embed: Embed):
+        await adventure_message.edit(view=self, embed=embed)
 
     def get_bot(self):
         return self._bot
