@@ -2168,7 +2168,7 @@ class DuelView(discord.ui.View):
             group_icon = ":handshake:" if self._is_ally(entity) else ":imp:"
 
             max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level, entity.get_expertise().get_all_attributes() + entity.get_equipment().get_total_attribute_mods())
-            armor_str: str = f"\n{entity.get_dueling().get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 else ""
+            armor_str: str = f"\n{entity.get_dueling().get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 or entity.get_dueling().armor > 0 else ""
 
             info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon} (Lvl. {entity.get_expertise().level})\n\n{entity.get_expertise().get_health_and_mana_string()}{armor_str}"
             if len(entity.get_dueling().status_effects) > 0:
@@ -2192,7 +2192,7 @@ class DuelView(discord.ui.View):
         equipment = self._current_target.get_equipment()
 
         max_reduced_armor: int = equipment.get_total_reduced_armor(expertise.level, expertise.get_all_attributes() + equipment.get_total_attribute_mods())
-        armor_str = f"\n{dueling.get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 else ""
+        armor_str = f"\n{dueling.get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 or entity.get_dueling().armor > 0 else ""
 
         duel_string = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n({self._current_target_index + 1}) **{name}**\n\n{expertise.get_health_and_mana_string()}{armor_str}"
         if len(dueling.status_effects) > 0:
