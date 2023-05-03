@@ -295,7 +295,7 @@ class HouseView(discord.ui.View):
         player_expertise = player.get_expertise()
         player_dueling = player.get_dueling()
 
-        if player_dueling.is_in_combat:
+        if player_dueling.is_in_combat or player.get_dungeon_run().in_dungeon_run:
             return Embed(title="A Nice Home", description="This is your own place in the village, which you can expand with new rooms and capabilities.\n\n*You can't rest while in combat.")
 
         player_dueling.status_effects = []

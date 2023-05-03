@@ -29,7 +29,7 @@ class Crush(Ability):
             icon="\u2620\uFE0F",
             name="Crush",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 20% of an enemy's max health as damage to them.",
+            description="Deal 40% of an enemy's max health as damage to them.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -43,7 +43,7 @@ class Crush(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = ceil(0.2 * targets[0].get_expertise().max_hp)
+        damage = ceil(0.4 * targets[0].get_expertise().max_hp)
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
