@@ -527,6 +527,9 @@ class YennaView(discord.ui.View):
             single_item.get_state_tags().remove(StateTag.NeedsIdentification)
             inventory.remove_coins(self._IDENTIFY_COST)
             inventory.add_item(single_item)
+
+            self._get_identify_page_buttons()
+            
             return Embed(title="A Precious Artifact!", description=f"\"An exceptional item... I can only wonder where you found it.\"\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{single_item}")
         
         if self._selected_item.get_key() == ItemKey.MysteriousScroll:
