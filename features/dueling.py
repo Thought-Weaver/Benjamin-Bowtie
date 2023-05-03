@@ -2821,10 +2821,16 @@ class DuelView(discord.ui.View):
                     assert(isinstance(se, AttrBuffOnDamage))
                     target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target != attacker), se.on_being_hit_buffs))
                     result_strs.append(f"{target_name} gained {se.get_buffs_str()}")
-
-                if se.key == StatusEffectKey.DmgReflect:
+                elif se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
+            for item in target.get_equipment().get_all_equipped_items():
+                target_item_effects = item.get_item_effects()
+                if target_item_effects is not None:
+                    for item_effect in target_item_effects.permanent:
+                        if item_effect.effect_type == EffectType.DmgReflect:
+                            dmg_reflect += item_effect.effect_value
+
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
                 attacker_dmg_reduct = attacker.get_dueling().get_total_percent_dmg_reduct()
