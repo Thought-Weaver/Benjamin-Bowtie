@@ -3646,24 +3646,22 @@ class Item():
 
         display_string += "\n\n"
         any_strs_before_effects = False
-        needs_identification = False
 
         if StateTag.NeedsIdentification in self._state_tags:
             display_string += "???\n\n*Needs Identification*\n"
-            any_strs_before_effects = True
-            needs_identification = True
+            return display_string
         
-        if self._armor_stats is not None and not needs_identification:
+        if self._armor_stats is not None:
             has_any_stats = True
             display_string += f"{self._armor_stats.get_armor_amount()} Armor\n"
             any_strs_before_effects = True
 
-        if self._weapon_stats is not None and not needs_identification:
+        if self._weapon_stats is not None:
             has_any_stats = True
             display_string += f"{self._weapon_stats.get_range_str()} {self._weapon_stats.get_num_targets_str()}\n"
             any_strs_before_effects = True
 
-        if self._consumable_stats is not None and not needs_identification:
+        if self._consumable_stats is not None:
             has_any_stats = True
             target_str: str = ""
             if self._consumable_stats._num_targets == -1:
@@ -3677,7 +3675,7 @@ class Item():
             display_string += target_str
             any_strs_before_effects = True
 
-        if self._item_effects is not None and not needs_identification:
+        if self._item_effects is not None:
             item_effects_str = str(self._item_effects)
             # There are some cases where I'd rather use a custom description
             if item_effects_str != "":
