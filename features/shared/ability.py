@@ -248,7 +248,7 @@ class Ability():
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -1232,7 +1232,7 @@ class WrathOfTheWavesI(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -1379,7 +1379,7 @@ class WrathOfTheWavesII(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -1526,7 +1526,7 @@ class WrathOfTheWavesIII(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -1870,7 +1870,7 @@ class ThunderingTorrentI(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -2058,7 +2058,7 @@ class ThunderingTorrentII(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -2246,7 +2246,7 @@ class ThunderingTorrentIII(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -2396,7 +2396,7 @@ class DrownInTheDeepI(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -2501,7 +2501,7 @@ class DrownInTheDeepII(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -2606,7 +2606,7 @@ class DrownInTheDeepIII(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -2757,7 +2757,7 @@ class WhirlpoolI(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -2941,7 +2941,7 @@ class WhirlpoolII(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -3125,7 +3125,7 @@ class WhirlpoolIII(Ability):
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0:
+            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()

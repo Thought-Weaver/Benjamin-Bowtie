@@ -2789,7 +2789,7 @@ class DuelView(discord.ui.View):
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
             piercing_damage_dealt = target_expertise.damage(final_piercing_dmg, target_dueling, percent_dmg_reduct, ignore_armor=True)
 
-            if actual_damage_dealt > 0 or piercing_damage_dealt > 0:
+            if (actual_damage_dealt > 0 or piercing_damage_dealt > 0) and target.get_expertise().hp > 0:
                 result_strs += [s.format(attacker_name, target_name) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, attacker, target, 0, 1, self._is_ally(target))]
                 for item in target_equipment.get_all_equipped_items():
                     other_item_effects = item.get_item_effects()
