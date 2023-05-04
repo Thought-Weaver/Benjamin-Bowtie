@@ -3319,7 +3319,9 @@ class DuelView(discord.ui.View):
                 selected_targets = targets
 
         def get_target_ids(targets: List[Player | NPC], cannot_target_ids: List[str]):
-            return list(filter(lambda x: x != "" and x not in cannot_target_ids, map(lambda x: x.get_id(), targets)))
+            alive_targets = filter(lambda x: x.get_expertise().hp > 0, targets)
+            target_ids = map(lambda x: x.get_id(), alive_targets)
+            return list(filter(lambda x: x != "" and x not in cannot_target_ids, target_ids))
 
         restricted_to_items: bool = any(se.key == StatusEffectKey.RestrictedToItems for se in npc_dueling.status_effects)
         cannot_attack: bool = any(se.key == StatusEffectKey.CannotAttack for se in npc_dueling.status_effects)
