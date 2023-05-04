@@ -29,7 +29,7 @@ class BonePierce(Ability):
             icon="\uD83E\uDDB4",
             name="Bone Pierce",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 2% of an enemy's max health to them.",
+            description="Deal 20% of an enemy's max health to them.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
