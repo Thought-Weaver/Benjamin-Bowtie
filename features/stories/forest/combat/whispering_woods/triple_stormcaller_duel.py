@@ -94,7 +94,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: LifestitcherIronboundDuelView = self.view
+        view: TripleStormcallerDuelView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the duel.")
