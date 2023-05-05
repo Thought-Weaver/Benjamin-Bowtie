@@ -7,7 +7,7 @@
     "description": "",
     "flavor_text": "Pick a card! Any card!",
     "class_tags": ["Equipment", "Off_Hand"],
-    "state_tags": [],
+    "state_tags": ["Needs_Identification"],
     "count": 1,
     "item_effects": {
         "permanent": [

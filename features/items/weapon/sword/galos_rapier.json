@@ -7,7 +7,7 @@
     "description": "",
     "flavor_text": "",
     "class_tags": ["Equipment", "Weapon", "Sword", "Main_Hand"],
-    "state_tags": [],
+    "state_tags": ["Needs_Identification"],
     "count": 1,
     "level_requirement": 40,
     "weapon_stats": {

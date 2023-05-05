@@ -7,7 +7,7 @@
     "description": "",
     "flavor_text": "A powerful gift. Use it well.",
     "class_tags": ["Equipment", "Weapon", "Staff", "Main_Hand"],
-    "state_tags": [],
+    "state_tags": ["Needs_Identification"],
     "count": 1,
     "level_requirement": 75,
     "weapon_stats": {

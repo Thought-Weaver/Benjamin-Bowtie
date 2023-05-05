@@ -7,7 +7,7 @@
     "description": "",
     "flavor_text": "And in the darkness bind them.",
     "class_tags": ["Equipment", "Ring"],
-    "state_tags": [],
+    "state_tags": ["Needs_Identification"],
     "count": 1,
     "level_requirement": 100,
     "altering_item_keys": [""],
