@@ -3359,7 +3359,6 @@ class WhirlwindI(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.5)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3407,7 +3406,6 @@ class WhirlwindII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.6)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3455,7 +3453,6 @@ class WhirlwindIII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.7)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3503,7 +3500,6 @@ class WhirlwindIV(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.8)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -3952,7 +3948,6 @@ class CounterstrikeI(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.75 * base_damage)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
         damage += ceil(min(0.1 * (caster_expertise.max_hp - caster_expertise.hp), damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4001,7 +3996,6 @@ class CounterstrikeII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.8 * base_damage)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
         damage += ceil(min(0.2 * (caster_expertise.max_hp - caster_expertise.hp), 3 * damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4050,7 +4044,6 @@ class CounterstrikeIII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.85 * base_damage)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
         damage += ceil(min(0.3 * (caster_expertise.max_hp - caster_expertise.hp), 5 * damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4221,7 +4214,6 @@ class PiercingStrikeI(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(1.1 * base_damage)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4281,7 +4273,6 @@ class PiercingStrikeII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(1.2 * base_damage)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4341,7 +4332,6 @@ class PiercingStrikeIII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil(1.3 * base_damage)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4634,7 +4624,6 @@ class HeavySlamI(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil((0.4 + 0.04 * caster_attrs.constitution) * base_damage)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4681,7 +4670,6 @@ class HeavySlamII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil((0.6 + 0.04 * caster_attrs.constitution) * base_damage)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4728,7 +4716,6 @@ class HeavySlamIII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
         damage = ceil((0.8 + 0.04 * caster_attrs.constitution) * base_damage)
-        damage += min(ceil(damage * STR_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
