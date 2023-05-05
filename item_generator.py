@@ -2862,6 +2862,14 @@ if __name__ == "__main__":
 
             attr_reqs.strength = max_damage
             level_req = 2 * max_damage
+
+            item_effects.permanent.append(Effect(
+                EffectType.DmgBuffFromStr,
+                0.025,
+                -1,
+                [],
+                []
+            ))
         elif item_type == ClassTag.Weapon.Knuckles:
             min_damage = random.randint(1, 30)
             max_damage = ceil(min_damage * 1.25) + 1
@@ -2869,6 +2877,14 @@ if __name__ == "__main__":
 
             attr_reqs.strength = max_damage
             level_req = int(3.5 * max_damage)
+
+            item_effects.permanent.append(Effect(
+                EffectType.DmgBuffFromStr,
+                0.025,
+                -1,
+                [],
+                []
+            ))
         elif item_type == ClassTag.Weapon.Spear:
             min_damage = random.randint(1, 60)
             max_damage = ceil(min_damage * 1.25) + 1
@@ -2876,6 +2892,21 @@ if __name__ == "__main__":
 
             attr_reqs.dexterity = max_damage
             level_req = 2 * max_damage
+
+            item_effects.permanent.append(Effect(
+                EffectType.DmgBuffFromStr,
+                0.02,
+                -1,
+                [],
+                []
+            ))
+            item_effects.permanent.append(Effect(
+                EffectType.DmgBuffFromDex,
+                0.02,
+                -1,
+                [],
+                []
+            ))
         elif item_type == ClassTag.Weapon.Staff:
             min_damage = random.randint(1, 60)
             max_damage = ceil(min_damage * 1.25) + 1
@@ -2898,6 +2929,14 @@ if __name__ == "__main__":
 
             attr_reqs.strength = max(max_damage - 5, 0)
             level_req = 2 * max_damage
+
+            item_effects.permanent.append(Effect(
+                EffectType.DmgBuffFromStr,
+                0.025,
+                -1,
+                [],
+                []
+            ))
         elif item_type == ClassTag.Weapon.Token:
             min_damage = random.randint(1, 50)
             max_damage = ceil(min_damage * 1.25) + 1

@@ -10427,7 +10427,7 @@ class WithTheWindI(Ability):
             if Attribute.Dexterity in self._scaling:
                 damage += min(ceil(base_damage * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
             if Attribute.Luck in self._scaling:
-                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.luck, 0)), damage)
 
             target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
             
@@ -10608,7 +10608,7 @@ class WithTheWindII(Ability):
             if Attribute.Dexterity in self._scaling:
                 damage += min(ceil(base_damage * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
             if Attribute.Luck in self._scaling:
-                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.luck, 0)), damage)
 
             target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
 
@@ -10789,7 +10789,7 @@ class WithTheWindIII(Ability):
             if Attribute.Dexterity in self._scaling:
                 damage += min(ceil(base_damage * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
             if Attribute.Luck in self._scaling:
-                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.luck, 0)), damage)
 
             target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
             
@@ -10970,7 +10970,7 @@ class WithTheWindIV(Ability):
             if Attribute.Dexterity in self._scaling:
                 damage += min(ceil(base_damage * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
             if Attribute.Luck in self._scaling:
-                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.luck, 0)), damage)
 
             target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
             
@@ -11151,7 +11151,7 @@ class WithTheWindV(Ability):
             if Attribute.Dexterity in self._scaling:
                 damage += min(ceil(base_damage * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
             if Attribute.Luck in self._scaling:
-                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), damage)
+                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.luck, 0)), damage)
 
             target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
             

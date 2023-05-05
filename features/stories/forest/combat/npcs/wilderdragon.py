@@ -99,7 +99,7 @@ class Consume(Ability):
             icon="\uD83D\uDD25",
             name="Consume",
             class_key=ExpertiseClass.Guardian,
-            description="Cause Faltering with a 100% chance on an enemy for 2 turns and cause a fixed damage tick of 10 per turn for 2 turns.",
+            description="Cause Faltering with a 100% chance on an enemy for 2 turns and cause a fixed damage tick of 15 per turn for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -119,7 +119,7 @@ class Consume(Ability):
 
         dmg_tick = FixedDmgTick(
             turns_remaining=2,
-            value=10,
+            value=15,
             source_str=self.get_icon_and_name()
         )
 

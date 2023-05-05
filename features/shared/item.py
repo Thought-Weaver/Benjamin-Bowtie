@@ -3353,18 +3353,22 @@ class WeaponStats():
         # This only applies to the main hand item; there should only be one instance of a damage boost per
         # attribute, so we can just use the value from the first matching one.
         if item_effects is not None:
+            str_damage_boost: float = 0
             dex_damage_boost: float = 0
             int_damage_boost: float = 0
             lck_damage_boost: float = 0
 
             for effect in item_effects.permanent:
-                if effect.effect_type == EffectType.DmgBuffFromDex:
+                if effect.effect_type == EffectType.DmgBuffFromStr:
+                    str_damage_boost = effect.effect_value
+                elif effect.effect_type == EffectType.DmgBuffFromDex:
                     dex_damage_boost = effect.effect_value
                 elif effect.effect_type == EffectType.DmgBuffFromInt:
                     int_damage_boost = effect.effect_value
                 elif effect.effect_type == EffectType.DmgBuffFromLck:
                     lck_damage_boost = effect.effect_value
 
+            buffed_damage += min(int(base_damage * str_damage_boost * max(attacker_attrs.strength, 0)), base_damage)
             buffed_damage += min(int(base_damage * dex_damage_boost * max(attacker_attrs.dexterity, 0)), base_damage)
             buffed_damage += min(int(base_damage * int_damage_boost * max(attacker_attrs.intelligence, 0)), base_damage)
             buffed_damage += min(int(base_damage * lck_damage_boost * max(attacker_attrs.luck, 0)), base_damage)

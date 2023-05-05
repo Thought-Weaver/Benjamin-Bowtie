@@ -212,7 +212,7 @@ class Ability():
             if Attribute.Dexterity in self._scaling:
                 damage += min(ceil(base_damage * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), base_damage)
             if Attribute.Luck in self._scaling:
-                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), base_damage)
+                damage += min(ceil(base_damage * LCK_DMG_SCALE * max(caster_attrs.luck, 0)), base_damage)
 
             target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
             
@@ -427,6 +427,9 @@ class Ability():
             item_effects = item.get_item_effects()
             if item_effects is not None:
                 for effect in item_effects.permanent:
+                    if not effect.meets_conditions(caster, item):
+                        continue
+
                     if effect.effect_type == EffectType.HealingAbilityBuff:
                         healing_adjustment = max(healing_adjustment + effect.effect_value, -1)
 
@@ -468,7 +471,7 @@ class Ability():
             if Attribute.Dexterity in self._scaling:
                 heal_amount += min(ceil(base_heal * DEX_DMG_SCALE * max(caster_attrs.dexterity, 0)), base_heal)
             if Attribute.Luck in self._scaling:
-                heal_amount += min(ceil(base_heal * LCK_DMG_SCALE * max(caster_attrs.dexterity, 0)), base_heal)
+                heal_amount += min(ceil(base_heal * LCK_DMG_SCALE * max(caster_attrs.luck, 0)), base_heal)
 
             heal_amount = ceil(heal_amount * critical_hit_final)
             heal_amount += ceil(heal_amount * healing_adjustment)

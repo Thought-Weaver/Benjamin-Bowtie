@@ -25,6 +25,14 @@
                 "conditions": [],
                 "condition_values": [],
                 "associated_status_effect": null
+            },
+            {
+                "effect_type": "DmgBuffFromStr",
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
             }
         ],
         "on_turn_start": [],

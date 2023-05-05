@@ -2677,6 +2677,9 @@ class DuelView(discord.ui.View):
             other_item_effects = item.get_item_effects()
             if other_item_effects is not None:
                 for item_effect in other_item_effects.permanent:
+                    if not item_effect.meets_conditions(attacker, item):
+                        continue
+
                     if item_effect.effect_type == EffectType.SplashDmg:
                         splash_dmg += int(item_effect.effect_value)
                     elif item_effect.effect_type == EffectType.SplashPercentMaxDmg:
@@ -2730,7 +2733,6 @@ class DuelView(discord.ui.View):
             target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
             
             damage = ceil(base_damage * stacking_damage)
-            damage += min(ceil(base_damage * STR_DMG_SCALE * max(attacker_attrs.strength, 0)), base_damage)
             damage = ceil(damage * critical_hit_final * bonus_percent_damage) 
             damage += bonus_damage + target_hp_dmg_buff + self_hp_dmg_buff
 
