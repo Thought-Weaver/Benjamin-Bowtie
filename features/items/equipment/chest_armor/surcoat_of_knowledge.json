@@ -19,8 +19,8 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "DmgBuffFromInt",
-                "effect_value": 0.05,
+                "effect_type": "IntMod",
+                "effect_value": 4,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

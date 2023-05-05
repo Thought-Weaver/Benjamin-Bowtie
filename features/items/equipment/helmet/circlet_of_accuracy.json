@@ -20,8 +20,8 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "DmgBuffFromDex",
-                "effect_value": 0.025,
+                "effect_type": "DexMod",
+                "effect_value": 3,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

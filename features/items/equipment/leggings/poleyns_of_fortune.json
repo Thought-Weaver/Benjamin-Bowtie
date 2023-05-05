@@ -20,8 +20,8 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "DmgBuffFromLck",
-                "effect_value": 0.025,
+                "effect_type": "LckMod",
+                "effect_value": 3,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

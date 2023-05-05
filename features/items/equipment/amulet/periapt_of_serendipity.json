@@ -25,8 +25,8 @@
                 "associated_status_effect": "TurnSkipChance"
             },
             {
-                "effect_type": "DmgBuffFromLck",
-                "effect_value": 0.025,
+                "effect_type": "LckMod",
+                "effect_value": 6,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

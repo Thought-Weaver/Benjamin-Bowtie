@@ -259,6 +259,7 @@ GOOD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
     EffectType.DmgBuffLegends: ["of the Titan", "of Legends"],
     EffectType.DmgBuffPoisoned: ["of the Serpent", "of Toxicity"],
     EffectType.DmgBuffBleeding: ["of the Bloodthirsty", "of the Macabre", "of Agony"],
+    EffectType.DmgBuffFromStr: ["of the Warrior", "of Boldness", "of Combat"],
     EffectType.DmgBuffFromDex: ["of Balance", "of Accuracy", "of Precision"],
     EffectType.DmgBuffFromInt: ["of Knowledge", "of Brilliance", "of the Erudite"],
     EffectType.DmgBuffFromLck: ["of Fortune", "of the Fated", "of Luck", "of Serendipity"],
@@ -367,6 +368,7 @@ BAD_SUFFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = {
     EffectType.DmgBuffLegends: [],
     EffectType.DmgBuffPoisoned: [],
     EffectType.DmgBuffBleeding: [],
+    EffectType.DmgBuffFromStr: [],
     EffectType.DmgBuffFromDex: [],
     EffectType.DmgBuffFromInt: [],
     EffectType.DmgBuffFromLck: [],
@@ -424,6 +426,7 @@ GOOD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = 
     EffectType.DmgBuffLegends: ["Titanic", "Doombringer's", "Fabled", "Mythic"],
     EffectType.DmgBuffPoisoned: ["Serpent's", "Corrosive", "Toxic", "Pestilent"],
     EffectType.DmgBuffBleeding: ["Sanguinary", "Bloodthirsty", "Macabre"],
+    EffectType.DmgBuffFromStr: ["Forceful", "Fierce", "Bold", "Warrior's"],
     EffectType.DmgBuffFromDex: ["Quick", "Balanced", "Accurate", "Precise"],
     EffectType.DmgBuffFromInt: ["Knowing", "Brilliant", "Erudite's", "Acute"],
     EffectType.DmgBuffFromLck: ["Lucky", "Fated", "Prosperous", "Serendipitous"],
@@ -532,6 +535,7 @@ BAD_PREFIXES: Dict[EffectType, List[str] | Dict[StatusEffectKey, List[str]]] = {
     EffectType.DmgBuffLegends: [],
     EffectType.DmgBuffPoisoned: [],
     EffectType.DmgBuffBleeding: [],
+    EffectType.DmgBuffFromStr: [],
     EffectType.DmgBuffFromDex: [],
     EffectType.DmgBuffFromInt: [],
     EffectType.DmgBuffFromLck: [],
@@ -715,6 +719,7 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
         EffectType.DmgBuffBleeding: {
             ItemEffectCategory.Permanent: [[frange(0.05, 0.1, 0.01), range(-1, -1)]]
         },
+        EffectType.DmgBuffFromStr: {},
         EffectType.DmgBuffFromDex: {},
         EffectType.DmgBuffFromInt: {},
         EffectType.DmgBuffFromLck: {
@@ -1185,6 +1190,9 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
         },
         EffectType.DmgBuffBleeding: {
             ItemEffectCategory.Permanent: [[frange(0.1, 0.15, 0.01), range(-1, -1)]]
+        },
+        EffectType.DmgBuffFromStr: {
+            ItemEffectCategory.Permanent: [[frange(0.025, 0.025, 0.025), range(-1, -1)]]
         },
         EffectType.DmgBuffFromDex: {
             ItemEffectCategory.Permanent: [[frange(0.025, 0.025, 0), range(-1, -1)]]
@@ -1688,6 +1696,9 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
         },
         EffectType.DmgBuffBleeding: {
             ItemEffectCategory.Permanent: [[frange(0.15, 0.2, 0.01), range(-1, -1)]]
+        },
+        EffectType.DmgBuffFromStr: {
+            ItemEffectCategory.Permanent: [[frange(0.025, 0.05, 0.025), range(-1, -1)]]
         },
         EffectType.DmgBuffFromDex: {
             ItemEffectCategory.Permanent: [[frange(0.025, 0.05, 0.025), range(-1, -1)]]
@@ -2194,6 +2205,9 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
         EffectType.DmgBuffBleeding: {
             ItemEffectCategory.Permanent: [[frange(0.2, 0.75, 0.05), range(-1, -1)]]
         },
+        EffectType.DmgBuffFromStr: {
+            ItemEffectCategory.Permanent: [[frange(0.025, 0.075, 0.025), range(-1, -1)]]
+        },
         EffectType.DmgBuffFromDex: {
             ItemEffectCategory.Permanent: [[frange(0.025, 0.075, 0.025), range(-1, -1)]]
         },
@@ -2628,6 +2642,7 @@ EFFECT_CHANCES: Dict[EffectType, float] = {
     EffectType.DmgBuffLegends: 0.02,
     EffectType.DmgBuffPoisoned: 0.02,
     EffectType.DmgBuffBleeding: 0.02,
+    EffectType.DmgBuffFromStr: 0.02,
     EffectType.DmgBuffFromDex: 0.02,
     EffectType.DmgBuffFromInt: 0.02,
     EffectType.DmgBuffFromLck: 0.02,
@@ -2713,6 +2728,9 @@ if __name__ == "__main__":
                 if possible_effects is None or len(possible_effects) == 0:
                     continue
                 
+                if ClassTag.Weapon.Weapon not in CLASS_TAGS[item_type] and effect_type in [EffectType.DmgBuffFromStr, EffectType.DmgBuffFromDex, EffectType.DmgBuffFromLck, EffectType.DmgBuffFromInt]:
+                    continue 
+
                 item_effect_cat = random.choice(list(possible_effects.keys()))
                 effect_params: List[List[float] | range] = random.choice(possible_effects[item_effect_cat])
 

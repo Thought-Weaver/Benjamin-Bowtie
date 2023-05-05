@@ -17,14 +17,6 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "DmgBuffFromLck",
-                "effect_value": 0.075,
-                "effect_time": -1,
-                "conditions": [],
-                "condition_values": [],
-                "associated_status_effect": null
-            },
-            {
                 "effect_type": "AdjustedManaCosts",
                 "effect_value": -0.4,
                 "effect_time": -1,

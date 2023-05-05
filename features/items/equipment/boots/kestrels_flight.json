@@ -20,14 +20,6 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "DmgBuffFromDex",
-                "effect_value": 0.05,
-                "effect_time": -1,
-                "conditions": [],
-                "condition_values": [],
-                "associated_status_effect": null
-            },
-            {
                 "effect_type": "ResistStatusEffect",
                 "effect_value": 0.8,
                 "effect_time": -1,
@@ -43,7 +35,7 @@
         "on_successful_attack": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": -4,
+                "effect_value": -8,
                 "effect_time": 2,
                 "conditions": [],
                 "condition_values": [],
