@@ -467,6 +467,7 @@ class PlayerCompanionsView(discord.ui.View):
         if self._selected_companion.fed_this_tick:
             self._selected_item = None
             self._selected_item_index = -1
+            self._get_inventory_buttons()
 
             return Embed(
                 title="Feed Item",
@@ -478,6 +479,8 @@ class PlayerCompanionsView(discord.ui.View):
 
         removed_item = inventory.remove_item(self._selected_item_index, 1)
         if removed_item is None:
+            self._get_inventory_buttons()
+
             return Embed(
                 title="Feed Item",
                 description=(
@@ -487,6 +490,8 @@ class PlayerCompanionsView(discord.ui.View):
             )
 
         if self._selected_companion.fed_this_tick:
+            self._get_inventory_buttons()
+
             return Embed(
                 title="Feed Item",
                 description=(
@@ -509,6 +514,8 @@ class PlayerCompanionsView(discord.ui.View):
         self._selected_item = None
         self._selected_item_index = -1
 
+        self._get_inventory_buttons()
+        
         return Embed(
             title="Feed Item",
             description=(
