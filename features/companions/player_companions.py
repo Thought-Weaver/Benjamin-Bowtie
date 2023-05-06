@@ -339,6 +339,7 @@ class PlayerCompanionsView(discord.ui.View):
         self._page = 0
         self._selected_item = None
         self._selected_item_index = -1
+        self._selected_companion = None
 
         self._get_companions_page_buttons()
 
@@ -515,7 +516,7 @@ class PlayerCompanionsView(discord.ui.View):
         self._selected_item_index = -1
 
         self._get_inventory_buttons()
-        
+
         return Embed(
             title="Feed Item",
             description=(
