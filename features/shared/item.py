@@ -35,11 +35,11 @@ class Rarity(StrEnum):
         ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Cursed, Rarity.Artifact, Rarity.Unknown]
         return ordering.index(self) > ordering.index(rarity)
 
-    def __leq__(self, rarity: Rarity) -> bool:
+    def __le__(self, rarity: Rarity) -> bool:
         ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Cursed, Rarity.Artifact, Rarity.Unknown]
         return ordering.index(self) <= ordering.index(rarity)
 
-    def __geq__(self, rarity: Rarity) -> bool:
+    def __ge__(self, rarity: Rarity) -> bool:
         ordering = [Rarity.Common, Rarity.Uncommon, Rarity.Rare, Rarity.Epic, Rarity.Legendary, Rarity.Cursed, Rarity.Artifact, Rarity.Unknown]
         return ordering.index(self) >= ordering.index(rarity)
 

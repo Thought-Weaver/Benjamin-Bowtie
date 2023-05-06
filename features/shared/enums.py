@@ -126,27 +126,28 @@ class CompanionKey(StrEnum):
     VoidseenPup = "VoidseenPup"
     WanderboundRaven = "WanderboundRaven"
 
+
 class CompanionTier(StrEnum):
     NoTier = "NoTier"
     Good = "Good"
     Great = "Great"
     Best = "Best"
 
-    def __lt__(self, rarity: CompanionTier) -> bool:
+    def __lt__(self, tier: CompanionTier) -> bool:
         ordering = [CompanionTier.NoTier, CompanionTier.Good, CompanionTier.Great, CompanionTier.Best]
-        return ordering.index(self) < ordering.index(rarity)
+        return ordering.index(self) < ordering.index(tier)
 
-    def __gt__(self, rarity: CompanionTier) -> bool:
+    def __gt__(self, tier: CompanionTier) -> bool:
         ordering = [CompanionTier.NoTier, CompanionTier.Good, CompanionTier.Great, CompanionTier.Best]
-        return ordering.index(self) > ordering.index(rarity)
+        return ordering.index(self) > ordering.index(tier)
 
-    def __leq__(self, rarity: CompanionTier) -> bool:
+    def __le__(self, tier: CompanionTier) -> bool:
         ordering = [CompanionTier.NoTier, CompanionTier.Good, CompanionTier.Great, CompanionTier.Best]
-        return ordering.index(self) <= ordering.index(rarity)
+        return ordering.index(self) <= ordering.index(tier)
 
-    def __geq__(self, rarity: CompanionTier) -> bool:
+    def __ge__(self, tier: CompanionTier) -> bool:
         ordering = [CompanionTier.NoTier, CompanionTier.Good, CompanionTier.Great, CompanionTier.Best]
-        return ordering.index(self) >= ordering.index(rarity)
+        return ordering.index(self) >= ordering.index(tier)
 
 # -----------------------------------------------------------------------------
 # DUNGEON RUN ENUMS
@@ -165,11 +166,11 @@ class ForestSection(StrEnum):
         ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
         return ordering.index(self) > ordering.index(section)
 
-    def __leq__(self, section: ForestSection) -> bool:
+    def __le__(self, section: ForestSection) -> bool:
         ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
         return ordering.index(self) <= ordering.index(section)
 
-    def __geq__(self, section: ForestSection) -> bool:
+    def __ge__(self, section: ForestSection) -> bool:
         ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
         return ordering.index(self) >= ordering.index(section)
 
@@ -187,11 +188,11 @@ class OceanSection(StrEnum):
         ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.EndlessTorrents]
         return ordering.index(self) > ordering.index(section)
 
-    def __leq__(self, section: OceanSection) -> bool:
+    def __le__(self, section: OceanSection) -> bool:
         ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.EndlessTorrents]
         return ordering.index(self) <= ordering.index(section)
 
-    def __geq__(self, section: OceanSection) -> bool:
+    def __ge__(self, section: OceanSection) -> bool:
         ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.EndlessTorrents]
         return ordering.index(self) >= ordering.index(section)
 
@@ -209,11 +210,11 @@ class UnderworldSection(StrEnum):
         ordering = [UnderworldSection.MistyTunnels, UnderworldSection.AbyssalCaverns, UnderworldSection.TombsIngress]
         return ordering.index(self) > ordering.index(section)
 
-    def __leq__(self, section: UnderworldSection) -> bool:
+    def __le__(self, section: UnderworldSection) -> bool:
         ordering = [UnderworldSection.MistyTunnels, UnderworldSection.AbyssalCaverns, UnderworldSection.TombsIngress]
         return ordering.index(self) <= ordering.index(section)
 
-    def __geq__(self, section: UnderworldSection) -> bool:
+    def __ge__(self, section: UnderworldSection) -> bool:
         ordering = [UnderworldSection.MistyTunnels, UnderworldSection.AbyssalCaverns, UnderworldSection.TombsIngress]
         return ordering.index(self) >= ordering.index(section)
 
