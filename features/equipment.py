@@ -216,6 +216,7 @@ class Equipment():
 
     def get_dmg_buff_effect_totals(self, entity: Player | NPC):
         result: Dict[EffectType, float] = {
+            EffectType.DmgBuff: 0,
             EffectType.DmgBuffSelfMaxHealth: 0,
             EffectType.DmgBuffSelfRemainingHealth: 0,
             EffectType.DmgBuffOtherMaxHealth: 0,

@@ -1846,6 +1846,20 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(content=None, embed=embed, view=self._new_view)
 
 
+class ScrollButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Scroll")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: DuelView = self.view
+        if interaction.user == view.get_user_for_current_turn():
+            response = view.scroll()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class DuelView(discord.ui.View):
     # Using a data class instead of a tuple to make the code more readable
     @dataclass
@@ -1888,6 +1902,7 @@ class DuelView(discord.ui.View):
 
         self._page = 0
         self._NUM_PER_PAGE = 4
+        self._scroll_index = 0
 
         self._additional_info_string_data = ""
 
@@ -2572,7 +2587,19 @@ class DuelView(discord.ui.View):
 
         self._reset_turn_variables()
 
-        return Embed(title="Choose an Action", description=self.get_duel_info_str())
+        duel_info_str = self.get_duel_info_str()
+        if len(duel_info_str) > 4096:
+            self.add_item(ScrollButton())
+
+        return Embed(title="Choose an Action", description=duel_info_str[self._scroll_index:])
+
+    def scroll(self):
+        duel_info_str = self.get_duel_info_str()
+        self._scroll_index += 4096
+        if self._scroll_index > len(duel_info_str):
+            self._scroll_index = 0
+
+        return Embed(title="Choose an Action", description=duel_info_str[self._scroll_index:])
 
     def set_intent(self, intent: Intent):
         self._intent = intent
@@ -2641,10 +2668,14 @@ class DuelView(discord.ui.View):
         attacker_attrs = attacker.get_combined_attributes()
         attacker_equipment = attacker.get_equipment()
 
+        dmg_buff_effect_totals: Dict[EffectType, float] = attacker_equipment.get_dmg_buff_effect_totals(attacker)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * attacker.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * attacker.get_expertise().hp)
+
         generating_value = 0
         tarnished_value = 0
         bonus_damage: int = 0
-        bonus_percent_damage: float = 1
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in attacker.get_dueling().status_effects:
             if se.key == StatusEffectKey.Generating:
                 generating_value = se.value
@@ -2664,10 +2695,6 @@ class DuelView(discord.ui.View):
         unarmed_strength_bonus = int(attacker_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
-
-        dmg_buff_effect_totals: Dict[EffectType, float] = attacker_equipment.get_dmg_buff_effect_totals(attacker)
-        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
-        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * attacker.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * attacker.get_expertise().hp)
 
         splash_dmg: int = 0
         splash_percent_dmg: float = 0

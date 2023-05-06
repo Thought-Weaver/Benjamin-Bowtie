@@ -160,7 +160,7 @@ class Ability():
         critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
         self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
 
-        bonus_percent_damage: float = 1
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
@@ -1186,7 +1186,25 @@ class WrathOfTheWavesI(Ability):
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
-        bonus_percent_damage: float = 1
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
+
+        piercing_dmg: int = 0
+        piercing_percent_dmg: float = 0
+        for item in caster_equipment.get_all_equipped_items():
+            other_item_effects = item.get_item_effects()
+            if other_item_effects is not None:
+                for item_effect in other_item_effects.permanent:
+                    if not item_effect.meets_conditions(caster, item):
+                        continue
+
+                    elif item_effect.effect_type == EffectType.PiercingDmg:
+                        piercing_dmg += int(item_effect.effect_value)
+                    elif item_effect.effect_type == EffectType.PiercingPercentDmg:
+                        piercing_percent_dmg += item_effect.effect_value
+
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
@@ -1206,13 +1224,38 @@ class WrathOfTheWavesI(Ability):
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
             bonus_dmg_boost = 1.3 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = ceil(randint(5, 10) * bonus_dmg_boost)
-            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
-            damage = ceil(damage * critical_hit_boost * bonus_percent_damage)
+            stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
+
+            base_damage = randint(5, 10)
+            damage = min(ceil(base_damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
+            damage += ceil(damage * bonus_dmg_boost * stacking_damage)
+
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
+
+            final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -1231,11 +1274,12 @@ class WrathOfTheWavesI(Ability):
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            piercing_damage_dealt = target_expertise.damage(final_piercing_dmg, target_dueling, percent_dmg_reduct, ignore_armor=True)
             cur_armor = target_dueling.armor
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
+            if (actual_damage_dealt > 0 or piercing_damage_dealt > 0) and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -1285,8 +1329,9 @@ class WrathOfTheWavesI(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
+            piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
-            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
+            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
             non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
@@ -1333,7 +1378,25 @@ class WrathOfTheWavesII(Ability):
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
-        bonus_percent_damage: float = 1
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
+
+        piercing_dmg: int = 0
+        piercing_percent_dmg: float = 0
+        for item in caster_equipment.get_all_equipped_items():
+            other_item_effects = item.get_item_effects()
+            if other_item_effects is not None:
+                for item_effect in other_item_effects.permanent:
+                    if not item_effect.meets_conditions(caster, item):
+                        continue
+
+                    elif item_effect.effect_type == EffectType.PiercingDmg:
+                        piercing_dmg += int(item_effect.effect_value)
+                    elif item_effect.effect_type == EffectType.PiercingPercentDmg:
+                        piercing_percent_dmg += item_effect.effect_value
+
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
@@ -1353,13 +1416,38 @@ class WrathOfTheWavesII(Ability):
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
             bonus_dmg_boost = 1.6 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = ceil(randint(6, 12) * bonus_dmg_boost)
-            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
-            damage = ceil(damage * critical_hit_boost * bonus_percent_damage)
+            stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
+
+            base_damage = randint(6, 12)
+            damage = min(ceil(base_damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
+            damage += ceil(damage * bonus_dmg_boost * stacking_damage)
+
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
+
+            final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -1378,11 +1466,12 @@ class WrathOfTheWavesII(Ability):
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            piercing_damage_dealt = target_expertise.damage(final_piercing_dmg, target_dueling, percent_dmg_reduct, ignore_armor=True)
             cur_armor = target_dueling.armor
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
+            if (actual_damage_dealt > 0 or piercing_damage_dealt > 0) and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -1432,8 +1521,9 @@ class WrathOfTheWavesII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
+            piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
-            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
+            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
             non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
@@ -1480,7 +1570,25 @@ class WrathOfTheWavesIII(Ability):
         caster_attrs = caster.get_combined_attributes()
         caster_equipment = caster.get_equipment()
 
-        bonus_percent_damage: float = 1
+        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
+        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
+        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
+
+        piercing_dmg: int = 0
+        piercing_percent_dmg: float = 0
+        for item in caster_equipment.get_all_equipped_items():
+            other_item_effects = item.get_item_effects()
+            if other_item_effects is not None:
+                for item_effect in other_item_effects.permanent:
+                    if not item_effect.meets_conditions(caster, item):
+                        continue
+
+                    elif item_effect.effect_type == EffectType.PiercingDmg:
+                        piercing_dmg += int(item_effect.effect_value)
+                    elif item_effect.effect_type == EffectType.PiercingPercentDmg:
+                        piercing_percent_dmg += item_effect.effect_value
+
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
@@ -1500,13 +1608,38 @@ class WrathOfTheWavesIII(Ability):
 
             critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
             bonus_dmg_boost = 1.9 if any(se.key == StatusEffectKey.DexDebuff for se in target.get_dueling().status_effects) else 1
+            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
 
             if critical_hit_boost > 1:
                 caster.get_stats().dueling.critical_hit_successes += 1
 
-            damage = ceil(randint(10, 15) * bonus_dmg_boost)
-            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
-            damage = ceil(damage * critical_hit_boost * bonus_percent_damage)
+            stacking_damage: float = 1
+            poison_buff_applied: bool = False
+            bleeding_buff_applied: bool = False
+            for se in target_dueling.status_effects:
+                if se.key == StatusEffectKey.StackingDamage:
+                    assert(isinstance(se, StackingDamage))
+                    if se.caster == caster and se.source_str == self.get_icon_and_name():
+                        stacking_damage += se.value
+                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
+                    poison_buff_applied = True
+                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
+                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
+                    bleeding_buff_applied = True
+
+            if target_dueling.is_legendary:
+                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
+
+            base_damage = randint(10, 15)
+            damage = min(ceil(base_damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
+            damage += ceil(damage * bonus_dmg_boost * stacking_damage)
+
+            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
+
+            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
+
+            final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -1525,11 +1658,12 @@ class WrathOfTheWavesIII(Ability):
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            piercing_damage_dealt = target_expertise.damage(final_piercing_dmg, target_dueling, percent_dmg_reduct, ignore_armor=True)
             cur_armor = target_dueling.armor
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
+            if (actual_damage_dealt > 0 or piercing_damage_dealt > 0) and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -1579,8 +1713,9 @@ class WrathOfTheWavesIII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
+            piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
-            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
+            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
             non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
@@ -1793,7 +1928,7 @@ class ThunderingTorrentI(Ability):
         critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
         self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
 
-        bonus_percent_damage: float = 1
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
@@ -1981,7 +2116,7 @@ class ThunderingTorrentII(Ability):
         critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
         self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
 
-        bonus_percent_damage: float = 1
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
@@ -2169,7 +2304,7 @@ class ThunderingTorrentIII(Ability):
         critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
         self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
 
-        bonus_percent_damage: float = 1
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
@@ -2678,7 +2813,7 @@ class WhirlpoolI(Ability):
         critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
         self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
 
-        bonus_percent_damage: float = 1
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
@@ -2862,7 +2997,7 @@ class WhirlpoolII(Ability):
         critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
         self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
 
-        bonus_percent_damage: float = 1
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
@@ -3046,7 +3181,7 @@ class WhirlpoolIII(Ability):
         critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
         self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
 
-        bonus_percent_damage: float = 1
+        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
             if se.key == StatusEffectKey.DmgBuff:
                 bonus_percent_damage += se.value
