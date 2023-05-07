@@ -1731,6 +1731,8 @@ class ContinueToNextActionButton(discord.ui.Button):
         super().__init__(style=discord.ButtonStyle.blurple, label=f"Continue")
         
     async def callback(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+
         if self.view is None:
             return
         
@@ -1738,8 +1740,13 @@ class ContinueToNextActionButton(discord.ui.Button):
         cur_turn_user: discord.User | None = view.get_user_for_current_turn()
         last_player_turn_user: discord.User | None = view.get_last_player_turn_user()
         if interaction.user == last_player_turn_user or interaction.user == cur_turn_user:
+            assert(interaction.message is not None)
+
+            self.disabled = True
+            await interaction.followup.edit_message(message_id=interaction.message.id, content=None, view=view)
+
             response = view.continue_turn()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
+            await interaction.followup.edit_message(message_id=interaction.message.id, content=None, embed=response, view=view)
 
 
 class BackUsingIntentButton(discord.ui.Button):
