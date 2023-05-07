@@ -1878,7 +1878,7 @@ class DuelView(discord.ui.View):
         self._enemies: List[Player | NPC] = enemies
         self._turn_order: List[Player | NPC] = sorted(allies + enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
         self._turn_index: int = 0
-        self._last_player_turn_user: discord.User | None = next(self.get_user_from_player(entity) for entity in self._turn_order if isinstance(entity, Player))
+        self._last_player_turn_user: discord.User | None = next(self.get_user_from_player(entity) for entity in self._turn_order if isinstance(entity, Player)) if not companion_battle else None
 
         self._companion_battle: bool = companion_battle
         self._companion_abilities: Dict[str, Ability] = {}
@@ -2944,6 +2944,13 @@ class DuelView(discord.ui.View):
         assert(self._selected_ability is not None)
 
         caster = self._turn_order[self._turn_index]
+
+        # Avoid the player targeting and getting multiple triggers on enemies that are already dead -- this should
+        # only be relevant for abilities that target all enemies or everyone, since the abilities that ask you to
+        # select targets already filter out dead enemies
+        if not self._selected_ability.get_target_own_group():
+            self._selected_targets = list(filter(lambda entity: entity.get_expertise().hp > 0, self._selected_targets))
+
         names = [self.get_name(caster), *list(map(lambda x: self.get_name(x), self._selected_targets))]
         result_str = self._selected_ability.use_ability(caster, self._selected_targets)
 
@@ -3347,8 +3354,10 @@ class DuelView(discord.ui.View):
 
                 selected_targets = targets
 
-        def get_target_ids(targets: List[Player | NPC], cannot_target_ids: List[str]):
-            alive_targets = filter(lambda x: x.get_expertise().hp > 0, targets)
+        def get_target_ids(targets: List[Player | NPC], cannot_target_ids: List[str], is_targeting_own_group: bool):
+            # To allow healing abilities and buffs to target your own group, even if they're not alive, but not continue
+            # to damage dead enemies, this conditionally filters based on whether the NPC is targeting its own group
+            alive_targets = filter(lambda x: x.get_expertise().hp > 0, targets) if not is_targeting_own_group else targets
             target_ids = map(lambda x: x.get_id(), alive_targets)
             return list(filter(lambda x: x != "" and x not in cannot_target_ids, target_ids))
 
@@ -3405,7 +3414,7 @@ class DuelView(discord.ui.View):
                     elif self._targets_remaining == -2:
                         targets = self._turn_order
                     
-                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
+                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, False)
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.attack_selected_targets()
 
@@ -3419,7 +3428,7 @@ class DuelView(discord.ui.View):
                     if len(taunt_targets) > 0:
                         targets = [choice(taunt_targets)]
                         dueling_copy: DuelView = self.create_copy()
-                        target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
+                        target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, False)
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.attack_selected_targets()
 
@@ -3433,7 +3442,7 @@ class DuelView(discord.ui.View):
                         combinations = list(itertools.combinations(enemies, min(self._targets_remaining, len(enemies))))
                         for targets in combinations:
                             dueling_copy: DuelView = self.create_copy()
-                            target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
+                            target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, False)
                             dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                             dueling_copy.attack_selected_targets()
 
@@ -3459,8 +3468,8 @@ class DuelView(discord.ui.View):
                         dueling_copy._selected_ability_index = i
 
                         targets = []
+                        target_own_group = dueling_copy._selected_ability.get_target_own_group()
                         if self._targets_remaining == -1:
-                            target_own_group = dueling_copy._selected_ability.get_target_own_group()
                             if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
                                 if not charmed:
                                     targets = self._enemies
@@ -3473,7 +3482,7 @@ class DuelView(discord.ui.View):
                                     targets = self._enemies
                         elif self._targets_remaining == -2:
                             targets = self._turn_order
-                        target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
+                        target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.use_ability_on_selected_targets()
 
@@ -3490,7 +3499,7 @@ class DuelView(discord.ui.View):
                         dueling_copy._selected_ability_index = i
 
                         targets = [cur_npc]
-                        target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
+                        target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, True)
                         dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                         dueling_copy.use_ability_on_selected_targets()
 
@@ -3522,7 +3531,7 @@ class DuelView(discord.ui.View):
                                 dueling_copy._selected_ability = dueling_copy._turn_order[dueling_copy._turn_index].get_dueling().abilities[i]
                                 dueling_copy._selected_ability_index = i
 
-                                target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
+                                target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)
                                 dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                                 dueling_copy.use_ability_on_selected_targets()
 
@@ -3552,8 +3561,8 @@ class DuelView(discord.ui.View):
                     dueling_copy._selected_item_index = i
 
                     targets = []
+                    target_own_group = consumable_stats.get_target_own_group()
                     if self._targets_remaining == -1:
-                        target_own_group = consumable_stats.get_target_own_group()
                         if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
                             if not charmed:
                                 targets = self._enemies
@@ -3566,7 +3575,7 @@ class DuelView(discord.ui.View):
                                 targets = self._enemies
                     elif self._targets_remaining == -2:
                         targets = self._turn_order
-                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
+                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.use_item_on_selected_targets()
 
@@ -3583,7 +3592,7 @@ class DuelView(discord.ui.View):
                     dueling_copy._selected_item_index = i
 
                     targets = [cur_npc]
-                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
+                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.use_item_on_selected_targets()
 
@@ -3615,7 +3624,7 @@ class DuelView(discord.ui.View):
                             dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
                             dueling_copy._selected_item_index = i
 
-                            target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids)
+                            target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)
                             dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                             dueling_copy.use_item_on_selected_targets()
 
