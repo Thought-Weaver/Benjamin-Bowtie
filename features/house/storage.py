@@ -540,7 +540,7 @@ class StorageView(discord.ui.View):
         storage_bin.add_item(removed_item)
         self._get_store_storage_bin_buttons()
 
-        return Embed(title=f"{self._selected_bin_key} (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored 1 {removed_item.get_full_name()} and added it to the cupboard.*")
+        return Embed(title=f"{self._selected_bin_key} (Storing)", description=f"Navigate through the items using the Prev and Next buttons.\n\n*Stored 1 {removed_item.get_full_name()} and added it to the bin.*")
 
     def store_all(self):
         player: Player = self._get_player()
