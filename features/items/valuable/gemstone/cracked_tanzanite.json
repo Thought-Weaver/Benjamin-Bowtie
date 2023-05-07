@@ -10,22 +10,14 @@
     "state_tags": [],
     "count": 1,
     "item_effects": {
-        "on_successful_attack": [
+        "permanent": [
             {
-                "effect_type": "HealthSteal",
+                "effect_type": "DmgBuffOtherRemainingHealth",
                 "effect_value": 0.005,
                 "effect_time": -1,
-                "conditions": ["IsItemInHand"],
-                "condition_values": [0]
-            }
-        ],
-        "on_attacked": [
-            {
-                "effect_type": "HealthSteal",
-                "effect_value": 0.005,
-                "effect_time": -1,
-                "conditions": ["IsItemArmor"],
-                "condition_values": [0]
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
             }
         ]
     }
