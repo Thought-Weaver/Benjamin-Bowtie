@@ -4505,7 +4505,7 @@ class PressTheAdvantageI(Ability):
             icon="\uD83E\uDD3A",
             name="Press the Advantage I",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 3 actions this turn.",
+            description="Gain 2 actions this turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -4517,10 +4517,10 @@ class PressTheAdvantageI(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 3
+        caster.get_dueling().actions_remaining += 3 # One extra because it consumes an action to do this.
         caster.get_stats().dueling.guardian_abilities_used += 1
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 3 actions available."
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 2 actions available."
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -4540,7 +4540,7 @@ class PressTheAdvantageII(Ability):
             icon="\uD83E\uDD3A",
             name="Press the Advantage II",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 4 actions this turn.",
+            description="Gain 3 actions this turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -4552,10 +4552,10 @@ class PressTheAdvantageII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 4
+        caster.get_dueling().actions_remaining += 4 # One extra because it consumes an action to do this.
         caster.get_stats().dueling.guardian_abilities_used += 1
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 4 actions available."
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 3 actions available."
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
@@ -4576,7 +4576,7 @@ class PressTheAdvantageIII(Ability):
             icon="\uD83E\uDD3A",
             name="Press the Advantage III",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 5 actions this turn.",
+            description="Gain 4 actions this turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -4588,10 +4588,10 @@ class PressTheAdvantageIII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 5
+        caster.get_dueling().actions_remaining += 5 # One extra because it consumes an action to do this.
         caster.get_stats().dueling.guardian_abilities_used += 1
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 5 actions available."
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 4 actions available."
 
         mana_and_cd_str = self.remove_mana_and_set_cd(caster)
         if mana_and_cd_str is not None:
