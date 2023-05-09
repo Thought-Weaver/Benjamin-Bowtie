@@ -3489,10 +3489,9 @@ class WhirlwindI(Ability):
         
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.5)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3536,10 +3535,9 @@ class WhirlwindII(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.6)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3583,10 +3581,9 @@ class WhirlwindIII(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.7)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -3630,10 +3627,9 @@ class WhirlwindIV(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(base_damage * 0.8)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4078,10 +4074,9 @@ class CounterstrikeI(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.75 * base_damage)
         damage += ceil(min(0.1 * (caster_expertise.max_hp - caster_expertise.hp), damage))
 
@@ -4126,10 +4121,9 @@ class CounterstrikeII(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.8 * base_damage)
         damage += ceil(min(0.2 * (caster_expertise.max_hp - caster_expertise.hp), 3 * damage))
 
@@ -4174,10 +4168,9 @@ class CounterstrikeIII(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.85 * base_damage)
         damage += ceil(min(0.3 * (caster_expertise.max_hp - caster_expertise.hp), 5 * damage))
 
@@ -4344,10 +4337,9 @@ class PiercingStrikeI(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(1.1 * base_damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4403,10 +4395,9 @@ class PiercingStrikeII(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(1.2 * base_damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4462,10 +4453,9 @@ class PiercingStrikeIII(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(1.3 * base_damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4754,10 +4744,9 @@ class HeavySlamI(Ability):
         
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil((0.4 + 0.04 * caster_attrs.constitution) * base_damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4800,10 +4789,9 @@ class HeavySlamII(Ability):
         
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil((0.6 + 0.04 * caster_attrs.constitution) * base_damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -4846,10 +4834,9 @@ class HeavySlamIII(Ability):
 
         unarmed_strength_bonus = int(caster_attrs.strength / 2)
         weapon_stats = WeaponStats(1 + unarmed_strength_bonus, 2 + unarmed_strength_bonus) if main_hand_item is None else main_hand_item.get_weapon_stats()
-        item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         assert(weapon_stats is not None)
-        base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
+        base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil((0.8 + 0.04 * caster_attrs.constitution) * base_damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"

@@ -3346,6 +3346,12 @@ class WeaponStats():
             return ""
         return f"({self._num_targets} targets)"
 
+    def get_random_base_damage(self, level_diff: int):
+        base_damage: int = randint(self._min_damage, self._max_damage)
+    
+        reduce_to: float = max(0, 1.0 - (WEAPON_OVERLEVELED_DEBUFF * max(0, level_diff)))
+        return int(base_damage * reduce_to)
+
     def get_random_damage(self, attacker_attrs: Attributes, item_effects: ItemEffects | None, level_diff: int):
         base_damage: int = randint(self._min_damage, self._max_damage)
         buffed_damage: int = base_damage
