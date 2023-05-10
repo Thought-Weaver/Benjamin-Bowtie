@@ -26,7 +26,7 @@
             },
             {
                 "effect_type": "AdditionalXP",
-                "effect_value": 1.35,
+                "effect_value": 1.2,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

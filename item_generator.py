@@ -1081,7 +1081,7 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             ItemEffectCategory.Permanent: [[frange(0.2, 0.3, 0.05), range(-1, -1)]]
         },
         EffectType.AdditionalXP: {
-            ItemEffectCategory.Permanent: [[frange(0.25, 0.45, 0.05), range(-1, -1)]]
+            ItemEffectCategory.Permanent: [[frange(0.1, 0.2, 0.05), range(-1, -1)]]
         },
         EffectType.PotionMod: {
             ItemEffectCategory.Permanent: [[frange(0.2, 0.3, 0.05), range(-1, -1)]]
@@ -1587,7 +1587,7 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             ItemEffectCategory.Permanent: [[frange(0.3, 0.4, 0.05), range(-1, -1)]]
         },
         EffectType.AdditionalXP: {
-            ItemEffectCategory.Permanent: [[frange(0.5, 0.65, 0.05), range(-1, -1)]]
+            ItemEffectCategory.Permanent: [[frange(0.25, 0.35, 0.05), range(-1, -1)]]
         },
         EffectType.PotionMod: {
             ItemEffectCategory.Permanent: [[frange(0.3, 0.4, 0.05), range(-1, -1)]]
@@ -2095,7 +2095,7 @@ EFFECTS_BY_RARITY: Dict[Rarity, Dict[EffectType, Dict[ItemEffectCategory, List[L
             ItemEffectCategory.Permanent: [[frange(0.4, 0.5, 0.05), range(-1, -1)]]
         },
         EffectType.AdditionalXP: {
-            ItemEffectCategory.Permanent: [[frange(0.75, 0.9, 0.05), range(-1, -1)]]
+            ItemEffectCategory.Permanent: [[frange(0.4, 0.5, 0.05), range(-1, -1)]]
         },
         EffectType.PotionMod: {
             ItemEffectCategory.Permanent: [[frange(0.4, 0.5, 0.05), range(-1, -1)]]

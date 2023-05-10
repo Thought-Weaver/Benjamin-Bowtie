@@ -23,7 +23,7 @@
         "permanent": [
             {
                 "effect_type": "AdditionalXP",
-                "effect_value": 0.3,
+                "effect_value": 0.1,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

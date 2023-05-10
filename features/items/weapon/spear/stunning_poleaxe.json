@@ -23,14 +23,6 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "AdditionalXP",
-                "effect_value": 0.95,
-                "effect_time": -1,
-                "conditions": [],
-                "condition_values": [],
-                "associated_status_effect": null
-            },
-            {
                 "effect_type": "DmgBuffFromStr",
                 "effect_value": 0.02,
                 "effect_time": -1,
@@ -54,7 +46,7 @@
         "on_successful_attack": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": 0.125,
+                "effect_value": 0.15,
                 "effect_time": 1,
                 "conditions": [],
                 "condition_values": [],
