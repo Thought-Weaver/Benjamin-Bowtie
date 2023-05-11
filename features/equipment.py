@@ -326,7 +326,7 @@ class EquipmentView(discord.ui.View):
         self._show_with_buttons = show_with_buttons
 
         self._page = 0
-        self._cur_equip_slot = None
+        self._cur_equip_slot: ClassTag.Equipment | None = None
 
         self._NUM_PER_PAGE = 4
 
@@ -376,9 +376,10 @@ class EquipmentView(discord.ui.View):
         # The "exact_item_index" here is the index of the item with respect to the entire
         # inventory. This is used instead of an adjusted index here because the items are
         # filtered when displayed to the user, so adjusting based on page size wouldn't work.
-        found_index = inventory.item_exists(inventory.get_inventory_slots()[exact_item_index])
-        if found_index == exact_item_index:
-            if inventory.get_inventory_slots()[exact_item_index].meets_attr_requirements(expertise.get_all_attributes() + equipment.get_total_attribute_mods()):
+        item = inventory.get_inventory_slots()[exact_item_index]
+        found_index = inventory.item_exists(item)
+        if found_index == exact_item_index and self._cur_equip_slot in item.get_class_tags():
+            if item.meets_attr_requirements(expertise.get_all_attributes() + equipment.get_total_attribute_mods()):
                 item = inventory.remove_item(exact_item_index, 1)
                 prev_item = equipment.equip_item_to_slot(self._cur_equip_slot, item)
 
