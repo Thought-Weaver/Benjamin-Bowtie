@@ -2937,6 +2937,7 @@ class ItemKey(StrEnum):
     BroadswordOfVirulence = "items/weapon/sword/broadsword_of_virulence"
     CalmFlowingSword = "items/weapon/sword/calm_flowing_sword"
     CarapacedBroadsword = "items/weapon/sword/carapaced_broadsword"
+    CarrotSword = "items/weapon/sword/carrot_sword"
     CleansingBlade = "items/weapon/sword/cleansing_blade"
     DeadlyEstocOfPrecision = "items/weapon/sword/deadly_estoc_of_precision"
     DefensiveBlade = "items/weapon/sword/defensive_blade"
