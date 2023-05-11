@@ -406,7 +406,7 @@ class StudyView(discord.ui.View):
     def _get_retrieve_storage_buttons(self):
         self.clear_items()
         player: Player = self._get_player()
-        inventory: Inventory = player.get_house().workshop_storage
+        inventory: Inventory = player.get_house().study_storage
         inventory_slots = inventory.get_inventory_slots()
 
         page_slots = inventory_slots[self._page * self._NUM_PER_PAGE:min(len(inventory_slots), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -470,14 +470,14 @@ class StudyView(discord.ui.View):
         self._get_retrieve_storage_buttons()
 
         player: Player = self._get_player()
-        storage_slots: List[Item] = player.get_house().workshop_storage.get_inventory_slots()
+        storage_slots: List[Item] = player.get_house().study_storage.get_inventory_slots()
         if self._selected_item is None or storage_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
         return Embed(title="Chest (Retrieving)", description=f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nNavigate through the items using the Prev and Next buttons.")
 
     def retrieve(self):
         player: Player = self._get_player()
-        storage: Inventory = player.get_house().workshop_storage
+        storage: Inventory = player.get_house().study_storage
         storage_slots: List[Item] = storage.get_inventory_slots()
         if self._selected_item is None or storage_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
@@ -493,7 +493,7 @@ class StudyView(discord.ui.View):
 
     def retrieve_all(self):
         player: Player = self._get_player()
-        storage: Inventory = player.get_house().workshop_storage
+        storage: Inventory = player.get_house().study_storage
         storage_slots: List[Item] = storage.get_inventory_slots()
         if self._selected_item is None or storage_slots[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
@@ -510,7 +510,7 @@ class StudyView(discord.ui.View):
     def store(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        storage: Inventory = player.get_house().workshop_storage
+        storage: Inventory = player.get_house().study_storage
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
@@ -526,7 +526,7 @@ class StudyView(discord.ui.View):
     def store_all(self):
         player: Player = self._get_player()
         inventory: Inventory = player.get_inventory()
-        storage: Inventory = player.get_house().workshop_storage
+        storage: Inventory = player.get_house().study_storage
         if self._selected_item is None or inventory.get_inventory_slots()[self._selected_item_index] != self._selected_item:
             return self.get_embed_for_intent(error="\n\n*Error: Something about that item changed or it's no longer available.*")
 
