@@ -210,11 +210,11 @@ class Adventures(commands.Cog):
                 if companions.current_companion is not None:
                     companion_ability = companions.companions[companions.current_companion].get_dueling_ability(effect_category=None)
                     
-                    if isinstance(companion_ability, Ability):
-                        try:
-                            player.get_dueling().abilities.remove(companion_ability)
-                        except:
-                            pass
+                    if companion_ability is not None:
+                        for ability in player.get_dueling().abilities:
+                            if ability.__class__ == companion_ability.__class__:
+                                player.get_dueling().abilities.remove(ability)
+                                break
                 
                 player.get_stats().dueling.duels_fought += 1
                 player.get_stats().dueling.duels_tied += 1
