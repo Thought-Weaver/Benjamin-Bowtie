@@ -6,12 +6,14 @@ from features.equipment import Equipment
 from features.expertise import Expertise
 from features.house.house import House
 from features.inventory import Inventory
+from features.shared.effect import ItemEffectCategory, ItemEffects
 from features.stats import Stats
 from features.stories.player_dungeon_run import PlayerDungeonRun
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.mail import Mail
+    from features.shared.effect import Effect
 
 
 class Player():
@@ -37,6 +39,22 @@ class Player():
 
     def get_combined_attributes(self):
         return self._expertise.get_all_attributes() + self._equipment.get_total_attribute_mods() + self._dueling.get_combined_attribute_mods()
+
+    def get_combined_req_met_effects(self):
+        combined_effects = ItemEffects([], [], [], [], [], [], [], [])
+        
+        equipment_effects = self._equipment.get_combined_item_effects_if_requirements_met(self)
+        if equipment_effects is not None:
+            combined_effects += equipment_effects
+
+        if self._companions.current_companion is not None:
+            current_companion = self._companions.companions[self._companions.current_companion]
+            companion_dueling_ability = current_companion.get_dueling_ability(effect_category=None)
+            effect_category = current_companion.get_ability_effect_category()
+            if effect_category is not None and isinstance(companion_dueling_ability, Effect):
+                combined_effects.add_effect_in_category(companion_dueling_ability, effect_category)
+        
+        return combined_effects
 
     def get_inventory(self):
         return self._inventory

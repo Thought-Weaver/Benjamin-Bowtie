@@ -722,6 +722,42 @@ class ItemEffects():
         ]
         return any(any(effect.effect_type == effect_type for effect in effect_group) for effect_group in all_effects)        
 
+    def add_effect_in_category(self, effect: Effect, category: ItemEffectCategory):
+        if category == ItemEffectCategory.Permanent:
+            self.permanent.append(effect)
+        elif category == ItemEffectCategory.OnTurnStart:
+            self.on_turn_start.append(effect)
+        elif category == ItemEffectCategory.OnTurnEnd:
+            self.on_turn_end.append(effect)
+        elif category == ItemEffectCategory.OnDamaged:
+            self.on_damaged.append(effect)
+        elif category == ItemEffectCategory.OnSuccessfulAbilityUsed:
+            self.on_successful_ability_used.append(effect)
+        elif category == ItemEffectCategory.OnSuccessfulAttack:
+            self.on_successful_attack.append(effect)
+        elif category == ItemEffectCategory.OnAttacked:
+            self.on_attacked.append(effect)
+        elif category == ItemEffectCategory.OnAbilityUsedAgainst:
+            self.on_ability_used_against.append(effect)
+
+    def get_effects_by_category(self, category: ItemEffectCategory):
+        if category == ItemEffectCategory.Permanent:
+            return self.permanent
+        elif category == ItemEffectCategory.OnTurnStart:
+            return self.on_turn_start
+        elif category == ItemEffectCategory.OnTurnEnd:
+            return self.on_turn_end
+        elif category == ItemEffectCategory.OnDamaged:
+            return self.on_damaged
+        elif category == ItemEffectCategory.OnSuccessfulAbilityUsed:
+            return self.on_successful_ability_used
+        elif category == ItemEffectCategory.OnSuccessfulAttack:
+            return self.on_successful_attack
+        elif category == ItemEffectCategory.OnAttacked:
+            return self.on_attacked
+        elif category == ItemEffectCategory.OnAbilityUsedAgainst:
+            return self.on_ability_used_against
+
     def sort_by_priority(self, effects: List[Effect]):
         return sorted(effects, key=lambda effect: EFFECT_PRIORITY[effect.effect_type])
 

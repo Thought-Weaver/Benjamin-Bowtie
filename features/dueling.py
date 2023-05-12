@@ -78,13 +78,19 @@ class Dueling():
 
         return f"Armor: {armor_squares_string} ({self.armor}/{max_reduced_armor})"
 
-    def get_total_percent_dmg_reduct(self):
+    def get_total_percent_dmg_reduct(self, item_effects: ItemEffects):
         total_percent_reduction = 0
+        
         for status_effect in self.status_effects:
             if status_effect.key == StatusEffectKey.DmgReduction:
                 total_percent_reduction = min(0.75, total_percent_reduction + status_effect.value)
-            if status_effect.key == StatusEffectKey.DmgVulnerability:
+            elif status_effect.key == StatusEffectKey.DmgVulnerability:
                 total_percent_reduction = max(-0.5, total_percent_reduction - status_effect.value)
+
+        for effect in item_effects.permanent:
+            if effect.effect_type == EffectType.DmgResist:
+                total_percent_reduction = min(0.75, total_percent_reduction + effect.effect_value)
+        
         return total_percent_reduction
 
     def reset_ability_cds(self):
@@ -1532,7 +1538,7 @@ class Dueling():
             damage: int = int(item_effect.effect_value)
             target_dueling: Dueling = target_entity.get_dueling()
 
-            percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct(target_entity.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_entity.get_expertise().damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -1553,7 +1559,7 @@ class Dueling():
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                attacker_dmg_reduct = self_entity.get_dueling().get_total_percent_dmg_reduct()
+                attacker_dmg_reduct = self_entity.get_dueling().get_total_percent_dmg_reduct(self_entity.get_combined_req_met_effects())
 
                 attacker_org_armor = self_entity.get_dueling().armor
                 actual_reflected_damage = self_entity.get_expertise().damage(reflected_damage, self_entity.get_dueling(), attacker_dmg_reduct, ignore_armor=False)
@@ -2822,7 +2828,7 @@ class DuelView(discord.ui.View):
                         if result_str != "":
                             result_strs.append(result_str.format(attacker_name, target_name))
 
-            percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -2872,7 +2878,7 @@ class DuelView(discord.ui.View):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                attacker_dmg_reduct = attacker.get_dueling().get_total_percent_dmg_reduct()
+                attacker_dmg_reduct = attacker.get_dueling().get_total_percent_dmg_reduct(attacker.get_combined_req_met_effects())
 
                 attacker_org_armor = attacker.get_dueling().armor
                 actual_reflected_damage = attacker.get_expertise().damage(reflected_damage, attacker.get_dueling(), attacker_dmg_reduct, ignore_armor=False)
@@ -2906,7 +2912,7 @@ class DuelView(discord.ui.View):
             if attacker in self._enemies:
                 for other in self._allies:
                     org_armor = other.get_dueling().armor
-                    percent_dmg_reduct = other.get_dueling().get_total_percent_dmg_reduct()
+                    percent_dmg_reduct = other.get_dueling().get_total_percent_dmg_reduct(other.get_combined_req_met_effects())
                     actual_cc_damage = other.get_expertise().damage(cursed_coins_damage, other.get_dueling(), percent_dmg_reduct, ignore_armor=False)
 
                     armor_str = f" ({other.get_dueling().armor - org_armor} Armor)" if other.get_dueling().armor - org_armor < 0 else ""
@@ -2918,7 +2924,7 @@ class DuelView(discord.ui.View):
             elif attacker in self._allies:
                 for other in self._enemies:
                     org_armor = other.get_dueling().armor
-                    percent_dmg_reduct = other.get_dueling().get_total_percent_dmg_reduct()
+                    percent_dmg_reduct = other.get_dueling().get_total_percent_dmg_reduct(other.get_combined_req_met_effects())
                     actual_cc_damage = other.get_expertise().damage(cursed_coins_damage, other.get_dueling(), percent_dmg_reduct, ignore_armor=False)
 
                     armor_str = f" ({other.get_dueling().armor - org_armor} Armor)" if other.get_dueling().armor - org_armor < 0 else ""
@@ -2931,7 +2937,7 @@ class DuelView(discord.ui.View):
         if splash_dmg > 0 or splash_percent_dmg > 0:
             if attacker in self._enemies:
                 for target in self._allies:
-                    percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                    percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
                     damage_dealt = target.get_expertise().damage(splash_dmg + splash_percent_dmg, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
 
                     attacker.get_stats().dueling.damage_dealt += damage_dealt
@@ -2940,7 +2946,7 @@ class DuelView(discord.ui.View):
                     result_strs.append(f"{attacker_name} dealt {damage_dealt} splash damage to {self.get_name(target)}")
             else:
                 for target in self._enemies:
-                    percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                    percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
                     damage_dealt = target.get_expertise().damage(splash_dmg + splash_percent_dmg, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
 
                     attacker.get_stats().dueling.damage_dealt += damage_dealt
@@ -3117,6 +3123,14 @@ class DuelView(discord.ui.View):
                 for effect in item_effects.permanent:
                     if effect.effect_type == EffectType.AdjustedManaCosts:
                         mana_cost_adjustment = max(mana_cost_adjustment + effect.effect_value, -1)                
+
+        companions = player.get_companions()
+        companion_key = companions.current_companion
+        if companion_key is not None:
+            current_companion = companions.companions[companion_key]
+            companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnTurnEnd)
+            if isinstance(companion_effect, Effect) and companion_effect.effect_type == EffectType.AdjustedManaCosts:
+                mana_cost_adjustment = max(mana_cost_adjustment + companion_effect.effect_value, -1)
 
         if self._selected_ability is not None:
             if self._selected_ability.get_cur_cooldown() == 0:

@@ -5,6 +5,7 @@ from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.inventory import Inventory
+from features.shared.effect import ItemEffects
 from features.shared.item import ItemKey
 from features.shared.statuseffect import NEGATIVE_STATUS_EFFECTS, POSITIVE_STATUS_EFFECTS_ON_SELF, StatusEffectKey, Taunted
 from features.stats import Stats
@@ -246,6 +247,15 @@ class NPC():
 
     def get_combined_attributes(self):
         return self._expertise.get_all_attributes() + self._equipment.get_total_attribute_mods() + self._dueling.get_combined_attribute_mods()
+
+    def get_combined_req_met_effects(self):
+        combined_effects = ItemEffects([], [], [], [], [], [], [], [])
+        
+        equipment_effects = self._equipment.get_combined_item_effects_if_requirements_met(self)
+        if equipment_effects is not None:
+            combined_effects += equipment_effects
+
+        return combined_effects
 
     def get_name(self):
         return self._name

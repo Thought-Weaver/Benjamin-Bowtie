@@ -17,6 +17,7 @@ from typing import Dict, List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.npcs.npc import NPC
     from features.player import Player
+    from features.shared.effect import Effect
 
 # -----------------------------------------------------------------------------
 # BASE CLASS
@@ -126,6 +127,15 @@ class Ability():
                     if effect.effect_type == EffectType.AdjustedCDs:
                         cd_adjustment += int(effect.effect_value)
 
+        if isinstance(caster, Player):
+            companions = caster.get_companions()
+            companion_key = companions.current_companion
+            if companion_key is not None:
+                current_companion = companions.companions[companion_key]
+                companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnTurnEnd)
+                if isinstance(companion_effect, Effect) and companion_effect.effect_type == EffectType.AdjustedManaCosts:
+                    mana_cost_adjustment = max(mana_cost_adjustment + companion_effect.effect_value, -1)
+
         if self._cooldown >= 0:
             self._cur_cooldown = max(self._cooldown + cd_adjustment, 0)
         else:
@@ -159,6 +169,14 @@ class Ability():
         dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
         critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
         self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
+
+        piercing_dmg: int = 0
+        piercing_percent_dmg: float = 0
+        for effect in caster.get_combined_req_met_effects().permanent:
+            if effect.effect_type == EffectType.PiercingDmg:
+                piercing_dmg += int(effect.effect_value)
+            elif effect.effect_type == EffectType.PiercingPercentDmg:
+                piercing_percent_dmg += effect.effect_value
 
         bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
@@ -218,6 +236,8 @@ class Ability():
             
             damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
+            final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
+
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
             for item in caster_equipment.get_all_equipped_items():
@@ -240,15 +260,16 @@ class Ability():
                     if result_str != "":
                         on_ability_used_against_str += f"\n{result_str}"
             
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
+            piercing_damage_dealt = target_expertise.damage(final_piercing_dmg, target_dueling, percent_dmg_reduct, ignore_armor=True)
             cur_armor = target_dueling.armor
 
             se_on_damage_str = ""
             on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
+            if (actual_damage_dealt > 0 or piercing_damage_dealt > 0) and target.get_expertise().hp > 0:
                 se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
                 for item in target_equipment.get_all_equipped_items():
                     item_effects = item.get_item_effects()
@@ -259,8 +280,8 @@ class Ability():
                         if result_str != "":
                             on_attack_damage_effect_str += f"\n{result_str}"
 
-            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt + final_piercing_dmg
+            target.get_stats().dueling.damage_taken += actual_damage_dealt + final_piercing_dmg
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
@@ -282,7 +303,7 @@ class Ability():
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -298,8 +319,9 @@ class Ability():
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
+            piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
-            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
+            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
             non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_ability_used_against_str, on_attack_damage_effect_str]))
             results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
 
@@ -1192,17 +1214,11 @@ class WrathOfTheWavesI(Ability):
 
         piercing_dmg: int = 0
         piercing_percent_dmg: float = 0
-        for item in caster_equipment.get_all_equipped_items():
-            other_item_effects = item.get_item_effects()
-            if other_item_effects is not None:
-                for item_effect in other_item_effects.permanent:
-                    if not item_effect.meets_conditions(caster, item):
-                        continue
-
-                    elif item_effect.effect_type == EffectType.PiercingDmg:
-                        piercing_dmg += int(item_effect.effect_value)
-                    elif item_effect.effect_type == EffectType.PiercingPercentDmg:
-                        piercing_percent_dmg += item_effect.effect_value
+        for effect in caster.get_combined_req_met_effects().permanent:
+            if effect.effect_type == EffectType.PiercingDmg:
+                piercing_dmg += int(effect.effect_value)
+            elif effect.effect_type == EffectType.PiercingPercentDmg:
+                piercing_percent_dmg += effect.effect_value
 
         bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
@@ -1270,7 +1286,7 @@ class WrathOfTheWavesI(Ability):
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
 
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -1290,8 +1306,8 @@ class WrathOfTheWavesI(Ability):
                         if result_str != "":
                             on_attack_damage_effect_str += f"\n{result_str}"
 
-            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt + piercing_damage_dealt
+            target.get_stats().dueling.damage_taken += actual_damage_dealt + piercing_damage_dealt
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
@@ -1313,7 +1329,7 @@ class WrathOfTheWavesI(Ability):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -1384,17 +1400,11 @@ class WrathOfTheWavesII(Ability):
 
         piercing_dmg: int = 0
         piercing_percent_dmg: float = 0
-        for item in caster_equipment.get_all_equipped_items():
-            other_item_effects = item.get_item_effects()
-            if other_item_effects is not None:
-                for item_effect in other_item_effects.permanent:
-                    if not item_effect.meets_conditions(caster, item):
-                        continue
-
-                    elif item_effect.effect_type == EffectType.PiercingDmg:
-                        piercing_dmg += int(item_effect.effect_value)
-                    elif item_effect.effect_type == EffectType.PiercingPercentDmg:
-                        piercing_percent_dmg += item_effect.effect_value
+        for effect in caster.get_combined_req_met_effects().permanent:
+            if effect.effect_type == EffectType.PiercingDmg:
+                piercing_dmg += int(effect.effect_value)
+            elif effect.effect_type == EffectType.PiercingPercentDmg:
+                piercing_percent_dmg += effect.effect_value
 
         bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
@@ -1462,7 +1472,7 @@ class WrathOfTheWavesII(Ability):
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
 
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -1482,8 +1492,8 @@ class WrathOfTheWavesII(Ability):
                         if result_str != "":
                             on_attack_damage_effect_str += f"\n{result_str}"
 
-            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt + final_piercing_dmg
+            target.get_stats().dueling.damage_taken += actual_damage_dealt + final_piercing_dmg
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
@@ -1505,7 +1515,7 @@ class WrathOfTheWavesII(Ability):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -1576,17 +1586,11 @@ class WrathOfTheWavesIII(Ability):
 
         piercing_dmg: int = 0
         piercing_percent_dmg: float = 0
-        for item in caster_equipment.get_all_equipped_items():
-            other_item_effects = item.get_item_effects()
-            if other_item_effects is not None:
-                for item_effect in other_item_effects.permanent:
-                    if not item_effect.meets_conditions(caster, item):
-                        continue
-
-                    elif item_effect.effect_type == EffectType.PiercingDmg:
-                        piercing_dmg += int(item_effect.effect_value)
-                    elif item_effect.effect_type == EffectType.PiercingPercentDmg:
-                        piercing_percent_dmg += item_effect.effect_value
+        for effect in caster.get_combined_req_met_effects().permanent:
+            if effect.effect_type == EffectType.PiercingDmg:
+                piercing_dmg += int(effect.effect_value)
+            elif effect.effect_type == EffectType.PiercingPercentDmg:
+                piercing_percent_dmg += effect.effect_value
 
         bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
@@ -1654,7 +1658,7 @@ class WrathOfTheWavesIII(Ability):
 
             se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
 
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -1674,8 +1678,8 @@ class WrathOfTheWavesIII(Ability):
                         if result_str != "":
                             on_attack_damage_effect_str += f"\n{result_str}"
 
-            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
+            caster.get_stats().dueling.damage_dealt += actual_damage_dealt + final_piercing_dmg
+            target.get_stats().dueling.damage_taken += actual_damage_dealt + final_piercing_dmg
             target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
 
             se_str: str = ""
@@ -1697,7 +1701,7 @@ class WrathOfTheWavesIII(Ability):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -2000,7 +2004,7 @@ class ThunderingTorrentI(Ability):
                     if result_str != "":
                         on_ability_used_against_str += f"\n{result_str}"
             
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -2048,7 +2052,7 @@ class ThunderingTorrentI(Ability):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -2188,7 +2192,7 @@ class ThunderingTorrentII(Ability):
                     if result_str != "":
                         on_ability_used_against_str += f"\n{result_str}"
             
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -2236,7 +2240,7 @@ class ThunderingTorrentII(Ability):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -2376,7 +2380,7 @@ class ThunderingTorrentIII(Ability):
                     if result_str != "":
                         on_ability_used_against_str += f"\n{result_str}"
             
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -2424,7 +2428,7 @@ class ThunderingTorrentIII(Ability):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -2887,7 +2891,7 @@ class WhirlpoolI(Ability):
                     if result_str != "":
                         on_ability_used_against_str += f"\n{result_str}"
 
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -2929,7 +2933,7 @@ class WhirlpoolI(Ability):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -3071,7 +3075,7 @@ class WhirlpoolII(Ability):
                     if result_str != "":
                         on_ability_used_against_str += f"\n{result_str}"
             
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -3113,7 +3117,7 @@ class WhirlpoolII(Ability):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -3255,7 +3259,7 @@ class WhirlpoolIII(Ability):
                     if result_str != "":
                         on_ability_used_against_str += f"\n{result_str}"
             
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
             org_armor = target_dueling.armor
             actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
@@ -3297,7 +3301,7 @@ class WhirlpoolIII(Ability):
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct()
+                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
 
                 caster_org_armor = caster.get_dueling().armor
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
@@ -5642,7 +5646,7 @@ class UnseenRichesI(Ability):
         if cursed_coins_damage != 0:
             for i, target in enumerate(targets):
                 org_armor = target.get_dueling().armor
-                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
                 actual_cc_damage = target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
 
                 armor_str = f" ({target.get_dueling().armor - org_armor} Armor)" if target.get_dueling().armor - org_armor < 0 else ""
@@ -5703,7 +5707,7 @@ class UnseenRichesII(Ability):
         if cursed_coins_damage != 0:
             for i, target in enumerate(targets):
                 org_armor = target.get_dueling().armor
-                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
                 actual_cc_damage = target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
 
                 armor_str = f" ({target.get_dueling().armor - org_armor} Armor)" if target.get_dueling().armor - org_armor < 0 else ""
@@ -5764,7 +5768,7 @@ class UnseenRichesIII(Ability):
         if cursed_coins_damage != 0:
             for i, target in enumerate(targets):
                 org_armor = target.get_dueling().armor
-                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct()
+                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
                 actual_cc_damage = target.get_expertise().damage(cursed_coins_damage, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
 
                 armor_str = f" ({target.get_dueling().armor - org_armor} Armor)" if target.get_dueling().armor - org_armor < 0 else ""

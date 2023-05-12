@@ -6,7 +6,7 @@ from discord.embeds import Embed
 from features.expertise import Expertise
 from features.shared.attributes import Attributes
 from features.shared.constants import ARMOR_OVERLEVELED_DEBUFF
-from features.shared.effect import EffectType
+from features.shared.effect import EffectType, ItemEffectCategory, ItemEffects
 from features.shared.enums import ClassTag
 from features.shared.item import Item
 from features.shared.nextbutton import NextButton
@@ -211,6 +211,21 @@ class Equipment():
                     result = item_effects
                 else:
                     result += item_effects
+
+        return result
+
+    def get_combined_item_effects_if_requirements_met(self, entity: Player | NPC):
+        equipped_items = self.get_all_equipped_items()
+        result = ItemEffects([], [], [], [], [], [], [], [])
+        for item in equipped_items:
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for category in ItemEffectCategory:
+                    for item_effect in item_effects.get_effects_by_category(category):
+                        if not item_effect.meets_conditions(entity, item):
+                            continue
+                        
+                        result.add_effect_in_category(item_effect, category)
 
         return result
 
