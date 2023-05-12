@@ -282,12 +282,9 @@ class Ability():
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
@@ -1308,12 +1305,9 @@ class WrathOfTheWavesI(Ability):
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
@@ -1494,12 +1488,9 @@ class WrathOfTheWavesII(Ability):
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
@@ -1680,12 +1671,9 @@ class WrathOfTheWavesIII(Ability):
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
@@ -2031,12 +2019,9 @@ class ThunderingTorrentI(Ability):
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
@@ -2219,12 +2204,9 @@ class ThunderingTorrentII(Ability):
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
@@ -2407,12 +2389,9 @@ class ThunderingTorrentIII(Ability):
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
@@ -2912,12 +2891,9 @@ class WhirlpoolI(Ability):
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
@@ -3096,12 +3072,9 @@ class WhirlpoolII(Ability):
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
@@ -3280,12 +3253,9 @@ class WhirlpoolIII(Ability):
                 if se.key == StatusEffectKey.DmgReflect:
                     dmg_reflect += se.value
             
-            for item in target.get_equipment().get_all_equipped_items():
-                target_item_effects = item.get_item_effects()
-                if target_item_effects is not None:
-                    for item_effect in target_item_effects.permanent:
-                        if item_effect.effect_type == EffectType.DmgReflect:
-                            dmg_reflect += item_effect.effect_value
+            for effect in target.get_combined_req_met_effects().permanent:
+                if effect.effect_type == EffectType.DmgReflect:
+                    dmg_reflect += effect.effect_value
 
             if dmg_reflect > 0:
                 reflected_damage: int = ceil(damage * dmg_reflect)
