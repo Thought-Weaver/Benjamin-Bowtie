@@ -4469,7 +4469,7 @@ class PressTheAdvantageI(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 3 # One extra because it consumes an action to do this.
+        caster.get_dueling().actions_remaining += 2
         caster.get_stats().dueling.guardian_abilities_used += 1
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 2 actions available."
@@ -4504,7 +4504,7 @@ class PressTheAdvantageII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 4 # One extra because it consumes an action to do this.
+        caster.get_dueling().actions_remaining += 3
         caster.get_stats().dueling.guardian_abilities_used += 1
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 3 actions available."
@@ -4540,7 +4540,7 @@ class PressTheAdvantageIII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 5 # One extra because it consumes an action to do this.
+        caster.get_dueling().actions_remaining += 4
         caster.get_stats().dueling.guardian_abilities_used += 1
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 4 actions available."
