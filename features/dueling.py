@@ -3117,20 +3117,9 @@ class DuelView(discord.ui.View):
 
         sanguinated_active = any(se.key == StatusEffectKey.ManaToHP for se in dueling.status_effects)
         mana_cost_adjustment = 0
-        for item in player.get_equipment().get_all_equipped_items():
-            item_effects = item.get_item_effects()
-            if item_effects is not None:
-                for effect in item_effects.permanent:
-                    if effect.effect_type == EffectType.AdjustedManaCosts:
-                        mana_cost_adjustment = max(mana_cost_adjustment + effect.effect_value, -1)                
-
-        companions = player.get_companions()
-        companion_key = companions.current_companion
-        if companion_key is not None:
-            current_companion = companions.companions[companion_key]
-            companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnTurnEnd)
-            if isinstance(companion_effect, Effect) and companion_effect.effect_type == EffectType.AdjustedManaCosts:
-                mana_cost_adjustment = max(mana_cost_adjustment + companion_effect.effect_value, -1)
+        for effect in player.get_combined_req_met_effects().permanent:
+            if effect.effect_type == EffectType.AdjustedManaCosts:
+                mana_cost_adjustment = max(mana_cost_adjustment + effect.effect_value, -1)
 
         if self._selected_ability is not None:
             if self._selected_ability.get_cur_cooldown() == 0:

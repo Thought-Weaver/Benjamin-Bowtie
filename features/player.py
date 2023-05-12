@@ -6,14 +6,13 @@ from features.equipment import Equipment
 from features.expertise import Expertise
 from features.house.house import House
 from features.inventory import Inventory
-from features.shared.effect import ItemEffectCategory, ItemEffects
+from features.shared.effect import Effect, ItemEffects
 from features.stats import Stats
 from features.stories.player_dungeon_run import PlayerDungeonRun
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.mail import Mail
-    from features.shared.effect import Effect
 
 
 class Player():

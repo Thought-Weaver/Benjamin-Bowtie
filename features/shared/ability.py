@@ -118,23 +118,11 @@ class Ability():
 
         mana_cost_adjustment = 0
         cd_adjustment = 0
-        for item in caster.get_equipment().get_all_equipped_items():
-            item_effects = item.get_item_effects()
-            if item_effects is not None:
-                for effect in item_effects.permanent:
-                    if effect.effect_type == EffectType.AdjustedManaCosts:
-                        mana_cost_adjustment = max(mana_cost_adjustment + effect.effect_value, -1)
-                    if effect.effect_type == EffectType.AdjustedCDs:
-                        cd_adjustment += int(effect.effect_value)
-
-        if isinstance(caster, Player):
-            companions = caster.get_companions()
-            companion_key = companions.current_companion
-            if companion_key is not None:
-                current_companion = companions.companions[companion_key]
-                companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnTurnEnd)
-                if isinstance(companion_effect, Effect) and companion_effect.effect_type == EffectType.AdjustedManaCosts:
-                    mana_cost_adjustment = max(mana_cost_adjustment + companion_effect.effect_value, -1)
+        for effect in caster.get_combined_req_met_effects().permanent:
+            if effect.effect_type == EffectType.AdjustedManaCosts:
+                mana_cost_adjustment = max(mana_cost_adjustment + effect.effect_value, -1)
+            if effect.effect_type == EffectType.AdjustedCDs:
+                cd_adjustment += int(effect.effect_value)
 
         if self._cooldown >= 0:
             self._cur_cooldown = max(self._cooldown + cd_adjustment, 0)
