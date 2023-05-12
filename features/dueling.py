@@ -14,7 +14,7 @@ from strenum import StrEnum
 from features.expertise import ExpertiseClass
 from features.shared.ability import Ability
 from features.shared.attributes import Attributes
-from features.shared.constants import COMPANION_BATTLE_POINTS, POISONED_PERCENT_HP, BLEED_PERCENT_HP, DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE, STR_DMG_SCALE
+from features.shared.constants import COMPANION_BATTLE_POINTS, POISONED_PERCENT_HP, BLEED_PERCENT_HP, DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE
 from features.shared.effect import Effect, EffectType, ItemEffectCategory
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, WeaponStats
@@ -1929,6 +1929,9 @@ class DuelView(discord.ui.View):
                             self._companion_abilities[entity.get_id()] = companion_ability
                             entity.get_dueling().abilities.append(companion_ability)
 
+                    if entity.get_dungeon_run().in_dungeon_run:
+                        entity.get_dueling().status_effects.append(Corrupted(-1, entity.get_dungeon_run().corruption))
+
             cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
             if isinstance(cur_entity, Player) or self._companion_battle:
                 self.show_actions()
@@ -3107,10 +3110,18 @@ class DuelView(discord.ui.View):
             self.add_item(DuelingNextButton(min(4, len(page_slots))))
 
         sanguinated_active = any(se.key == StatusEffectKey.ManaToHP for se in dueling.status_effects)
+        mana_cost_adjustment = 0
+        for item in player.get_equipment().get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for effect in item_effects.permanent:
+                    if effect.effect_type == EffectType.AdjustedManaCosts:
+                        mana_cost_adjustment = max(mana_cost_adjustment + effect.effect_value, -1)                
 
         if self._selected_ability is not None:
             if self._selected_ability.get_cur_cooldown() == 0:
-                if expertise.mana >= self._selected_ability.get_mana_cost() or sanguinated_active:
+                final_mana_cost = self._selected_ability.get_mana_cost() + int(self._selected_ability.get_mana_cost() * mana_cost_adjustment)
+                if expertise.mana >= final_mana_cost or sanguinated_active:
                     self.add_item(ConfirmAbilityButton(min(4, len(page_slots))))
         self.add_item(BackToActionSelectButton(min(4, len(page_slots))))
 

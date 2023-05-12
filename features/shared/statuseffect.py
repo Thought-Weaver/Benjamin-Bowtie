@@ -74,6 +74,8 @@ class StatusEffectKey(StrEnum):
 
     RegenerateArmor = "RegenerateArmor"
 
+    Corrupted = "Corrupted"
+
     # TODO: For charging abilities, I should add a Charging status which
     # is a requirement to cast an associated ability (referenced by class perhaps?)
     # and is consumed in order to cast it. 
@@ -123,7 +125,8 @@ NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
     StatusEffectKey.Decaying,
     StatusEffectKey.Undying,
     StatusEffectKey.CannotUseAbilities,
-    StatusEffectKey.StackingDamage
+    StatusEffectKey.StackingDamage,
+    StatusEffectKey.Corrupted
 ]
 
 # -----------------------------------------------------------------------------
@@ -728,6 +731,19 @@ class RegenerateArmor(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: You regain {self.value * 100}% of your armor for the next {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class Corrupted(StatusEffect):
+    def __init__(self, turns_remaining: int, value: int, source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Corrupted", StatusEffectKey.Corrupted, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: You have {self.value} stacks of corruption, making it easier for certain enemies to influence you"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
