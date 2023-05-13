@@ -171,7 +171,7 @@ class GardenPlot():
         harvested_plant = self.plant
 
         if self.soil is not None and self.soil.get_key() == ItemKey.Compost:
-            if harvested_plant is not None and random.random() < 0.25:
+            if harvested_plant is not None and random.random() < 0.5:
                 harvested_plant.add_amount(1)
 
         self.reset(keep_soil=True)
