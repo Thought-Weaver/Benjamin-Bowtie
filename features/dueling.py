@@ -2025,12 +2025,12 @@ class DuelView(discord.ui.View):
         if reset_actions:
             self._actions_remaining = self._turn_order[self._turn_index].get_dueling().init_actions_remaining
 
-    def set_next_turn(self):
+    def set_next_turn(self, init_info_str: str=""):
         previous_entity: Player | NPC = self._turn_order[self._turn_index]
         
         item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnEnd, previous_entity, previous_entity, 0, 0, True)
         
-        self._additional_info_string_data = ""
+        self._additional_info_string_data = init_info_str
 
         for result_str in item_status_effects:
             formatted_str = result_str.format(self.get_name(previous_entity))
@@ -3310,12 +3310,20 @@ class DuelView(discord.ui.View):
         dueling: Dueling = cur_entity.get_dueling()
         dueling.actions_remaining = max(0, dueling.actions_remaining - 1)
         if dueling.actions_remaining == 0 or skip_turn:
+            init_info_str: str = ""
+
+            is_charmed = any(se.key == StatusEffectKey.Charmed for se in cur_entity.get_dueling().status_effects)
+            if dueling.actions_remaining > 0 and skip_turn and is_charmed:
+                damage = ceil(0.5 * cur_entity.get_expertise().max_hp)
+                cur_entity.get_expertise().damage(damage, cur_entity.get_dueling(), 0, True)
+                init_info_str += f"{self.get_name(cur_entity)} took {damage} damage for skipping their turn while Charmed!\n\n"
+
             # CDs and status effect time remaining decrement at the end of the turn,
             # so they actually last a turn
             dueling.decrement_all_ability_cds()
             dueling.decrement_statuses_time_remaining()
             cur_entity.get_expertise().update_stats(cur_entity.get_combined_attributes())
-            duel_result = self.set_next_turn()
+            duel_result = self.set_next_turn(init_info_str)
             if duel_result.game_won:
                 return self.get_victory_screen(duel_result)
         

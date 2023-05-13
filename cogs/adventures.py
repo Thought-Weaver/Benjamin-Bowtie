@@ -903,7 +903,7 @@ class Adventures(commands.Cog):
             "**Regenerating:** Restore x% max health at the start of each turn\n"
             "**Reforming:** Restore x% max armor at the start of each turn\n"
             "**Acervophilic:** You can only use items this turn\n\n"
-            "**Charmed:** Your enemies are your allies and vice versa\n"
+            "**Charmed:** Your enemies are your allies and vice versa; if a player skips their turn, they take 50% of their max health as damage\n"
             "**Atrophied:** You can't attack\n"
             "**Sleeping:** Your turn will be skipped (this status is removed upon taking damage)\n"
             "**Decaying:** Healing effects are x% less effective\n"
