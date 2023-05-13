@@ -10,10 +10,10 @@
     "state_tags": ["Needs_Identification"],
     "count": 1,
     "item_effects": {
-        "on_successful_ability_used": [
+        "on_turn_start": [
             {
-                "effect_type": "RestoreMana",
-                "effect_value": 5,
+                "effect_type": "IntMod",
+                "effect_value": 2,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
