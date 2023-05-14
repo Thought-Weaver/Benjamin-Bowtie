@@ -936,11 +936,11 @@ class Adventures(commands.Cog):
             await context.send(f"You're in a duel and can't visit the trainers or change your abilities.")
             return
         
-        if author_player.get_dungeon_run().in_dungeon_run:
-            await context.send(f"You're on an adventure and can't visit the trainers or change your abilities.")
+        if author_player.get_dungeon_run().in_dungeon_run and not author_player.get_dungeon_run().in_rest_area:
+            await context.send(f"You're on an adventure and aren't at a rest area where you can change your abilities.")
             return
 
-        equipment_view = TrainerView(self._bot, self._database, context.guild.id, context.author)
+        equipment_view = TrainerView(self._bot, self._database, context.guild.id, context.author, change_abilities_only=author_player.get_dungeon_run().in_rest_area)
         embed = equipment_view.get_initial_info()
         await context.send(embed=embed, view=equipment_view)
 

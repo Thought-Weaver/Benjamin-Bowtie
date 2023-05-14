@@ -4,7 +4,7 @@ import discord
 
 from discord import Embed
 from features.expertise import Expertise, ExpertiseClass
-from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, BoundToGetLuckyIV, BoundToGetLuckyV, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CrabnadoI, CrabnadoII, CrabnadoIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CursedCoinsI, CursedCoinsII, CursedCoinsIII, CursedCoinsIV, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EmpowermentII, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HighTideIV, HookI, HookII, HookIII, IncenseI, IncenseII, IncenseIII, ParalyzingFumesI, ParalyzingFumesII, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, PressTheAdvantageII, PressTheAdvantageIII, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, TauntII, TauntIII, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV, UnbreakingI, UnbreakingII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
+from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, BoundToGetLuckyIV, BoundToGetLuckyV, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CrabnadoI, CrabnadoII, CrabnadoIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CursedCoinsI, CursedCoinsII, CursedCoinsIII, CursedCoinsIV, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EmpowermentII, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HighTideIV, HookI, HookII, HookIII, IncenseI, IncenseII, IncenseIII, ParalyzingFumesI, ParalyzingFumesII, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, PressTheAdvantageII, PressTheAdvantageIII, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, TauntII, TauntIII, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV, ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV, UnbreakingI, UnbreakingII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlpoolIV, WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -132,13 +132,14 @@ class ExitTrainerButton(discord.ui.Button):
 
 
 class TrainerView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, change_abilities_only: bool=False):
         super().__init__(timeout=900)
 
         self._bot = bot
         self._database = database
         self._guild_id = guild_id
         self._user = user
+        self._change_abilities_only = change_abilities_only
 
         self._page: int = 0
         self._current_ability: Ability | None = None
@@ -153,9 +154,9 @@ class TrainerView(discord.ui.View):
             [HookI, HookII, HookIII],
             [WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII],
             [HighTideI, HighTideII, HighTideIII, HighTideIV],
-            [ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII],
+            [ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV],
             [DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII],
-            [WhirlpoolI, WhirlpoolII, WhirlpoolIII],
+            [WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlpoolIV],
             [ShatteringStormI, ShatteringStormII, ShatteringStormIII],
         ]
 
@@ -255,11 +256,15 @@ class TrainerView(discord.ui.View):
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(FisherTrainerButton(0))
-        self.add_item(GuardianTrainerButton(1))
-        self.add_item(MerchantTrainerButton(2))
-        self.add_item(AlchemistTrainerButton(3))
-        self.add_item(EnterEquipAbilitiesButton(4))
+
+        if not self._change_abilities_only:
+            self.add_item(FisherTrainerButton(0))
+            self.add_item(GuardianTrainerButton(1))
+            self.add_item(MerchantTrainerButton(2))
+            self.add_item(AlchemistTrainerButton(3))
+            self.add_item(EnterEquipAbilitiesButton(4))
+        else:
+            self.add_item(EnterEquipAbilitiesButton(0))
 
     def _get_next_level(self):
         abilities_to_search = []
