@@ -10489,7 +10489,7 @@ class WithTheWindI(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -10497,7 +10497,7 @@ class WithTheWindI(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
@@ -10667,7 +10667,7 @@ class WithTheWindII(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -10675,7 +10675,7 @@ class WithTheWindII(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
@@ -10845,7 +10845,7 @@ class WithTheWindIII(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -10853,7 +10853,7 @@ class WithTheWindIII(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
@@ -11023,7 +11023,7 @@ class WithTheWindIV(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -11031,7 +11031,7 @@ class WithTheWindIV(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))
@@ -11201,7 +11201,7 @@ class WithTheWindV(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -11209,7 +11209,7 @@ class WithTheWindV(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage{se_str}", False))

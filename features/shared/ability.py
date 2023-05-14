@@ -294,7 +294,7 @@ class Ability():
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -302,7 +302,7 @@ class Ability():
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
             piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
@@ -1368,7 +1368,7 @@ class WrathOfTheWavesI(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -1376,7 +1376,7 @@ class WrathOfTheWavesI(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
             piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
@@ -1551,7 +1551,7 @@ class WrathOfTheWavesII(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -1559,7 +1559,7 @@ class WrathOfTheWavesII(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
             piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
@@ -1734,7 +1734,7 @@ class WrathOfTheWavesIII(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -1742,7 +1742,7 @@ class WrathOfTheWavesIII(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
             piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
@@ -2082,7 +2082,7 @@ class ThunderingTorrentI(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -2090,7 +2090,7 @@ class ThunderingTorrentI(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
@@ -2267,7 +2267,7 @@ class ThunderingTorrentII(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -2275,7 +2275,7 @@ class ThunderingTorrentII(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
@@ -2452,7 +2452,7 @@ class ThunderingTorrentIII(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -2460,7 +2460,7 @@ class ThunderingTorrentIII(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
@@ -2637,7 +2637,7 @@ class ThunderingTorrentIV(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -2645,7 +2645,7 @@ class ThunderingTorrentIV(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
@@ -3139,7 +3139,7 @@ class WhirlpoolI(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -3147,7 +3147,7 @@ class WhirlpoolI(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
@@ -3320,7 +3320,7 @@ class WhirlpoolII(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -3328,7 +3328,7 @@ class WhirlpoolII(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
@@ -3501,7 +3501,7 @@ class WhirlpoolIII(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -3509,7 +3509,7 @@ class WhirlpoolIII(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
@@ -3682,7 +3682,7 @@ class WhirlpoolIV(Ability):
                 actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
                 caster_cur_armor = caster.get_dueling().armor
                 
-                caster_dmg_reduct_str = f" ({caster_dmg_reduct * 100}% Reduction)" if caster_dmg_reduct != 0 else ""
+                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
 
                 se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
@@ -3690,7 +3690,7 @@ class WhirlpoolIV(Ability):
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"

@@ -1569,14 +1569,14 @@ class Dueling():
                 actual_reflected_damage = self_entity.get_expertise().damage(reflected_damage, self_entity.get_dueling(), attacker_dmg_reduct, ignore_armor=False)
                 attacker_cur_armor = self_entity.get_dueling().armor
                 
-                attacker_dmg_reduct_str = f" ({attacker_dmg_reduct * 100}% Reduction)" if attacker_dmg_reduct != 0 else ""
+                attacker_dmg_reduct_str = f" ({abs(attacker_dmg_reduct) * 100}% {'Reduction' if attacker_dmg_reduct > 0 else 'Increase'})" if attacker_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({attacker_cur_armor - attacker_org_armor} Armor)" if attacker_cur_armor - attacker_org_armor < 0 else ""
 
                 result_strs.append("{1}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{attacker_dmg_reduct_str} back to " + "{0}")
 
             target_entity.get_expertise().update_stats(target_entity.get_combined_attributes())
 
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({target_dueling.armor - org_armor} Armor)" if target_dueling.armor - org_armor < 0 else ""
 
             result_strs.append("{0}" + f" dealt {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str} damage to " + "{1}" + f" from {item.get_full_name()}")
@@ -2885,7 +2885,7 @@ class DuelView(discord.ui.View):
                 actual_reflected_damage = attacker.get_expertise().damage(reflected_damage, attacker.get_dueling(), attacker_dmg_reduct, ignore_armor=False)
                 attacker_cur_armor = attacker.get_dueling().armor
                 
-                attacker_dmg_reduct_str = f" ({attacker_dmg_reduct * 100}% Reduction)" if attacker_dmg_reduct != 0 else ""
+                attacker_dmg_reduct_str = f" ({abs(attacker_dmg_reduct) * 100}% {'Reduction' if attacker_dmg_reduct > 0 else 'Increase'})" if attacker_dmg_reduct != 0 else ""
                 reflect_armor_str = f" ({attacker_cur_armor - attacker_org_armor} Armor)" if attacker_cur_armor - attacker_org_armor < 0 else ""
 
                 result_strs.append(f"{target_name} reflected {actual_reflected_damage}{reflect_armor_str}{attacker_dmg_reduct_str} back to {attacker_name}")
@@ -2901,7 +2901,7 @@ class DuelView(discord.ui.View):
                     cursed_coins_damage += ceil(tarnished_value * generating_value)
             
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({percent_dmg_reduct * 100}% Reduction)" if percent_dmg_reduct != 0 else ""
+            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({target_dueling.armor - org_armor} Armor)" if target_dueling.armor - org_armor < 0 else ""
             piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
@@ -3637,7 +3637,7 @@ class DuelView(discord.ui.View):
                     dueling_copy._selected_item_index = i
 
                     targets = [cur_npc]
-                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)
+                    target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, True)
                     dueling_copy._selected_targets = dueling_copy.get_entities_by_ids(target_ids)
                     dueling_copy.use_item_on_selected_targets()
 
