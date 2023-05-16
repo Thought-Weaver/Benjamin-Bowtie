@@ -3525,12 +3525,12 @@ class Item():
 
     def meets_attr_requirements(self, attributes: Attributes):
         attr_reqs_met: bool = self._attr_requirements is None or (
-            attributes.constitution >= self._attr_requirements.constitution and
-            attributes.strength >= self._attr_requirements.strength and
-            attributes.dexterity >= self._attr_requirements.dexterity and
-            attributes.intelligence >= self._attr_requirements.intelligence and
-            attributes.luck >= self._attr_requirements.luck and
-            attributes.memory >= self._attr_requirements.memory
+            max(0, attributes.constitution) >= self._attr_requirements.constitution and
+            max(0, attributes.strength) >= self._attr_requirements.strength and
+            max(0, attributes.dexterity) >= self._attr_requirements.dexterity and
+            max(0, attributes.intelligence) >= self._attr_requirements.intelligence and
+            max(0, attributes.luck) >= self._attr_requirements.luck and
+            max(0, attributes.memory) >= self._attr_requirements.memory
         )
         return attr_reqs_met
 
