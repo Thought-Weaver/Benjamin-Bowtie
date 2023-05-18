@@ -248,6 +248,9 @@ class NPC():
     def get_combined_attributes(self):
         return self._expertise.get_all_attributes() + self._equipment.get_total_attribute_mods() + self._dueling.get_combined_attribute_mods()
 
+    def get_non_status_combined_attributes(self):
+        return self._expertise.get_all_attributes() + self._equipment.get_total_attribute_mods()
+
     def get_combined_req_met_effects(self):
         combined_effects = ItemEffects([], [], [], [], [], [], [], [])
         

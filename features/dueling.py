@@ -205,7 +205,7 @@ class Dueling():
     def apply_on_successful_attack_or_ability_effects(self, item: Item | None, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, other_entity_index: int, damage_dealt: int, source_str: str) -> Tuple[int, str]:
         # Note: Not all effects are listed here, since not all make sense to trigger
         # in this scenario.
-        if item is not None and (not item_effect.meets_conditions(self_entity, item) or not item.meets_requirements(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes())):
+        if item is not None and (not item_effect.meets_conditions(self_entity, item) or not item.meets_requirements(self_entity.get_expertise().level, self_entity.get_non_status_combined_attributes())):
             return (damage_dealt, "")
 
         if item_effect.effect_type == EffectType.CleanseStatusEffects:
@@ -466,7 +466,7 @@ class Dueling():
     def apply_on_attacked_or_damaged_effects(self, item: Item | None, item_effect: Effect, self_entity: Player | NPC, other_entity: Player | NPC, self_entity_index: int, damage_dealt: int, source_str: str):
         # Note: Not all effects are listed here, since not all make sense to trigger
         # in this scenario.
-        if item is not None and (not item_effect.meets_conditions(self_entity, item) or not item.meets_requirements(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes())):
+        if item is not None and (not item_effect.meets_conditions(self_entity, item) or not item.meets_requirements(self_entity.get_expertise().level, self_entity.get_non_status_combined_attributes())):
             return (damage_dealt, "")
 
         if item_effect.effect_type == EffectType.CleanseStatusEffects:
@@ -725,7 +725,7 @@ class Dueling():
                 item_effects_arr: List[Effect] = self.map_item_effect_cat_to_arr(item_effects, item_effect_cat)
 
                 for item_effect in item_effects_arr:
-                    if not item_effect.meets_conditions(self_entity, item) or not item.meets_requirements(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes()):
+                    if not item_effect.meets_conditions(self_entity, item) or not item.meets_requirements(self_entity.get_expertise().level, self_entity.get_non_status_combined_attributes()):
                         continue
 
                     if item_effect.effect_type == EffectType.ChanceStatusEffect:
@@ -746,7 +746,7 @@ class Dueling():
             item_effects_arr: List[Effect] = self.map_item_effect_cat_to_arr(item_effects, item_effect_cat)
 
             for item_effect in item_effects_arr:
-                if not item_effect.meets_conditions(self_entity, item) or not item.meets_requirements(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes()):
+                if not item_effect.meets_conditions(self_entity, item) or not item.meets_requirements(self_entity.get_expertise().level, self_entity.get_non_status_combined_attributes()):
                     continue
 
                 if item_effect.effect_type == EffectType.ChanceStatusEffect:
@@ -1109,7 +1109,7 @@ class Dueling():
     def apply_on_turn_start_or_end_effects(self, item: Item | None, item_effect: Effect, entity: Player | NPC, entity_name: str, is_turn_start: bool, source_str: str):
         # Note: Not all effects are listed here, since not all make sense to trigger
         # in this scenario.
-        if item is not None and (not item_effect.meets_conditions(entity, item) or not item.meets_requirements(entity.get_expertise().level, entity.get_expertise().get_all_attributes())):
+        if item is not None and (not item_effect.meets_conditions(entity, item) or not item.meets_requirements(entity.get_expertise().level, entity.get_non_status_combined_attributes())):
             return ""
 
         if item_effect.effect_type == EffectType.CleanseStatusEffects:
