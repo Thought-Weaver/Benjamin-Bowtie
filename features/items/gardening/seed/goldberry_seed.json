@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/seed/goldberry_seed",
+    "icon": "\uD83E\uDED0",
+    "name": "Goldberry Seed",
+    "value": 15,
+    "rarity": "Epic",
+    "description": "When planted, grows a goldenberry plant.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Seed"],
+    "state_tags": [],
+    "count": 1
+}
