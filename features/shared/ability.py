@@ -164,7 +164,7 @@ class Ability():
             if effect.effect_type == EffectType.PiercingDmg:
                 piercing_dmg += int(effect.effect_value)
             elif effect.effect_type == EffectType.PiercingPercentDmg:
-                piercing_percent_dmg += effect.effect_value
+                piercing_percent_dmg = min(piercing_percent_dmg + effect.effect_value, 1)
 
         bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
@@ -1255,7 +1255,7 @@ class WrathOfTheWavesI(Ability):
             if effect.effect_type == EffectType.PiercingDmg:
                 piercing_dmg += int(effect.effect_value)
             elif effect.effect_type == EffectType.PiercingPercentDmg:
-                piercing_percent_dmg += effect.effect_value
+                piercing_percent_dmg = min(piercing_percent_dmg + effect.effect_value, 1)
 
         bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
@@ -1439,7 +1439,7 @@ class WrathOfTheWavesII(Ability):
             if effect.effect_type == EffectType.PiercingDmg:
                 piercing_dmg += int(effect.effect_value)
             elif effect.effect_type == EffectType.PiercingPercentDmg:
-                piercing_percent_dmg += effect.effect_value
+                piercing_percent_dmg = min(piercing_percent_dmg + effect.effect_value, 1)
 
         bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:
@@ -1623,7 +1623,7 @@ class WrathOfTheWavesIII(Ability):
             if effect.effect_type == EffectType.PiercingDmg:
                 piercing_dmg += int(effect.effect_value)
             elif effect.effect_type == EffectType.PiercingPercentDmg:
-                piercing_percent_dmg += effect.effect_value
+                piercing_percent_dmg = min(piercing_percent_dmg + effect.effect_value, 1)
 
         bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
         for se in caster.get_dueling().status_effects:

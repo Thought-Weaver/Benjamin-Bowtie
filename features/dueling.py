@@ -2734,7 +2734,7 @@ class DuelView(discord.ui.View):
                     elif item_effect.effect_type == EffectType.PiercingDmg:
                         piercing_dmg += int(item_effect.effect_value)
                     elif item_effect.effect_type == EffectType.PiercingPercentDmg:
-                        piercing_percent_dmg += item_effect.effect_value
+                        piercing_percent_dmg = min(piercing_percent_dmg + item_effect.effect_value, 1)
 
         result_strs = [f"{attacker_name} attacked using {main_hand_item.get_full_name() if main_hand_item is not None else 'a good slap'}!\n"]
         for i, target in enumerate(self._selected_targets):
