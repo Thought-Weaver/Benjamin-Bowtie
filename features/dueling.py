@@ -2784,6 +2784,7 @@ class DuelView(discord.ui.View):
             damage += bonus_damage + target_hp_dmg_buff + self_hp_dmg_buff
 
             final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
+            damage = max(damage - final_piercing_dmg, 0)
 
             # Doing these after damage computation because the player doesn't get an indication the effect occurred
             # until the Continue screen, so it feels slightly more natural to have them not affect damage dealt. I

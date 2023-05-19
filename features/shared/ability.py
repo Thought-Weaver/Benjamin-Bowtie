@@ -225,6 +225,7 @@ class Ability():
             damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
+            damage = max(damage - final_piercing_dmg, 0)
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -1308,6 +1309,7 @@ class WrathOfTheWavesI(Ability):
             damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
+            damage = max(damage - final_piercing_dmg, 0)
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -1491,6 +1493,7 @@ class WrathOfTheWavesII(Ability):
             damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
+            damage = max(damage - final_piercing_dmg, 0)
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
@@ -1674,6 +1677,7 @@ class WrathOfTheWavesIII(Ability):
             damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
 
             final_piercing_dmg = piercing_dmg + ceil(piercing_percent_dmg * base_damage)
+            damage = max(damage - final_piercing_dmg, 0)
 
             se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
             on_attack_or_ability_effect_str = ""
