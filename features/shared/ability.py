@@ -439,7 +439,7 @@ class Ability():
                         continue
 
                     if effect.effect_type == EffectType.HealingAbilityBuff:
-                        healing_adjustment = max(healing_adjustment + effect.effect_value, -1)
+                        healing_adjustment += effect.effect_value
 
         for i, target in enumerate(targets):
             target_expertise = target.get_expertise()
