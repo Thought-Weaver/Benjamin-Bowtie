@@ -104,7 +104,8 @@ POSITIVE_STATUS_EFFECTS_ON_SELF: List[StatusEffectKey] = [
     StatusEffectKey.DmgReflect,
     StatusEffectKey.BonusDamageOnAttack,
     StatusEffectKey.AttackingChanceToApplyStatus,
-    StatusEffectKey.RegenerateArmor
+    StatusEffectKey.RegenerateArmor,
+    StatusEffectKey.DmgReduction
 ]
 
 NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
@@ -717,7 +718,7 @@ class AttackingChanceToApplyStatus(StatusEffect):
         self.status_effect = status_effect
 
     def __str__(self):
-        display_str = f"{self.name}: You have a {self.value * 100}% to apply {self.status_effect.name} on successful attacks for {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: You have a {self.value * 100}% chance to apply {self.status_effect.name} on successful attacks for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
