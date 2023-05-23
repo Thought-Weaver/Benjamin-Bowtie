@@ -12,8 +12,8 @@
     "item_effects": {
         "on_successful_attack": [
             {
-                "effect_type": "PiercingDmg",
-                "effect_value": 10,
+                "effect_type": "PiercingPercentDmg",
+                "effect_value": 0.75,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
