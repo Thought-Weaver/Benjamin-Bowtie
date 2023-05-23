@@ -267,8 +267,7 @@ class PlayerCompanionsView(discord.ui.View):
             companion = companions.companions[companion_key]
             if companion.get_tier() == CompanionTier.Best and not companion.talisman_given:
                 talisman = LOADED_ITEMS.get_new_item(companion.talisman)
-                # This is a tad hacky, but I'd rather not duplicate the function.
-                companions._send_mail(Mail(companion.get_name(), talisman, 0, f"{companion.get_icon_and_name()} has given this to you as a symbol of your incredible bond!", str(time.time()).split(".")[0], -1))
+                player.send_mail(Mail(companion.get_name(), talisman, 0, f"{companion.get_icon_and_name()} has given this to you as a symbol of your incredible bond!", str(time.time()).split(".")[0], -1))
                 result_str += f"{companion.get_icon_and_name()} has sent a token of your bond to your b!mailbox!\n"
                 companion.talisman_given = True
         
