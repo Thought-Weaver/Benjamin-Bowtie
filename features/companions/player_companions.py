@@ -99,25 +99,13 @@ class NamingModal(discord.ui.Modal):
 # -----------------------------------------------------------------------------
 
 class PlayerCompanions():
-    def __init__(self, send_mail: Callable[[Mail], None]):
+    def __init__(self):
         self.companions: Dict[CompanionKey, Companion] = {}
         self.current_companion: CompanionKey | None = None
-
-        # Used for sending objects to the player when their companion finds
-        # them.
-        self._send_mail = send_mail
 
     def tick(self):
         for key in self.companions.keys():
             self.companions[key].fed_this_tick = False
-
-            if self.companions[key].get_tier() == CompanionTier.Best:
-                # 5% chance per tick means roughly an item a day
-                if random.random() < 0.05:
-                    item_key = random.choice(self.companions[key].get_best_tier_items())
-                    item = LOADED_ITEMS.get_new_item(item_key)
-                    
-                    self._send_mail(Mail(self.companions[key].get_name(), item, 0, f"{self.companions[key].get_icon_and_name()} found this and brought it to you!", str(time.time()).split(".")[0], -1))
 
     def __getstate__(self):
         return self.__dict__

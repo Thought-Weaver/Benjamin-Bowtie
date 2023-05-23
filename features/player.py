@@ -1,19 +1,22 @@
 from __future__ import annotations
 
+import random
+import time
+
 from features.companions.player_companions import PlayerCompanions
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise
 from features.house.house import House
 from features.inventory import Inventory
+from features.mail import Mail
 from features.shared.effect import Effect, ItemEffects
+from features.shared.enums import CompanionTier
+from features.shared.item import LOADED_ITEMS
 from features.stats import Stats
 from features.stories.player_dungeon_run import PlayerDungeonRun
 
-from typing import List, TYPE_CHECKING
-if TYPE_CHECKING:
-    from features.mail import Mail
-
+from typing import List
 
 class Player():
     def __init__(self, id: str):
@@ -26,8 +29,24 @@ class Player():
         self._equipment: Equipment = Equipment()
         self._dueling: Dueling = Dueling()
         self._house: House = House()
-        self._companions: PlayerCompanions = PlayerCompanions(self.send_mail)
+        self._companions: PlayerCompanions = PlayerCompanions()
         self._dungeon_run: PlayerDungeonRun = PlayerDungeonRun()
+
+    def tick(self):
+        self._house.tick()
+        self._companions.tick()
+
+        for key in self._companions.companions.keys():
+            if self._companions.companions[key].get_tier() == CompanionTier.Best:
+                # 5% chance per tick means roughly an item a day
+                if random.random() < 0.05:
+                    item_key = random.choice(self._companions.companions[key].get_best_tier_items())
+                    item = LOADED_ITEMS.get_new_item(item_key)
+                    
+                    time_str: str = str(time.time()).split(".")[0]
+                    mail: Mail = Mail(self._companions.companions[key].get_name(), item, 0, f"{self._companions.companions[key].get_icon_and_name()} found this and brought it to you!", time_str, -1)
+                    
+                    self.send_mail(mail)
 
     def get_id(self):
         return self._id
@@ -100,5 +119,5 @@ class Player():
         self._equipment = state.get("_equipment", Equipment())
         self._dueling = state.get("_dueling", Dueling())
         self._house = state.get("_house", House())
-        self._companions = state.get("_companions", PlayerCompanions(self.send_mail))
+        self._companions = state.get("_companions", PlayerCompanions())
         self._dungeon_run = state.get("_dungeon_run", PlayerDungeonRun())

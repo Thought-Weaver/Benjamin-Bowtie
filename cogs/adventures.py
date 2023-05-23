@@ -151,8 +151,7 @@ class Adventures(commands.Cog):
             guild_id_str = str(guild_id)
             for user_id in self._database[guild_id_str].get("members", {}).keys():
                 player: Player = self._get_player(guild_id, user_id)
-                player.get_house().tick()
-                player.get_companions().tick()
+                player.tick()
                 
                 if not player.get_dueling().is_in_combat:
                     player.get_dueling().decrement_all_ability_cds()
