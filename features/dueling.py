@@ -3417,7 +3417,7 @@ class DuelView(discord.ui.View):
             self.add_item(ContinueToNextActionButton())
 
             additional_info_str = f"{self._additional_info_string_data}\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if self._additional_info_string_data != "" else ""
-            return Embed(title=f"{cur_npc.get_name()} {action_str}", description=f"{cur_npc.get_name()} had no available targets!{additional_info_str}")
+            return Embed(title=f"{cur_npc.get_name()} {action_str}", description=f"{cur_npc.get_name()} had no available targets!\n\n{additional_info_str}")
 
         # Step 1: Try attacking all enemies
         if not restricted_to_items:
