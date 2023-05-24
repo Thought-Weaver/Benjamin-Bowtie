@@ -305,7 +305,7 @@ class Ability():
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
-            piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
+            piercing_str = f" ({piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
             non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_ability_used_against_str, on_attack_damage_effect_str]))
@@ -1380,7 +1380,7 @@ class WrathOfTheWavesI(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
-            piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
+            piercing_str = f" ({piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
             non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
@@ -1564,7 +1564,7 @@ class WrathOfTheWavesII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
-            piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
+            piercing_str = f" ({piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
             non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
@@ -1748,7 +1748,7 @@ class WrathOfTheWavesIII(Ability):
             critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
             percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
             armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
-            piercing_str = f" (+{piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
+            piercing_str = f" ({piercing_damage_dealt} Piercing)" if piercing_damage_dealt > 0 else ""
 
             final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{piercing_str}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
             non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
