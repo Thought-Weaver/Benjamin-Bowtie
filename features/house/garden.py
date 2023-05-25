@@ -653,7 +653,7 @@ class GardenView(discord.ui.View):
 
                 plant = LOADED_ITEMS.get_new_item(seed_data.result)
                 inventory.add_item(plant)
-                plant_result_str = plant.get_name_and_count()
+                plant_result_str = plant.get_full_name_and_count()
 
                 num_seeds_to_add = 0
                 for _ in range(seed_data.max_seeds_can_drop):
