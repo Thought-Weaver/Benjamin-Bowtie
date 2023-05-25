@@ -140,7 +140,7 @@ class House():
         self.alchemy_chamber_cupboard = state.get("alchemy_chamber_cupboard", Inventory())
 
         self.garden_plots = state.get("garden_plots", [])
-        self.auto_harvested_plants = state.get("auto_harvested_seeds", [])
+        self.auto_harvested_seeds = state.get("auto_harvested_seeds", [])
 
 # -----------------------------------------------------------------------------
 # HOUSE VIEW
