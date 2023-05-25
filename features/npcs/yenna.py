@@ -250,7 +250,8 @@ class YennaView(discord.ui.View):
             LOADED_ITEMS.get_new_item(ItemKey.Compost),
             LOADED_ITEMS.get_new_item(ItemKey.Dirt),
             LOADED_ITEMS.get_new_item(ItemKey.Loam),
-            LOADED_ITEMS.get_new_item(ItemKey.Pebbles)
+            LOADED_ITEMS.get_new_item(ItemKey.Pebbles),
+            LOADED_ITEMS.get_new_item(ItemKey.WoodChips)
         ]
         self._selected_item: (Item | None) = None
         self._selected_item_index: int = -1

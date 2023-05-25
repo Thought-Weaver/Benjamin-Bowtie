@@ -43,6 +43,7 @@ class House():
         self.alchemy_chamber_cupboard: Inventory = Inventory()
 
         self.garden_plots: List[GardenPlot] = []
+        self.auto_harvested_seeds: List[ItemKey] = []
 
     def tick_garden(self, only_update_display: bool=False):
         if HouseRoom.Garden not in self.house_rooms:
@@ -114,6 +115,11 @@ class House():
 
                 plot.tick()
 
+                if plot.soil is not None and plot.soil.get_key() == ItemKey.WoodChips:
+                    if plot.seed is not None and plot.plant is not None:
+                        self.auto_harvested_seeds.append(plot.seed.get_key())
+                        plot.reset(keep_soil=True)
+
     def tick(self):
         self.tick_garden()
         # Update again to account for plants that just matured and therefore could
@@ -134,6 +140,7 @@ class House():
         self.alchemy_chamber_cupboard = state.get("alchemy_chamber_cupboard", Inventory())
 
         self.garden_plots = state.get("garden_plots", [])
+        self.auto_harvested_plants = state.get("auto_harvested_plants", [])
 
 # -----------------------------------------------------------------------------
 # HOUSE VIEW

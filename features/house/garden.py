@@ -512,7 +512,9 @@ class GardenView(discord.ui.View):
             return Embed(title="Plant Seed", description="Choose a seed to plant in this plot.\n\nNavigate through the items using the Prev and Next buttons." + additional)
         if self._intent == Intent.UseItem:
             return Embed(title="Use Item", description="Choose an item to use on this plot.\n\nNavigate through the items using the Prev and Next buttons." + additional)
-        return Embed(title="Garden", description="You enter the garden, where you can plant seeds and harvest crops. Certain plants can crossbreed when mature and grow a new plant in an adjacent empty space. The garden plots tick every hour." + additional)
+        
+        auto_harvest_str: str = self._auto_harvest()
+        return Embed(title="Garden", description="You enter the garden, where you can plant seeds and harvest crops. Certain plants can crossbreed when mature and grow a new plant in an adjacent empty space. The garden plots tick every hour." + additional + auto_harvest_str)
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -620,6 +622,52 @@ class GardenView(discord.ui.View):
         self._get_use_item_buttons()
         return self.get_embed_for_intent()
 
+    def _update_stats(self, player: Player, harvest_result: Item, num_seeds: int):
+        stats: Stats = player.get_stats()
+        if harvest_result.get_rarity() == Rarity.Common:
+            stats.garden.common_plants_harvested += 1
+            stats.garden.common_seeds_dropped += num_seeds
+        if harvest_result.get_rarity() == Rarity.Uncommon:
+            stats.garden.uncommon_plants_harvested += 1
+            stats.garden.uncommon_seeds_dropped += num_seeds
+        if harvest_result.get_rarity() == Rarity.Rare:
+            stats.garden.rare_plants_harvested += 1
+            stats.garden.rare_seeds_dropped += num_seeds
+        if harvest_result.get_rarity() == Rarity.Epic:
+            stats.garden.epic_plants_harvested += 1
+            stats.garden.epic_seeds_dropped += num_seeds
+        if harvest_result.get_rarity() == Rarity.Legendary:
+            stats.garden.legendary_plants_harvested += 1
+            stats.garden.legendary_seeds_dropped += num_seeds
+
+    def _auto_harvest(self):
+        player: Player = self._get_player()
+        inventory: Inventory = player.get_inventory()
+        house: House = player.get_house()
+
+        result_str: str = ""
+        if len(house.auto_harvested_seeds) > 0:
+            result_str = "\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nYou received the following harvest from wood chips:\n\n"
+            for seed_key in house.auto_harvested_seeds:
+                seed_data = SEED_DATA[seed_key]
+
+                plant = LOADED_ITEMS.get_new_item(seed_data.result)
+                inventory.add_item(plant)
+                plant_result_str = plant.get_name_and_count()
+
+                num_seeds_to_add = 0
+                for _ in range(seed_data.max_seeds_can_drop):
+                    if random.random() < seed_data.chance_to_drop_seed:
+                        num_seeds_to_add += 1
+                        inventory.add_item(LOADED_ITEMS.get_new_item(seed_key))
+                seeds_added_str = f" and {num_seeds_to_add} seeds" if num_seeds_to_add > 0 else ""
+                
+                result_str += plant_result_str + seeds_added_str + "\n"
+
+        house.auto_harvested_seeds = []
+
+        return result_str
+
     def harvest(self):
         if self._selected_plot is None or self._selected_plot.seed is None or self._selected_plot.seed_data is None:
             self._get_garden_buttons()
@@ -638,18 +686,6 @@ class GardenView(discord.ui.View):
         inventory: Inventory = player.get_inventory()
         inventory.add_item(harvest_result)
 
-        stats: Stats = player.get_stats()
-        if harvest_result.get_rarity() == Rarity.Common:
-            stats.garden.common_plants_harvested += 1
-        if harvest_result.get_rarity() == Rarity.Uncommon:
-            stats.garden.uncommon_plants_harvested += 1
-        if harvest_result.get_rarity() == Rarity.Rare:
-            stats.garden.rare_plants_harvested += 1
-        if harvest_result.get_rarity() == Rarity.Epic:
-            stats.garden.epic_plants_harvested += 1
-        if harvest_result.get_rarity() == Rarity.Legendary:
-            stats.garden.legendary_plants_harvested += 1
-
         max_seed_adjustment = 1 if self._selected_plot.soil is not None and self._selected_plot.soil.get_key() == ItemKey.Loam else 0
         seed_drop_adjustment = 0.15 if self._selected_plot.soil is not None and self._selected_plot.soil.get_key() == ItemKey.Clay else 0
         num_seeds_to_add = 0
@@ -659,16 +695,7 @@ class GardenView(discord.ui.View):
                 inventory.add_item(LOADED_ITEMS.get_new_item(seed_key))
         seeds_added_str = f" and {num_seeds_to_add} seeds" if num_seeds_to_add > 0 else ""
 
-        if harvest_result.get_rarity() == Rarity.Common:
-            stats.garden.common_seeds_dropped += num_seeds_to_add
-        if harvest_result.get_rarity() == Rarity.Uncommon:
-            stats.garden.uncommon_seeds_dropped += num_seeds_to_add
-        if harvest_result.get_rarity() == Rarity.Rare:
-            stats.garden.rare_seeds_dropped += num_seeds_to_add
-        if harvest_result.get_rarity() == Rarity.Epic:
-            stats.garden.epic_seeds_dropped += num_seeds_to_add
-        if harvest_result.get_rarity() == Rarity.Legendary:
-            stats.garden.legendary_seeds_dropped += num_seeds_to_add
+        self._update_stats(player, harvest_result, num_seeds_to_add)
 
         final_xp = player.get_expertise().add_xp_to_class(seed_data.xp_to_gain, ExpertiseClass.Alchemist, player.get_equipment())
 

@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/soil/wood_chips",
+    "icon": "\uD83E\uDEB5",
+    "name": "Wood Chips",
+    "value": 12,
+    "rarity": "Common",
+    "description": "When set as the soil for a garden plot, the plant growing there will automatically be harvested when mature.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Soil"],
+    "state_tags": [],
+    "count": 1
+}
