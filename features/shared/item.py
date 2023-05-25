@@ -568,10 +568,12 @@ class ItemKey(StrEnum):
 
     # Dungeon NPC Weapons and Armor
     BarbedTendrils = "items/weapon/dungeon_npcs/barbed_tendrils"
+    BloodcoralTendrils = "items/weapon/dungeon_npcs/bloodcoral_tendrils"
     BriarThorns = "items/weapon/dungeon_npcs/briar_thorns"
     CentipedeMandibles = "items/weapon/dungeon_npcs/centipede_mandibles"
     ConeSnailStinger = "items/weapon/dungeon_npcs/cone_snail_stinger"
     ConeSnailShell = "items/equipment/chest_armor/cone_snail_shell"
+    CoralArmor = "items/equipment/chest_armor/coral_armor"
     DeepwoodBearClaws = "items/weapon/dungeon_npcs/deepwood_bear_claws"
     DireWolfCanines = "items/weapon/dungeon_npcs/dire_wolf_canines"
     DreameatersGrasp = "items/weapon/dungeon_npcs/dreameaters_grasp"
@@ -584,6 +586,8 @@ class ItemKey(StrEnum):
     JellyfishStingers = "items/weapon/dungeon_npcs/jellyfish_stingers"
     KrakenForm = "items/equipment/chest_armor/kraken_form"
     KrakenTentacles = "items/weapon/dungeon_npcs/kraken_tentacles"
+    LurkerForm = "items/equipment/chest_armor/lurker_form"
+    LurkerTeeth = "items/weapon/dungeon_npcs/lurker_teeth"
     MesmerfishForm = "items/equipment/chest_armor/mesmerfish_form"
     ShamblersBones = "items/weapon/dungeon_npcs/shamblers_bones"
     ShamblersForm = "items/equipment/offhand/shamblers_form"
