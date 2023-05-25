@@ -1,4 +1,4 @@
-from strenum import StrEnum
+from enum import StrEnum
 
 MYSTERY_COMBAT_BASE_PROB = 0.15
 MYSTERY_COMBAT_PROB_INCREASE = 0.15

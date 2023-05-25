@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import random
 
-from strenum import StrEnum
+from enum import StrEnum
 from features.expertise import ExpertiseClass
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey

@@ -4,7 +4,7 @@ import discord
 
 from discord.embeds import Embed
 from discord.ext import commands
-from strenum import StrEnum
+from enum import StrEnum
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 

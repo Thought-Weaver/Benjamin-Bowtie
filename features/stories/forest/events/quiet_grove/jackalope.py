@@ -12,7 +12,7 @@ from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
 from features.stories.forest.combat.npcs.jackalope import Jackalope
-from strenum import StrEnum
+from enum import StrEnum
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:

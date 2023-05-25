@@ -4,7 +4,7 @@ import discord
 import random
 
 from discord.embeds import Embed
-from strenum import StrEnum
+from enum import StrEnum
 from features.expertise import ExpertiseClass
 from features.shared.enums import HouseRoom
 from features.shared.constants import MAX_GARDEN_SIZE

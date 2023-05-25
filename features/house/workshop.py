@@ -7,7 +7,7 @@ from discord.embeds import Embed
 from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.shared.enums import ClassTag, HouseRoom
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
-from strenum import StrEnum
+from enum import StrEnum
 
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton

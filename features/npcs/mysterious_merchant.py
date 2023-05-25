@@ -4,7 +4,7 @@ import discord
 import random
 
 from discord import Embed
-from strenum import StrEnum
+from enum import StrEnum
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.stories.dungeon_run import RoomSelectionView
 

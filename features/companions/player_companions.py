@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import discord
-import random
 import time
 
 from discord.embeds import Embed
 from discord.ext import commands
-from strenum import StrEnum
+from enum import StrEnum
 
 from features.mail import Mail
 from features.shared.constants import COMPANION_FEEDING_POINTS, COMPANION_NAMING_POINTS, COMPANION_PREFERRED_FOOD_BONUS_POINTS
@@ -15,7 +14,7 @@ from features.shared.item import LOADED_ITEMS, Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
-from typing import TYPE_CHECKING, Callable, Dict, List
+from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.companions.companion import Companion

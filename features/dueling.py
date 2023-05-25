@@ -10,7 +10,7 @@ import jsonpickle
 from dataclasses import dataclass
 from discord.embeds import Embed
 from discord.ext import commands
-from strenum import StrEnum
+from enum import StrEnum
 from features.expertise import ExpertiseClass
 from features.shared.ability import Ability
 from features.shared.attributes import Attributes

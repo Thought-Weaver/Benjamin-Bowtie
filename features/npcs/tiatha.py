@@ -4,7 +4,7 @@ from uuid import uuid4
 import discord
 
 from discord import Embed
-from strenum import StrEnum
+from enum import StrEnum
 
 from features.companions.companion import Companion, FleetfootRabbitCompanion, PondloverFrogCompanion, SunbaskTurtleCompanion, TanglewebSpiderCompanion, VerdantSlithererCompanion, WanderboundRavenCompanion
 from features.dueling import Dueling

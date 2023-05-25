@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from strenum import StrEnum
+from enum import StrEnum
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Expertise

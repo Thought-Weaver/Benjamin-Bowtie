@@ -5,7 +5,7 @@ import discord
 from abc import abstractmethod
 from discord.embeds import Embed
 from math import ceil
-from strenum import StrEnum
+from enum import StrEnum
 
 from features.shared.attributes import Attributes
 from features.shared.constants import BASE_CON_HEALTH_SCALE, BASE_HP, BASE_INT_MANA_SCALE, BASE_MANA, CON_HEALTH_SCALE_ADJUST, CON_HEALTH_SCALE_REDUCTION, INT_MANA_SCALE_ADJUST, INT_MANA_SCALE_REDUCTION, MIN_CON_HEALTH_SCALE, MIN_INT_MANA_SCALE

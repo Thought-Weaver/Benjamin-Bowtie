@@ -5,7 +5,7 @@ import discord
 import re
 
 from discord import Embed
-from strenum import StrEnum
+from enum import StrEnum
 from features.dueling import Dueling
 from features.equipment import Equipment
 from features.expertise import Attribute, Expertise, ExpertiseClass

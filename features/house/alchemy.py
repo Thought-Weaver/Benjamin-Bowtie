@@ -4,7 +4,7 @@ from random import choice, random
 import discord
 
 from discord.embeds import Embed
-from strenum import StrEnum
+from enum import StrEnum
 from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.shared.enums import ClassTag, HouseRoom
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity

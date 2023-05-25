@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 
 from random import randint
-from strenum import StrEnum
+from enum import StrEnum
 
 from features.shared.attributes import Attributes
 from features.shared.constants import WEAPON_OVERLEVELED_DEBUFF

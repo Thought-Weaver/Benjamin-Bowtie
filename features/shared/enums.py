@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from aenum import Enum, skip
-from strenum import StrEnum
+from enum import StrEnum
 
 # -----------------------------------------------------------------------------
 # ITEM ENUMS
