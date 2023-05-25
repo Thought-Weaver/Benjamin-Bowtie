@@ -10,7 +10,7 @@
     "state_tags": ["Needs_Identification"],
     "count": 1,
     "item_effects": {
-        "on_successful_attack": [
+        "permanent": [
             {
                 "effect_type": "ResistStatusEffect",
                 "effect_value": 0.75,
