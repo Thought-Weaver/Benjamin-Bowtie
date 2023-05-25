@@ -145,7 +145,7 @@ MUTATION_PROBS: MappingProxyType[Tuple[ItemKey | Literal[""], ItemKey | Literal[
     (ItemKey.Bloodcrown, ItemKey.DawnsGlory): (ItemKey.BlazeClusterSpores, 0.15),
     (ItemKey.Seaclover, ItemKey.Sungrain): (ItemKey.GoldenCloverSeed, 0.02),
     (ItemKey.Meddlespread, ItemKey.Snowdew): (ItemKey.WanderweedSeed, 0.04),
-    (ItemKey.GoldenClover, ItemKey.Apple): (ItemKey.GoldenCloverSeed, 0.04),
+    (ItemKey.GoldenClover, ItemKey.Apple): (ItemKey.GoldenAppleSeed, 0.04),
     (ItemKey.GoldenClover, ItemKey.Azureberries): (ItemKey.GoldberrySeed, 0.04)
 })
 
