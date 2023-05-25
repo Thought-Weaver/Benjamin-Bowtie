@@ -63,4 +63,7 @@ async def on_command_error(context: commands.Context, error):
 # -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    bot.run(TOKEN, log_handler=None)
+    if TOKEN is not None:
+        bot.run(TOKEN, log_handler=None)
+    else:
+        raise Exception("Error: No valid Discord token found!")
