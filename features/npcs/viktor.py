@@ -330,7 +330,7 @@ class RandomItemMerchant(NPC):
         self._setup_npc_params()
 
     def tick(self):
-        possible_items = list(filter(lambda x: x.get_rarity() < Rarity.Artifact and (ClassTag.Equipment not in x.get_class_tags() or random.random() < 0.2), [LOADED_ITEMS.get_new_item(key) for key in ItemKey]))
+        possible_items = list(filter(lambda x: x.get_rarity() < Rarity.Artifact and (ClassTag.Equipment.Equipment not in x.get_class_tags() or random.random() < 0.2), [LOADED_ITEMS.get_new_item(key) for key in ItemKey]))
         prob_map: Dict[Rarity, float] = {
             Rarity.Common: 0.7,
             Rarity.Uncommon: 0.22,
@@ -343,6 +343,7 @@ class RandomItemMerchant(NPC):
         }
         weights = [prob_map[item.get_rarity()] for item in possible_items]
         new_items = random.choices(possible_items, k=8, weights=weights)
+        print(sum([1 for item in new_items if ClassTag.Equipment.Equipment in item.get_class_tags()]))
         
         self._current_wares = new_items
         self._cost_adjust = random.randint(100, 225) / 100.0
