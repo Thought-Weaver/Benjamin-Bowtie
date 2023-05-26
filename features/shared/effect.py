@@ -572,7 +572,7 @@ class Effect():
             elif se_key == StatusEffectKey.Bleeding:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Bleeding Chance"
             elif se_key == StatusEffectKey.TurnSkipChance:
-                display_string += f"{round(self.effect_value * 100, 2)}% Resist Convinced Chance"
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Faltering Chance"
             elif se_key == StatusEffectKey.Taunted:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Taunted Chance"
             elif se_key == StatusEffectKey.CannotTarget:
