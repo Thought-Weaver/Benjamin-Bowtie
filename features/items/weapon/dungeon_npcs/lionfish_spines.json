@@ -1,0 +1,47 @@
+{
+    "key": "items/weapon/dungeon_npcs/lionfish_spines",
+    "icon": "\uD83D\uDC21",
+    "name": "Lionfish Spines",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 40,
+        "max_damage": 45
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromStr",
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 0.5,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Poisoned"
+            }
+        ],
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Poisoned"
+            }
+        ]
+    }
+}

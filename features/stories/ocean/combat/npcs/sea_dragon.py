@@ -10,7 +10,7 @@ from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import DexBuff, LckBuff
+from features.shared.statuseffect import ConDebuff, DexBuff, FixedDmgTick, LckBuff, RegenerateHP
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -22,16 +22,16 @@ if TYPE_CHECKING:
 # ABILITIES
 # -----------------------------------------------------------------------------
 
-class Burrow(Ability):
+class Photosynthesize(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83D\uDD73\uFE0F",
-            name="Burrow",
-            class_key=ExpertiseClass.Guardian,
-            description="Increase your Dex by 150 for 3 turns.",
+            icon="\u2600\uFE0F",
+            name="Photosynthesize",
+            class_key=ExpertiseClass.Fisher,
+            description="Regenerate 10% of your health each turn for 3 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=6,
+            cooldown=8,
             num_targets=0,
             level_requirement=20,
             target_own_group=True,
@@ -40,17 +40,17 @@ class Burrow(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        dex_buff = DexBuff(
+        buff = RegenerateHP(
             turns_remaining=3,
-            value=150,
+            value=0.1,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dex_buff])
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
         result_str += "\n".join(results)
 
-        caster.get_stats().dueling.guardian_abilities_used += 1
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -61,27 +61,33 @@ class Burrow(Ability):
         self.__init__() # type: ignore
 
 
-class LurkerStrike(Ability):
+class TailWhip(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDD88",
-            name="Lurker Strike",
-            class_key=ExpertiseClass.Guardian,
-            description="Deal damage equal to your total Dexterity to an enemy.",
+            icon="\uD83D\uDC09",
+            name="Tail Whip",
+            class_key=ExpertiseClass.Fisher,
+            description="Deal 30-35 damage to 1-2 enemies and decrease their Con by 5 for 5 turns.",
             flavor_text="",
-            mana_cost=0,
-            cooldown=0,
-            num_targets=1,
+            mana_cost=5,
+            cooldown=3,
+            num_targets=2,
             level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
-            scaling=[]
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        damage = caster.get_combined_attributes().dexterity
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+
+        debuff = ConDebuff(
+            turns_remaining=5,
+            value=5,
+            source_str=self.get_icon_and_name()
+        )
+
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(30, 35), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
@@ -93,13 +99,13 @@ class LurkerStrike(Ability):
         self.__init__() # type: ignore
 
 
-class SurpriseAttack(Ability):
+class ScalingBreath(Ability):
     def __init__(self):
         super().__init__(
-            icon="\u2757",
-            name="Surprise Attack",
-            class_key=ExpertiseClass.Guardian,
-            description="Increase your Luck by 100 for 3 turns and deal 40-45 damage to a single target.",
+            icon="\uD83E\uDEE7",
+            name="Scaling Breath",
+            class_key=ExpertiseClass.Fisher,
+            description="Deal 50-60 damage to an enemy and 25 damage every turn for 5 turns afterwards.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -107,20 +113,19 @@ class SurpriseAttack(Ability):
             level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
-            scaling=[Attribute.Dexterity]
+            scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n" + "{0} is now Lucky\n"
-        
-        lck_buff = LckBuff(
-            turns_remaining=3,
-            value=100,
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+
+        debuff = FixedDmgTick(
+            turns_remaining=5,
+            value=25,
             source_str=self.get_icon_and_name()
         )
-        caster.get_dueling().status_effects.append(lck_buff)
-        
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(40, 45))
+
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(50, 60), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
@@ -135,9 +140,9 @@ class SurpriseAttack(Ability):
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class SandLurker(NPC):
+class SeaDragon(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Sand Lurker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Sea Dragon" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()
 
@@ -151,13 +156,13 @@ class SandLurker(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(180, ExpertiseClass.Guardian)
-        self._expertise.constitution = 100
+        self._expertise.add_xp_to_class_until_level(160, ExpertiseClass.Fisher)
+        self._expertise.constitution = 70
         self._expertise.strength = 0
         self._expertise.dexterity = 20
-        self._expertise.intelligence = 0
-        self._expertise.luck = 38
-        self._expertise.memory = 2
+        self._expertise.intelligence = 40
+        self._expertise.luck = 27
+        self._expertise.memory = 3
 
     def _setup_equipment(self):
         if self._expertise is None:
@@ -165,8 +170,8 @@ class SandLurker(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.LurkerTeeth))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.LurkerForm))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.SeaDragonBreath))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.SeaDragonForm))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -174,7 +179,7 @@ class SandLurker(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [Burrow(), LurkerStrike(), SurpriseAttack()]
+        self._dueling.abilities = [ScalingBreath(), TailWhip(), Photosynthesize()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -187,9 +192,9 @@ class SandLurker(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Sand Lurker"
+        self._name = "Sea Dragon"
         self._role = NPCRoles.DungeonEnemy
-        self._dueling_persona = NPCDuelingPersonas.Bruiser
+        self._dueling_persona = NPCDuelingPersonas.Mage
         self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")
