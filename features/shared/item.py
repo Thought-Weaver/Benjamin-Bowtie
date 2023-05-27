@@ -567,6 +567,9 @@ class ItemKey(StrEnum):
     BagOfCoins = "items/valuable/bag_of_coins"
 
     # Dungeon NPC Weapons and Armor
+    AncientKrakenForm = "items/equipment/chest_armor/ancient_kraken_form"
+    AncientKrakenTentacles = "items/weapon/dungeon_npcs/ancient_kraken_tentacles"
+    AnglerMaw = "items/weapon/dungeon_npcs/angler_maw"
     BarbedTendrils = "items/weapon/dungeon_npcs/barbed_tendrils"
     BehemothTendrils = "items/weapon/dungeon_npcs/behemoth_tendrils"
     BehemothCoralArmor = "items/equipment/chest_armor/behemoth_coral_armor"
@@ -585,6 +588,10 @@ class ItemKey(StrEnum):
     GiantSnakeFangs = "items/weapon/dungeon_npcs/giant_snake_fangs"
     GolemicFists = "items/weapon/dungeon_npcs/golemic_fists"
     GolemicHeart = "items/equipment/chest_armor/golemic_heart"
+    HuskFists = "items/weapon/dungeon_npcs/husk_fists"
+    HuskForm = "items/equipment/chest_armor/husk_form"
+    IsopodCarapace = "items/equipment/chest_armor/isopod_carapace"
+    IsopodLegs = "items/weapon/dungeon_npcs/isopod_legs"
     JackalopeHorns = "items/weapon/dungeon_npcs/jackalope_horns"
     JellyfishForm = "items/equipment/chest_armor/jellyfish_form"
     JellyfishStingers = "items/weapon/dungeon_npcs/jellyfish_stingers"
@@ -593,6 +600,7 @@ class ItemKey(StrEnum):
     LionfishSpines = "items/weapon/dungeon_npcs/lionfish_spines"
     LurkerForm = "items/equipment/chest_armor/lurker_form"
     LurkerTeeth = "items/weapon/dungeon_npcs/lurker_teeth"
+    MassiveTentacle = "items/weapon/dungeon_npcs/massive_tentacle"
     MesmerfishForm = "items/equipment/chest_armor/mesmerfish_form"
     RockfishForm = "items/equipment/chest_armor/rockfish_form"
     RockfishJaws = "items/weapon/dungeon_npcs/rockfish_jaws"
@@ -606,6 +614,7 @@ class ItemKey(StrEnum):
     SharkTeeth = "items/weapon/dungeon_npcs/shark_teeth"
     StranglekelpInfestation = "items/equipment/chest_armor/stranglekelp_infestation"
     StranglekelpLeaves = "items/weapon/dungeon_npcs/stranglekelp_leaves"
+    TentacleForm = "items/equipment/chest_armor/tentacle_form"
     TimberwolfCanines = "items/weapon/dungeon_npcs/timberwolf_canines"
     TitanfishForm = "items/equipment/chest_armor/titanfish_form"
     TitanicMaw = "items/weapon/dungeon_npcs/titanic_maw"
@@ -617,6 +626,7 @@ class ItemKey(StrEnum):
     WrathbarkCuirass = "items/equipment/chest_armor/wrathbark_cuirass"
     WrathbarkLeggings = "items/equipment/leggings/wrathbark_leggings"
     WrathbarkGreaves = "items/equipment/boots/wrathbark_greaves"
+    WrigglingTentacles = "items/weapon/dungeon_npcs/wriggling_tentacles"
 
     # Dungeon NPC Special Rewards
     Briarbound = "items/equipment/chest_armor/briarbound"

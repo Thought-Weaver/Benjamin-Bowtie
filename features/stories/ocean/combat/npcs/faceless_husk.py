@@ -1,64 +1,64 @@
 from __future__ import annotations
 
-import random
-
+from math import ceil
 from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Attribute, Expertise, ExpertiseClass
+from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.player import Player
 from features.shared.ability import Ability
-from features.shared.constants import BLEED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import Bleeding, DexBuff, DexDebuff, LckBuff, StatusEffectKey
+from features.shared.statuseffect import ConBuff, DexBuff, DexDebuff, DmgReduction, LckBuff, StrBuff, StrDebuff
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
-    from features.player import Player
     from features.shared.ability import NegativeAbilityResult
 
 # -----------------------------------------------------------------------------
 # ABILITIES
 # -----------------------------------------------------------------------------
 
-class SavageBite(Ability):
+class Stranglehook(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDE78",
-            name="Savage Bite",
-            class_key=ExpertiseClass.Guardian,
-            description="Deal 30-35 damage with a 75% chance to cause Bleeding for 2 turns.",
+            icon="\uD83C\uDF3F",
+            name="Stranglehook",
+            class_key=ExpertiseClass.Fisher,
+            description="Deal 90-95 damage to an enemy and decrease their Dex and Str by 30 for 3 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=2,
+            cooldown=4,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
-            scaling=[Attribute.Strength]
+            scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(30, 35))
-        
-        bleed = Bleeding(
-            turns_remaining=2,
-            value=BLEED_PERCENT_HP,
+
+        dex_debuff = DexDebuff(
+            turns_remaining=3,
+            value=30,
             source_str=self.get_icon_and_name()
         )
 
-        for i in range(len(results)):
-            if not results[i].dodged and random.random() < 0.75:
-                se_str = targets[i].get_dueling().add_status_effect_with_resist(bleed, targets[i], i + 1)
-                targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
-                results[i].target_str += f" and {se_str}"
-                
+        str_debuff = StrDebuff(
+            turns_remaining=3,
+            value=30,
+            source_str=self.get_icon_and_name()
+        )
+
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(90, 95), [dex_debuff, str_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -69,16 +69,16 @@ class SavageBite(Ability):
         self.__init__() # type: ignore
 
 
-class Dash(Ability):
+class ShiftingForm(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83D\uDCA8",
-            name="Dash",
-            class_key=ExpertiseClass.Guardian,
-            description="Increase your Dexterity and Luck by 50 for 4 turns.",
+            icon="\uD83C\uDF2B\uFE0F",
+            name="Shifting Form",
+            class_key=ExpertiseClass.Fisher,
+            description="Gain 60% damage resistance for 4 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=4,
+            cooldown=8,
             num_targets=0,
             level_requirement=20,
             target_own_group=True,
@@ -87,23 +87,17 @@ class Dash(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        lck_buff = LckBuff(
+        buff = DmgReduction(
             turns_remaining=4,
-            value=50,
-            source_str=self.get_icon_and_name()
-        )
-
-        dex_buff = DexBuff(
-            turns_remaining=4,
-            value=50,
+            value=0.6,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [lck_buff, dex_buff])
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
         result_str += "\n".join(results)
 
-        caster.get_stats().dueling.guardian_abilities_used += 1
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -114,17 +108,17 @@ class Dash(Ability):
         self.__init__() # type: ignore
 
 
-class ScentForBlood(Ability):
+class Mimicry(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDE78",
-            name="Scent for Blood",
-            class_key=ExpertiseClass.Guardian,
-            description="Decrease the Dexterity of all enemies with Bleeding by 15 for 3 turns.",
+            icon="\uD83C\uDFAD",
+            name="Mimicry",
+            class_key=ExpertiseClass.Fisher,
+            description="Copy 25% of an enemy's stats for 5 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=1,
-            num_targets=-1,
+            cooldown=5,
+            num_targets=1,
             level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
@@ -132,19 +126,44 @@ class ScentForBlood(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        dex_debuff = DexDebuff(
-            turns_remaining=3,
-            value=15,
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and copied part of " + "{1}'s" " stats!\n\n"
+        
+        target_expertise = targets[0].get_expertise()
+
+        con_buff = ConBuff(
+            turns_remaining=5,
+            value=ceil(0.25 * target_expertise.constitution),
             source_str=self.get_icon_and_name()
         )
 
-        filtered_targets = [target for target in targets if any(se.key == StatusEffectKey.Bleeding for se in target.get_dueling().status_effects)]
+        str_buff = StrBuff(
+            turns_remaining=5,
+            value=ceil(0.25 * target_expertise.strength),
+            source_str=self.get_icon_and_name()
+        )
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, filtered_targets, [dex_debuff])
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        dex_buff = DexBuff(
+            turns_remaining=5,
+            value=ceil(0.25 * target_expertise.dexterity),
+            source_str=self.get_icon_and_name()
+        )
 
-        caster.get_stats().dueling.guardian_abilities_used += 1
+        int_buff = DexBuff(
+            turns_remaining=5,
+            value=ceil(0.25 * target_expertise.intelligence),
+            source_str=self.get_icon_and_name()
+        )
+
+        lck_buff = LckBuff(
+            turns_remaining=5,
+            value=ceil(0.25 * target_expertise.luck),
+            source_str=self.get_icon_and_name()
+        )
+        
+        results: List[str] = self._use_positive_status_effect_ability(caster, [caster], [con_buff, str_buff, dex_buff, int_buff, lck_buff])
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
 
@@ -158,12 +177,9 @@ class ScentForBlood(Ability):
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class ShallowsShark(NPC):
+class FacelessHusk(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Shallows Shark" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
-            ItemKey.Shark: 0.85,
-            ItemKey.IronSpear: 0.05
-        })
+        super().__init__("Faceless Husk" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()
 
@@ -177,12 +193,12 @@ class ShallowsShark(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(120, ExpertiseClass.Guardian)
-        self._expertise.constitution = 40
+        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Fisher)
+        self._expertise.constitution = 100
         self._expertise.strength = 20
         self._expertise.dexterity = 20
         self._expertise.intelligence = 0
-        self._expertise.luck = 37
+        self._expertise.luck = 57
         self._expertise.memory = 3
 
     def _setup_equipment(self):
@@ -191,8 +207,8 @@ class ShallowsShark(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.SharkTeeth))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.SharkScales))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.HuskFists))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.HuskForm))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -200,7 +216,7 @@ class ShallowsShark(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [Dash(), SavageBite(), ScentForBlood()]
+        self._dueling.abilities = [ShiftingForm(), Stranglehook(), Mimicry()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -213,13 +229,10 @@ class ShallowsShark(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Shallows Shark"
+        self._name = "Faceless Husk"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {
-            ItemKey.Shark: 0.85,
-            ItemKey.IronSpear: 0.05
-        }
+        self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:
