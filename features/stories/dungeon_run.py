@@ -26,6 +26,9 @@ class DungeonRun():
         self.num_mystery_without_treasure: int = 0
         self.num_mystery_without_shopkeep: int = 0
 
+        self.previous_combat: int = -1
+        self.previous_event: int = -1
+
         # Mostly for stats, tracked across the entire run
         self.rooms_explored: int = 0
         self.combat_encounters: int = 0

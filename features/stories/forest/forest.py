@@ -485,7 +485,8 @@ class ForestStory():
     @staticmethod
     def generate_combat_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         if dungeon_run.section == ForestSection.QuietGrove:
-            rand_val: int = random.randint(0, 8)
+            rand_val: int = random.choice([i for i in range(0, 9) if i != dungeon_run.previous_combat])
+            dungeon_run.previous_combat = rand_val
             if rand_val == 0:
                 return BrigandMysticDuelView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 1:
@@ -505,7 +506,8 @@ class ForestStory():
             else:
                 return WildBoarDuelView(bot, database, guild_id, users, dungeon_run)
         elif dungeon_run.section == ForestSection.WhisperingWoods:
-            rand_val: int = random.randint(0, 9)
+            rand_val: int = random.choice([i for i in range(0, 10) if i != dungeon_run.previous_combat])
+            dungeon_run.previous_combat = rand_val
             if rand_val == 0:
                 return ArmoredCentipedeDuelView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 1:
@@ -524,10 +526,11 @@ class ForestStory():
                 return MadKnightsDuelView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 8:
                 return TreantsDuelView(bot, database, guild_id, users, dungeon_run)
-            elif rand_val == 9:
+            else:
                 return TripleStormcallerDuelView(bot, database, guild_id, users, dungeon_run)
         elif dungeon_run.section == ForestSection.ScreamingCopse:
-            rand_val: int = random.randint(0, 4)
+            rand_val: int = random.choice([i for i in range(0, 5) if i != dungeon_run.previous_combat])
+            dungeon_run.previous_combat = rand_val
             if rand_val == 0:
                 return HorrifyingBoneAmalgamDuelView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 1:
@@ -536,13 +539,14 @@ class ForestStory():
                 return UndeadTreantsDuelView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 3:
                 return VoidburntTreantDuelView(bot, database, guild_id, users, dungeon_run)
-            elif rand_val == 4:
+            else:
                 return WailingBonesDuelView(bot, database, guild_id, users, dungeon_run)
 
     @staticmethod
     def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         if dungeon_run.section == ForestSection.QuietGrove:
-            rand_val: int = random.randint(0, 7)
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
+            dungeon_run.previous_event = rand_val
             if rand_val == 0:
                 return AestivalLightView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 1:
@@ -560,7 +564,8 @@ class ForestStory():
             else:
                 return WildlifeGatheringView(bot, database, guild_id, users, dungeon_run)
         elif dungeon_run.section == ForestSection.WhisperingWoods:
-            rand_val = random.randint(0, 10)
+            rand_val: int = random.choice([i for i in range(0, 11) if i != dungeon_run.previous_event])
+            dungeon_run.previous_event = rand_val
             if rand_val == 0:
                 return ChorusOfTheWindView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 1:
@@ -581,10 +586,11 @@ class ForestStory():
                 return UnnamedGraveView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 9:
                 return WhisperingWoodsWildHerbsView(bot, database, guild_id, users, dungeon_run)
-            elif rand_val == 10:
+            else:
                 return WitchOfTheWoodsView(bot, database, guild_id, users, dungeon_run)
         elif dungeon_run.section == ForestSection.ScreamingCopse:
-            rand_val = random.randint(0, 7)
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
+            dungeon_run.previous_event = rand_val
             if rand_val == 0:
                 return ANearbyRoarView(bot, database, guild_id, users, dungeon_run)
             elif rand_val == 1:

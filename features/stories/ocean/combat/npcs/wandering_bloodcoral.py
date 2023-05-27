@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from uuid import uuid4
 
 from features.dueling import Dueling
