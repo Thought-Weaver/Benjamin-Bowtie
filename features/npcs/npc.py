@@ -288,6 +288,9 @@ class NPC():
         self._id = state.get("_id", "")
         self._name = state.get("_name", "")
         self._role = state.get("_role", NPCRoles.Unknown)
+        self._dueling_persona = state.get("_dueling_persona", NPCDuelingPersonas.Unknown)
+        self._dueling_rewards = state.get("_dueling_rewards", {})
+        
         self._inventory = state.get("_inventory", Inventory())
         self._expertise = state.get("_expertise", Expertise())
         self._equipment = state.get("_equipment", Equipment())
