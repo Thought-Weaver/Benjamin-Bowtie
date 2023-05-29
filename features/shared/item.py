@@ -619,6 +619,7 @@ class ItemKey(StrEnum):
     TitanfishForm = "items/equipment/chest_armor/titanfish_form"
     TitanicMaw = "items/weapon/dungeon_npcs/titanic_maw"
     TreantClaws = "items/weapon/dungeon_npcs/treant_claws"
+    RustedHarpoon = "items/weapon/spear/rusted_harpoon"
     WildBoarTusks = "items/weapon/dungeon_npcs/wild_boar_tusks"
     WilderdragonClaws = "items/weapon/dungeon_npcs/wilderdragon_claws"
     WrathbarkHelmet = "items/equipment/helmet/wrathbark_helmet"
