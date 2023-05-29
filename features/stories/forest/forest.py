@@ -421,7 +421,12 @@ class ForestDungeonEntranceView(discord.ui.View):
             self.clear_items()
             self.add_item(StartButton())
 
-        return Embed(title="The Forest", description=f"Standing before the entrance to the old woods, your party stares down the path into the seemingly endless expanse of trees.\n\nYour group leader is {self._group_leader.display_name}. When your party is ready, you may enter the forest.\n\n{len(self.accepted_users)}/{len(self._users)} are ready to begin the journey.")
+        return Embed(title="The Forest", description=(
+            f"Standing before the entrance to the old woods, your party stares down the path into a seemingly endless expanse of trees.\n\n"
+            "**Recommendations:**\n\n_Quiet Grove: 4+ Players (Lvl. 0-10)_\n_Whispering Woods: 4+ Players (Lvl. 10-20)_\n_Screaming Copse: 4+ Players (Lvl. 20-30)_\n_Final Boss: 4+ Players (Lvl. 30-40)_\n\n"
+            f"Your group leader is {self._group_leader.display_name}. When your party is ready, you may enter the forest.\n\n"
+            f"{len(self.accepted_users)}/{len(self._users)} are ready to begin the journey.")
+        )
 
     def _display_initial_buttons(self):
         self.clear_items()
