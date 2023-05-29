@@ -7,7 +7,7 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import CounterstrikeII, HeavySlamII, PiercingStrikeIII, SecondWindIII
+from features.shared.ability import CounterstrikeII, HeavySlamII, PiercingStrikeIII, SecondWindII
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
 from features.stats import Stats
@@ -19,7 +19,7 @@ from features.stats import Stats
 class StranglekelpHost(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Stranglekelp Host" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
-            ItemKey.IronSpear: 0.2,
+            ItemKey.RustedHarpoon: 0.03,
             ItemKey.Stranglekelp: 0.8,
             ItemKey.Leather: 0.5,
         })
@@ -50,7 +50,7 @@ class StranglekelpHost(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.TauntingHarpoon))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.RustedHarpoon))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.StranglekelpInfestation))
 
         self._expertise.update_stats(self.get_combined_attributes())
@@ -59,7 +59,7 @@ class StranglekelpHost(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [SecondWindIII(), CounterstrikeII(), HeavySlamII(), PiercingStrikeIII()]
+        self._dueling.abilities = [SecondWindII(), CounterstrikeII(), HeavySlamII(), PiercingStrikeIII()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -76,7 +76,7 @@ class StranglekelpHost(NPC):
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
         self._dueling_rewards = {
-            ItemKey.IronGreatsword: 0.2,
+            ItemKey.RustedHarpoon: 0.03,
             ItemKey.Stranglekelp: 0.8,
             ItemKey.Leather: 0.5,
         }

@@ -105,6 +105,8 @@ class Grapple(Ability):
 
 class LesserKraken(NPC):
     def __init__(self, name_suffix: str=""):
+        # Passed balance simulation: 37% chance of player victory
+
         super().__init__("Lesser Kraken" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Squid: 0.85
         })

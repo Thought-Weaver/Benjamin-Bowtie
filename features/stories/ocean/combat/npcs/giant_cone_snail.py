@@ -29,7 +29,7 @@ class VenomStrike(Ability):
             icon="\u2620\uFE0F",
             name="Venom Strike",
             class_key=ExpertiseClass.Alchemist,
-            description="Deal 40-50 damage with a 100% chance to cause Poisoned for 3 turns.",
+            description="Deal 45-50 damage with a 100% chance to cause Poisoned for 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -42,9 +42,9 @@ class VenomStrike(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(40, 50))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(45, 50))
         
-        bleed = Poisoned(
+        poisoned = Poisoned(
             turns_remaining=3,
             value=POISONED_PERCENT_HP,
             source_str=self.get_icon_and_name()
@@ -52,7 +52,7 @@ class VenomStrike(Ability):
 
         for i in range(len(results)):
             if not results[i].dodged:
-                se_str = targets[i].get_dueling().add_status_effect_with_resist(bleed, targets[i], i + 1)
+                se_str = targets[i].get_dueling().add_status_effect_with_resist(poisoned, targets[i], i + 1)
                 targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
                 results[i].target_str += f" and {se_str}"
                 
@@ -75,7 +75,7 @@ class DistractingPattern(Ability):
             icon="\uD83D\uDD3C",
             name="Distracting Pattern",
             class_key=ExpertiseClass.Alchemist,
-            description="Decrease the damage all enemies deal by 30% for 4 turns.",
+            description="Decrease the damage all enemies deal by 35% for 4 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=6,
@@ -89,7 +89,7 @@ class DistractingPattern(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = DmgDebuff(
             turns_remaining=4,
-            value=0.3,
+            value=0.35,
             source_str=self.get_icon_and_name()
         )
 
@@ -114,7 +114,7 @@ class Retract(Ability):
             icon="\uD83D\uDC1A",
             name="Retract",
             class_key=ExpertiseClass.Alchemist,
-            description="Gain 25% Protected for 5 turns.",
+            description="Gain 40% Protected for 5 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=7,
@@ -128,7 +128,7 @@ class Retract(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = DmgReduction(
             turns_remaining=5,
-            value=0.25,
+            value=0.4,
             source_str=self.get_icon_and_name()
         )
 
@@ -152,6 +152,8 @@ class Retract(Ability):
 
 class GiantConeSnail(NPC):
     def __init__(self, name_suffix: str=""):
+        # Passed balance simulation: 76% chance of player victory
+
         super().__init__("Giant Cone Snail" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Conch: 0.85
         })

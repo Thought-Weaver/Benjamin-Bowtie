@@ -11,7 +11,6 @@ from features.shared.enums import ClassTag
 from features.shared.item import Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
-from math import ceil
 
 from typing import TYPE_CHECKING, Dict, List
 if TYPE_CHECKING:

@@ -14,7 +14,7 @@ from discord.ext import commands, tasks
 from bot import BenjaminBowtieBot
 from features.companions.companion import BlueFlitterwingButterflyCompanion, ShadowfootRaccoonCompanion, TidewaterCrabCompanion
 from features.companions.player_companions import PlayerCompanionsView
-from features.dueling import CompanionBattleView, GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
+from features.views.dueling_view import CompanionBattleView, GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
 from features.house.alchemy import AlchemyChamberView

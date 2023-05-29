@@ -6,7 +6,7 @@ import random
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
-from features.dueling import DuelView
+from features.views.dueling_view import DuelView
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
 from features.stories.forest.combat.npcs.wilderdragon import Wilderdragon

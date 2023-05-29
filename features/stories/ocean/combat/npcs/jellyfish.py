@@ -31,7 +31,7 @@ class MoreJellyfish(Ability):
             description="Restore an ally to full health and remove all statuses.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=5,
             num_targets=1,
             level_requirement=20,
             target_own_group=True,
@@ -65,7 +65,7 @@ class TooManyTargets(Ability):
             icon="\uD83D\uDCA8",
             name="Too Many Targets",
             class_key=ExpertiseClass.Alchemist,
-            description="Increase your allies' Dexterity by 75 for 2 turns.",
+            description="Increase your allies' Dexterity by 50 for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=6,
@@ -79,7 +79,7 @@ class TooManyTargets(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=2,
-            value=75,
+            value=50,
             source_str=self.get_icon_and_name()
         )
 
@@ -117,7 +117,7 @@ class Distraction(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         taunt = Taunted(
-            turns_remaining=1,
+            turns_remaining=2,
             forced_to_attack=caster,
             source_str=self.get_icon_and_name()
         )
@@ -157,11 +157,11 @@ class Jellyfish(NPC):
             self._equipment = Equipment()
         
         self._expertise.add_xp_to_class_until_level(150, ExpertiseClass.Guardian)
-        self._expertise.constitution = 50
+        self._expertise.constitution = 40
         self._expertise.strength = 0
-        self._expertise.dexterity = 47
+        self._expertise.dexterity = 27
         self._expertise.intelligence = 50
-        self._expertise.luck = 0
+        self._expertise.luck = 30
         self._expertise.memory = 3
 
     def _setup_equipment(self):

@@ -11,10 +11,9 @@ from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
-from features.shared.constants import BLEED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import Bleeding, ConBuff, DexBuff, DexDebuff, LckBuff, StatusEffectKey, StrBuff, TurnSkipChance
+from features.shared.statuseffect import ConBuff, DexBuff, StrBuff, TurnSkipChance
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -32,7 +31,7 @@ class Slam(Ability):
             icon="\uD83D\uDCA5",
             name="Slam",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 30-40 damage and cause Faltering on 1-2 enemies for 1 turn.",
+            description="Deal 20-30 damage and cause Faltering on 1-2 enemies for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -52,7 +51,7 @@ class Slam(Ability):
             source_str=self.get_icon_and_name()
         )
 
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(30, 40), [debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(20, 30), [debuff])
 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 

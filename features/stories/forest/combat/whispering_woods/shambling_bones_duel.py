@@ -6,7 +6,7 @@ import random
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
-from features.dueling import DuelView
+from features.views.dueling_view import DuelView
 from features.shared.constants import FOREST_ROOMS
 from features.shared.enums import ClassTag, ForestSection
 from features.stories.dungeon_run import RoomSelectionView

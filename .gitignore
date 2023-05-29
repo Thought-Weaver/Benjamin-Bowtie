@@ -11,6 +11,7 @@ __pycache__/
 .mypy_cache/
 features/npcs/images
 generated_items/final_items/
+simulation_results/
 
 # Databases
 database

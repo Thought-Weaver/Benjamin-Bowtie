@@ -7,7 +7,7 @@ import random
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
-from features.dueling import DuelView
+from features.views.dueling_view import DuelView
 from features.shared.enums import CompanionKey
 from features.stories.dungeon_run import RoomSelectionView
 from features.stories.forest.combat.npcs.horrifying_bone_amalgam import HorrifyingBoneAmalgam

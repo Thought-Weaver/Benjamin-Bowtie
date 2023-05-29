@@ -5,7 +5,7 @@ import features.stories.forest.forest as forest
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
-from features.dueling import DuelView
+from features.views.dueling_view import DuelView
 from features.player import Player
 from features.shared.statuseffect import DmgVulnerability
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
