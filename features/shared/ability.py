@@ -5108,7 +5108,7 @@ class HeavySlamI(Ability):
             icon="\uD83D\uDCA5",
             name="Heavy Slam I",
             class_key=ExpertiseClass.Guardian,
-            description="Power forward with your weapon, dealing 75% of your weapon damage + 25% of your Constitution.",
+            description="Power forward with your weapon, dealing 75% of your weapon damage + 25% of your Strength.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -5130,7 +5130,7 @@ class HeavySlamI(Ability):
 
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
-        damage = ceil(0.75 * (base_damage + 0.25 * caster_attrs.constitution))
+        damage = ceil(0.75 * base_damage + 0.25 * caster_attrs.strength)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -5153,7 +5153,7 @@ class HeavySlamII(Ability):
             icon="\uD83D\uDCA5",
             name="Heavy Slam II",
             class_key=ExpertiseClass.Guardian,
-            description="Power forward with your weapon, dealing 100% of your weapon damage + 50% of your Constitution.",
+            description="Power forward with your weapon, dealing 100% of your weapon damage + 50% of your Strength.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -5175,7 +5175,7 @@ class HeavySlamII(Ability):
 
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
-        damage = ceil(1 * (base_damage + 0.5 * caster_attrs.constitution))
+        damage = ceil(1 * base_damage + 0.5 * caster_attrs.strength)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -5198,7 +5198,7 @@ class HeavySlamIII(Ability):
             icon="\uD83D\uDCA5",
             name="Heavy Slam III",
             class_key=ExpertiseClass.Guardian,
-            description="Power forward with your weapon, dealing 125% of your weapon damage + 75% of your Constitution.",
+            description="Power forward with your weapon, dealing 125% of your weapon damage + 75% of your Strength.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -5220,7 +5220,7 @@ class HeavySlamIII(Ability):
 
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
-        damage = ceil(1.25 * (base_damage + 0.75 * caster_attrs.constitution))
+        damage = ceil(1.25 * base_damage + 0.75 * caster_attrs.strength)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
