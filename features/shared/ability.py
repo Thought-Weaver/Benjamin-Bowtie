@@ -7545,14 +7545,53 @@ class RegenerationI(Ability):
             icon="\u267B\uFE0F",
             name="Regeneration I",
             class_key=ExpertiseClass.Alchemist,
-            description="Choose up to 3 allies. For the next 2 turns, they regain 15% of their max health at the start of each turn.",
+            description="Choose up to 2 allies. For the next 2 turns, they regain 10% of their max health at the start of each turn.",
             flavor_text="",
             mana_cost=75,
-            cooldown=5,
-            num_targets=3,
+            cooldown=6,
+            num_targets=2,
             level_requirement=19,
             target_own_group=True,
             purchase_cost=1200,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        regenerating = RegenerateHP(
+            turns_remaining=2,
+            value=0.1,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [regenerating])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class RegenerationII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u267B\uFE0F",
+            name="Regeneration II",
+            class_key=ExpertiseClass.Alchemist,
+            description="Choose up to 2 allies. For the next 2 turns, they regain 15% of their max health at the start of each turn.",
+            flavor_text="",
+            mana_cost=75,
+            cooldown=6,
+            num_targets=2,
+            level_requirement=21,
+            target_own_group=True,
+            purchase_cost=2400,
             scaling=[]
         )
 
@@ -7578,56 +7617,17 @@ class RegenerationI(Ability):
         self.__init__() # type: ignore
 
 
-class RegenerationII(Ability):
-    def __init__(self):
-        super().__init__(
-            icon="\u267B\uFE0F",
-            name="Regeneration II",
-            class_key=ExpertiseClass.Alchemist,
-            description="Choose up to 3 allies. For the next 2 turns, they regain 20% of their max health at the start of each turn.",
-            flavor_text="",
-            mana_cost=75,
-            cooldown=5,
-            num_targets=3,
-            level_requirement=21,
-            target_own_group=True,
-            purchase_cost=2400,
-            scaling=[]
-        )
-
-    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        regenerating = RegenerateHP(
-            turns_remaining=2,
-            value=0.2,
-            source_str=self.get_icon_and_name()
-        )
-
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [regenerating])
-        result_str += "\n".join(results)
-
-        caster.get_stats().dueling.alchemist_abilities_used += 1
-
-        return result_str
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, state: dict):
-        self.__init__() # type: ignore
-
-
 class RegenerationIII(Ability):
     def __init__(self):
         super().__init__(
             icon="\u267B\uFE0F",
             name="Regeneration III",
             class_key=ExpertiseClass.Alchemist,
-            description="Choose up to 3 allies. For the next 2 turns, they regain 25% of their max health at the start of each turn.",
+            description="Choose up to 2 allies. For the next 2 turns, they regain 20% of their max health at the start of each turn.",
             flavor_text="",
             mana_cost=75,
-            cooldown=5,
-            num_targets=3,
+            cooldown=6,
+            num_targets=2,
             level_requirement=23,
             target_own_group=True,
             purchase_cost=4800,
@@ -7637,7 +7637,7 @@ class RegenerationIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         regenerating = RegenerateHP(
             turns_remaining=2,
-            value=0.25,
+            value=0.2,
             source_str=self.get_icon_and_name()
         )
 
