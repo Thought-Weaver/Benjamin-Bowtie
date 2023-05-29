@@ -6643,13 +6643,46 @@ class IncenseIV(Ability):
             num_targets=-1,
             level_requirement=10,
             target_own_group=True,
-            purchase_cost=400,
+            purchase_cost=800,
             scaling=[Attribute.Intelligence]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(9, 11))
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.alchemist_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class IncenseV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2601\uFE0F",
+            name="Incense V",
+            class_key=ExpertiseClass.Alchemist,
+            description="Restore 11-13 health to all allies.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=0,
+            num_targets=-1,
+            level_requirement=10,
+            target_own_group=True,
+            purchase_cost=1600,
+            scaling=[Attribute.Intelligence]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_heal_ability(caster, targets, range(11, 13))
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
