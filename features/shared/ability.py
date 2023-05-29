@@ -6674,7 +6674,7 @@ class IncenseV(Ability):
             mana_cost=5,
             cooldown=0,
             num_targets=-1,
-            level_requirement=10,
+            level_requirement=13,
             target_own_group=True,
             purchase_cost=1600,
             scaling=[Attribute.Intelligence]
