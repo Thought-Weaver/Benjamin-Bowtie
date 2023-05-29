@@ -152,7 +152,8 @@ class Retract(Ability):
 
 class GiantConeSnail(NPC):
     def __init__(self, name_suffix: str=""):
-        # Passed balance simulation: 76% chance of player victory
+        # Balance Simulation Results:
+        # 76% chance of 4 player party (Lvl. 30-40) victory against 1
 
         super().__init__("Giant Cone Snail" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Conch: 0.85

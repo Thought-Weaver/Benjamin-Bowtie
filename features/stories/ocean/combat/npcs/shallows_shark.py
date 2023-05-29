@@ -160,7 +160,8 @@ class ScentForBlood(Ability):
 
 class ShallowsShark(NPC):
     def __init__(self, name_suffix: str=""):
-        # Passed balance simulation: 47% chance of player victory against 2
+        # Balance Simulation Results:
+        # 47% chance of 4 player party (Lvl. 30-40) victory against 2
         
         super().__init__("Shallows Shark" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Shark: 0.85,
