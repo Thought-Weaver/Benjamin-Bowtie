@@ -158,8 +158,8 @@ class SongOfTheWoods(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 110
+        self._expertise.add_xp_to_class_until_level(145, ExpertiseClass.Alchemist)
+        self._expertise.constitution = 55
         self._expertise.strength = 30
         self._expertise.dexterity = 0
         self._expertise.intelligence = 20

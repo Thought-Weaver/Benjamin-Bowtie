@@ -9,7 +9,6 @@ from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
-from features.shared.constants import INT_DMG_SCALE
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey, WeaponStats
 from features.shared.statuseffect import AttackingChanceToApplyStatus, DexDebuff, IntBuff, StrDebuff
@@ -30,7 +29,7 @@ class WhirlwindOfBones(Ability):
             icon="\uD83C\uDF2A\uFE0F",
             name="Whirlwind of Bones",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a barrage of bones that damage all enemies for 150% of your weapon damage.",
+            description="Summon a barrage of bones that damage all enemies for 80% of your weapon damage.",
             flavor_text="",
             mana_cost=15,
             cooldown=3,
@@ -53,8 +52,7 @@ class WhirlwindOfBones(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = ceil(base_damage * 1.5)
-        damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
+        damage = ceil(base_damage * 0.8)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -200,6 +198,9 @@ class PiercingWail(Ability):
 
 class WailingBones(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 30% chance of 4 player party (Lvl. 20-30) victory against 1
+
         super().__init__("Wailing Bones" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Bones: 0.9,
             ItemKey.Bones: 0.7,
@@ -219,11 +220,11 @@ class WailingBones(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(400, ExpertiseClass.Fisher)
-        self._expertise.constitution = 200
+        self._expertise.add_xp_to_class_until_level(230, ExpertiseClass.Fisher)
+        self._expertise.constitution = 70
         self._expertise.strength = 60
         self._expertise.dexterity = 20
-        self._expertise.intelligence = 100
+        self._expertise.intelligence = 50
         self._expertise.luck = 16
         self._expertise.memory = 4
 

@@ -31,10 +31,10 @@ class SavageBite(Ability):
             icon="\uD83E\uDE78",
             name="Savage Bite",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 35-40 damage with a 75% chance to cause Bleeding for 2 turns.",
+            description="Deal 25-30 damage with a 75% chance to cause Bleeding for 2 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=2,
+            cooldown=4,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -44,7 +44,7 @@ class SavageBite(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(35, 40))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(25, 30))
         
         bleed = Bleeding(
             turns_remaining=2,
@@ -75,7 +75,7 @@ class PackTactics(Ability):
             icon="\uD83D\uDC3A",
             name="Pack Tactics",
             class_key=ExpertiseClass.Guardian,
-            description="All allies gain a 25% damage bonus, +8 Strength, and +5 Dexterity for 3 turns.",
+            description="All allies gain a 15% damage bonus, +8 Strength, and +5 Dexterity for 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
@@ -89,7 +89,7 @@ class PackTactics(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dmg_buff = DmgBuff(
             turns_remaining=3,
-            value=0.25,
+            value=0.15,
             source_str=self.get_icon_and_name()
         )
 
@@ -164,6 +164,9 @@ class Snarl(Ability):
 
 class StarvingDireWolf(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 20% chance of 4 player party (Lvl. 20-30) victory against 2
+
         super().__init__("Starving Dire Wolf" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
             ItemKey.Bones: 0.6,
@@ -182,9 +185,9 @@ class StarvingDireWolf(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Guardian)
-        self._expertise.constitution = 140
-        self._expertise.strength = 30
+        self._expertise.add_xp_to_class_until_level(110, ExpertiseClass.Guardian)
+        self._expertise.constitution = 55
+        self._expertise.strength = 25
         self._expertise.dexterity = 10
         self._expertise.intelligence = 0
         self._expertise.luck = 17

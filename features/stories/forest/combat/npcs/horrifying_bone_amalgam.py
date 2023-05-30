@@ -29,7 +29,7 @@ class Crush(Ability):
             icon="\u2620\uFE0F",
             name="Crush",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 40% of an enemy's max health as damage to them.",
+            description="Deal 35% of an enemy's max health as damage to them.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -43,7 +43,7 @@ class Crush(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = ceil(0.4 * targets[0].get_expertise().max_hp)
+        damage = ceil(0.35 * targets[0].get_expertise().max_hp)
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -102,6 +102,9 @@ class KnitBones(Ability):
 
 class HorrifyingBoneAmalgam(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 35% chance of 4 player party (Lvl. 20-30) victory against 1
+
         super().__init__("Horrifying Bone Amalgam" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.9,
             ItemKey.Bones: 0.7,
@@ -121,12 +124,12 @@ class HorrifyingBoneAmalgam(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(400, ExpertiseClass.Guardian)
-        self._expertise.constitution = 200
-        self._expertise.strength = 150
+        self._expertise.add_xp_to_class_until_level(180, ExpertiseClass.Guardian)
+        self._expertise.constitution = 80
+        self._expertise.strength = 50
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0
-        self._expertise.luck = 47
+        self._expertise.luck = 37
         self._expertise.memory = 3
 
     def _setup_equipment(self):

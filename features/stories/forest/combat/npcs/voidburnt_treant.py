@@ -28,7 +28,7 @@ class BurningGrasp(Ability):
             icon="\u270A",
             name="Burning Grasp",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 50-60 damage and cause 10 damage to tick every turn for 4 turns on an enemy.",
+            description="Deal 30-35 damage and cause 10 damage to tick every turn for 4 turns on an enemy.",
             flavor_text="",
             mana_cost=20,
             cooldown=2,
@@ -48,7 +48,7 @@ class BurningGrasp(Ability):
             source_str=self.get_icon_and_name()
         )
 
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(50, 60), [fixed_dmg_tick])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(30, 35), [fixed_dmg_tick])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -68,7 +68,7 @@ class BellowVoidflame(Ability):
             icon="\uD83D\uDD25",
             name="Bellow Voidflame",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 30-40 damage and cause 5 damage to tick every turn for 2 turns on all enemies.",
+            description="Deal 20-25 damage and cause 5 damage to tick every turn for 2 turns on all enemies.",
             flavor_text="",
             mana_cost=35,
             cooldown=5,
@@ -88,7 +88,7 @@ class BellowVoidflame(Ability):
             source_str=self.get_icon_and_name()
         )
 
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(30, 40), [fixed_dmg_tick])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(20, 25), [fixed_dmg_tick])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -108,9 +108,9 @@ class Combust(Ability):
             icon="\uD83D\uDCA5",
             name="Combust",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 70-100 damage to everyone, including yourself.",
+            description="Deal 40-50 damage to everyone, including yourself.",
             flavor_text="",
-            mana_cost=50,
+            mana_cost=10,
             cooldown=8,
             num_targets=-2,
             level_requirement=20,
@@ -122,7 +122,7 @@ class Combust(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(70, 100))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(40, 50))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -141,6 +141,9 @@ class Combust(Ability):
 
 class VoidburntTreant(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 28% chance of 4 player party (Lvl. 20-30) victory against 1
+
         super().__init__("Voidburnt Treant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Wrathbark: 0.9,
             ItemKey.Wrathbark: 0.8,
@@ -161,12 +164,12 @@ class VoidburntTreant(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(350, ExpertiseClass.Guardian)
-        self._expertise.constitution = 230
-        self._expertise.strength = 37
+        self._expertise.add_xp_to_class_until_level(160, ExpertiseClass.Guardian)
+        self._expertise.constitution = 60
+        self._expertise.strength = 27
         self._expertise.dexterity = 0
-        self._expertise.intelligence = 80
-        self._expertise.luck = 0
+        self._expertise.intelligence = 60
+        self._expertise.luck = 10
         self._expertise.memory = 3
 
     def _setup_equipment(self):

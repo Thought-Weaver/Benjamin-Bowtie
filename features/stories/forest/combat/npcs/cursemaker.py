@@ -168,8 +168,8 @@ class Cursemaker(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Fisher)
-        self._expertise.constitution = 100
+        self._expertise.add_xp_to_class_until_level(160, ExpertiseClass.Fisher)
+        self._expertise.constitution = 60
         self._expertise.strength = 0
         self._expertise.dexterity = 20
         self._expertise.intelligence = 50

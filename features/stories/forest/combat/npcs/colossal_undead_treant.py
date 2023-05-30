@@ -28,7 +28,7 @@ class SplinterStrike(Ability):
             icon="\uD83C\uDF32",
             name="Splinter Strike",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 35-45 damage and cause 8 damage to tick every turn for 3 turns on up to 3 enemies.",
+            description="Deal 25-30 damage and cause 5 damage to tick every turn for 3 turns on up to 3 enemies.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -44,11 +44,11 @@ class SplinterStrike(Ability):
 
         fixed_dmg_tick = FixedDmgTick(
             turns_remaining=3,
-            value=8,
+            value=5,
             source_str=self.get_icon_and_name()
         )
 
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(35, 45), [fixed_dmg_tick])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(25, 30), [fixed_dmg_tick])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -164,12 +164,12 @@ class ColossalUndeadTreant(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Guardian)
-        self._expertise.constitution = 120
-        self._expertise.strength = 30
+        self._expertise.add_xp_to_class_until_level(110, ExpertiseClass.Guardian)
+        self._expertise.constitution = 70
+        self._expertise.strength = 20
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0
-        self._expertise.luck = 47
+        self._expertise.luck = 17
         self._expertise.memory = 3
 
     def _setup_equipment(self):

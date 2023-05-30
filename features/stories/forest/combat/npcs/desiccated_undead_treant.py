@@ -29,7 +29,7 @@ class SapBlood(Ability):
             icon="\uD83E\uDE78",
             name="Sap Blood",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 30-40 damage to an enemy and restore that much health.",
+            description="Deal 25-30 damage to an enemy and restore that much health.",
             flavor_text="",
             mana_cost=10,
             cooldown=1,
@@ -43,11 +43,12 @@ class SapBlood(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         
-        damage: int = random.randint(30, 40)
+        damage: int = random.randint(25, 30)
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         heal_results: List[str] = self._use_heal_ability(caster, [caster], range(damage, damage))
 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        result_str += "\n"
         result_str += "\n".join(heal_results)
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -163,11 +164,11 @@ class DesiccatedUndeadTreant(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Fisher)
-        self._expertise.constitution = 100
+        self._expertise.add_xp_to_class_until_level(140, ExpertiseClass.Fisher)
+        self._expertise.constitution = 60
         self._expertise.strength = 0
-        self._expertise.dexterity = 20
-        self._expertise.intelligence = 60
+        self._expertise.dexterity = 10
+        self._expertise.intelligence = 50
         self._expertise.luck = 17
         self._expertise.memory = 3
 

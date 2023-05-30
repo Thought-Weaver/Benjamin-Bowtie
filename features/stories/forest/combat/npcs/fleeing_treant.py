@@ -159,8 +159,8 @@ class FleeingTreant(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(210, ExpertiseClass.Guardian)
-        self._expertise.constitution = 150
+        self._expertise.add_xp_to_class_until_level(170, ExpertiseClass.Guardian)
+        self._expertise.constitution = 110
         self._expertise.strength = 30
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0
