@@ -2,7 +2,7 @@
     "key": "items/valuable/bag_of_coins",
     "icon": "\uD83D\uDCB0",
     "name": "Bag of Coins",
-    "value": 300,
+    "value": 100,
     "rarity": "Epic",
     "description": "",
     "flavor_text": "",
