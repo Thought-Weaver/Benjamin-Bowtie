@@ -30,7 +30,7 @@ class SapBlood(Ability):
             icon="\uD83E\uDE78",
             name="Sap Blood",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 15-25 damage to an enemy and restore that much health.",
+            description="Deal 15-20 damage to an enemy and restore that much health.",
             flavor_text="",
             mana_cost=5,
             cooldown=1,
