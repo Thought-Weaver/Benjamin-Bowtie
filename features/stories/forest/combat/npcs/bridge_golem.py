@@ -30,7 +30,7 @@ class StoneSwarm(Ability):
             icon="\uD83E\uDEA8",
             name="Stone Swarm",
             class_key=ExpertiseClass.Guardian,
-            description="Summon a barrage of stones, dealing 20-25 damage to up to 3 enemies.",
+            description="Summon a barrage of stones, dealing 15-20 damage to up to 3 enemies.",
             flavor_text="",
             mana_cost=20,
             cooldown=3,
@@ -43,7 +43,7 @@ class StoneSwarm(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(20, 25))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(15, 20))
         
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -62,7 +62,7 @@ class EruptingEarth(Ability):
             icon="\uD83C\uDF0B",
             name="Erupting Earth",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 15-20 damage and cause Faltering with a 30% chance for 3 turns.",
+            description="Deal 12-15 damage and cause Faltering with a 30% chance for 3 turns.",
             flavor_text="",
             mana_cost=30,
             cooldown=5,
@@ -81,7 +81,7 @@ class EruptingEarth(Ability):
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(15, 20), [debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(12, 15), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
@@ -158,8 +158,8 @@ class BridgeGolem(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Guardian)
-        self._expertise.constitution = 80
+        self._expertise.add_xp_to_class_until_level(190, ExpertiseClass.Guardian)
+        self._expertise.constitution = 70
         self._expertise.strength = 30
         self._expertise.dexterity = 0
         self._expertise.intelligence = 70
