@@ -111,6 +111,9 @@ class Charge(Ability):
 
 class WildBoar(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 87% chance of 4 player party (Lvl. 0-10) victory against 2
+        
         super().__init__("Wild Boar" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
             ItemKey.RawBoarMeat: 0.9,

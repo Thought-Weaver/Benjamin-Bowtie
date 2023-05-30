@@ -37,11 +37,11 @@ class Brigand(NPC):
             self._equipment = Equipment()
         
         self._expertise.add_xp_to_class_until_level(40, ExpertiseClass.Guardian)
-        self._expertise.constitution = 20
-        self._expertise.strength = 17
+        self._expertise.constitution = 18
+        self._expertise.strength = 10
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0
-        self._expertise.luck = 0
+        self._expertise.luck = 9
         self._expertise.memory = 3
 
     def _setup_equipment(self):

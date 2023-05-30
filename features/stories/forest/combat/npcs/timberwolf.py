@@ -31,7 +31,7 @@ class SavageBite(Ability):
             icon="\uD83E\uDE78",
             name="Savage Bite",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 10-15 damage with a 75% chance to cause Bleeding for 2 turns.",
+            description="Deal 8-12 damage with a 75% chance to cause Bleeding for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -44,7 +44,7 @@ class SavageBite(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(10, 15))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(8, 12))
         
         bleed = Bleeding(
             turns_remaining=2,
@@ -185,11 +185,11 @@ class Timberwolf(NPC):
             self._equipment = Equipment()
         
         self._expertise.add_xp_to_class_until_level(25, ExpertiseClass.Guardian)
-        self._expertise.constitution = 12
-        self._expertise.strength = 10
-        self._expertise.dexterity = 0
+        self._expertise.constitution = 10
+        self._expertise.strength = 8
+        self._expertise.dexterity = 2
         self._expertise.intelligence = 0
-        self._expertise.luck = 0
+        self._expertise.luck = 2
         self._expertise.memory = 3
 
     def _setup_equipment(self):

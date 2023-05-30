@@ -130,7 +130,7 @@ class Lunge(Ability):
             icon="\u2620\uFE0F",
             name="Lunge",
             class_key=ExpertiseClass.Alchemist,
-            description="Lunge forward at an enemy, dealing 150% of your weapon damage with a 80% chance to set Poisoned for 1 turn.",
+            description="Lunge forward at an enemy, dealing 150% of your weapon damage with an 80% chance to set Poisoned for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
@@ -152,7 +152,7 @@ class Lunge(Ability):
         item_effects = main_hand_item.get_item_effects() if main_hand_item is not None else None
 
         base_damage = weapon_stats.get_random_damage(caster_attrs, item_effects, max(0, level_req - caster.get_expertise().level))
-        damage = ceil(1.3 * base_damage)
+        damage = ceil(1.5 * base_damage)
         damage += min(ceil(damage * DEX_DMG_SCALE * max(caster_attrs.strength, 0)), damage)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
@@ -227,6 +227,9 @@ class Camouflage(Ability):
 
 class SmallSnake(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 94% chance of 4 player party (Lvl. 0-10) victory against 3
+
         persona = NPCDuelingPersonas.Mage if random.random() < 0.67 else NPCDuelingPersonas.Specialist
         super().__init__("Small Snake" + name_suffix, NPCRoles.DungeonEnemy, persona, {
             ItemKey.LesserPoison: 0.9
@@ -244,11 +247,11 @@ class SmallSnake(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(20, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 8
+        self._expertise.add_xp_to_class_until_level(25, ExpertiseClass.Alchemist)
+        self._expertise.constitution = 10
         self._expertise.strength = 0
         self._expertise.dexterity = 0
-        self._expertise.intelligence = 8
+        self._expertise.intelligence = 13
         self._expertise.luck = 0
         self._expertise.memory = 4
 

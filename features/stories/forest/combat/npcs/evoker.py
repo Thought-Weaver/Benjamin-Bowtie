@@ -38,12 +38,12 @@ class Evoker(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(50, ExpertiseClass.Fisher)
+        self._expertise.add_xp_to_class_until_level(40, ExpertiseClass.Fisher)
         self._expertise.constitution = 15
         self._expertise.strength = 0
-        self._expertise.dexterity = 5
-        self._expertise.intelligence = 25
-        self._expertise.luck = 0
+        self._expertise.dexterity = 0
+        self._expertise.intelligence = 15
+        self._expertise.luck = 5
         self._expertise.memory = 5
 
     def _setup_equipment(self):
