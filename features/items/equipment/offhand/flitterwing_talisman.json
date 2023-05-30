@@ -12,7 +12,7 @@
     "item_effects": {
         "on_damaged": [
             {
-                "effect_type": "CauseStatusEffect",
+                "effect_type": "ChanceStatusEffect",
                 "effect_value": 0.1,
                 "effect_time": 2,
                 "conditions": [],

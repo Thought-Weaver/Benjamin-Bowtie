@@ -12,7 +12,7 @@
     "level_requirement": 0,
     "weapon_stats": {
         "min_damage": 10,
-        "max_damage": 17,
+        "max_damage": 13,
         "num_targets": 2
     },
     "item_effects": {
