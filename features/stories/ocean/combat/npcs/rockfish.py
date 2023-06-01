@@ -10,7 +10,7 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import Ability
+from features.shared.ability import Ability, NegativeAbilityResult
 from features.shared.constants import DEX_DODGE_SCALE
 from features.shared.effect import ItemEffectCategory
 from features.shared.enums import ClassTag
@@ -21,7 +21,6 @@ from features.stats import Stats
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.player import Player
-    from features.shared.ability import NegativeAbilityResult
 
 # -----------------------------------------------------------------------------
 # ABILITIES
@@ -157,6 +156,9 @@ class CrushingJaws(Ability):
 
 class Rockfish(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 42% chance of 4 player party (Lvl. 40-50) victory against 1
+
         super().__init__("Rockfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()

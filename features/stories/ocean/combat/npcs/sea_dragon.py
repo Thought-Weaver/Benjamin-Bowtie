@@ -10,7 +10,7 @@ from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import ConDebuff, DexBuff, FixedDmgTick, LckBuff, RegenerateHP
+from features.shared.statuseffect import ConDebuff, FixedDmgTick, RegenerateHP
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -28,7 +28,7 @@ class Photosynthesize(Ability):
             icon="\u2600\uFE0F",
             name="Photosynthesize",
             class_key=ExpertiseClass.Fisher,
-            description="Regenerate 10% of your health each turn for 3 turns.",
+            description="Regenerate 5% of your health each turn for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=8,
@@ -41,8 +41,8 @@ class Photosynthesize(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = RegenerateHP(
-            turns_remaining=3,
-            value=0.1,
+            turns_remaining=2,
+            value=0.05,
             source_str=self.get_icon_and_name()
         )
 
@@ -70,7 +70,7 @@ class TailWhip(Ability):
             description="Deal 30-35 damage to 1-2 enemies and decrease their Con by 5 for 5 turns.",
             flavor_text="",
             mana_cost=5,
-            cooldown=3,
+            cooldown=4,
             num_targets=2,
             level_requirement=20,
             target_own_group=False,
@@ -99,16 +99,16 @@ class TailWhip(Ability):
         self.__init__() # type: ignore
 
 
-class ScalingBreath(Ability):
+class ScaldingBreath(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDEE7",
-            name="Scaling Breath",
+            name="Scalding Breath",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 50-60 damage to an enemy and 25 damage every turn for 5 turns afterwards.",
+            description="Deal 30-35 damage to an enemy and 10 damage every turn for 4 turns afterwards.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=4,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -120,12 +120,12 @@ class ScalingBreath(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
         debuff = FixedDmgTick(
-            turns_remaining=5,
-            value=25,
+            turns_remaining=4,
+            value=10,
             source_str=self.get_icon_and_name()
         )
 
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(50, 60), [debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(30, 35), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
@@ -142,6 +142,9 @@ class ScalingBreath(Ability):
 
 class SeaDragon(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 28% chance of 4 player party (Lvl. 40-50) victory against 2
+
         super().__init__("Sea Dragon" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()
@@ -156,12 +159,12 @@ class SeaDragon(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(160, ExpertiseClass.Fisher)
-        self._expertise.constitution = 70
+        self._expertise.add_xp_to_class_until_level(120, ExpertiseClass.Fisher)
+        self._expertise.constitution = 50
         self._expertise.strength = 0
-        self._expertise.dexterity = 20
+        self._expertise.dexterity = 10
         self._expertise.intelligence = 40
-        self._expertise.luck = 27
+        self._expertise.luck = 17
         self._expertise.memory = 3
 
     def _setup_equipment(self):
@@ -179,7 +182,7 @@ class SeaDragon(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [ScalingBreath(), TailWhip(), Photosynthesize()]
+        self._dueling.abilities = [ScaldingBreath(), TailWhip(), Photosynthesize()]
 
     def _setup_npc_params(self):
         self._setup_inventory()

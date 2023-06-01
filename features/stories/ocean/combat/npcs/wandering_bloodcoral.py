@@ -10,7 +10,7 @@ from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import ConDebuff, StrDebuff
+from features.shared.statuseffect import IntDebuff, StrDebuff
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -28,7 +28,7 @@ class BrutalSwing(Ability):
             icon="\uD83D\uDCA5",
             name="Brutal Swing",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 50-60 damage to an enemy.",
+            description="Deal 80-85 damage to an enemy.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -41,7 +41,7 @@ class BrutalSwing(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(50, 60))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(80, 85))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         return result_str
@@ -59,10 +59,10 @@ class SappingTouch(Ability):
             icon="\uD83E\uDE78",
             name="Sapping Touch",
             class_key=ExpertiseClass.Guardian,
-            description="Decrease an enemy's Str by 20 for 5 turns and its Con by 10 for 5 turns.",
+            description="Decrease an enemy's Str by 25 for 5 turns and Int by 25 for 5 turns.",
             flavor_text="",
             mana_cost=0,
-            cooldown=1,
+            cooldown=3,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -73,18 +73,18 @@ class SappingTouch(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         str_debuff = StrDebuff(
             turns_remaining=5,
-            value=20,
+            value=25,
             source_str=self.get_icon_and_name()
         )
 
-        con_debuff = ConDebuff(
+        int_debuff = IntDebuff(
             turns_remaining=5,
-            value=10,
+            value=25,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [str_debuff, con_debuff])
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [str_debuff, int_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -103,6 +103,9 @@ class SappingTouch(Ability):
 
 class WanderingBloodcoral(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 47% chance of 4 player party (Lvl. 40-50) victory against 1
+
         super().__init__("Wandering Bloodcoral" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()
@@ -117,12 +120,12 @@ class WanderingBloodcoral(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Guardian)
-        self._expertise.constitution = 120
+        self._expertise.add_xp_to_class_until_level(240, ExpertiseClass.Guardian)
+        self._expertise.constitution = 160
         self._expertise.strength = 40
-        self._expertise.dexterity = 20
+        self._expertise.dexterity = 0
         self._expertise.intelligence = 0
-        self._expertise.luck = 18
+        self._expertise.luck = 38
         self._expertise.memory = 2
 
     def _setup_equipment(self):

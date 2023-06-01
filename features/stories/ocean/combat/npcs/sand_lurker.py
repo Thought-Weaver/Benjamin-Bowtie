@@ -137,6 +137,9 @@ class SurpriseAttack(Ability):
 
 class SandLurker(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 57% chance of 4 player party (Lvl. 40-50) victory against 1
+
         super().__init__("Sand Lurker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()

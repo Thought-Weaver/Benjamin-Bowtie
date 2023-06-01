@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import random
-
 from uuid import uuid4
 
 from features.dueling import Dueling
@@ -10,10 +8,10 @@ from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
-from features.shared.constants import BLEED_PERCENT_HP, POISONED_PERCENT_HP
+from features.shared.constants import POISONED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import Bleeding, DexBuff, DexDebuff, LckBuff, Poisoned, StatusEffectKey, TurnSkipChance
+from features.shared.statuseffect import Poisoned, TurnSkipChance
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -31,7 +29,7 @@ class Devour(Ability):
             icon="\uD83D\uDC21",
             name="Devour",
             class_key=ExpertiseClass.Alchemist,
-            description="Deal 75-80 damage to a target.",
+            description="Deal 120-125 damage to a target.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -44,7 +42,7 @@ class Devour(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(75, 80))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(120, 125))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
@@ -64,9 +62,9 @@ class Majesty(Ability):
             icon="\u2728",
             name="Majesty",
             class_key=ExpertiseClass.Alchemist,
-            description="Cause all enemies to Falter with a 75% chance to skip their turns for 3 turns.",
+            description="Cause all enemies to Falter with a 100% chance to skip their turns for 3 turns.",
             flavor_text="",
-            mana_cost=50,
+            mana_cost=40,
             cooldown=8,
             num_targets=-1,
             level_requirement=20,
@@ -78,7 +76,7 @@ class Majesty(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = TurnSkipChance(
             turns_remaining=3,
-            value=0.75,
+            value=1,
             source_str=self.get_icon_and_name()
         )
 
@@ -103,11 +101,11 @@ class VenomousBarbs(Ability):
             icon="\u2620\uFE0F",
             name="Venomous Barbs",
             class_key=ExpertiseClass.Alchemist,
-            description="Poison 1-2 enemies for 5 turns.",
+            description="Poison 2-3 enemies for 5 turns.",
             flavor_text="",
-            mana_cost=10,
-            cooldown=2,
-            num_targets=2,
+            mana_cost=0,
+            cooldown=0,
+            num_targets=3,
             level_requirement=20,
             target_own_group=False,
             purchase_cost=0,
@@ -141,6 +139,9 @@ class VenomousBarbs(Ability):
 
 class GrandLionfish(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 69% chance of 4 player party (Lvl. 40-50) victory against 1
+
         super().__init__("Grand Lionfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()
@@ -156,10 +157,10 @@ class GrandLionfish(NPC):
             self._equipment = Equipment()
         
         self._expertise.add_xp_to_class_until_level(220, ExpertiseClass.Guardian)
-        self._expertise.constitution = 120
-        self._expertise.strength = 20
+        self._expertise.constitution = 130
+        self._expertise.strength = 30
         self._expertise.dexterity = 0
-        self._expertise.intelligence = 70
+        self._expertise.intelligence = 50
         self._expertise.luck = 7
         self._expertise.memory = 3
 

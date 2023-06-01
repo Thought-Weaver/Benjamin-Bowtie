@@ -11,8 +11,8 @@
     "count": 1,
     "level_requirement": 0,
     "weapon_stats": {
-        "min_damage": 40,
-        "max_damage": 45
+        "min_damage": 60,
+        "max_damage": 65
     },
     "item_effects": {
         "permanent": [
@@ -37,7 +37,7 @@
             {
                 "effect_type": "ChanceStatusEffect",
                 "effect_value": 1,
-                "effect_time": 1,
+                "effect_time": 3,
                 "conditions": [],
                 "condition_values": [],
                 "associated_status_effect": "Poisoned"
