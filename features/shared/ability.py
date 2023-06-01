@@ -5598,7 +5598,7 @@ class BoundToGetLuckyIV(Ability):
             mana_cost=15,
             cooldown=4,
             num_targets=0,
-            level_requirement=8,
+            level_requirement=10,
             target_own_group=True,
             purchase_cost=800,
             scaling=[]
@@ -5637,7 +5637,7 @@ class BoundToGetLuckyV(Ability):
             mana_cost=15,
             cooldown=5,
             num_targets=0,
-            level_requirement=8,
+            level_requirement=12,
             target_own_group=True,
             purchase_cost=1600,
             scaling=[]
