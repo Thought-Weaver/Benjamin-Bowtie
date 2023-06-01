@@ -344,28 +344,28 @@ class Dueling():
             return (damage_dealt, "{0}" + f" is now {status_effect.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DmgBuffSelfMaxHealth:
-            additional_dmg = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
+            additional_dmg = ceil(item_effect.effect_value * self_entity.get_expertise().max_hp)
             return (
                 damage_dealt + additional_dmg,
                 f"+{additional_dmg} damage from {source_str}"
             )
         
         if item_effect.effect_type == EffectType.DmgBuffSelfRemainingHealth:
-            additional_dmg = int(item_effect.effect_value * self_entity.get_expertise().hp)
+            additional_dmg = ceil(item_effect.effect_value * self_entity.get_expertise().hp)
             return (
                 damage_dealt + additional_dmg,
                 f"+{additional_dmg} damage from {source_str}"
             )
 
         if item_effect.effect_type == EffectType.DmgBuffOtherMaxHealth:
-            additional_dmg = int(item_effect.effect_value * other_entity.get_expertise().max_hp)
+            additional_dmg = ceil(item_effect.effect_value * other_entity.get_expertise().max_hp)
             return (
                 damage_dealt + additional_dmg,
                 f"+{additional_dmg} damage from {source_str}"
             )
         
         if item_effect.effect_type == EffectType.DmgBuffOtherRemainingHealth:
-            additional_dmg = int(item_effect.effect_value * other_entity.get_expertise().hp)
+            additional_dmg = ceil(item_effect.effect_value * other_entity.get_expertise().hp)
             return (
                 damage_dealt + additional_dmg,
                 f"+{additional_dmg} damage from {source_str}"
@@ -373,7 +373,7 @@ class Dueling():
 
         if item_effect.effect_type == EffectType.DmgBuffPoisoned:
             if any(status_effect.key == StatusEffectKey.Poisoned for status_effect in other_entity.get_dueling().status_effects):
-                additional_dmg = int(damage_dealt * item_effect.effect_value)
+                additional_dmg = ceil(damage_dealt * item_effect.effect_value)
                 return (
                     damage_dealt + additional_dmg,
                     f"+{additional_dmg} damage on Poisoned target from {source_str}"
@@ -381,7 +381,7 @@ class Dueling():
 
         if item_effect.effect_type == EffectType.DmgBuffBleeding:
             if any(status_effect.key == StatusEffectKey.Bleeding for status_effect in other_entity.get_dueling().status_effects):
-                additional_dmg = int(damage_dealt * item_effect.effect_value)
+                additional_dmg = ceil(damage_dealt * item_effect.effect_value)
                 return (
                     damage_dealt + additional_dmg,
                     f"+{additional_dmg} damage on Bleeding target from {source_str}"
@@ -395,19 +395,19 @@ class Dueling():
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
             max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
-            armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
+            armor_from_effect: int = ceil(max_reduced_armor * item_effect.effect_value)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
             return (damage_dealt, "{0}" + f" restored {to_restore} Armor using {source_str}")
 
         if item_effect.effect_type == EffectType.HealthSteal:
-            health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
+            health_steal = ceil(item_effect.effect_value * other_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
             other_entity.get_expertise().damage(health_steal, other_entity.get_dueling(), percent_reduct=0, ignore_armor=True)
             return (damage_dealt, "{0}" + f" stole {health_steal} HP from " + "{" + f"{other_entity_index}" + "}" + f" using {source_str}")
 
         if item_effect.effect_type == EffectType.ManaSteal:
-            mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
+            mana_steal = ceil(item_effect.effect_value * other_entity.get_expertise().mana)
             self_entity.get_expertise().restore_mana(mana_steal)
             other_entity.get_expertise().remove_mana(mana_steal)
             return (damage_dealt, "{0}" + f" stole {mana_steal} mana from " + "{" + f"{other_entity_index}" + "}" + f" using {source_str}")
@@ -421,13 +421,13 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * -decaying_adjustment)
+                healing += ceil(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{0}" + f" healed {healing} HP from {source_str}")
         
         if item_effect.effect_type == EffectType.RestorePercentHealth:
-            healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
+            healing = ceil(item_effect.effect_value * self_entity.get_expertise().max_hp)
 
             decaying_adjustment: float = 0
             for se in self_entity.get_dueling().status_effects:
@@ -435,7 +435,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * -decaying_adjustment)
+                healing += ceil(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{0}" + f" healed {healing} HP from {source_str}")
@@ -446,7 +446,7 @@ class Dueling():
             return (damage_dealt, "{0}" + f" restored {restoration} mana from {source_str}")
         
         if item_effect.effect_type == EffectType.RestorePercentMana:
-            restoration = int(item_effect.effect_value * self_entity.get_expertise().max_mana)
+            restoration = ceil(item_effect.effect_value * self_entity.get_expertise().max_mana)
             self_entity.get_expertise().restore_mana(restoration)
             return (damage_dealt, "{0}" + f" restored {restoration} mana from {source_str}")
 
@@ -606,7 +606,7 @@ class Dueling():
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DmgReflect and damage_dealt > 0:
-            damage_to_reflect = int(damage_dealt * item_effect.effect_value)
+            damage_to_reflect = ceil(damage_dealt * item_effect.effect_value)
 
             org_armor = other_entity.get_dueling().armor
             damage_done = other_entity.get_expertise().damage(damage_to_reflect, other_entity.get_dueling(), percent_reduct=0, ignore_armor=False)
@@ -623,19 +623,19 @@ class Dueling():
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
             max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
-            armor_from_effect: int = int(max_reduced_armor * item_effect.effect_value)
+            armor_from_effect: int = ceil(max_reduced_armor * item_effect.effect_value)
             to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
             self_entity.get_dueling().armor += to_restore
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {to_restore} Armor using {source_str}")
 
         if item_effect.effect_type == EffectType.HealthSteal:
-            health_steal = int(item_effect.effect_value * other_entity.get_expertise().hp)
+            health_steal = ceil(item_effect.effect_value * other_entity.get_expertise().hp)
             self_entity.get_expertise().heal(health_steal)
             other_entity.get_expertise().damage(health_steal, other_entity.get_dueling(), percent_reduct=0, ignore_armor=True)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" stole {health_steal} HP from " + "{0}" + f" using {source_str}")
 
         if item_effect.effect_type == EffectType.ManaSteal:
-            mana_steal = int(item_effect.effect_value * other_entity.get_expertise().mana)
+            mana_steal = ceil(item_effect.effect_value * other_entity.get_expertise().mana)
             self_entity.get_expertise().restore_mana(mana_steal)
             other_entity.get_expertise().remove_mana(mana_steal)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" stole {mana_steal} mana from " + "{0}" + f" using {source_str}")
@@ -649,13 +649,13 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * -decaying_adjustment)
+                healing += ceil(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {source_str}")
         
         if item_effect.effect_type == EffectType.RestorePercentHealth:
-            healing = int(item_effect.effect_value * self_entity.get_expertise().max_hp)
+            healing = ceil(item_effect.effect_value * self_entity.get_expertise().max_hp)
 
             decaying_adjustment: float = 0
             for se in self_entity.get_dueling().status_effects:
@@ -663,7 +663,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * -decaying_adjustment)
+                healing += ceil(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" healed {healing} HP from {source_str}")
@@ -674,7 +674,7 @@ class Dueling():
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {restoration} mana from {source_str}")
         
         if item_effect.effect_type == EffectType.RestorePercentMana:
-            restoration = int(item_effect.effect_value * self_entity.get_expertise().max_mana)
+            restoration = ceil(item_effect.effect_value * self_entity.get_expertise().max_mana)
             self_entity.get_expertise().restore_mana(restoration)
             return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" restored {restoration} mana from {source_str}")
 
@@ -1257,7 +1257,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * -decaying_adjustment)
+                healing += ceil(healing * -decaying_adjustment)
 
             entity.get_expertise().heal(healing)
             return f"{entity_name} healed {healing} HP from {source_str}"
@@ -1271,7 +1271,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * -decaying_adjustment)
+                healing += ceil(healing * -decaying_adjustment)
 
             entity.get_expertise().heal(healing)
             return f"{entity_name} healed {healing} HP from {source_str}"
@@ -1492,7 +1492,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * -decaying_adjustment)
+                healing += ceil(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return "{1}" + f" healed {healing} HP from {item.get_full_name()}"
@@ -1506,7 +1506,7 @@ class Dueling():
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
-                healing += int(healing * -decaying_adjustment)
+                healing += ceil(healing * -decaying_adjustment)
 
             self_entity.get_expertise().heal(healing)
             return "{1}" + f" healed {healing} HP from {item.get_full_name()}"
