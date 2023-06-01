@@ -23,6 +23,7 @@ from features.shared.statuseffect import *
 
 from typing import Dict, List, TYPE_CHECKING
 if TYPE_CHECKING:
+    from features.dueling import Dueling
     from features.expertise import Expertise
     from features.shared.item import Item
 
@@ -471,11 +472,11 @@ class DuelView(discord.ui.View):
         
         previous_entity: Player | NPC = self._turn_order[self._turn_index]
         
-        item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnEnd, previous_entity, previous_entity, 0, 0, True)
+        prev_item_status_effects: List[str] = previous_entity.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnTurnEnd, previous_entity, previous_entity, 0, 0, True)
         
         self._additional_info_string_data = init_info_str
 
-        for result_str in item_status_effects:
+        for result_str in prev_item_status_effects:
             formatted_str = result_str.format(self.get_name(previous_entity))
             self._additional_info_string_data += formatted_str + "\n"
         
@@ -736,12 +737,12 @@ class DuelView(discord.ui.View):
                 if companion_key is not None:
                     current_companion = player.get_companions().companions[companion_key]
                     
-                    xp_gained: int = ceil(2 * current_companion.pet_battle_xp_gain)
-                    final_xp: int = current_companion.add_xp(xp_gained)
+                    loser_xp_gained: int = ceil(2 * current_companion.pet_battle_xp_gain)
+                    loser_final_xp: int = current_companion.add_xp(loser_xp_gained)
 
                     current_companion.add_companion_points(COMPANION_BATTLE_POINTS)
 
-                    loser_str += f"{current_companion.get_icon_and_name()} *(+{final_xp} xp)*\n"
+                    loser_str += f"{current_companion.get_icon_and_name()} *(+{loser_final_xp} xp)*\n"
 
                     player.get_stats().companions.companion_battles_fought += 1
 
@@ -810,17 +811,17 @@ class DuelView(discord.ui.View):
 
                 loser_str += f"{self.get_name(loser)} *(+{final_loser_xp} Guardian xp)*\n"
 
-                companion_xp_str: str = ""
+                loser_companion_xp_str: str = ""
                 if isinstance(loser, Player):
                     companion_key = loser.get_companions().current_companion
                     if companion_key is not None:
                         companion = loser.get_companions().companions[companion_key]
-                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
+                        loser_final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
+                        loser_companion_xp_str += f"{companion.get_icon_and_name()} *(+{loser_final_comp_xp} xp)*\n"
                 
-                if companion_xp_str != "":
-                    loser_str += f"{companion_xp_str}\n"
+                if loser_companion_xp_str != "":
+                    loser_str += f"{loser_companion_xp_str}\n"
 
             return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\nPractice for the journeys yet to come.")
         elif all(isinstance(entity, NPC) for entity in self._enemies):
@@ -851,16 +852,16 @@ class DuelView(discord.ui.View):
 
                     winner_str += f"{self.get_name(winner)} *(+{final_winner_xp} Guardian xp)*\n"
 
-                    companion_xp_str: str = ""
+                    winner_companion_xp_str: str = ""
                     companion_key = winner.get_companions().current_companion
                     if companion_key is not None:
                         companion = winner.get_companions().companions[companion_key]
-                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
+                        winner_final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
+                        winner_companion_xp_str += f"{companion.get_icon_and_name()} *(+{winner_final_comp_xp} xp)*\n"
                 
-                    if companion_xp_str != "":
-                        winner_str += f"{companion_xp_str}\n"
+                    if winner_companion_xp_str != "":
+                        winner_str += f"{winner_companion_xp_str}\n"
                 else:
                     winner_expertise = winner.get_expertise()
                     winner_dueling = winner.get_dueling()
@@ -884,16 +885,16 @@ class DuelView(discord.ui.View):
 
                     loser_expertise.update_stats(loser.get_combined_attributes())
 
-                    companion_xp_str: str = ""
+                    loser_companion_xp_str: str = ""
                     companion_key = loser.get_companions().current_companion
                     if companion_key is not None:
                         companion = loser.get_companions().companions[companion_key]
-                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
+                        loser_final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
+                        loser_companion_xp_str += f"{companion.get_icon_and_name()} *(+{loser_final_comp_xp} xp)*\n"
                 
-                    if companion_xp_str != "":
-                        winner_str += f"{companion_xp_str}\n"
+                    if loser_companion_xp_str != "":
+                        winner_str += f"{loser_companion_xp_str}\n"
                 else:
                     loser_expertise = loser.get_expertise()
                     loser_dueling = loser.get_dueling()
@@ -942,16 +943,16 @@ class DuelView(discord.ui.View):
 
                     winner_str += f"{self.get_name(winner)} *(+{final_winner_xp} Guardian xp)*\n"
 
-                    companion_xp_str: str = ""
+                    winner_companion_xp_str: str = ""
                     companion_key = winner.get_companions().current_companion
                     if companion_key is not None:
                         companion = winner.get_companions().companions[companion_key]
-                        final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
+                        winner_final_comp_xp: int = companion.add_xp(companion.duel_xp_gain)
 
-                        companion_xp_str += f"{companion.get_icon_and_name()} *(+{final_comp_xp} xp)*\n"
+                        winner_companion_xp_str += f"{companion.get_icon_and_name()} *(+{winner_final_comp_xp} xp)*\n"
                 
-                    if companion_xp_str != "":
-                        winner_str += f"{companion_xp_str}\n"
+                    if winner_companion_xp_str != "":
+                        winner_str += f"{winner_companion_xp_str}\n"
                 else:
                     winner_expertise = winner.get_expertise()
                     winner_dueling = winner.get_dueling()
@@ -1072,7 +1073,7 @@ class DuelView(discord.ui.View):
 
         self._selecting_targets = True
 
-        cur_turn_entity: Player = self._turn_order[self._turn_index]
+        cur_turn_entity: Player = self._turn_order[self._turn_index] # type: ignore
 
         selected_target_names = "\n".join(list(map(lambda x: self.get_name(x), self._selected_targets)))
         selected_targets_str = f"Selected Targets:\n\n{selected_target_names}\n\n" if len(selected_target_names) > 0 else ""
@@ -1172,7 +1173,7 @@ class DuelView(discord.ui.View):
 
                     if item_effect.effect_type == EffectType.SplashDmg:
                         splash_dmg += int(item_effect.effect_value)
-                    elif item_effect.effect_type == EffectType.SplashPercentMaxDmg:
+                    elif item_effect.effect_type == EffectType.SplashPercentMaxDmg and weapon_stats is not None:
                         splash_percent_dmg += ceil(weapon_stats.get_max_damage() * item_effect.effect_value)
                     elif item_effect.effect_type == EffectType.PiercingDmg:
                         piercing_dmg += int(item_effect.effect_value)
@@ -1463,7 +1464,7 @@ class DuelView(discord.ui.View):
             return Embed(title="Choose a Target", description=f"{selected_targets_str}You already selected that target. {self._targets_remaining} targets remaining.")
         
         entity = self._turn_order[self._turn_index]
-        if any(se.key == StatusEffectKey.CannotTarget and se.cant_target == entity for se in entity.get_dueling().status_effects):
+        if any(isinstance(se, CannotTarget) and se.cant_target == entity for se in entity.get_dueling().status_effects):
             return Embed(title="Choose a Target", description=f"{selected_targets_str}You can't select that target due to being Convinced. {self._targets_remaining} targets remaining.")
 
         self._selected_targets.append(self._current_target)
@@ -1521,7 +1522,7 @@ class DuelView(discord.ui.View):
 
     def _get_current_items_page_buttons(self):
         self.clear_items()
-        player: Player = self._turn_order[self._turn_index]
+        player: Player = self._turn_order[self._turn_index] # type: ignore
         inventory = player.get_inventory()
         inventory_slots = inventory.get_inventory_slots()
 
@@ -1544,7 +1545,7 @@ class DuelView(discord.ui.View):
 
     def _get_current_abilities_page_buttons(self):
         self.clear_items()
-        player: Player = self._turn_order[self._turn_index]
+        player: Player = self._turn_order[self._turn_index] # type: ignore
         expertise: Expertise = player.get_expertise()
         dueling: Dueling = player.get_dueling()
         # Theoretically, this should only account for equipment/expertise, but if I add in an ability that reduces memory,
@@ -1797,7 +1798,7 @@ class DuelView(discord.ui.View):
             return self.show_items()
 
     def take_npc_turn(self):
-        cur_npc: NPC = self._turn_order[self._turn_index]
+        cur_npc: NPC = self._turn_order[self._turn_index] # type: ignore
         npc_dueling: Dueling = cur_npc.get_dueling()
         npc_inventory = cur_npc.get_inventory()
 
