@@ -11,7 +11,7 @@ from features.equipment import Equipment
 from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, ShatteringStormIII, SilkspeakingI, ThunderingTorrentIII, VitalityTransferIII
+from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, ShatteringStormIII, SilkspeakingI, ThunderingTorrentIII, ThunderingTorrentIV, VitalityTransferIII
 from features.shared.enums import ClassTag, StateTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
@@ -849,6 +849,9 @@ class YennaView(discord.ui.View):
 
 class Yenna(NPC):
     def __init__(self):
+        # Balance Simulation Results:
+        # 24% chance of 1 player party (Lvl. 50-60) victory against 1
+
         super().__init__("Yenna", NPCRoles.FortuneTeller, NPCDuelingPersonas.Healer, {})
 
         self._setup_npc_params()
@@ -1015,11 +1018,11 @@ class Yenna(NPC):
         self._expertise.points_to_spend = 0
         
         self._expertise.constitution = 23
-        self._expertise.intelligence = 25
+        self._expertise.intelligence = 28
         self._expertise.dexterity = 10
         self._expertise.strength = 0
         self._expertise.luck = 10
-        self._expertise.memory = 12
+        self._expertise.memory = 9
 
     def _setup_equipment(self):
         if self._expertise is None:
@@ -1043,10 +1046,9 @@ class Yenna(NPC):
 
         # TODO: Also add fate-bending abilities
         self._dueling.abilities = [
-            BoundToGetLuckyIII(), SecondWindI(), SilkspeakingI(),
-            ParalyzingFumesI(), RegenerationIII(), ThunderingTorrentIII(),
-            EmpowermentI(), IncenseIII(), ContractManaToBloodIII(),
-            ContractWealthForPowerIII(), ShatteringStormIII()
+            BoundToGetLuckyIII(), SecondWindI(), ParalyzingFumesI(),
+            RegenerationIII(), ThunderingTorrentIV(), EmpowermentI(),
+            IncenseIII(), ContractWealthForPowerIII(), ShatteringStormIII()
         ]
 
     def _setup_story_variables(self, state: dict):

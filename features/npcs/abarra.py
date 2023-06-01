@@ -476,6 +476,8 @@ class BlacksmithView(discord.ui.View):
 
 class Blacksmith(NPC):
     def __init__(self):
+        # Balance Simulation Results:
+        # 55% chance of 1 player party (Lvl. 40-50) victory against 1
         super().__init__("Abarra", NPCRoles.Blacksmith, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()

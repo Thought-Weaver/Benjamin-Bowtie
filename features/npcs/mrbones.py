@@ -33,6 +33,8 @@ class Difficulty(StrEnum):
 
 class MrBones(NPC):
     def __init__(self):
+        # Balance Simulation Results:
+        # 28% chance of 1 player party (Lvl. 120-130) victory against 1
         super().__init__("Mr. Bones", NPCRoles.KnucklebonesPatron, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()

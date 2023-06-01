@@ -11,7 +11,7 @@ from features.expertise import Expertise, ExpertiseClass
 from features.house.house import House
 from features.house.recipe import LOADED_RECIPES, RecipeKey
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import ATidySumII, BoundToGetLuckyIII, CursedCoinsI, HookII, SeaSprayV
+from features.shared.ability import ATidySumII, BoundToGetLuckyIV, CursedCoinsI, HookII, SeaSprayV
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
@@ -496,6 +496,9 @@ class ChefView(discord.ui.View):
 
 class Chef(NPC):
     def __init__(self):
+        # Balance Simulation Results:
+        # 95% chance of 1 player party (Lvl. 25-35) victory against 1
+
         super().__init__("Copperbroad", NPCRoles.Chef, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()
@@ -526,12 +529,12 @@ class Chef(NPC):
 
         self._expertise.points_to_spend = 0
         
-        self._expertise.constitution = 10
+        self._expertise.constitution = 11
         self._expertise.intelligence = 5
         self._expertise.dexterity = 0
-        self._expertise.strength = 5
-        self._expertise.luck = 5
-        self._expertise.memory = 5
+        self._expertise.strength = 10
+        self._expertise.luck = 0
+        self._expertise.memory = 4
 
     def _setup_equipment(self):
         if self._expertise is None:
@@ -553,7 +556,7 @@ class Chef(NPC):
             self._dueling = Dueling()
         
         self._dueling.abilities = [
-            SeaSprayV(), HookII(), BoundToGetLuckyIII(),
+            HookII(), BoundToGetLuckyIV(),
             ATidySumII(), CursedCoinsI()
         ]
 

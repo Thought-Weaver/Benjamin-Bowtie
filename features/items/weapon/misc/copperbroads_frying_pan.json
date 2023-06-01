@@ -9,16 +9,16 @@
     "class_tags": ["Equipment", "Weapon", "Main_Hand"],
     "state_tags": [],
     "count": 1,
-    "level_requirement": 2,
+    "level_requirement": 25,
     "weapon_stats": {
-        "min_damage": 2,
-        "max_damage": 10
+        "min_damage": 6,
+        "max_damage": 12
     },
     "item_effects": {
         "on_successful_attack": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": 0.1,
+                "effect_value": 0.25,
                 "effect_time": 1,
                 "conditions": [],
                 "condition_values": [],

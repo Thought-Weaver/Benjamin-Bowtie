@@ -11,14 +11,14 @@
     "count": 1,
     "level_requirement": 35,
     "weapon_stats": {
-        "min_damage": 7,
-        "max_damage": 10
+        "min_damage": 19,
+        "max_damage": 22
     },
     "item_effects": {
         "permanent": [
             {
                 "effect_type": "CritDmgBuff",
-                "effect_value": 0.5,
+                "effect_value": 0.75,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []

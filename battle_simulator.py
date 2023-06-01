@@ -9,10 +9,16 @@ from pathlib import Path
 from random import choice, choices
 
 from features.expertise import ExpertiseClass
+from features.npcs.abarra import Blacksmith
+from features.npcs.copperbroad import Chef
+from features.npcs.mrbones import MrBones
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.npcs.viktor import RandomItemMerchant
+from features.npcs.yenna import Yenna
 from features.shared.ability import *
 from features.shared.enums import ClassTag, StateTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
+from features.stories.forest.combat.npcs.bridge_golem import BridgeGolem
 from features.stories.forest.combat.npcs.brigand import Brigand
 from features.stories.forest.combat.npcs.colossal_undead_treant import ColossalUndeadTreant
 from features.stories.forest.combat.npcs.deepwood_bear import DeepwoodBear
@@ -29,14 +35,20 @@ from features.stories.forest.combat.npcs.timberwolf import Timberwolf
 from features.stories.forest.combat.npcs.voidburnt_treant import VoidburntTreant
 from features.stories.forest.combat.npcs.wailing_bones import WailingBones
 from features.stories.forest.combat.npcs.wild_boar import WildBoar
+from features.stories.ocean.combat.npcs.banded_eel import BandedEel
 from features.stories.ocean.combat.npcs.giant_cone_snail import GiantConeSnail
+from features.stories.ocean.combat.npcs.grand_lionfish import GrandLionfish
 from features.stories.ocean.combat.npcs.jellyfish import Jellyfish
 from features.stories.ocean.combat.npcs.lesser_kraken import LesserKraken
 from features.stories.ocean.combat.npcs.mesmerfish import Mesmerfish
+from features.stories.ocean.combat.npcs.rockfish import Rockfish
+from features.stories.ocean.combat.npcs.sand_lurker import SandLurker
+from features.stories.ocean.combat.npcs.sea_dragon import SeaDragon
 from features.stories.ocean.combat.npcs.shallows_shark import ShallowsShark
 from features.stories.ocean.combat.npcs.stranglekelp_holdfast import StranglekelpHoldfast
 from features.stories.ocean.combat.npcs.stranglekelp_host import StranglekelpHost
 from features.stories.ocean.combat.npcs.titanfish import Titanfish
+from features.stories.ocean.combat.npcs.wandering_bloodcoral import WanderingBloodcoral
 from simulation_duel import SimulationDuel
 
 from typing import Dict, List, Type
@@ -245,8 +257,8 @@ def generate_random_equipment(npc: NPC):
         if ClassTag.Equipment.Ring in item.get_class_tags():
             valid_equipment[ClassTag.Equipment.Ring].append(item)
             continue
-
-        if int(npc_level * 0.6) <= item.get_level_requirement() and item.meets_requirements(npc_level, npc.get_combined_attributes()):
+        
+        if item.get_level_requirement() > 0 and int(npc_level * 0.6) <= item.get_level_requirement() and item.meets_requirements(npc_level, npc.get_combined_attributes()):
             primary_tag: ClassTag.Equipment = ClassTag.Equipment.Equipment
             for tag in tags:
                 if tag in item.get_class_tags():
@@ -549,26 +561,12 @@ ENEMY_CLASSES: List[List[type]] = [
     # [Titanfish],
     # [Jellyfish, Jellyfish, Jellyfish]
 
-    # [WildBoar, WildBoar],
-    # [SmallSnake, SmallSnake, SmallSnake],
-    # [GiantSnake],
-    # [DeepwoodBear],
-    # [Timberwolf, Timberwolf, Timberwolf, Timberwolf],
-    # [Brigand, Mystic],
-    # [Evoker, Brigand, Thief],
-    # [Evoker, Mystic],
-    # [Thief, Marauder]
-
-    [DesiccatedUndeadTreant, ColossalUndeadTreant],
-    [VoidburntTreant],
-    [StarvingDireWolf, StarvingDireWolf],
-    [WailingBones],
-    [HorrifyingBoneAmalgam]
+    [MrBones]
 ]
-ALLY_CLASS_RANGE: range = range(20, 30)
+ALLY_CLASS_RANGE: range = range(120, 130)
 
-SIMULATION_ITERATIONS = 128
-NUM_ALLIES = 4
+SIMULATION_ITERATIONS = 1024
+NUM_ALLIES = 1
 MAX_TURNS = 1000
 
 # -----------------------------------------------------------------------------
@@ -590,6 +588,7 @@ class SimulationResult():
     crits: List[int] = field(default_factory=lambda: [0, 0])
 
     allies_won: bool = False
+    turns_taken_per_entity: float = 0
 
 def generate_ally_npcs():
     allies_per_sim: List[List[NPC]] = []
@@ -622,7 +621,7 @@ def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_ind
             f"Abilities: {ability_str}\n\n"
             f"Items: {item_str}")
         )
-    
+
     duel: SimulationDuel = SimulationDuel(allies, enemies, logger, MAX_TURNS)
 
     allies_won: int = any(ally.get_stats().dueling.duels_won > 0 for ally in allies)
@@ -633,6 +632,7 @@ def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_ind
         logger.log(level=logging.INFO, msg="Enemies won!")
     
     logger.log(level=logging.INFO, msg=f"Turns taken: {duel.turns_taken}")
+    result.turns_taken_per_entity = duel.turns_taken / (len(allies) + len(enemies))
 
     for j, team in enumerate([allies, enemies]):
         if j == 0:
@@ -714,8 +714,10 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
     total_abilities_dodged: List[int] = [0, 0]
     total_crits: List[int] = [0, 0]
 
+    total_turns_taken_per_entity: float = 0
+
     ally_npcs: List[List[NPC]] = generate_ally_npcs()
-    enemy_npcs: List[List[NPC]] = [[enemy(name_suffix=f" {j}") for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
+    enemy_npcs: List[List[NPC]] = [[enemy() for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
 
     pool = Pool(processes=8)
     results: List[SimulationResult] = pool.starmap(run_simulation, zip(ally_npcs, enemy_npcs, [dir_name for _ in range(SIMULATION_ITERATIONS)], [i for i in range(SIMULATION_ITERATIONS)]))
@@ -737,6 +739,7 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
             total_crits[j] += result.crits[j]
         
         ally_victories += 1 if result.allies_won else 0
+        total_turns_taken_per_entity += result.turns_taken_per_entity
 
     # Log average data
     with open(f"./simulation_results/{base_enemy_name}/average_data.txt", "w") as f:
@@ -764,7 +767,8 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
                 f"Abilities Dodged: {total_abilities_dodged[1] / SIMULATION_ITERATIONS}\n"
                 f"Crits: {total_crits[1] / SIMULATION_ITERATIONS}\n\n"
                 
-                f"Percent Ally Victory: {ally_victories / SIMULATION_ITERATIONS}"
+                f"Percent Ally Victory: {ally_victories / SIMULATION_ITERATIONS}\n"
+                f"Average Turns Taken (per entity): {total_turns_taken_per_entity / SIMULATION_ITERATIONS}"
             )
         )
     

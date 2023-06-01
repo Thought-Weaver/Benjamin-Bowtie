@@ -325,6 +325,9 @@ class RandomItemMerchantView(discord.ui.View):
 
 class RandomItemMerchant(NPC):
     def __init__(self):
+        # Balance Simulation Results:
+        # 45% chance of 1 player party (Lvl. 10-20) victory against 1
+
         super().__init__("Viktor", NPCRoles.RandomItemMerchant, NPCDuelingPersonas.Rogue, {})
 
         self._setup_npc_params()
@@ -343,7 +346,6 @@ class RandomItemMerchant(NPC):
         }
         weights = [prob_map[item.get_rarity()] for item in possible_items]
         new_items = random.choices(possible_items, k=8, weights=weights)
-        print(sum([1 for item in new_items if ClassTag.Equipment.Equipment in item.get_class_tags()]))
         
         self._current_wares = new_items
         self._cost_adjust = random.randint(100, 225) / 100.0
@@ -357,8 +359,8 @@ class RandomItemMerchant(NPC):
 
         health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
         health_potions.add_amount(1)
-        explosive_potions = LOADED_ITEMS.get_new_item(ItemKey.ExplosivePotion)
-        explosive_potions.add_amount(2)
+        explosive_potions = LOADED_ITEMS.get_new_item(ItemKey.GreaterExplosivePotion)
+        explosive_potions.add_amount(3)
         poison_potions = LOADED_ITEMS.get_new_item(ItemKey.GreaterPoison)
         poison_potions.add_amount(1)
         greater_dex_potion = LOADED_ITEMS.get_new_item(ItemKey.GreaterDexterityPotion)
@@ -395,10 +397,10 @@ class RandomItemMerchant(NPC):
         
         self._expertise.constitution = 2
         self._expertise.intelligence = 2
-        self._expertise.dexterity = 6
+        self._expertise.dexterity = 8
         self._expertise.strength = 0
         self._expertise.luck = 0
-        self._expertise.memory = 4
+        self._expertise.memory = 2
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -415,8 +417,7 @@ class RandomItemMerchant(NPC):
             self._dueling = Dueling()
 
         self._dueling.abilities = [
-            ContractWealthForPowerIII(), PreparePotionsII(),
-            BoundToGetLuckyIII(), SilkspeakingI()
+            PreparePotionsII(), BoundToGetLuckyIII()
         ]
 
     def _setup_npc_params(self):
