@@ -404,7 +404,7 @@ class SimulationDuel():
             for se in target_dueling.status_effects:
                 if se.key == StatusEffectKey.StackingDamage:
                     assert(isinstance(se, StackingDamage))
-                    if se.caster == attacker and se.source_str == main_hand_item.get_full_name(): # type: ignore
+                    if main_hand_item is not None and se.caster == attacker and se.source_str == main_hand_item.get_full_name():
                         stacking_damage += se.value
                 elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
                     bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
