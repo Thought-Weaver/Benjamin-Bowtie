@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from math import ceil
 from uuid import uuid4
 
 from features.dueling import Dueling
@@ -11,7 +10,7 @@ from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import ConBuff, DexBuff, StrBuff, TurnSkipChance
+from features.shared.statuseffect import ConDebuff, DexBuff
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -23,55 +22,16 @@ if TYPE_CHECKING:
 # ABILITIES
 # -----------------------------------------------------------------------------
 
-class Slam(Ability):
+class Fission(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83D\uDCA5",
-            name="Slam",
+            icon="\u2622\uFE0F",
+            name="Fission",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 20-30 damage and cause Faltering on 1-2 enemies for 1 turn.",
+            description="Decrease your Con by 5 but increase your Dex by 10 for the rest of the duel.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
-            num_targets=2,
-            level_requirement=20,
-            target_own_group=False,
-            purchase_cost=0,
-            scaling=[Attribute.Strength]
-        )
-
-    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        
-        debuff = TurnSkipChance(
-            turns_remaining=1,
-            value=1,
-            source_str=self.get_icon_and_name()
-        )
-
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(20, 30), [debuff])
-
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        return result_str
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, state: dict):
-        self.__init__() # type: ignore
-
-
-class Ram(Ability):
-    def __init__(self):
-        super().__init__(
-            icon="\uD83D\uDCA8",
-            name="Ram",
-            class_key=ExpertiseClass.Guardian,
-            description="Increase your Con, Dex, and Str by 5 for the rest of the duel.",
-            flavor_text="",
-            mana_cost=0,
-            cooldown=4,
+            cooldown=1,
             num_targets=0,
             level_requirement=20,
             target_own_group=True,
@@ -80,26 +40,20 @@ class Ram(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        con_buff = ConBuff(
-            turns_remaining=-1,
-            value=5,
-            source_str=self.get_icon_and_name()
-        )
-
         dex_buff = DexBuff(
             turns_remaining=-1,
-            value=5,
+            value=15,
             source_str=self.get_icon_and_name()
         )
 
-        str_buff = StrBuff(
+        con_debuff = ConDebuff(
             turns_remaining=-1,
             value=5,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [con_buff, str_buff, dex_buff])
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [dex_buff, con_debuff])
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -113,16 +67,49 @@ class Ram(Ability):
         self.__init__() # type: ignore
 
 
-class Wham(Ability):
+class Regenerate(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83D\uDC1F",
-            name="Wham",
+            icon="\u267B\uFE0F",
+            name="Regenerate",
             class_key=ExpertiseClass.Guardian,
-            description="Deal damage an enemy equal to 20% of your remaining health.",
+            description="Restore 100 health.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=0,
+            level_requirement=1,
+            target_own_group=True,
+            purchase_cost=100,
+            scaling=[Attribute.Intelligence]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_heal_ability(caster, targets, range(100, 100))
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class Starpierce(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u2B50",
+            name="Starpierce",
+            class_key=ExpertiseClass.Guardian,
+            description="Deal 35-40 damage to all enemies.",
             flavor_text="",
             mana_cost=0,
-            cooldown=1,
+            cooldown=2,
             num_targets=-1,
             level_requirement=20,
             target_own_group=False,
@@ -132,10 +119,11 @@ class Wham(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        damage = ceil(caster.get_expertise().hp * 0.2)
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(35, 40))
 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
 
@@ -149,9 +137,12 @@ class Wham(Ability):
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class Titanfish(NPC):
+class BrittleStar(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Titanfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        # Balance Simulation Results:
+        # ?% chance of 4 player party (Lvl. 30-40) victory against 1
+
+        super().__init__("Brittle Star" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {})
 
         self._setup_npc_params()
 
@@ -165,12 +156,12 @@ class Titanfish(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(160, ExpertiseClass.Guardian)
-        self._expertise.constitution = 100
-        self._expertise.strength = 30
-        self._expertise.dexterity = 0
-        self._expertise.intelligence = 0
-        self._expertise.luck = 7
+        self._expertise.add_xp_to_class_until_level(150, ExpertiseClass.Fisher)
+        self._expertise.constitution = 40
+        self._expertise.strength = 0
+        self._expertise.dexterity = 50
+        self._expertise.intelligence = 20
+        self._expertise.luck = 37
         self._expertise.memory = 3
 
     def _setup_equipment(self):
@@ -179,8 +170,8 @@ class Titanfish(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.TitanicMaw))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.TitanfishForm))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.StarArms))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.StarForm))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
@@ -188,7 +179,7 @@ class Titanfish(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [Slam(), Ram(), Wham()]
+        self._dueling.abilities = [Fission(), Starpierce(), Regenerate()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -201,9 +192,9 @@ class Titanfish(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Titanfish"
+        self._name = "Brittle Star"
         self._role = NPCRoles.DungeonEnemy
-        self._dueling_persona = NPCDuelingPersonas.Bruiser
+        self._dueling_persona = NPCDuelingPersonas.Rogue
         self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")

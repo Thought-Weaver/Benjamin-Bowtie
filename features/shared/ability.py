@@ -13,11 +13,10 @@ from features.shared.enums import ClassTag
 from features.shared.item import ItemKey, WeaponStats
 from features.shared.statuseffect import *
 
-from typing import Dict, List, TYPE_CHECKING
+from typing import Dict, List, Set, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.npcs.npc import NPC
     from features.player import Player
-    from features.shared.effect import Effect
 
 # -----------------------------------------------------------------------------
 # BASE CLASS
@@ -2685,11 +2684,11 @@ class DrownInTheDeepI(Ability):
             icon="\u2693",
             name="Drown in the Deep I",
             class_key=ExpertiseClass.Fisher,
-            description="Drag up to 3 enemies into the depths, dealing each (1 * # of status effects)% of their max health as damage.",
+            description="Drag up to 2 enemies into the depths, dealing each (1 * # of status effects)% of their max health as damage.",
             flavor_text="",
             mana_cost=70,
-            cooldown=3,
-            num_targets=3,
+            cooldown=4,
+            num_targets=2,
             level_requirement=18,
             target_own_group=False,
             purchase_cost=1200,
@@ -2790,11 +2789,11 @@ class DrownInTheDeepII(Ability):
             icon="\u2693",
             name="Drown in the Deep II",
             class_key=ExpertiseClass.Fisher,
-            description="Drag up to 3 enemies into the depths, dealing each (1.5 * # of status effects)% of their max health as damage.",
+            description="Drag up to 2 enemies into the depths, dealing each (1.5 * # of status effects)% of their max health as damage.",
             flavor_text="",
             mana_cost=70,
-            cooldown=3,
-            num_targets=3,
+            cooldown=4,
+            num_targets=2,
             level_requirement=22,
             target_own_group=False,
             purchase_cost=2400,
@@ -2895,11 +2894,11 @@ class DrownInTheDeepIII(Ability):
             icon="\u2693",
             name="Drown in the Deep III",
             class_key=ExpertiseClass.Fisher,
-            description="Drag up to 3 enemies into the depths, dealing each (2 * # of status effects)% of their max health as damage.",
+            description="Drag up to 2 enemies into the depths, dealing each (2 * # of status effects)% of their max health as damage.",
             flavor_text="",
             mana_cost=70,
-            cooldown=3,
-            num_targets=3,
+            cooldown=4,
+            num_targets=2,
             level_requirement=26,
             target_own_group=False,
             purchase_cost=4800,
@@ -4878,7 +4877,7 @@ class PressTheAdvantageI(Ability):
             icon="\uD83E\uDD3A",
             name="Press the Advantage I",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 2 actions this turn.",
+            description="Gain a 45% damage buff for 3 turns and increase the time remaining on all your positive status effects by 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -4890,14 +4889,26 @@ class PressTheAdvantageI(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 2
+        buff = DmgBuff(
+            turns_remaining=3,
+            value=0.5,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+
+        se_results: Set[str] = set()
+        for se in caster.get_dueling().status_effects:
+            if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF:
+                se.turns_remaining += 1
+                se_results.add(se.name)
+        se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn."
+        result_str += se_result_str
+
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
+        result_str += "\n".join(results)
+
         caster.get_stats().dueling.guardian_abilities_used += 1
-
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 2 actions available."
-
-        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
-        if mana_and_cd_str is not None:
-            result_str += "\n" + mana_and_cd_str
 
         return result_str
 
@@ -4913,7 +4924,7 @@ class PressTheAdvantageII(Ability):
             icon="\uD83E\uDD3A",
             name="Press the Advantage II",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 3 actions this turn.",
+            description="Gain a 60% damage buff for 3 turns and increase the time remaining on all your positive status effects by 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -4925,14 +4936,26 @@ class PressTheAdvantageII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 3
+        buff = DmgBuff(
+            turns_remaining=3,
+            value=0.6,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+
+        se_results: Set[str] = set()
+        for se in caster.get_dueling().status_effects:
+            if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF:
+                se.turns_remaining += 1
+                se_results.add(se.name)
+        se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn."
+        result_str += se_result_str
+
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
+        result_str += "\n".join(results)
+
         caster.get_stats().dueling.guardian_abilities_used += 1
-
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 3 actions available."
-
-        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
-        if mana_and_cd_str is not None:
-            result_str += "\n" + mana_and_cd_str
 
         return result_str
 
@@ -4949,7 +4972,7 @@ class PressTheAdvantageIII(Ability):
             icon="\uD83E\uDD3A",
             name="Press the Advantage III",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 4 actions this turn.",
+            description="Gain a 75% damage buff for 3 turns and increase the time remaining on all your positive status effects by 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -4961,14 +4984,26 @@ class PressTheAdvantageIII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        caster.get_dueling().actions_remaining += 4
+        buff = DmgBuff(
+            turns_remaining=3,
+            value=0.6,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+
+        se_results: Set[str] = set()
+        for se in caster.get_dueling().status_effects:
+            if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF:
+                se.turns_remaining += 1
+                se_results.add(se.name)
+        se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn."
+        result_str += se_result_str
+
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
+        result_str += "\n".join(results)
+
         caster.get_stats().dueling.guardian_abilities_used += 1
-
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\nYou now have 4 actions available."
-
-        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
-        if mana_and_cd_str is not None:
-            result_str += "\n" + mana_and_cd_str
 
         return result_str
 

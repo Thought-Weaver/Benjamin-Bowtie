@@ -11,6 +11,7 @@ from random import choice, choices
 from features.expertise import ExpertiseClass
 from features.npcs.abarra import Blacksmith
 from features.npcs.copperbroad import Chef
+from features.npcs.galos import Galos
 from features.npcs.mrbones import MrBones
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.npcs.viktor import RandomItemMerchant
@@ -35,12 +36,18 @@ from features.stories.forest.combat.npcs.timberwolf import Timberwolf
 from features.stories.forest.combat.npcs.voidburnt_treant import VoidburntTreant
 from features.stories.forest.combat.npcs.wailing_bones import WailingBones
 from features.stories.forest.combat.npcs.wild_boar import WildBoar
+from features.stories.ocean.combat.npcs.ancient_kraken import AncientKraken
 from features.stories.ocean.combat.npcs.banded_eel import BandedEel
+from features.stories.ocean.combat.npcs.brittle_star import BrittleStar
+from features.stories.ocean.combat.npcs.faceless_husk import FacelessHusk
+from features.stories.ocean.combat.npcs.fish_maybe import FishMaybe
 from features.stories.ocean.combat.npcs.giant_cone_snail import GiantConeSnail
 from features.stories.ocean.combat.npcs.grand_lionfish import GrandLionfish
 from features.stories.ocean.combat.npcs.jellyfish import Jellyfish
 from features.stories.ocean.combat.npcs.lesser_kraken import LesserKraken
+from features.stories.ocean.combat.npcs.lurking_isopod import LurkingIsopod
 from features.stories.ocean.combat.npcs.mesmerfish import Mesmerfish
+from features.stories.ocean.combat.npcs.mysterious_tentacle import MysteriousTentacle
 from features.stories.ocean.combat.npcs.rockfish import Rockfish
 from features.stories.ocean.combat.npcs.sand_lurker import SandLurker
 from features.stories.ocean.combat.npcs.sea_dragon import SeaDragon
@@ -48,7 +55,9 @@ from features.stories.ocean.combat.npcs.shallows_shark import ShallowsShark
 from features.stories.ocean.combat.npcs.stranglekelp_holdfast import StranglekelpHoldfast
 from features.stories.ocean.combat.npcs.stranglekelp_host import StranglekelpHost
 from features.stories.ocean.combat.npcs.titanfish import Titanfish
+from features.stories.ocean.combat.npcs.voidseen_angler import VoidseenAngler
 from features.stories.ocean.combat.npcs.wandering_bloodcoral import WanderingBloodcoral
+from features.stories.ocean.combat.npcs.wriggling_mass import WrigglingMass
 from simulation_duel import SimulationDuel
 
 from typing import Dict, List, Type
@@ -555,18 +564,17 @@ def get_full_equipment_str(npc: NPC):
 # -----------------------------------------------------------------------------
 
 ENEMY_CLASSES: List[List[type]] = [
-    # [Mesmerfish, Mesmerfish, Mesmerfish],
-    # [StranglekelpHost],
-    # [StranglekelpHoldfast, StranglekelpHoldfast],
-    # [Titanfish],
-    # [Jellyfish, Jellyfish, Jellyfish]
-
-    [MrBones]
+    [Mesmerfish, Mesmerfish, Mesmerfish],
+    [StranglekelpHost],
+    [StranglekelpHoldfast, StranglekelpHoldfast],
+    [Titanfish],
+    [BrittleStar],
+    [Jellyfish, Jellyfish, Jellyfish]
 ]
-ALLY_CLASS_RANGE: range = range(120, 130)
+ALLY_CLASS_RANGE: range = range(30, 40)
 
 SIMULATION_ITERATIONS = 1024
-NUM_ALLIES = 1
+NUM_ALLIES = 4
 MAX_TURNS = 1000
 
 # -----------------------------------------------------------------------------
@@ -694,7 +702,7 @@ def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_ind
 
 def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
     # Setup files
-    base_enemy_name: str = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_")))
+    base_enemy_name: str = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_"))).replace("?", "")
     dir_name: str = f"./simulation_results/{base_enemy_name}"
 
     Path(dir_name).mkdir(parents=True, exist_ok=True)
@@ -717,7 +725,7 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
     total_turns_taken_per_entity: float = 0
 
     ally_npcs: List[List[NPC]] = generate_ally_npcs()
-    enemy_npcs: List[List[NPC]] = [[enemy() for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
+    enemy_npcs: List[List[NPC]] = [[enemy(name_suffix=f" {j}") for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
 
     pool = Pool(processes=8)
     results: List[SimulationResult] = pool.starmap(run_simulation, zip(ally_npcs, enemy_npcs, [dir_name for _ in range(SIMULATION_ITERATIONS)], [i for i in range(SIMULATION_ITERATIONS)]))

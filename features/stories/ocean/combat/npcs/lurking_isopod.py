@@ -64,7 +64,7 @@ class Scuttle(Ability):
             icon="\uD83D\uDCA8",
             name="Scuttle",
             class_key=ExpertiseClass.Guardian,
-            description="Increase your Dex by 200 for 2 turns.",
+            description="Increase your Dex by 150 for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=6,
@@ -78,7 +78,7 @@ class Scuttle(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=2,
-            value=200,
+            value=150,
             source_str=self.get_icon_and_name()
         )
 
@@ -103,7 +103,7 @@ class UnyieldingCarapace(Ability):
             icon="\uD83E\uDEB2",
             name="Unyielding Carapace",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 10% of your armor next turn.",
+            description="Restore 8% of your armor next turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=6,
@@ -117,7 +117,7 @@ class UnyieldingCarapace(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = RegenerateArmor(
             turns_remaining=1,
-            value=0.1,
+            value=0.08,
             source_str=self.get_icon_and_name()
         )
 
@@ -141,7 +141,11 @@ class UnyieldingCarapace(Ability):
 
 class LurkingIsopod(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Lurking Isopod" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        # Balance Simulation Results:
+        # 26% chance of 4 player party (Lvl. 50-60) victory against 1
+        # Avg Number of Turns (per entity): 16
+
+        super().__init__("Lurking Isopod" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {})
 
         self._setup_npc_params()
 
@@ -155,9 +159,9 @@ class LurkingIsopod(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(300, ExpertiseClass.Guardian)
-        self._expertise.constitution = 50
-        self._expertise.strength = 100
+        self._expertise.add_xp_to_class_until_level(250, ExpertiseClass.Guardian)
+        self._expertise.constitution = 40
+        self._expertise.strength = 60
         self._expertise.dexterity = 50
         self._expertise.intelligence = 0
         self._expertise.luck = 97
@@ -193,7 +197,7 @@ class LurkingIsopod(NPC):
         self._id = state.get("_id", str(uuid4()))
         self._name = "Lurking Isopod"
         self._role = NPCRoles.DungeonEnemy
-        self._dueling_persona = NPCDuelingPersonas.Bruiser
+        self._dueling_persona = NPCDuelingPersonas.Rogue
         self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")

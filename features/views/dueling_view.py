@@ -450,7 +450,7 @@ class DuelView(discord.ui.View):
         
         return self.DuelResult(False, None)
 
-    def _reset_turn_variables(self, reset_actions=False):
+    def _reset_turn_variables(self):
         self._intent = None
         self._selected_targets = []
         self._targets_remaining = 1
@@ -463,9 +463,6 @@ class DuelView(discord.ui.View):
         self._current_target_index = -1
         self._selecting_targets = False
         self._page = 0
-
-        if reset_actions:
-            self._actions_remaining = self._turn_order[self._turn_index].get_dueling().init_actions_remaining
 
     def set_next_turn(self, init_info_str: str=""):
         self.turns_taken += 1
@@ -618,7 +615,7 @@ class DuelView(discord.ui.View):
         while self._turn_order[self._turn_index].get_expertise().hp == 0:
             self._turn_index = (self._turn_index + 1) % len(self._turn_order)
 
-        self._reset_turn_variables(True)
+        self._reset_turn_variables()
 
         return duel_result
 

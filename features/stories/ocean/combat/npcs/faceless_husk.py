@@ -29,7 +29,7 @@ class Stranglehook(Ability):
             icon="\uD83C\uDF3F",
             name="Stranglehook",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 90-95 damage to an enemy and decrease their Dex and Str by 30 for 3 turns.",
+            description="Deal 70-75 damage to an enemy and decrease their Dex and Str by 30 for 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -55,7 +55,7 @@ class Stranglehook(Ability):
             source_str=self.get_icon_and_name()
         )
 
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(90, 95), [dex_debuff, str_debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(70, 75), [dex_debuff, str_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -179,6 +179,10 @@ class Mimicry(Ability):
 
 class FacelessHusk(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 47% chance of 4 player party (Lvl. 50-60) victory against 2
+        # Avg Number of Turns (per entity): 21
+
         super().__init__("Faceless Husk" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()
@@ -193,8 +197,8 @@ class FacelessHusk(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Fisher)
-        self._expertise.constitution = 100
+        self._expertise.add_xp_to_class_until_level(180, ExpertiseClass.Fisher)
+        self._expertise.constitution = 80
         self._expertise.strength = 20
         self._expertise.dexterity = 20
         self._expertise.intelligence = 0

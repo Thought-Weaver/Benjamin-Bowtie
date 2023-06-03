@@ -9,35 +9,35 @@
     "class_tags": ["Equipment", "Weapon", "Sword", "Main_Hand"],
     "state_tags": ["Needs_Identification"],
     "count": 1,
-    "level_requirement": 40,
+    "level_requirement": 45,
     "weapon_stats": {
-        "min_damage": 4,
-        "max_damage": 6
+        "min_damage": 23,
+        "max_damage": 25
     },
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "DmgBuffFromStr",
-                "effect_value": 0.025,
+                "effect_type": "DmgBuffFromDex",
+                "effect_value": 0.05,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
                 "associated_status_effect": null
-            }
-        ],
-        "on_successful_attack": [
-            {
-                "effect_type": "ChanceStatusEffect",
-                "effect_value": 0.5,
-                "effect_time": 1,
-                "conditions": [],
-                "condition_values": [],
-                "associated_status_effect": "Bleeding"
             },
             {
                 "effect_type": "ResistStatusEffect",
                 "effect_value": 0.5,
                 "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Bleeding"
+            }
+        ],
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 0.75,
+                "effect_time": 1,
                 "conditions": [],
                 "condition_values": [],
                 "associated_status_effect": "Bleeding"

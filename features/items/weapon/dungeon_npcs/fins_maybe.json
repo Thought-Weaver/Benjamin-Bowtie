@@ -1,7 +1,7 @@
 {
-    "key": "items/weapon/dungeon_npcs/husk_fists",
-    "icon": "\uD83C\uDF3F",
-    "name": "Husk Fists",
+    "key": "items/weapon/dungeon_npcs/fins_maybe",
+    "icon": "\uD83D\uDC1F",
+    "name": "Fins?",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
@@ -18,15 +18,7 @@
         "permanent": [
             {
                 "effect_type": "DmgBuffFromStr",
-                "effect_value": 0.01,
-                "effect_time": -1,
-                "conditions": [],
-                "condition_values": [],
-                "associated_status_effect": null
-            },
-            {
-                "effect_type": "DmgBuffFromDex",
-                "effect_value": 0.01,
+                "effect_value": 0.025,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
@@ -34,7 +26,15 @@
             },
             {
                 "effect_type": "DmgBuffFromInt",
-                "effect_value": 0.01,
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "DmgBuffFromDex",
+                "effect_value": 0.025,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
@@ -42,7 +42,7 @@
             },
             {
                 "effect_type": "DmgBuffFromLck",
-                "effect_value": 0.01,
+                "effect_value": 0.025,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

@@ -29,7 +29,7 @@ class GiantSlam(Ability):
             icon="\uD83D\uDCA5",
             name="Giant Slam",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 95-100 damage to all enemies.",
+            description="Deal 55-60 damage to all enemies.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -42,7 +42,7 @@ class GiantSlam(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(95, 100))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(55, 60))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -62,7 +62,7 @@ class Constrict(Ability):
             icon="\uD83E\uDEB1",
             name="Constrict",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 100 damage every turn to an enemy for 3 turns. The enemy also has a 75% chance to Falter for 2 turns.",
+            description="Deal 50 damage every turn to an enemy for 3 turns. The enemy also has a 75% chance to Falter for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=5,
@@ -76,7 +76,7 @@ class Constrict(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = FixedDmgTick(
             turns_remaining=3,
-            value=100,
+            value=50,
             source_str=self.get_icon_and_name()
         )
 
@@ -107,7 +107,7 @@ class TentacleLash(Ability):
             icon="\uD83E\uDE78",
             name="Tentacle Lash",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 50-60 damage and cause a target to Bleed for 5 turns.",
+            description="Deal 50-55 damage and cause a target to Bleed for 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=0,
@@ -120,13 +120,13 @@ class TentacleLash(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = Bleeding(
-            turns_remaining=5,
+            turns_remaining=3,
             value=BLEED_PERCENT_HP,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(50, 60), [debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(50, 55), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -145,6 +145,10 @@ class TentacleLash(Ability):
 
 class MysteriousTentacle(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 32% chance of 4 player party (Lvl. 50-60) victory against 1
+        # Avg Number of Turns (per entity): 11
+
         super().__init__("Mysterious Tentacle" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()
@@ -159,8 +163,8 @@ class MysteriousTentacle(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(350, ExpertiseClass.Guardian)
-        self._expertise.constitution = 250
+        self._expertise.add_xp_to_class_until_level(330, ExpertiseClass.Guardian)
+        self._expertise.constitution = 230
         self._expertise.strength = 50
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0

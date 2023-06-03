@@ -32,7 +32,7 @@ class Grapple(Ability):
             icon="\uD83E\uDD91",
             name="Grapple",
             class_key=ExpertiseClass.Fisher,
-            description="Grapple 1-2 enemies, causing Faltering them for 3 turns.",
+            description="Grapple 1-2 enemies, Faltering them for 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=6,
@@ -71,7 +71,7 @@ class DevastatingCurrent(Ability):
             icon="\uD83E\uDEE7",
             name="Devastating Current",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 110-115 damage to an enemy and 75% of the base damage again next turn.",
+            description="Deal 90-95 damage to an enemy and 50% of the base damage again next turn.",
             flavor_text="",
             mana_cost=25,
             cooldown=3,
@@ -85,10 +85,10 @@ class DevastatingCurrent(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = random.randint(110, 115)
+        damage = random.randint(90, 95)
         debuff = FixedDmgTick(
             turns_remaining=1,
-            value=ceil(0.75 * damage),
+            value=ceil(0.5 * damage),
             source_str=self.get_icon_and_name()
         )
 
@@ -112,10 +112,10 @@ class Behold(Ability):
             icon="\uD83C\uDF0C",
             name="Behold",
             class_key=ExpertiseClass.Fisher,
-            description="Decrease the damage all enemies deal by 50% for 4 turns.",
+            description="Decrease the damage all enemies deal by 25% for 4 turns.",
             flavor_text="",
-            mana_cost=50,
-            cooldown=10,
+            mana_cost=40,
+            cooldown=8,
             num_targets=-1,
             level_requirement=20,
             target_own_group=False,
@@ -126,7 +126,7 @@ class Behold(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = DmgDebuff(
             turns_remaining=4,
-            value=0.5,
+            value=0.25,
             source_str=self.get_icon_and_name()
         )
 
@@ -150,6 +150,10 @@ class Behold(Ability):
 
 class AncientKraken(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 38% chance of 4 player party (Lvl. 50-60) victory against 1
+        # Avg Number of Turns (per entity): 12
+
         super().__init__("Ancient Kraken" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Squid: 0.85,
             ItemKey.Squid: 0.85,
@@ -177,8 +181,8 @@ class AncientKraken(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(400, ExpertiseClass.Fisher)
-        self._expertise.constitution = 200
+        self._expertise.add_xp_to_class_until_level(380, ExpertiseClass.Fisher)
+        self._expertise.constitution = 180
         self._expertise.strength = 0
         self._expertise.dexterity = 20
         self._expertise.intelligence = 130
