@@ -29,7 +29,7 @@ class RazorLeaves(Ability):
             icon="\uD83C\uDF3F",
             name="Razor Leaves",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 20-25 damage to all enemies and cause Bleeding for 2 turns.",
+            description="Deal 15-20 damage to all enemies and cause Bleeding for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -43,7 +43,7 @@ class RazorLeaves(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = range(20, 25)
+        damage = range(15, 20)
 
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
 
@@ -78,7 +78,7 @@ class KelpGrasp(Ability):
             icon="\uD83C\uDF3F",
             name="Kelp Grasp",
             class_key=ExpertiseClass.Fisher,
-            description="Atrophy an enemy for 3 turns.",
+            description="Atrophy an enemy for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=3,
@@ -91,7 +91,7 @@ class KelpGrasp(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = CannotAttack(
-            turns_remaining=3,
+            turns_remaining=2,
             value=1,
             source_str=self.get_icon_and_name()
         )
@@ -155,6 +155,10 @@ class Infest(Ability):
 
 class StranglekelpHoldfast(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 13% chance of 4 player party (Lvl. 30-40) victory against 2
+        # Avg Number of Turns (per entity): 12
+
         super().__init__("Stranglekelp Holdfast" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()
@@ -169,9 +173,9 @@ class StranglekelpHoldfast(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(100, ExpertiseClass.Alchemist)
+        self._expertise.add_xp_to_class_until_level(90, ExpertiseClass.Alchemist)
         self._expertise.constitution = 50
-        self._expertise.strength = 40
+        self._expertise.strength = 30
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0
         self._expertise.luck = 7

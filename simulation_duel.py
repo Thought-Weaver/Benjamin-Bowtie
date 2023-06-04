@@ -702,7 +702,7 @@ class SimulationDuel():
 
         charmed: bool = any(se.key == StatusEffectKey.Charmed for se in npc_dueling.status_effects)
 
-        enemies = self._allies if (cur_npc in self._enemies and not charmed) else self._enemies
+        enemies = self._allies if ((cur_npc in self._enemies and not charmed) or (cur_npc in self._allies and charmed)) else self._enemies
 
         cannot_target_ids: List[str] = []
         for se in npc_dueling.status_effects:

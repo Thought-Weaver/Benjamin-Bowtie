@@ -68,7 +68,7 @@ class Ram(Ability):
             icon="\uD83D\uDCA8",
             name="Ram",
             class_key=ExpertiseClass.Guardian,
-            description="Increase your Con, Dex, and Str by 5 for the rest of the duel.",
+            description="Increase your Con, Dex, and Str by 4 for the rest of the duel.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -82,19 +82,19 @@ class Ram(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_buff = ConBuff(
             turns_remaining=-1,
-            value=5,
+            value=4,
             source_str=self.get_icon_and_name()
         )
 
         dex_buff = DexBuff(
             turns_remaining=-1,
-            value=5,
+            value=4,
             source_str=self.get_icon_and_name()
         )
 
         str_buff = StrBuff(
             turns_remaining=-1,
-            value=5,
+            value=4,
             source_str=self.get_icon_and_name()
         )
 
@@ -119,7 +119,7 @@ class Wham(Ability):
             icon="\uD83D\uDC1F",
             name="Wham",
             class_key=ExpertiseClass.Guardian,
-            description="Deal damage an enemy equal to 20% of your remaining health.",
+            description="Deal damage an enemy equal to 16% of your remaining health.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
@@ -132,7 +132,7 @@ class Wham(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        damage = ceil(caster.get_expertise().hp * 0.2)
+        damage = ceil(caster.get_expertise().hp * 0.16)
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -151,6 +151,10 @@ class Wham(Ability):
 
 class Titanfish(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 22% chance of 4 player party (Lvl. 30-40) victory against 1
+        # Avg Number of Turns (per entity): 8
+
         super().__init__("Titanfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()

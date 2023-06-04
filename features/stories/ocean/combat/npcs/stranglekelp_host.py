@@ -18,6 +18,10 @@ from features.stats import Stats
 
 class StranglekelpHost(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 49% chance of 4 player party (Lvl. 30-40) victory against 1
+        # Avg Number of Turns (per entity): 20
+
         super().__init__("Stranglekelp Host" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.RustedHarpoon: 0.03,
             ItemKey.Stranglekelp: 0.8,

@@ -42,7 +42,7 @@ class Fission(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=-1,
-            value=15,
+            value=10,
             source_str=self.get_icon_and_name()
         )
 
@@ -73,7 +73,7 @@ class Regenerate(Ability):
             icon="\u267B\uFE0F",
             name="Regenerate",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 100 health.",
+            description="Restore 75 health.",
             flavor_text="",
             mana_cost=10,
             cooldown=2,
@@ -86,7 +86,7 @@ class Regenerate(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_heal_ability(caster, targets, range(100, 100))
+        results: List[str] = self._use_heal_ability(caster, targets, range(75, 75))
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -106,7 +106,7 @@ class Starpierce(Ability):
             icon="\u2B50",
             name="Starpierce",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 35-40 damage to all enemies.",
+            description="Deal 25-30 damage to all enemies.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -119,7 +119,7 @@ class Starpierce(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(35, 40))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(25, 30))
 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
