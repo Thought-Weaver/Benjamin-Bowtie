@@ -790,6 +790,7 @@ class AlchemyChamberView(discord.ui.View):
         # TODO: See above also here.
 
         player: Player = self._get_player()
+        player_recipe_keys: List[RecipeKey] = list(map(lambda r: r.key, player.get_house().crafting_recipes))
         inventory: Inventory = player.get_inventory()
 
         # Validation before continuing, slightly slower but avoids having to remove and then return items when something goes wrong
@@ -810,7 +811,7 @@ class AlchemyChamberView(discord.ui.View):
             recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
             if recipe.inputs == self._current_alchemizing:
                 # Assume uniqueness and that the first valid matching is the result
-                if recipe not in player.get_house().crafting_recipes:
+                if recipe.key not in player_recipe_keys:
                     new_recipe = True
                     player.get_house().crafting_recipes.append(recipe)
                 found_recipe = recipe
@@ -827,7 +828,7 @@ class AlchemyChamberView(discord.ui.View):
             alchemizing_failed_info: str = ""
             for input_key, quantity in self._current_alchemizing.items():
                 if quantity > 0:
-                    recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key, [ClassTag.Consumable.Potion, ClassTag.Ingredient.PotionIngredient])
+                    recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key, [ClassTag.Consumable.Potion, ClassTag.Ingredient.PotionIngredient], player_recipe_keys)
                     if recipe_key is not None:
                         recipe: Recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
 
