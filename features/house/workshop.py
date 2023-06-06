@@ -867,6 +867,7 @@ class WorkshopView(discord.ui.View):
         # TODO: See above also here.
 
         player: Player = self._get_player()
+        player_recipe_keys: List[RecipeKey] = list(map(lambda r: r.key, player.get_house().crafting_recipes))
         inventory: Inventory = player.get_inventory()
 
         # Validation before continuing, slightly slower but avoids having to remove and then return items when something goes wrong
@@ -887,7 +888,7 @@ class WorkshopView(discord.ui.View):
             recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
             if recipe.inputs == self._current_crafting:
                 # Assume uniqueness and that the first valid matching is the result
-                if recipe not in player.get_house().crafting_recipes:
+                if recipe.key not in player_recipe_keys:
                     new_recipe = True
                     player.get_house().crafting_recipes.append(recipe)
                 found_recipe = recipe
@@ -905,7 +906,7 @@ class WorkshopView(discord.ui.View):
             failed_info: str = ""
             for input_key, quantity in self._current_crafting.items():
                 if quantity > 0:
-                    recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key, [ClassTag.Equipment.Equipment, ClassTag.Ingredient.CraftingMaterial])
+                    recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key, [ClassTag.Equipment.Equipment, ClassTag.Ingredient.CraftingMaterial], player_recipe_keys)
                     if recipe_key is not None:                    
                         recipe: Recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
                         
