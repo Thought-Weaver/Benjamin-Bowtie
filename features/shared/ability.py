@@ -598,7 +598,7 @@ class SeaSprayI(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray I",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 1-3 damage to an enemy.",
+            description="Summon a rush of water that deals 2-4 + 25% of your Intelligence damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -611,7 +611,11 @@ class SeaSprayI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(1, 3))
+
+        bonus_damage: int = ceil(0.25 * caster.get_expertise().intelligence)
+        damage = range(2 + bonus_damage, 4 + bonus_damage)
+
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -633,7 +637,7 @@ class SeaSprayII(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray II",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 2-5 damage to an enemy.",
+            description="Summon a rush of water that deals 4-7 + 35% of your Intelligence damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -646,7 +650,11 @@ class SeaSprayII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(2, 5))
+
+        bonus_damage: int = ceil(0.35 * caster.get_expertise().intelligence)
+        damage = range(4 + bonus_damage, 7 + bonus_damage)
+
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -666,7 +674,7 @@ class SeaSprayIII(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray III",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 3-6 damage to an enemy.",
+            description="Summon a rush of water that deals 6-9 + 45% of your Intelligence damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -679,7 +687,11 @@ class SeaSprayIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(3, 6))
+
+        bonus_damage: int = ceil(0.45 * caster.get_expertise().intelligence)
+        damage = range(6 + bonus_damage, 9 + bonus_damage)
+
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -699,7 +711,7 @@ class SeaSprayIV(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray IV",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 4-7 damage to an enemy.",
+            description="Summon a rush of water that deals 8-11 + 55% of your Intelligence damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -712,7 +724,11 @@ class SeaSprayIV(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(4, 7))
+
+        bonus_damage: int = ceil(0.55 * caster.get_expertise().intelligence)
+        damage = range(8 + bonus_damage, 11 + bonus_damage)
+        
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -732,7 +748,7 @@ class SeaSprayV(Ability):
             icon="\uD83D\uDCA6",
             name="Sea Spray V",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a rush of water that deals 5-8 damage to an enemy.",
+            description="Summon a rush of water that deals 10-13 + 65% of your Intelligence damage to an enemy.",
             flavor_text="",
             mana_cost=5,
             cooldown=0,
@@ -745,7 +761,11 @@ class SeaSprayV(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(5, 8))
+
+        bonus_damage: int = ceil(0.65 * caster.get_expertise().intelligence)
+        damage = range(10 + bonus_damage, 13 + bonus_damage)
+        
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
