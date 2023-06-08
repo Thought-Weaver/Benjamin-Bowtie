@@ -181,6 +181,7 @@ class FacelessHusk(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
         # 47% chance of 4 player party (Lvl. 50-60) victory against 2
+        # 35% and 18 turns for new item adjustments
         # Avg Number of Turns (per entity): 21
 
         super().__init__("Faceless Husk" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})

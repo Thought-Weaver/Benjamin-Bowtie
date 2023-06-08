@@ -73,10 +73,10 @@ class Regenerate(Ability):
             icon="\u267B\uFE0F",
             name="Regenerate",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 75 health.",
+            description="Restore 50 health.",
             flavor_text="",
             mana_cost=10,
-            cooldown=2,
+            cooldown=3,
             num_targets=0,
             level_requirement=1,
             target_own_group=True,
@@ -86,7 +86,7 @@ class Regenerate(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_heal_ability(caster, targets, range(75, 75))
+        results: List[str] = self._use_heal_ability(caster, targets, range(50, 50))
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -140,7 +140,8 @@ class Starpierce(Ability):
 class BrittleStar(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 30-40) victory against 1
+        # 32% chance of 4 player party (Lvl. 30-40) victory against 1
+        # Avg Number of Turns (per entity): 19
 
         super().__init__("Brittle Star" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {})
 
@@ -156,12 +157,12 @@ class BrittleStar(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(150, ExpertiseClass.Fisher)
+        self._expertise.add_xp_to_class_until_level(130, ExpertiseClass.Fisher)
         self._expertise.constitution = 40
         self._expertise.strength = 0
-        self._expertise.dexterity = 50
+        self._expertise.dexterity = 40
         self._expertise.intelligence = 20
-        self._expertise.luck = 37
+        self._expertise.luck = 27
         self._expertise.memory = 3
 
     def _setup_equipment(self):

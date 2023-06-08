@@ -159,6 +159,7 @@ class VoidseenAngler(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
         # 55% chance of 4 player party (Lvl. 50-60) victory against 1
+        # 44% and 14 turns for new item adjustments
         # Avg Number of Turns (per entity): 15
 
         super().__init__("Voidseen Angler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})

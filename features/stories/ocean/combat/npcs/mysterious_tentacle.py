@@ -147,6 +147,7 @@ class MysteriousTentacle(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
         # 32% chance of 4 player party (Lvl. 50-60) victory against 1
+        # 18% and 11 turns for new item adjustments
         # Avg Number of Turns (per entity): 11
 
         super().__init__("Mysterious Tentacle" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})

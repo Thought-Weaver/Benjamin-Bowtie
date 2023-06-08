@@ -162,10 +162,10 @@ class Mesmerfish(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(80, ExpertiseClass.Alchemist)
+        self._expertise.add_xp_to_class_until_level(70, ExpertiseClass.Alchemist)
         self._expertise.constitution = 30
         self._expertise.strength = 0
-        self._expertise.dexterity = 17
+        self._expertise.dexterity = 7
         self._expertise.intelligence = 30
         self._expertise.luck = 0
         self._expertise.memory = 3

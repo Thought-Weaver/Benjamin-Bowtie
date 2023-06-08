@@ -152,8 +152,8 @@ class Wham(Ability):
 class Titanfish(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 22% chance of 4 player party (Lvl. 30-40) victory against 1
-        # Avg Number of Turns (per entity): 8
+        # 28% chance of 4 player party (Lvl. 30-40) victory against 1
+        # Avg Number of Turns (per entity): 9
 
         super().__init__("Titanfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
@@ -169,9 +169,9 @@ class Titanfish(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(160, ExpertiseClass.Guardian)
-        self._expertise.constitution = 100
-        self._expertise.strength = 30
+        self._expertise.add_xp_to_class_until_level(145, ExpertiseClass.Guardian)
+        self._expertise.constitution = 90
+        self._expertise.strength = 25
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0
         self._expertise.luck = 7

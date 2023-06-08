@@ -152,6 +152,7 @@ class AncientKraken(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
         # 38% chance of 4 player party (Lvl. 50-60) victory against 1
+        # 25% and 11 turns for new item adjustments
         # Avg Number of Turns (per entity): 12
 
         super().__init__("Ancient Kraken" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {

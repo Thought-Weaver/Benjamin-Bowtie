@@ -156,8 +156,8 @@ class Infest(Ability):
 class StranglekelpHoldfast(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 13% chance of 4 player party (Lvl. 30-40) victory against 2
-        # Avg Number of Turns (per entity): 12
+        # 46% chance of 4 player party (Lvl. 30-40) victory against 2
+        # Avg Number of Turns (per entity): 15
 
         super().__init__("Stranglekelp Holdfast" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
@@ -173,9 +173,9 @@ class StranglekelpHoldfast(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(90, ExpertiseClass.Alchemist)
+        self._expertise.add_xp_to_class_until_level(80, ExpertiseClass.Alchemist)
         self._expertise.constitution = 50
-        self._expertise.strength = 30
+        self._expertise.strength = 20
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0
         self._expertise.luck = 7

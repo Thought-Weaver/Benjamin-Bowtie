@@ -170,6 +170,7 @@ class FishMaybe(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
         # 25% chance of 4 player party (Lvl. 50-60) victory against 2
+        # 20% and 13 turns for new item adjustments
         # Avg Number of Turns (per entity): 13
 
         super().__init__("Fish?" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})

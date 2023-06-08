@@ -144,6 +144,7 @@ class WrigglingMass(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
         # 65% chance of 4 player party (Lvl. 50-60) victory against 1
+        # 51% and 12 turns for new item adjustments
         # Avg Number of Turns (per entity): 13
 
         super().__init__("Wriggling Mass" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})

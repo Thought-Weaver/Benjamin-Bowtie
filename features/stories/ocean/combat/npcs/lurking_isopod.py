@@ -143,6 +143,7 @@ class LurkingIsopod(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
         # 26% chance of 4 player party (Lvl. 50-60) victory against 1
+        # 19% and 13 turns for new item adjustments
         # Avg Number of Turns (per entity): 16
 
         super().__init__("Lurking Isopod" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {})
