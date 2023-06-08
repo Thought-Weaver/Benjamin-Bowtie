@@ -1942,7 +1942,8 @@ class DuelView(discord.ui.View):
                     if self._targets_remaining < 0:
                         dueling_copy: DuelView = self.create_copy()
 
-                        dueling_copy._selected_ability = dueling_copy._turn_order[dueling_copy._turn_index].get_dueling().abilities[i]
+                        copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
+                        dueling_copy._selected_ability = copy_cur_npc.get_dueling().abilities[i]
                         dueling_copy._selected_ability_index = i
 
                         targets = []
@@ -1976,7 +1977,8 @@ class DuelView(discord.ui.View):
                     elif self._targets_remaining == 0:
                         dueling_copy: DuelView = self.create_copy()
 
-                        dueling_copy._selected_ability = dueling_copy._turn_order[dueling_copy._turn_index].get_dueling().abilities[i]
+                        copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
+                        dueling_copy._selected_ability = copy_cur_npc.get_dueling().abilities[i]
                         dueling_copy._selected_ability_index = i
 
                         targets = [cur_npc]
@@ -2009,7 +2011,8 @@ class DuelView(discord.ui.View):
                             for targets in combinations:
                                 dueling_copy: DuelView = self.create_copy()
 
-                                dueling_copy._selected_ability = dueling_copy._turn_order[dueling_copy._turn_index].get_dueling().abilities[i]
+                                copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
+                                dueling_copy._selected_ability = copy_cur_npc.get_dueling().abilities[i]
                                 dueling_copy._selected_ability_index = i
 
                                 target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)
@@ -2041,7 +2044,8 @@ class DuelView(discord.ui.View):
                 if self._targets_remaining < 0:
                     dueling_copy: DuelView = self.create_copy()
 
-                    dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
+                    copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
+                    dueling_copy._selected_item = copy_cur_npc.get_inventory().get_inventory_slots()[i]
                     dueling_copy._selected_item_index = i
 
                     targets = []
@@ -2075,7 +2079,8 @@ class DuelView(discord.ui.View):
                 elif self._targets_remaining == 0:
                     dueling_copy: DuelView = self.create_copy()
 
-                    dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
+                    copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
+                    dueling_copy._selected_item = copy_cur_npc.get_inventory().get_inventory_slots()[i]
                     dueling_copy._selected_item_index = i
 
                     targets = [cur_npc]
@@ -2108,7 +2113,8 @@ class DuelView(discord.ui.View):
                         for targets in combinations:
                             dueling_copy: DuelView = self.create_copy()
 
-                            dueling_copy._selected_item = dueling_copy._turn_order[dueling_copy._turn_index].get_inventory().get_inventory_slots()[i]
+                            copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
+                            dueling_copy._selected_item = copy_cur_npc.get_inventory().get_inventory_slots()[i]
                             dueling_copy._selected_item_index = i
 
                             target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)
