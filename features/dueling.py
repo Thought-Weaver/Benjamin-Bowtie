@@ -723,7 +723,7 @@ class Dueling():
                             current_effect_info = chance_status_effect.get(se_key, (0, 0))
                             chance_status_effect[se_key] = (item_effect.effect_value + current_effect_info[0], max(item_effect.effect_time, current_effect_info[1]))
 
-        return self._apply_status_effect_results([], chance_status_effect, target, self_entity, target_index, self_index, target_is_ally)
+        return self._apply_status_effect_results([], chance_status_effect, target, self_entity, target_index, self_index, target_is_ally, None)
 
     def apply_chance_status_effect_from_item(self, item_effect_cat: ItemEffectCategory, item: Item, target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool):
         # The first element in the tuple is the percent chance of receiving the effect and the
@@ -744,15 +744,16 @@ class Dueling():
                         current_effect_info = chance_status_effect.get(se_key, (0, 0))
                         chance_status_effect[se_key] = (item_effect.effect_value + current_effect_info[0], max(item_effect.effect_time, current_effect_info[1]))
 
-        return self._apply_status_effect_results([], chance_status_effect, target, self_entity, target_index, self_index, target_is_ally)
+        return self._apply_status_effect_results([], chance_status_effect, target, self_entity, target_index, self_index, target_is_ally, item.get_full_name())
 
-    def _apply_status_effect_results(self, result_strs: List[str], chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]], target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool):
+    def _apply_status_effect_results(self, result_strs: List[str], chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]], target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool, source_str: str | None):
         chance_poisoned, turns_poisoned = chance_status_effect.get(StatusEffectKey.Poisoned, (0, 0))
         if random() < chance_poisoned:
             status_effect = Poisoned(
                 turns_remaining=turns_poisoned,
                 value=POISONED_PERCENT_HP,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -762,7 +763,8 @@ class Dueling():
             status_effect = Bleeding(
                 turns_remaining=turns_bleeding,
                 value=BLEED_PERCENT_HP,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -772,7 +774,8 @@ class Dueling():
             status_effect = TurnSkipChance(
                 turns_remaining=turns_faltering,
                 value=1,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -782,7 +785,8 @@ class Dueling():
             status_effect = Taunted(
                 turns_remaining=turns_taunted,
                 forced_to_attack=self_entity,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -792,7 +796,8 @@ class Dueling():
             status_effect = CannotTarget(
                 turns_remaining=turns_convinced,
                 cant_target=self_entity,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -802,7 +807,8 @@ class Dueling():
             status_effect = Charmed(
                 turns_remaining=turns_charmed,
                 value=1,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -812,7 +818,8 @@ class Dueling():
             status_effect = CannotAttack(
                 turns_remaining=turns_atrophied,
                 value=1,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -822,7 +829,8 @@ class Dueling():
             status_effect = Sleeping(
                 turns_remaining=turns_sleeping,
                 value=1,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -834,7 +842,8 @@ class Dueling():
             status_effect = Decaying(
                 turns_remaining=turns_decaying,
                 value=percent_decaying,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -844,7 +853,8 @@ class Dueling():
             status_effect = Undying(
                 turns_remaining=turns_undying,
                 value=1,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -856,7 +866,8 @@ class Dueling():
             status_effect = CannotUseAbilities(
                 turns_remaining=turns_enfeebled,
                 value=1,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -867,7 +878,8 @@ class Dueling():
             status_effect = DmgReduction(
                 turns_remaining=turns_protected,
                 value=percent_protected,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -880,7 +892,8 @@ class Dueling():
             status_effect = DmgVulnerability(
                 turns_remaining=turns_vulnerable,
                 value=percent_vulnerable,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -891,7 +904,8 @@ class Dueling():
             status_effect = FixedDmgTick(
                 turns_remaining=turns_echoing,
                 value=int(damage_per_turn),
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -902,7 +916,8 @@ class Dueling():
             status_effect = Generating(
                 turns_remaining=turns_generating,
                 value=int(coins_generated),
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -915,7 +930,8 @@ class Dueling():
             status_effect = Tarnished(
                 turns_remaining=turns_tarnished,
                 value=percent_tarnished,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -927,7 +943,8 @@ class Dueling():
             status_effect = ManaToHP(
                 turns_remaining=turns_sanguinated,
                 value=1,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -939,7 +956,8 @@ class Dueling():
             status_effect = PoisonHeals(
                 turns_remaining=turns_absorbing,
                 value=1,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -952,7 +970,8 @@ class Dueling():
             status_effect = DmgBuff(
                 turns_remaining=turns_empowered,
                 value=percent_empowered,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -965,7 +984,8 @@ class Dueling():
             status_effect = DmgDebuff(
                 turns_remaining=turns_diminished,
                 value=percent_diminished,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -978,7 +998,8 @@ class Dueling():
                 turns_remaining=turns_reverberating,
                 value=percent_reverberating,
                 caster=self_entity,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -988,7 +1009,8 @@ class Dueling():
             status_effect = ConBuff(
                 turns_remaining=turns_con_buff,
                 value=con_buff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -1000,7 +1022,8 @@ class Dueling():
             status_effect = ConDebuff(
                 turns_remaining=turns_con_debuff,
                 value=con_debuff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -1010,7 +1033,8 @@ class Dueling():
             status_effect = StrBuff(
                 turns_remaining=turns_str_buff,
                 value=str_buff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -1022,7 +1046,8 @@ class Dueling():
             status_effect = StrDebuff(
                 turns_remaining=turns_str_debuff,
                 value=str_debuff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -1032,7 +1057,8 @@ class Dueling():
             status_effect = DexBuff(
                 turns_remaining=turns_dex_buff,
                 value=dex_buff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -1044,7 +1070,8 @@ class Dueling():
             status_effect = DexDebuff(
                 turns_remaining=turns_dex_debuff,
                 value=dex_debuff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -1054,7 +1081,8 @@ class Dueling():
             status_effect = IntBuff(
                 turns_remaining=turns_int_buff,
                 value=int_buff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -1066,7 +1094,8 @@ class Dueling():
             status_effect = IntDebuff(
                 turns_remaining=turns_int_debuff,
                 value=int_debuff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -1076,7 +1105,8 @@ class Dueling():
             status_effect = LckBuff(
                 turns_remaining=turns_lck_buff,
                 value=lck_buff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
@@ -1088,7 +1118,8 @@ class Dueling():
             status_effect = LckDebuff(
                 turns_remaining=turns_lck_debuff,
                 value=lck_debuff,
-                trigger_first_turn=False
+                trigger_first_turn=False,
+                source_str=source_str
             )
             if not target_is_ally:
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
