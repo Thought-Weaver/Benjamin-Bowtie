@@ -14,7 +14,7 @@
         "armor_amount": 200
     },
     "attr_requirements:": {
-        "constitution": 25
+        "strength": 25
     },
     "item_effects": {
         "permanent": [

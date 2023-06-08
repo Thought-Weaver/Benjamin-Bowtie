@@ -39,6 +39,6 @@
         "armor_amount": 106
     },
     "attr_requirements": {
-        "constitution": 41
+        "strength": 41
     }
 }

@@ -37,6 +37,6 @@
         "armor_amount": 31
     },
     "attr_requirements": {
-        "constitution": 8
+        "dexterity": 8
     }
 }

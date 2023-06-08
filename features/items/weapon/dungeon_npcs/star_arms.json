@@ -11,8 +11,8 @@
     "count": 1,
     "level_requirement": 0,
     "weapon_stats": {
-        "min_damage": 25,
-        "max_damage": 30,
+        "min_damage": 15,
+        "max_damage": 20,
         "num_targets": -1
     },
     "item_effects": {

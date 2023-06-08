@@ -217,6 +217,9 @@ NAMES_AND_ICONS: Dict[ClassTag.Weapon | ClassTag.Equipment, List[Tuple[str, str]
     ]
 }
 
+INT_ARMOR_NAMES: List[str] = ["Cloak", "Coat", "Trousers", "Breeches", "Sandals", "Shoes", "Manchettes", "Gloves", "Pointed Hat", "Circlet", "Flower Crown", "Mushroom Crown", "Cowl"]
+DEX_ARMOR_NAMES: List[str] = ["Cloth Mask", "Mask", "Hood", "Tunic", "Surcoat", "Wraps", "Bracers", "Tracks", "Sabatons", "Legwraps", "Chausses"]
+
 # Note: These have +1 on the upper end since range is exclusive
 SLOTS_PER_ITEM_TYPE: Dict[ClassTag.Weapon | ClassTag.Equipment, range] = {
     ClassTag.Weapon.Bow: range(0, 3),
@@ -2812,7 +2815,8 @@ if __name__ == "__main__":
                 elif item_effect_cat == ItemEffectCategory.OnAbilityUsedAgainst:
                     item_effects.on_ability_used_against.append(effect)
 
-        name, icon = random.choice(NAMES_AND_ICONS[item_type])
+        base_name, icon = random.choice(NAMES_AND_ICONS[item_type])
+        name: str = ""
         if len(item_effects) > 0:
             prefix = ""
             suffix = ""
@@ -2831,9 +2835,9 @@ if __name__ == "__main__":
                     suffix = random.choice(possible_suffixes)
             
             if prefix != "":
-                name = prefix + " " + name
+                name = prefix + " " + base_name
             if suffix != "":
-                name = name + " " + suffix
+                name = base_name + " " + suffix
         else:
             # Just skip the item if it didn't get any valid item effects
             continue
@@ -2974,31 +2978,56 @@ if __name__ == "__main__":
             armor = random.randint(5, 150)
             armor_stats = ArmorStats(armor)
 
-            attr_reqs.constitution = int(random.uniform(0.2, 0.4) * armor)
+            if base_name in INT_ARMOR_NAMES:
+                attr_reqs.intelligence = int(random.uniform(0.2, 0.4) * armor)
+            elif base_name in DEX_ARMOR_NAMES:
+                attr_reqs.dexterity = int(random.uniform(0.2, 0.4) * armor)
+            else:
+                attr_reqs.strength = int(random.uniform(0.2, 0.4) * armor)
             level_req = int(0.75 * armor)
         elif item_type == ClassTag.Equipment.ChestArmor:
             armor = random.randint(5, 250)
             armor_stats = ArmorStats(armor)
 
-            attr_reqs.constitution = int(random.uniform(0.1, 0.2) * armor)
+            if base_name in INT_ARMOR_NAMES:
+                attr_reqs.intelligence = int(random.uniform(0.1, 0.2) * armor)
+            elif base_name in DEX_ARMOR_NAMES:
+                attr_reqs.dexterity = int(random.uniform(0.1, 0.2) * armor)
+            else:
+                attr_reqs.strength = int(random.uniform(0.1, 0.2) * armor)
             level_req = int(0.3 * armor)
         elif item_type == ClassTag.Equipment.Gloves:
             armor = random.randint(5, 100)
             armor_stats = ArmorStats(armor)
 
-            attr_reqs.constitution = int(random.uniform(0.2, 0.4) * armor)
+            if base_name in INT_ARMOR_NAMES:
+                attr_reqs.intelligence = int(random.uniform(0.2, 0.4) * armor)
+            elif base_name in DEX_ARMOR_NAMES:
+                attr_reqs.dexterity = int(random.uniform(0.2, 0.4) * armor)
+            else:
+                attr_reqs.strength = int(random.uniform(0.2, 0.4) * armor)
             level_req = int(1.4 * armor) if armor < 60 else int(0.8 * armor)
         elif item_type == ClassTag.Equipment.Leggings:
             armor = random.randint(5, 150)
             armor_stats = ArmorStats(armor)
 
-            attr_reqs.constitution = int(random.uniform(0.2, 0.4) * armor)
+            if base_name in INT_ARMOR_NAMES:
+                attr_reqs.intelligence = int(random.uniform(0.2, 0.4) * armor)
+            elif base_name in DEX_ARMOR_NAMES:
+                attr_reqs.dexterity = int(random.uniform(0.2, 0.4) * armor)
+            else:
+                attr_reqs.strength = int(random.uniform(0.2, 0.4) * armor)
             level_req = int(1.2 * armor) if armor < 60 else int(0.7 * armor)
         elif item_type == ClassTag.Equipment.Boots:
             armor = random.randint(5, 150)
             armor_stats = ArmorStats(armor)
 
-            attr_reqs.constitution = int(random.uniform(0.2, 0.4) * armor)
+            if base_name in INT_ARMOR_NAMES:
+                attr_reqs.intelligence = int(random.uniform(0.2, 0.4) * armor)
+            elif base_name in DEX_ARMOR_NAMES:
+                attr_reqs.dexterity = int(random.uniform(0.2, 0.4) * armor)
+            else:
+                attr_reqs.strength = int(random.uniform(0.2, 0.4) * armor)
             level_req = int(1.05 * armor) if armor < 60 else int(0.6 * armor)
         elif item_type == ClassTag.Weapon.Shield:
             armor = random.randint(5, 200)

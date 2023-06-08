@@ -6,7 +6,7 @@
     "rarity": "Legendary",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Valuable"],
+    "class_tags": ["Valuable", "Ingredient", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

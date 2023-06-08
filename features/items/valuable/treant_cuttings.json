@@ -2,11 +2,11 @@
     "key": "items/valuable/treant_cuttings",
     "icon": "\uD83C\uDF3F",
     "name": "Treant Cuttings",
-    "value": 300,
+    "value": 150,
     "rarity": "Epic",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Valuable"],
+    "class_tags": ["Valuable", "Ingredient", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }

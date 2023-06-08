@@ -83,6 +83,58 @@ from typing import Dict, List, Type
 #       (e) Crits for each side
 
 # -----------------------------------------------------------------------------
+# PERSONA AND CLASS RESULTS SUMMARY
+# -----------------------------------------------------------------------------
+
+# Lvl. 10-20
+# Bruiser vs. Mage: 46% Bruiser victory, 19 turns
+# Rogue vs. Mage: 46% Rogue victory, 18 turns
+# Rogue vs. Bruiser: 46% Rogue victory, 22 turns
+# Tank vs. Bruiser: 51% Tank victory, 25 turns
+# Tank vs. Mage: 47% Tank victory, 19 turns
+# Tank vs. Rogue: 53% Tank victory, 27 turns
+
+# Lvl. 50-60
+# Bruiser vs. Mage: 50% Bruiser victory, 17 turns
+# Rogue vs. Mage: 43% Rogue victory, 18 turns
+# Rogue vs. Bruiser: 46% Rogue victory, 22 turns
+# Tank vs. Bruiser: 62% Tank victory, 26 turns
+# Tank vs. Mage: 72% Tank victory, 22 turns
+# Tank vs. Rogue: 69% Tank victory, 27 turns
+
+# Lvl. 100-110
+# Bruiser vs. Mage: 65% Bruiser victory, 21 turns
+# Rogue vs. Mage: 59% Rogue victory, 26 turns
+# Rogue vs. Bruiser: 41% Rogue victory, 26 turns
+# Tank vs. Bruiser: 59% Tank victory, 31 turns
+# Tank vs. Mage: 78% Tank victory, 33 turns
+# Tank vs. Rogue: 71% Tank victory, 39 turns
+
+# Lvl. 10-20:
+# Alchemist vs. Fisher: 43% Alchemist victory, 17 turns
+# Alchemist vs. Guardian: 50% Alchemist victory, 25 turns
+# Alchemist vs. Merchant: 54% Alchemist victory, 22 turns
+# Fisher vs. Guardian: 54% Fisher victory, 17 turns
+# Fisher vs. Merchant: 62% Fisher victory, 15 turns
+# Guardian vs. Merchant: 54% Guardian victory, 18 turns
+
+# Lvl. 50-60
+# Alchemist vs. Fisher: 44% Alchemist victory, 18 turns
+# Alchemist vs. Guardian: 42% Alchemist victory, 23 turns
+# Alchemist vs. Merchant: 61% Alchemist victory, 18 turns
+# Fisher vs. Guardian: 46% Fisher victory, 18 turns
+# Fisher vs. Merchant: 61% Fisher victory, 14 turns
+# Guardian vs. Merchant: 64% Guardian victory, 17 turns
+
+# Lvl. 100-110
+# Alchemist vs. Fisher: 46% Alchemist victory, 36 turns
+# Alchemist vs. Guardian: 24% Alchemist victory, 32 turns
+# Alchemist vs. Merchant: 30% Alchemist victory, 21 turns
+# Fisher vs. Guardian: 26% Fisher victory, 24 turns
+# Fisher vs. Merchant: 31% Fisher victory, 15 turns
+# Guardian vs. Merchant: 47% Guardian victory, 16 turns
+
+# -----------------------------------------------------------------------------
 # LOGGER
 # -----------------------------------------------------------------------------
 
@@ -192,6 +244,8 @@ def generate_inventory(npc: NPC):
         item.add_amount(randint(0, 3))
         npc.get_inventory().add_item(item)
 
+    npc.get_inventory().add_coins(int(npc.get_expertise().level ** 2.2))
+
 
 def get_valid_abilities(npc: NPC) -> List[Ability]:
     def filter_none(lst: List[Ability | None]):
@@ -267,7 +321,7 @@ def generate_random_equipment(npc: NPC):
             valid_equipment[ClassTag.Equipment.Ring].append(item)
             continue
         
-        if item.get_level_requirement() > 0 and int(npc_level * 0.6) <= item.get_level_requirement() and item.meets_requirements(npc_level, npc.get_combined_attributes()):
+        if item.get_value() > 1 and item.get_level_requirement() > 0 and int(npc_level * 0.6) <= item.get_level_requirement() and item.meets_requirements(npc_level, npc.get_combined_attributes()):
             primary_tag: ClassTag.Equipment = ClassTag.Equipment.Equipment
             for tag in tags:
                 if tag in item.get_class_tags():
@@ -309,7 +363,7 @@ def setup_bruiser(npc: NPC, level: int):
     for _ in range(level):
         attr = choices(
             [Attribute.Constitution, Attribute.Strength, Attribute.Dexterity, Attribute.Intelligence, Attribute.Luck, Attribute.Memory],
-            weights=[0.4, 0.3, 0.1, 0, 0.1, 0.1]
+            weights=[0.3, 0.4, 0.1, 0, 0.1, 0.1]
         )[0]
 
         if attr == Attribute.Constitution:
@@ -343,7 +397,7 @@ def setup_healer(npc: NPC, level: int):
     for _ in range(level):
         attr = choices(
             [Attribute.Constitution, Attribute.Strength, Attribute.Dexterity, Attribute.Intelligence, Attribute.Luck, Attribute.Memory],
-            weights=[0.35, 0, 0.1, 0.35, 0.1, 0.1]
+            weights=[0.3, 0, 0.1, 0.4, 0.1, 0.1]
         )[0]
 
         if attr == Attribute.Constitution:
@@ -377,7 +431,7 @@ def setup_mage(npc: NPC, level: int):
     for _ in range(level):
         attr = choices(
             [Attribute.Constitution, Attribute.Strength, Attribute.Dexterity, Attribute.Intelligence, Attribute.Luck, Attribute.Memory],
-            weights=[0.35, 0, 0.1, 0.35, 0.1, 0.1]
+            weights=[0.2, 0, 0.1, 0.5, 0.1, 0.1]
         )[0]
 
         if attr == Attribute.Constitution:
@@ -411,7 +465,7 @@ def setup_rogue(npc: NPC, level: int):
     for _ in range(level):
         attr = choices(
             [Attribute.Constitution, Attribute.Strength, Attribute.Dexterity, Attribute.Intelligence, Attribute.Luck, Attribute.Memory],
-            weights=[0.35, 0.1, 0.35, 0, 0.1, 0.1]
+            weights=[0.2, 0.1, 0.5, 0, 0.1, 0.1]
         )[0]
 
         if attr == Attribute.Constitution:
@@ -445,7 +499,7 @@ def setup_specialist(npc: NPC, level: int):
     for _ in range(level):
         attr = choices(
             [Attribute.Constitution, Attribute.Strength, Attribute.Dexterity, Attribute.Intelligence, Attribute.Luck, Attribute.Memory],
-            weights=[0.4, 0, 0.1, 0.4, 0, 0.1]
+            weights=[0.3, 0, 0.1, 0.5, 0, 0.1]
         )[0]
 
         if attr == Attribute.Constitution:
@@ -527,6 +581,180 @@ def generate_npc_for_persona(persona: NPCDuelingPersonas, level: int, index: int
 
     return npc
 
+
+def setup_alchemist(npc: NPC, level: int):
+    # Assign xp class levels
+    alchemist_level: int = ceil(0.8 * level)
+    fisher_level: int = ceil(0 * level)
+    guardian_level: int = ceil(0.1 * level)
+    merchant_level: int = ceil(0.1 * level)
+
+    xp = npc.get_expertise()
+    xp.add_xp_to_class_until_level(alchemist_level, ExpertiseClass.Alchemist)
+    xp.add_xp_to_class_until_level(fisher_level, ExpertiseClass.Fisher)
+    xp.add_xp_to_class_until_level(guardian_level, ExpertiseClass.Guardian)
+    xp.add_xp_to_class_until_level(merchant_level, ExpertiseClass.Merchant)
+
+    # Assign attribute points
+    for _ in range(level):
+        attr = choices(
+            [Attribute.Constitution, Attribute.Strength, Attribute.Dexterity, Attribute.Intelligence, Attribute.Luck, Attribute.Memory],
+            weights=[0.3, 0, 0.1, 0.5, 0, 0.1]
+        )[0]
+
+        if attr == Attribute.Constitution:
+            npc.get_expertise().constitution += 1
+        elif attr == Attribute.Strength:
+            npc.get_expertise().strength += 1
+        elif attr == Attribute.Dexterity:
+            npc.get_expertise().dexterity += 1
+        elif attr == Attribute.Intelligence:
+            npc.get_expertise().intelligence += 1
+        elif attr == Attribute.Luck:
+            npc.get_expertise().luck += 1
+        else:
+            npc.get_expertise().memory += 1
+
+
+def setup_fisher(npc: NPC, level: int):
+    # Assign xp class levels
+    alchemist_level: int = ceil(0 * level)
+    fisher_level: int = ceil(0.8 * level)
+    guardian_level: int = ceil(0.1 * level)
+    merchant_level: int = ceil(0.1 * level)
+
+    xp = npc.get_expertise()
+    xp.add_xp_to_class_until_level(alchemist_level, ExpertiseClass.Alchemist)
+    xp.add_xp_to_class_until_level(fisher_level, ExpertiseClass.Fisher)
+    xp.add_xp_to_class_until_level(guardian_level, ExpertiseClass.Guardian)
+    xp.add_xp_to_class_until_level(merchant_level, ExpertiseClass.Merchant)
+
+    # Assign attribute points
+    for _ in range(level):
+        attr = choices(
+            [Attribute.Constitution, Attribute.Strength, Attribute.Dexterity, Attribute.Intelligence, Attribute.Luck, Attribute.Memory],
+            weights=[0.3, 0, 0.1, 0.5, 0, 0.1]
+        )[0]
+
+        if attr == Attribute.Constitution:
+            npc.get_expertise().constitution += 1
+        elif attr == Attribute.Strength:
+            npc.get_expertise().strength += 1
+        elif attr == Attribute.Dexterity:
+            npc.get_expertise().dexterity += 1
+        elif attr == Attribute.Intelligence:
+            npc.get_expertise().intelligence += 1
+        elif attr == Attribute.Luck:
+            npc.get_expertise().luck += 1
+        else:
+            npc.get_expertise().memory += 1
+
+
+def setup_guardian(npc: NPC, level: int):
+    # Assign xp class levels
+    alchemist_level: int = ceil(0 * level)
+    fisher_level: int = ceil(0 * level)
+    guardian_level: int = ceil(0.9 * level)
+    merchant_level: int = ceil(0.1 * level)
+
+    xp = npc.get_expertise()
+    xp.add_xp_to_class_until_level(alchemist_level, ExpertiseClass.Alchemist)
+    xp.add_xp_to_class_until_level(fisher_level, ExpertiseClass.Fisher)
+    xp.add_xp_to_class_until_level(guardian_level, ExpertiseClass.Guardian)
+    xp.add_xp_to_class_until_level(merchant_level, ExpertiseClass.Merchant)
+
+    # Assign attribute points
+    for _ in range(level):
+        attr = choices(
+            [Attribute.Constitution, Attribute.Strength, Attribute.Dexterity, Attribute.Intelligence, Attribute.Luck, Attribute.Memory],
+            weights=[0.4, 0.4, 0.1, 0, 0, 0.1]
+        )[0]
+
+        if attr == Attribute.Constitution:
+            npc.get_expertise().constitution += 1
+        elif attr == Attribute.Strength:
+            npc.get_expertise().strength += 1
+        elif attr == Attribute.Dexterity:
+            npc.get_expertise().dexterity += 1
+        elif attr == Attribute.Intelligence:
+            npc.get_expertise().intelligence += 1
+        elif attr == Attribute.Luck:
+            npc.get_expertise().luck += 1
+        else:
+            npc.get_expertise().memory += 1
+
+
+def setup_merchant(npc: NPC, level: int):
+    # Assign xp class levels
+    alchemist_level: int = ceil(0 * level)
+    fisher_level: int = ceil(0 * level)
+    guardian_level: int = ceil(0.1 * level)
+    merchant_level: int = ceil(0.9 * level)
+
+    xp = npc.get_expertise()
+    xp.add_xp_to_class_until_level(alchemist_level, ExpertiseClass.Alchemist)
+    xp.add_xp_to_class_until_level(fisher_level, ExpertiseClass.Fisher)
+    xp.add_xp_to_class_until_level(guardian_level, ExpertiseClass.Guardian)
+    xp.add_xp_to_class_until_level(merchant_level, ExpertiseClass.Merchant)
+
+    # Assign attribute points
+    for _ in range(level):
+        attr = choices(
+            [Attribute.Constitution, Attribute.Strength, Attribute.Dexterity, Attribute.Intelligence, Attribute.Luck, Attribute.Memory],
+            weights=[0.25, 0, 0, 0.35, 0.3, 0.1]
+        )[0]
+
+        if attr == Attribute.Constitution:
+            npc.get_expertise().constitution += 1
+        elif attr == Attribute.Strength:
+            npc.get_expertise().strength += 1
+        elif attr == Attribute.Dexterity:
+            npc.get_expertise().dexterity += 1
+        elif attr == Attribute.Intelligence:
+            npc.get_expertise().intelligence += 1
+        elif attr == Attribute.Luck:
+            npc.get_expertise().luck += 1
+        else:
+            npc.get_expertise().memory += 1
+
+
+def generate_npc_for_class(xp_class: ExpertiseClass, level: int, index: int) -> NPC:
+    persona = NPCDuelingPersonas.Unknown
+    if xp_class == ExpertiseClass.Alchemist:
+        persona = NPCDuelingPersonas.Mage
+    elif xp_class == ExpertiseClass.Fisher:
+        persona = NPCDuelingPersonas.Mage
+    elif xp_class == ExpertiseClass.Guardian:
+        persona = NPCDuelingPersonas.Bruiser
+    elif xp_class == ExpertiseClass.Merchant:
+        persona = NPCDuelingPersonas.Mage
+
+    npc = NPC(f"NPC {index}", NPCRoles.Unknown, persona, {})
+
+    if xp_class == ExpertiseClass.Alchemist:
+        setup_alchemist(npc, level)
+    elif xp_class == ExpertiseClass.Fisher:
+        setup_fisher(npc, level)
+    elif xp_class == ExpertiseClass.Guardian:
+        setup_guardian(npc, level)
+    elif xp_class == ExpertiseClass.Merchant:
+        setup_merchant(npc, level)
+
+    # Assign abilities
+    abilities = get_valid_abilities(npc)
+    npc.get_dueling().abilities = abilities
+
+    # Assign equipment
+    generate_random_equipment(npc)
+
+    # Update stats
+    npc.get_expertise().update_stats(npc.get_combined_attributes())
+
+    # Generate inventory items
+    generate_inventory(npc)
+
+    return npc
+
 # -----------------------------------------------------------------------------
 # LOGGING HELPER FUNCTIONS
 # -----------------------------------------------------------------------------
@@ -564,16 +792,11 @@ def get_full_equipment_str(npc: NPC):
 # -----------------------------------------------------------------------------
 
 ENEMY_CLASSES: List[List[type]] = [
-    [Mesmerfish, Mesmerfish, Mesmerfish],
-    [StranglekelpHost],
-    [StranglekelpHoldfast, StranglekelpHoldfast],
-    [Titanfish],
-    [BrittleStar],
-    [Jellyfish, Jellyfish, Jellyfish]
+    # [Mesmerfish, Mesmerfish, Mesmerfish]
 ]
 ALLY_CLASS_RANGE: range = range(30, 40)
 
-SIMULATION_ITERATIONS = 1024
+SIMULATION_ITERATIONS = 512
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 
@@ -598,16 +821,19 @@ class SimulationResult():
     allies_won: bool = False
     turns_taken_per_entity: float = 0
 
-def generate_ally_npcs():
+def generate_ally_npcs(preset_persona: NPCDuelingPersonas | None=None, preset_class: ExpertiseClass | None=None):
     allies_per_sim: List[List[NPC]] = []
     for _ in range(SIMULATION_ITERATIONS):
         allies: List[NPC] = []
         for j in range(NUM_ALLIES):
-            persona = choice(PERSONAS)
             level = randint(ALLY_CLASS_RANGE.start, ALLY_CLASS_RANGE.stop)
-            ally = generate_npc_for_persona(persona, level, j)
-            
-            allies.append(ally)
+            if preset_class is None:
+                persona = choice(PERSONAS) if preset_persona is None else preset_persona
+                ally = generate_npc_for_persona(persona, level, j)
+                allies.append(ally)
+            else:
+                ally = generate_npc_for_class(preset_class, level, j)
+                allies.append(ally)
         allies_per_sim.append(allies)
     return allies_per_sim
 

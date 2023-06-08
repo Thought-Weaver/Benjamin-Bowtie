@@ -34,7 +34,7 @@
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
-                "associated_status_effect": "Atrophied"
+                "associated_status_effect": "CannotAttack"
             },
             {
                 "effect_type": "ResistStatusEffect",
@@ -42,7 +42,7 @@
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
-                "associated_status_effect": "Enfeebled"
+                "associated_status_effect": "CannotUseAbilities"
             }
         ],
         "on_turn_start": [],

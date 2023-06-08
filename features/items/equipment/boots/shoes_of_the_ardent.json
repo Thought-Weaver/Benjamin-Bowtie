@@ -39,6 +39,6 @@
         "armor_amount": 9
     },
     "attr_requirements": {
-        "constitution": 3
+        "intelligence": 3
     }
 }
