@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from features.house.garden import GardenPlot
     from features.house.recipe import Recipe
     from features.player import Player
+    from features.shared.item import Item
 
 # -----------------------------------------------------------------------------
 # HOUSE CLASS
@@ -44,6 +45,13 @@ class House():
 
         self.garden_plots: List[GardenPlot] = []
         self.auto_harvested_seeds: List[ItemKey] = []
+
+    def get_plants_just_matured(self):
+        plants: List[Item] = []
+        for plot in self.garden_plots:
+            if plot.seed_data is not None and plot.growth_ticks == plot.seed_data.ticks_until_mature and plot.plant is not None:
+                plants.append(plot.plant)
+        return plants
 
     def tick_garden(self, only_update_display: bool=False):
         if HouseRoom.Garden not in self.house_rooms:

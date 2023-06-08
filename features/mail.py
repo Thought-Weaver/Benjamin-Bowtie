@@ -222,7 +222,7 @@ class MailModal(discord.ui.Modal):
             return
 
         mail = Mail(self._user.display_name, sent_item, sent_coins, self._message_input.value, str(time.time()).split(".")[0], self._user.id)
-        giftee_player.get_mailbox().append(mail)
+        await giftee_player.send_mail(mail)
         
         if sent_coins > 0:
             coin_str = "coin" if sent_coins == 1 else "coins"

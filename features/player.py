@@ -3,6 +3,7 @@ from __future__ import annotations
 import random
 import time
 
+from bot import bot
 from features.companions.player_companions import PlayerCompanions
 from features.dueling import Dueling
 from features.equipment import Equipment
@@ -10,6 +11,7 @@ from features.expertise import Expertise
 from features.house.house import House
 from features.inventory import Inventory
 from features.mail import Mail
+from features.settings import Settings
 from features.shared.effect import Effect, ItemEffects
 from features.shared.enums import CompanionTier
 from features.shared.item import LOADED_ITEMS
@@ -31,8 +33,9 @@ class Player():
         self._house: House = House()
         self._companions: PlayerCompanions = PlayerCompanions()
         self._dungeon_run: PlayerDungeonRun = PlayerDungeonRun()
+        self._settings: Settings = Settings()
 
-    def tick(self):
+    async def tick(self):
         self._house.tick()
         self._companions.tick()
 
@@ -46,7 +49,14 @@ class Player():
                     time_str: str = str(time.time()).split(".")[0]
                     mail: Mail = Mail(self._companions.companions[key].get_name(), item, 0, f"{self._companions.companions[key].get_icon_and_name()} found this and brought it to you!", time_str, -1)
                     
-                    self.send_mail(mail)
+                    await self.send_mail(mail)
+
+        if self._settings.mature_plant_notifications:
+            plants_just_matured = self._house.get_plants_just_matured()
+            if len(plants_just_matured) > 0:
+                plants_str: str = "\n".join(list(map(lambda plant: plant.get_full_name(), plants_just_matured)))
+                user = await bot.fetch_user(int(self._id))
+                await user.send(f"The following plants have matured in your garden:\n\n{plants_str}")
 
     def get_id(self):
         return self._id
@@ -83,8 +93,12 @@ class Player():
     def get_mailbox(self):
         return self._mailbox
 
-    def send_mail(self, mail: Mail):
+    async def send_mail(self, mail: Mail):
         self._mailbox.append(mail)
+
+        if self._settings.mail_notifications:
+            user = await bot.fetch_user(int(self._id))
+            await user.send(f"You have new mail from {mail.get_sender_name()}!")
 
     def get_stats(self):
         return self._stats
@@ -106,6 +120,9 @@ class Player():
     
     def get_dungeon_run(self):
         return self._dungeon_run
+    
+    def get_settings(self):
+        return self._settings
 
     def __getstate__(self):
         return self.__dict__
@@ -121,3 +138,4 @@ class Player():
         self._house = state.get("_house", House())
         self._companions = state.get("_companions", PlayerCompanions())
         self._dungeon_run = state.get("_dungeon_run", PlayerDungeonRun())
+        self._settings = state.get("_settings", Settings())
