@@ -135,14 +135,14 @@ NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
 # -----------------------------------------------------------------------------
 
 class StatusEffect():
-    def __init__(self, turns_remaining: int, value: (float | int), name: str, key: str, source_str: str | None=None, trigger_first_turn: bool=True):
+    def __init__(self, turns_remaining: int, value: (float | int), name: str, key: StatusEffectKey, source_str: str | None=None, trigger_first_turn: bool=True):
         # If this is -1, then the buff applies for the rest of the duel
-        self.turns_remaining = turns_remaining
-        self.value = value
-        self.name = name
-        self.key = key
-        self.source_str = source_str
-        self.trigger_first_turn = trigger_first_turn
+        self.turns_remaining: int = turns_remaining
+        self.value: float | int = value
+        self.name: str = name
+        self.key: StatusEffectKey = key
+        self.source_str: str | None = source_str
+        self.trigger_first_turn: bool = trigger_first_turn
         
     def decrement_turns_remaining(self):
         if not self.trigger_first_turn:
