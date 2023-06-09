@@ -186,8 +186,8 @@ ALCHEMIST_ABILITIES: List[List[Type[Ability]]] = [
 FISHER_ABILITIES: List[List[Type[Ability]]] = [
     [SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV],
     [CrabnadoI, CrabnadoII, CrabnadoIII],
-    [CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII],
-    [HookI, HookII, HookIII],
+    [CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CurseOfTheSeaIV],
+    [HookI, HookII, HookIII, HookIV],
     [WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII],
     [HighTideI, HighTideII, HighTideIII, HighTideIV],
     [ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV],
