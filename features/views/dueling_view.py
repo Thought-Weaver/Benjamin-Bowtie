@@ -831,7 +831,7 @@ class DuelView(discord.ui.View):
                     self.add_item(ContinueButton(self._player_loss_post_view, True))
 
             winner_str = ""
-            winner_xp = ceil(0.25 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
+            winner_xp = ceil(0.15 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
                 if isinstance(winner, Player):
                     winner_expertise = winner.get_expertise()
@@ -922,7 +922,7 @@ class DuelView(discord.ui.View):
                 return Embed(title="Duel Finished", description=f"You have been vanquished!")
         else: # In a completely mixed duel
             winner_str = ""
-            winner_xp = ceil(0.25 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
+            winner_xp = ceil(0.15 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
                 if isinstance(winner, Player):
                     winner_expertise = winner.get_expertise()
