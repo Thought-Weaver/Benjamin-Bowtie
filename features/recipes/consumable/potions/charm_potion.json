@@ -5,7 +5,7 @@
     "value": 1400,
     "inputs": {
         "items/ingredient/alchemy_supplies/crystal_vial": 1,
-        "items/ingredient/herbs/witherheart": 3,
+        "items/ingredient/herbs/witherheart": 2,
         "items/ingredient/herbs/fools_delight": 2
     },
     "outputs": {
