@@ -39,10 +39,12 @@ class PlantNotificationsButton(discord.ui.Button):
             self._player.get_settings().mature_plant_notifications = not self._player.get_settings().mature_plant_notifications
             view.get_buttons()
 
+            await interaction.response.edit_message(view=view)
+
 
 class MailNotificationsButton(discord.ui.Button):
     def __init__(self, player: Player, row: int):
-        toggle_str: str = "Disable" if player.get_settings().mature_plant_notifications else "Enable"
+        toggle_str: str = "Disable" if player.get_settings().mail_notifications else "Enable"
         super().__init__(style=discord.ButtonStyle.secondary, label=f"{toggle_str} Mail Notifications", row=row)
 
         self._player = player
@@ -55,6 +57,8 @@ class MailNotificationsButton(discord.ui.Button):
         if interaction.user == view.get_user():
             self._player.get_settings().mail_notifications = not self._player.get_settings().mail_notifications
             view.get_buttons()
+
+            await interaction.response.edit_message(view=view)
 
 
 class SettingsView(discord.ui.View):
