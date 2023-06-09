@@ -971,7 +971,7 @@ class CurseOfTheSeaII(Ability):
             icon="\u2620\uFE0F",
             name="Curse of the Sea II",
             class_key=ExpertiseClass.Fisher,
-            description="Curse an enemy to lose -2 Constitution, -2 Strength, and -2 Dexterity for 3 turns.",
+            description="Curse an enemy to lose -3 Constitution, -3 Strength, and -3 Dexterity for 3 turns.",
             flavor_text="",
             mana_cost=10,
             cooldown=0,
@@ -985,19 +985,19 @@ class CurseOfTheSeaII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_debuff = ConDebuff(
             turns_remaining=3,
-            value=-2,
+            value=-3,
             source_str=self.get_icon_and_name()
         )
 
         str_debuff = StrDebuff(
             turns_remaining=3,
-            value=-2,
+            value=-3,
             source_str=self.get_icon_and_name()
         )
 
         dex_debuff = DexDebuff(
             turns_remaining=3,
-            value=-2,
+            value=-3,
             source_str=self.get_icon_and_name()
         )
 
@@ -1022,7 +1022,7 @@ class CurseOfTheSeaIII(Ability):
             icon="\u2620\uFE0F",
             name="Curse of the Sea III",
             class_key=ExpertiseClass.Fisher,
-            description="Curse an enemy to lose -3 Constitution, -3 Strength, and -3 Dexterity for 3 turns.",
+            description="Curse an enemy to lose -5 Constitution, -5 Strength, and -5 Dexterity for 3 turns.",
             flavor_text="",
             mana_cost=10,
             cooldown=0,
@@ -1036,19 +1036,19 @@ class CurseOfTheSeaIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_debuff = ConDebuff(
             turns_remaining=3,
-            value=-3,
+            value=-5,
             source_str=self.get_icon_and_name()
         )
 
         str_debuff = StrDebuff(
             turns_remaining=3,
-            value=-3,
+            value=-5,
             source_str=self.get_icon_and_name()
         )
 
         dex_debuff = DexDebuff(
             turns_remaining=3,
-            value=-3,
+            value=-5,
             source_str=self.get_icon_and_name()
         )
 
@@ -1073,12 +1073,12 @@ class CurseOfTheSeaIV(Ability):
             icon="\u2620\uFE0F",
             name="Curse of the Sea IV",
             class_key=ExpertiseClass.Fisher,
-            description="Curse an enemy to lose -4 Constitution, -4 Strength, and -4 Dexterity for 3 turns.",
+            description="Curse an enemy to lose -7 Constitution, -7 Strength, and -7 Dexterity for 3 turns.",
             flavor_text="",
             mana_cost=10,
             cooldown=0,
             num_targets=1,
-            level_requirement=13,
+            level_requirement=17,
             target_own_group=False,
             purchase_cost=800,
             scaling=[]
@@ -1087,19 +1087,19 @@ class CurseOfTheSeaIV(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_debuff = ConDebuff(
             turns_remaining=3,
-            value=-4,
+            value=-7,
             source_str=self.get_icon_and_name()
         )
 
         str_debuff = StrDebuff(
             turns_remaining=3,
-            value=-4,
+            value=-7,
             source_str=self.get_icon_and_name()
         )
 
         dex_debuff = DexDebuff(
             turns_remaining=3,
-            value=-4,
+            value=-7,
             source_str=self.get_icon_and_name()
         )
 
@@ -1225,6 +1225,45 @@ class HookIII(Ability):
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(5, 8), [dex_debuff])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class HookIV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDE9D",
+            name="Hook IV",
+            class_key=ExpertiseClass.Fisher,
+            description="Hook an enemy on the line, dealing 6-9 damage and causing them to lose -20 Dexterity for 3 turns.",
+            flavor_text="",
+            mana_cost=15,
+            cooldown=1,
+            num_targets=1,
+            level_requirement=14,
+            target_own_group=False,
+            purchase_cost=800,
+            scaling=[Attribute.Intelligence]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        dex_debuff = DexDebuff(
+            turns_remaining=3,
+            value=-20,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(6, 9), [dex_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -2146,7 +2185,7 @@ class ThunderingTorrentII(Ability):
             icon="\uD83E\uDEE7",
             name="Thundering Torrent II",
             class_key=ExpertiseClass.Fisher,
-            description="Conjure a raging current against up to 2 enemies, dealing 12-18 damage and half that again next turn.",
+            description="Conjure a raging current against up to 2 enemies, dealing 15-20 damage and half that again next turn.",
             flavor_text="",
             mana_cost=20,
             cooldown=2,
@@ -2191,7 +2230,7 @@ class ThunderingTorrentII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
-            base_damage = randint(12, 18)
+            base_damage = randint(15, 20)
             
             stacking_damage: float = 1
             poison_buff_applied: bool = False
@@ -2331,7 +2370,7 @@ class ThunderingTorrentIII(Ability):
             icon="\uD83E\uDEE7",
             name="Thundering Torrent III",
             class_key=ExpertiseClass.Fisher,
-            description="Conjure a raging current against up to 2 enemies, dealing 15-20 damage and half that again next turn.",
+            description="Conjure a raging current against up to 2 enemies, dealing 20-25 damage and half that again next turn.",
             flavor_text="",
             mana_cost=20,
             cooldown=2,
@@ -2376,7 +2415,7 @@ class ThunderingTorrentIII(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
-            base_damage = randint(15, 20)
+            base_damage = randint(20, 25)
             
             stacking_damage: float = 1
             poison_buff_applied: bool = False
@@ -2516,7 +2555,7 @@ class ThunderingTorrentIV(Ability):
             icon="\uD83E\uDEE7",
             name="Thundering Torrent IV",
             class_key=ExpertiseClass.Fisher,
-            description="Conjure a raging current against up to 2 enemies, dealing 20-25 damage and half that again next turn.",
+            description="Conjure a raging current against up to 2 enemies, dealing 25-30 damage and half that again next turn.",
             flavor_text="",
             mana_cost=20,
             cooldown=2,
@@ -2561,7 +2600,7 @@ class ThunderingTorrentIV(Ability):
                 caster.get_stats().dueling.critical_hit_successes += 1
 
             critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
-            base_damage = randint(20, 25)
+            base_damage = randint(25, 30)
             
             stacking_damage: float = 1
             poison_buff_applied: bool = False
@@ -3022,7 +3061,7 @@ class WhirlpoolI(Ability):
             icon="\uD83C\uDF00",
             name="Whirlpool I",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a vortex that deals 10-20 damage to all enemies and removes attribute status effect buffs from them.",
+            description="Summon a vortex that deals 10-20 damage to all enemies and removes their attribute status effect buffs.",
             flavor_text="",
             mana_cost=50,
             cooldown=2,
@@ -3034,156 +3073,15 @@ class WhirlpoolI(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        results: List[NegativeAbilityResult] = []
-        
-        caster_attrs = caster.get_combined_attributes()
-        caster_equipment = caster.get_equipment()
-
-        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
-        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
-        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
-
-        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.DmgBuff:
-                bonus_percent_damage += se.value
-            elif se.key == StatusEffectKey.DmgDebuff:
-                bonus_percent_damage -= se.value
-
-        for i, target in enumerate(targets):
-            target_expertise = target.get_expertise()
-            target_equipment = target.get_equipment()
-
-            target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
-            if target_dodged:
-                target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
-                continue
-
-            target_dueling = target.get_dueling()
-            target_dueling.status_effects = list(filter(lambda x: x.key not in [StatusEffectKey.ConBuff, StatusEffectKey.StrBuff, StatusEffectKey.DexBuff, StatusEffectKey.IntBuff, StatusEffectKey.LckBuff], target_dueling.status_effects))
-
-            critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
-
-            if critical_hit_boost > 1:
-                caster.get_stats().dueling.critical_hit_successes += 1
-
-            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
-            base_damage = randint(10, 20)
-
-            stacking_damage: float = 1
-            poison_buff_applied: bool = False
-            bleeding_buff_applied: bool = False
-            for se in target_dueling.status_effects:
-                if se.key == StatusEffectKey.StackingDamage:
-                    assert(isinstance(se, StackingDamage))
-                    if se.caster == caster and se.source_str == self.get_icon_and_name():
-                        stacking_damage += se.value
-                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
-                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
-                    poison_buff_applied = True
-                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
-                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
-                    bleeding_buff_applied = True
-            
-            if target_dueling.is_legendary:
-                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
-
-            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
-            
-            damage = ceil(base_damage * stacking_damage)
-            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
-
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
-            on_attack_or_ability_effect_str = ""
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
-                    continue
-                for item_effect in item_effects.on_successful_ability_used:
-                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
-                    if result_str != "":
-                        on_attack_or_ability_effect_str += f"\n{result_str}"
-
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
-            on_ability_used_against_str = ""
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
-                    continue
-                for item_effect in item_effects.on_ability_used_against:
-                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
-                    if result_str != "":
-                        on_ability_used_against_str += f"\n{result_str}"
-
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
-
-            org_armor = target_dueling.armor
-            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
-            cur_armor = target_dueling.armor
-
-            se_on_damage_str = ""
-            on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
-                for item in target_equipment.get_all_equipped_items():
-                    item_effects = item.get_item_effects()
-                    if item_effects is None:
-                        continue
-                    for item_effect in item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt, self.get_icon_and_name())
-                        if result_str != "":
-                            on_attack_damage_effect_str += f"\n{result_str}"
-
-            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
-            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
-
-            se_str: str = ""
-            dmg_reflect: float = 0
-            for se in target_dueling.status_effects:
-                if se.key == StatusEffectKey.AttrBuffOnDamage:
-                    assert(isinstance(se, AttrBuffOnDamage))
-                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
-                if se.key == StatusEffectKey.DmgReflect:
-                    dmg_reflect += se.value
-            
-            for effect in target.get_combined_req_met_effects().permanent:
-                if effect.effect_type == EffectType.DmgReflect:
-                    dmg_reflect += effect.effect_value
-
-            if dmg_reflect > 0:
-                reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
-
-                caster_org_armor = caster.get_dueling().armor
-                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
-                caster_cur_armor = caster.get_dueling().armor
-                
-                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
-                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
-
-                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
-
-            target.get_expertise().update_stats(target.get_combined_attributes())
-
-            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
-            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
-
-            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
-            results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
-
-        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
-        if mana_and_cd_str is not None:
-            # Set dodged to true to ignore it in any computations that depend on dodge
-            # Realistically, I think this should just be at the ability level, not here in the abstracted computation on a target.
-            results.append(NegativeAbilityResult(mana_and_cd_str, True))
-
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(10, 20))
+
+        se_buffs = [StatusEffectKey.ConBuff, StatusEffectKey.StrBuff, StatusEffectKey.DexBuff, StatusEffectKey.IntBuff, StatusEffectKey.LckBuff]
+        for i in range(len(results)):
+            if not results[i].dodged:
+                targets[i].get_dueling().status_effects = list(filter(lambda x: x.key not in se_buffs, targets[i].get_dueling().status_effects))
+                results[i].target_str += " and had their attribute buffs removed"
+
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -3203,7 +3101,7 @@ class WhirlpoolII(Ability):
             icon="\uD83C\uDF00",
             name="Whirlpool II",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a vortex that deals 15-25 damage to all enemies and removes attribute status effect buffs from them.",
+            description="Summon a vortex that deals 15-25 damage to all enemies and removes their attribute status effect buffs.",
             flavor_text="",
             mana_cost=50,
             cooldown=2,
@@ -3215,156 +3113,15 @@ class WhirlpoolII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        results: List[NegativeAbilityResult] = []
-        
-        caster_attrs = caster.get_combined_attributes()
-        caster_equipment = caster.get_equipment()
-        
-        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
-        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
-        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
-
-        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.DmgBuff:
-                bonus_percent_damage += se.value
-            elif se.key == StatusEffectKey.DmgDebuff:
-                bonus_percent_damage -= se.value
-
-        for i, target in enumerate(targets):
-            target_expertise = target.get_expertise()
-            target_equipment = target.get_equipment()
-
-            target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
-            if target_dodged:
-                target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
-                continue
-
-            target_dueling = target.get_dueling()
-            target_dueling.status_effects = list(filter(lambda x: x.key not in [StatusEffectKey.ConBuff, StatusEffectKey.StrBuff, StatusEffectKey.DexBuff, StatusEffectKey.IntBuff, StatusEffectKey.LckBuff], target_dueling.status_effects))
-
-            critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
-
-            if critical_hit_boost > 1:
-                caster.get_stats().dueling.critical_hit_successes += 1
-
-            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
-            base_damage = randint(15, 25)
-
-            stacking_damage: float = 1
-            poison_buff_applied: bool = False
-            bleeding_buff_applied: bool = False
-            for se in target_dueling.status_effects:
-                if se.key == StatusEffectKey.StackingDamage:
-                    assert(isinstance(se, StackingDamage))
-                    if se.caster == caster and se.source_str == self.get_icon_and_name():
-                        stacking_damage += se.value
-                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
-                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
-                    poison_buff_applied = True
-                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
-                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
-                    bleeding_buff_applied = True
-            
-            if target_dueling.is_legendary:
-                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
-
-            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
-
-            damage = ceil(base_damage * stacking_damage)
-            damage = min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
-
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
-            on_attack_or_ability_effect_str = ""
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
-                    continue
-                for item_effect in item_effects.on_successful_ability_used:
-                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
-                    if result_str != "":
-                        on_attack_or_ability_effect_str += f"\n{result_str}"
-
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
-            on_ability_used_against_str = ""
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
-                    continue
-                for item_effect in item_effects.on_ability_used_against:
-                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
-                    if result_str != "":
-                        on_ability_used_against_str += f"\n{result_str}"
-            
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
-
-            org_armor = target_dueling.armor
-            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
-            cur_armor = target_dueling.armor
-
-            se_on_damage_str = ""
-            on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
-                for item in target_equipment.get_all_equipped_items():
-                    item_effects = item.get_item_effects()
-                    if item_effects is None:
-                        continue
-                    for item_effect in item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt, self.get_icon_and_name())
-                        if result_str != "":
-                            on_attack_damage_effect_str += f"\n{result_str}"
-
-            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
-            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
-
-            se_str: str = ""
-            dmg_reflect: float = 0
-            for se in target_dueling.status_effects:
-                if se.key == StatusEffectKey.AttrBuffOnDamage:
-                    assert(isinstance(se, AttrBuffOnDamage))
-                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
-                if se.key == StatusEffectKey.DmgReflect:
-                    dmg_reflect += se.value
-            
-            for effect in target.get_combined_req_met_effects().permanent:
-                if effect.effect_type == EffectType.DmgReflect:
-                    dmg_reflect += effect.effect_value
-
-            if dmg_reflect > 0:
-                reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
-
-                caster_org_armor = caster.get_dueling().armor
-                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
-                caster_cur_armor = caster.get_dueling().armor
-                
-                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
-                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
-
-                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
-
-            target.get_expertise().update_stats(target.get_combined_attributes())
-
-            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
-            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
-
-            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
-            results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
-
-        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
-        if mana_and_cd_str is not None:
-            # Set dodged to true to ignore it in any computations that depend on dodge
-            # Realistically, I think this should just be at the ability level, not here in the abstracted computation on a target.
-            results.append(NegativeAbilityResult(mana_and_cd_str, True))
-
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(15, 25))
+
+        se_buffs = [StatusEffectKey.ConBuff, StatusEffectKey.StrBuff, StatusEffectKey.DexBuff, StatusEffectKey.IntBuff, StatusEffectKey.LckBuff]
+        for i in range(len(results)):
+            if not results[i].dodged:
+                targets[i].get_dueling().status_effects = list(filter(lambda x: x.key not in se_buffs, targets[i].get_dueling().status_effects))
+                results[i].target_str += " and had their attribute buffs removed"
+
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -3396,156 +3153,15 @@ class WhirlpoolIII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        results: List[NegativeAbilityResult] = []
-        
-        caster_attrs = caster.get_combined_attributes()
-        caster_equipment = caster.get_equipment()
-
-        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
-        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
-        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
-
-        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.DmgBuff:
-                bonus_percent_damage += se.value
-            elif se.key == StatusEffectKey.DmgDebuff:
-                bonus_percent_damage -= se.value
-
-        for i, target in enumerate(targets):
-            target_expertise = target.get_expertise()
-            target_equipment = target.get_equipment()
-
-            target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
-            if target_dodged:
-                target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
-                continue
-
-            target_dueling = target.get_dueling()
-            target_dueling.status_effects = list(filter(lambda x: x.key not in [StatusEffectKey.ConBuff, StatusEffectKey.StrBuff, StatusEffectKey.DexBuff, StatusEffectKey.IntBuff, StatusEffectKey.LckBuff], target_dueling.status_effects))
-
-            critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
-
-            if critical_hit_boost > 1:
-                caster.get_stats().dueling.critical_hit_successes += 1
-
-            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
-            base_damage = randint(20, 30)
-
-            stacking_damage: float = 1
-            poison_buff_applied: bool = False
-            bleeding_buff_applied: bool = False
-            for se in target_dueling.status_effects:
-                if se.key == StatusEffectKey.StackingDamage:
-                    assert(isinstance(se, StackingDamage))
-                    if se.caster == caster and se.source_str == self.get_icon_and_name():
-                        stacking_damage += se.value
-                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
-                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
-                    poison_buff_applied = True
-                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
-                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
-                    bleeding_buff_applied = True
-            
-            if target_dueling.is_legendary:
-                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
-
-            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
-            
-            damage = ceil(base_damage * stacking_damage)
-            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
-
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
-            on_attack_or_ability_effect_str = ""
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
-                    continue
-                for item_effect in item_effects.on_successful_ability_used:
-                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
-                    if result_str != "":
-                        on_attack_or_ability_effect_str += f"\n{result_str}"
-
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
-            on_ability_used_against_str = ""
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
-                    continue
-                for item_effect in item_effects.on_ability_used_against:
-                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
-                    if result_str != "":
-                        on_ability_used_against_str += f"\n{result_str}"
-            
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
-
-            org_armor = target_dueling.armor
-            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
-            cur_armor = target_dueling.armor
-
-            se_on_damage_str = ""
-            on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
-                for item in target_equipment.get_all_equipped_items():
-                    item_effects = item.get_item_effects()
-                    if item_effects is None:
-                        continue
-                    for item_effect in item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt, self.get_icon_and_name())
-                        if result_str != "":
-                            on_attack_damage_effect_str += f"\n{result_str}"
-
-            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
-            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
-
-            se_str: str = ""
-            dmg_reflect: float = 0
-            for se in target_dueling.status_effects:
-                if se.key == StatusEffectKey.AttrBuffOnDamage:
-                    assert(isinstance(se, AttrBuffOnDamage))
-                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
-                if se.key == StatusEffectKey.DmgReflect:
-                    dmg_reflect += se.value
-            
-            for effect in target.get_combined_req_met_effects().permanent:
-                if effect.effect_type == EffectType.DmgReflect:
-                    dmg_reflect += effect.effect_value
-
-            if dmg_reflect > 0:
-                reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
-
-                caster_org_armor = caster.get_dueling().armor
-                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
-                caster_cur_armor = caster.get_dueling().armor
-                
-                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
-                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
-
-                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
-
-            target.get_expertise().update_stats(target.get_combined_attributes())
-
-            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
-            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
-
-            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
-            results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
-
-        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
-        if mana_and_cd_str is not None:
-            # Set dodged to true to ignore it in any computations that depend on dodge
-            # Realistically, I think this should just be at the ability level, not here in the abstracted computation on a target.
-            results.append(NegativeAbilityResult(mana_and_cd_str, True))
-
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(20, 30))
+
+        se_buffs = [StatusEffectKey.ConBuff, StatusEffectKey.StrBuff, StatusEffectKey.DexBuff, StatusEffectKey.IntBuff, StatusEffectKey.LckBuff]
+        for i in range(len(results)):
+            if not results[i].dodged:
+                targets[i].get_dueling().status_effects = list(filter(lambda x: x.key not in se_buffs, targets[i].get_dueling().status_effects))
+                results[i].target_str += " and had their attribute buffs removed"
+
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -3565,7 +3181,7 @@ class WhirlpoolIV(Ability):
             icon="\uD83C\uDF00",
             name="Whirlpool IV",
             class_key=ExpertiseClass.Fisher,
-            description="Summon a vortex that deals 25-35 damage to all enemies and removes attribute status effect buffs from them.",
+            description="Summon a vortex that deals 25-35 damage to all enemies and removes their attribute status effect buffs.",
             flavor_text="",
             mana_cost=50,
             cooldown=2,
@@ -3577,156 +3193,15 @@ class WhirlpoolIV(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        results: List[NegativeAbilityResult] = []
-        
-        caster_attrs = caster.get_combined_attributes()
-        caster_equipment = caster.get_equipment()
-
-        dmg_buff_effect_totals: Dict[EffectType, float] = caster_equipment.get_dmg_buff_effect_totals(caster)
-        critical_hit_dmg_buff: float = min(max(dmg_buff_effect_totals[EffectType.CritDmgBuff] - dmg_buff_effect_totals[EffectType.CritDmgReduction], 1), 0)
-        self_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfMaxHealth] * caster.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffSelfRemainingHealth] * caster.get_expertise().hp)
-
-        bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
-        for se in caster.get_dueling().status_effects:
-            if se.key == StatusEffectKey.DmgBuff:
-                bonus_percent_damage += se.value
-            elif se.key == StatusEffectKey.DmgDebuff:
-                bonus_percent_damage -= se.value
-
-        for i, target in enumerate(targets):
-            target_expertise = target.get_expertise()
-            target_equipment = target.get_equipment()
-
-            target_dodged = random() < target.get_combined_attributes().dexterity * DEX_DODGE_SCALE
-            if target_dodged:
-                target.get_stats().dueling.abilities_dodged += 1
-                results.append(NegativeAbilityResult("{" + f"{i + 1}" + "}" + " dodged the ability.", True))
-                continue
-
-            target_dueling = target.get_dueling()
-            target_dueling.status_effects = list(filter(lambda x: x.key not in [StatusEffectKey.ConBuff, StatusEffectKey.StrBuff, StatusEffectKey.DexBuff, StatusEffectKey.IntBuff, StatusEffectKey.LckBuff], target_dueling.status_effects))
-
-            critical_hit_boost = LUCK_CRIT_DMG_BOOST if random() < caster_attrs.luck * LUCK_CRIT_SCALE else 1
-
-            if critical_hit_boost > 1:
-                caster.get_stats().dueling.critical_hit_successes += 1
-
-            critical_hit_final = max(critical_hit_boost + critical_hit_dmg_buff, 1) if critical_hit_boost > 1 else 1
-            base_damage = randint(20, 30)
-
-            stacking_damage: float = 1
-            poison_buff_applied: bool = False
-            bleeding_buff_applied: bool = False
-            for se in target_dueling.status_effects:
-                if se.key == StatusEffectKey.StackingDamage:
-                    assert(isinstance(se, StackingDamage))
-                    if se.caster == caster and se.source_str == self.get_icon_and_name():
-                        stacking_damage += se.value
-                elif se.key == StatusEffectKey.Poisoned and not poison_buff_applied:
-                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffPoisoned]
-                    poison_buff_applied = True
-                elif se.key == StatusEffectKey.Bleeding and not bleeding_buff_applied:
-                    bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffBleeding]
-                    bleeding_buff_applied = True
-            
-            if target_dueling.is_legendary:
-                bonus_percent_damage += dmg_buff_effect_totals[EffectType.DmgBuffLegends]
-
-            target_hp_dmg_buff: int = ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherMaxHealth] * target.get_expertise().max_hp) + ceil(dmg_buff_effect_totals[EffectType.DmgBuffOtherRemainingHealth] * target.get_expertise().hp)
-            
-            damage = ceil(base_damage * stacking_damage)
-            damage += min(ceil(damage * INT_DMG_SCALE * max(caster_attrs.intelligence, 0)), base_damage)
-            damage = ceil(damage * critical_hit_final * bonus_percent_damage) + target_hp_dmg_buff + self_hp_dmg_buff
-
-            se_ability_use_str = "\n".join(caster.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAbilityUsed, target, caster, i + 1, 0, self._target_own_group)) 
-            on_attack_or_ability_effect_str = ""
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
-                    continue
-                for item_effect in item_effects.on_successful_ability_used:
-                    damage, result_str = caster.get_dueling().apply_on_successful_attack_or_ability_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
-                    if result_str != "":
-                        on_attack_or_ability_effect_str += f"\n{result_str}"
-
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
-            on_ability_used_against_str = ""
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
-                    continue
-                for item_effect in item_effects.on_ability_used_against:
-                    damage, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, damage, self.get_icon_and_name())
-                    if result_str != "":
-                        on_ability_used_against_str += f"\n{result_str}"
-            
-            percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
-
-            org_armor = target_dueling.armor
-            actual_damage_dealt = target_expertise.damage(damage, target_dueling, percent_dmg_reduct, ignore_armor=False)
-            cur_armor = target_dueling.armor
-
-            se_on_damage_str = ""
-            on_attack_damage_effect_str = ""
-            if actual_damage_dealt > 0 and target.get_expertise().hp > 0:
-                se_on_damage_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnDamaged, caster, target, 0, i + 1, self._target_own_group))
-                for item in target_equipment.get_all_equipped_items():
-                    item_effects = item.get_item_effects()
-                    if item_effects is None:
-                        continue
-                    for item_effect in item_effects.on_damaged:
-                        _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, caster, i + 1, actual_damage_dealt, self.get_icon_and_name())
-                        if result_str != "":
-                            on_attack_damage_effect_str += f"\n{result_str}"
-
-            caster.get_stats().dueling.damage_dealt += actual_damage_dealt
-            target.get_stats().dueling.damage_taken += actual_damage_dealt
-            target.get_stats().dueling.damage_blocked_or_reduced += damage - actual_damage_dealt
-
-            se_str: str = ""
-            dmg_reflect: float = 0
-            for se in target_dueling.status_effects:
-                if se.key == StatusEffectKey.AttrBuffOnDamage:
-                    assert(isinstance(se, AttrBuffOnDamage))
-                    target_dueling.status_effects += list(map(lambda s: s.set_trigger_first_turn(target_dueling != caster), se.on_being_hit_buffs))
-                    se_str += "\n{" + f"{i + 1}" + "}" + f" gained {se.get_buffs_str()}"
-                if se.key == StatusEffectKey.DmgReflect:
-                    dmg_reflect += se.value
-            
-            for effect in target.get_combined_req_met_effects().permanent:
-                if effect.effect_type == EffectType.DmgReflect:
-                    dmg_reflect += effect.effect_value
-
-            if dmg_reflect > 0:
-                reflected_damage: int = ceil(damage * dmg_reflect)
-                caster_dmg_reduct = caster.get_dueling().get_total_percent_dmg_reduct(caster.get_combined_req_met_effects())
-
-                caster_org_armor = caster.get_dueling().armor
-                actual_reflected_damage = caster.get_expertise().damage(reflected_damage, caster.get_dueling(), caster_dmg_reduct, ignore_armor=False)
-                caster_cur_armor = caster.get_dueling().armor
-                
-                caster_dmg_reduct_str = f" ({abs(caster_dmg_reduct) * 100}% {'Reduction' if caster_dmg_reduct > 0 else 'Increase'})" if caster_dmg_reduct != 0 else ""
-                reflect_armor_str = f" ({caster_cur_armor - caster_org_armor} Armor)" if caster_cur_armor - caster_org_armor < 0 else ""
-
-                se_str += "\n{" + f"{i + 1}" + "}" + f" reflected {actual_reflected_damage}{reflect_armor_str}{caster_dmg_reduct_str} back to " + "{0}"
-
-            target.get_expertise().update_stats(target.get_combined_attributes())
-
-            critical_hit_str = "" if critical_hit_boost == 1 else " [Crit!]"
-            percent_dmg_reduct_str = f" ({abs(percent_dmg_reduct) * 100}% {'Reduction' if percent_dmg_reduct > 0 else 'Increase'})" if percent_dmg_reduct != 0 else ""
-            armor_str = f" ({cur_armor - org_armor} Armor)" if cur_armor - org_armor < 0 else ""
-
-            final_dmg_str = "{" + f"{i + 1}" + "}" + f" took {actual_damage_dealt}{armor_str}{percent_dmg_reduct_str}{critical_hit_str} damage"
-            non_empty_strs = list(filter(lambda s: s != "", [final_dmg_str, se_str, se_ability_use_str, on_attack_or_ability_effect_str, se_ability_used_against_str, on_ability_used_against_str, se_on_damage_str, on_attack_damage_effect_str]))
-            results.append(NegativeAbilityResult("\n".join(non_empty_strs), False))
-
-        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
-        if mana_and_cd_str is not None:
-            # Set dodged to true to ignore it in any computations that depend on dodge
-            # Realistically, I think this should just be at the ability level, not here in the abstracted computation on a target.
-            results.append(NegativeAbilityResult(mana_and_cd_str, True))
-
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(25, 35))
+
+        se_buffs = [StatusEffectKey.ConBuff, StatusEffectKey.StrBuff, StatusEffectKey.DexBuff, StatusEffectKey.IntBuff, StatusEffectKey.LckBuff]
+        for i in range(len(results)):
+            if not results[i].dodged:
+                targets[i].get_dueling().status_effects = list(filter(lambda x: x.key not in se_buffs, targets[i].get_dueling().status_effects))
+                results[i].target_str += " and had their attribute buffs removed"
+
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -3749,11 +3224,11 @@ class ShatteringStormI(Ability):
             icon="\u26C8\uFE0F",
             name="Shattering Storm I",
             class_key=ExpertiseClass.Fisher,
-            description="Invoke the tempest against up to 5 enemies, dealing 40-60 damage with a 15% chance for each to lose their next turn.",
+            description="Invoke the tempest against up to 4 enemies, dealing 40-50 damage with a 20% chance for each to lose their next turn.",
             flavor_text="",
             mana_cost=150,
             cooldown=5,
-            num_targets=5,
+            num_targets=4,
             level_requirement=22,
             target_own_group=False,
             purchase_cost=5000,
@@ -3763,12 +3238,12 @@ class ShatteringStormI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         skip_debuff = TurnSkipChance(
             turns_remaining=1,
-            value=0.15,
+            value=0.2,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(40, 60), [skip_debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(40, 50), [skip_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -3788,11 +3263,11 @@ class ShatteringStormII(Ability):
             icon="\u26C8\uFE0F",
             name="Shattering Storm II",
             class_key=ExpertiseClass.Fisher,
-            description="Invoke the tempest against up to 5 enemies, dealing 40-60 damage with a 30% chance for each to lose their next turn.",
+            description="Invoke the tempest against up to 4 enemies, dealing 50-60 damage with a 40% chance for each to lose their next turn.",
             flavor_text="",
             mana_cost=150,
             cooldown=5,
-            num_targets=5,
+            num_targets=4,
             level_requirement=24,
             target_own_group=False,
             purchase_cost=10000,
@@ -3802,12 +3277,12 @@ class ShatteringStormII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         skip_debuff = TurnSkipChance(
             turns_remaining=1,
-            value=0.3,
+            value=0.4,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(40, 60), [skip_debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(50, 60), [skip_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -3827,11 +3302,11 @@ class ShatteringStormIII(Ability):
             icon="\u26C8\uFE0F",
             name="Shattering Storm III",
             class_key=ExpertiseClass.Fisher,
-            description="Invoke the tempest against up to 5 enemies, dealing 40-60 damage with a 45% chance for each to lose their next turn.",
+            description="Invoke the tempest against up to 4 enemies, dealing 60-70 damage with a 60% chance for each to lose their next turn.",
             flavor_text="",
             mana_cost=150,
             cooldown=5,
-            num_targets=5,
+            num_targets=4,
             level_requirement=26,
             target_own_group=False,
             purchase_cost=20000,
@@ -3841,12 +3316,12 @@ class ShatteringStormIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         skip_debuff = TurnSkipChance(
             turns_remaining=1,
-            value=0.45,
+            value=0.6,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(40, 60), [skip_debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(60, 70), [skip_debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -4459,7 +3934,7 @@ class CounterstrikeI(Ability):
             description="Strike back at an enemy dealing 75% of your weapon damage + 10% of your missing health as damage (up to your base weapon damage).",
             flavor_text="",
             mana_cost=0,
-            cooldown=2,
+            cooldown=3,
             num_targets=1,
             level_requirement=9,
             target_own_group=False,
@@ -4503,10 +3978,10 @@ class CounterstrikeII(Ability):
             icon="\uD83D\uDD04",
             name="Counterstrike II",
             class_key=ExpertiseClass.Guardian,
-            description="Strike back at an enemy dealing 80% of your weapon damage + 20% of your missing health as damage (up to your 3x weapon damage).",
+            description="Strike back at an enemy dealing 80% of your weapon damage + 20% of your missing health as damage (up to your 2x weapon damage).",
             flavor_text="",
             mana_cost=0,
-            cooldown=2,
+            cooldown=3,
             num_targets=1,
             level_requirement=12,
             target_own_group=False,
@@ -4527,7 +4002,7 @@ class CounterstrikeII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.8 * base_damage)
-        damage += ceil(min(0.2 * (caster_expertise.max_hp - caster_expertise.hp), 3 * damage))
+        damage += ceil(min(0.2 * (caster_expertise.max_hp - caster_expertise.hp), 2 * base_damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4550,10 +4025,10 @@ class CounterstrikeIII(Ability):
             icon="\uD83D\uDD04",
             name="Counterstrike III",
             class_key=ExpertiseClass.Guardian,
-            description="Strike back at an enemy dealing 85% of your weapon damage + 30% of your missing health as damage (up to 5x base weapon damage).",
+            description="Strike back at an enemy dealing 85% of your weapon damage + 30% of your missing health as damage (up to 3x base weapon damage).",
             flavor_text="",
             mana_cost=0,
-            cooldown=2,
+            cooldown=3,
             num_targets=1,
             level_requirement=15,
             target_own_group=False,
@@ -4574,7 +4049,7 @@ class CounterstrikeIII(Ability):
         assert(weapon_stats is not None)
         base_damage = weapon_stats.get_random_base_damage(max(0, level_req - caster.get_expertise().level))
         damage = ceil(0.85 * base_damage)
-        damage += ceil(min(0.3 * (caster_expertise.max_hp - caster_expertise.hp), 5 * damage))
+        damage += ceil(min(0.3 * (caster_expertise.max_hp - caster_expertise.hp), 3 * base_damage))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -4639,11 +4114,11 @@ class TauntII(Ability):
             icon="\uD83C\uDCCF",
             name="Taunt II",
             class_key=ExpertiseClass.Guardian,
-            description="Force up to 3 enemies to attack you on their next turns.",
+            description="Force up to 2 enemies to attack you on their next turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
-            num_targets=3,
+            num_targets=2,
             level_requirement=9,
             target_own_group=False,
             purchase_cost=1000,
@@ -4678,11 +4153,11 @@ class TauntIII(Ability):
             icon="\uD83C\uDCCF",
             name="Taunt III",
             class_key=ExpertiseClass.Guardian,
-            description="Force up to 5 enemies to attack you on their next turns.",
+            description="Force up to 3 enemies to attack you on their next turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
-            num_targets=5,
+            num_targets=3,
             level_requirement=12,
             target_own_group=False,
             purchase_cost=2000,
@@ -4720,7 +4195,7 @@ class PiercingStrikeI(Ability):
             icon="\uD83D\uDCCD",
             name="Piercing Strike I",
             class_key=ExpertiseClass.Guardian,
-            description="Lunge forward at an enemy, dealing 110% of your weapon damage with a 20% chance to set Bleeding.",
+            description="Lunge forward at an enemy, dealing 110% of your weapon damage with a 20% chance to set Bleeding for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -5303,10 +4778,10 @@ class ContractWealthForPowerI(Ability):
             icon="\uD83D\uDCDC",
             name="Contract: Wealth for Power I",
             class_key=ExpertiseClass.Merchant,
-            description="Summon a binding contract, exchanging 50 coins for +1 Intelligence, +1 Strength, and +1 Dexterity until the end of the duel. If you can't pay, you instead receive -1 to those attributes.",
+            description="Summon a binding contract, exchanging 25 coins for +1 Intelligence, +1 Strength, and +1 Dexterity until the end of the duel. If you can't pay, you instead receive -1 to those attributes.",
             flavor_text="",
             mana_cost=10,
-            cooldown=-1,
+            cooldown=2,
             num_targets=0,
             level_requirement=2,
             target_own_group=True,
@@ -5317,7 +4792,7 @@ class ContractWealthForPowerI(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
 
-        if caster.get_inventory().get_coins() < 50:
+        if caster.get_inventory().get_coins() < 25:
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-1,
@@ -5381,7 +4856,7 @@ class ContractWealthForPowerII(Ability):
             description="Summon a binding contract, exchanging 50 coins for +3 Intelligence, +3 Strength, and +3 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
             flavor_text="",
             mana_cost=10,
-            cooldown=-1,
+            cooldown=2,
             num_targets=0,
             level_requirement=6,
             target_own_group=True,
@@ -5453,10 +4928,10 @@ class ContractWealthForPowerIII(Ability):
             icon="\uD83D\uDCDC",
             name="Contract: Wealth for Power III",
             class_key=ExpertiseClass.Merchant,
-            description="Summon a binding contract, exchanging 50 coins for +5 Intelligence, +5 Strength, and +5 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
+            description="Summon a binding contract, exchanging 75 coins for +5 Intelligence, +5 Strength, and +5 Dexterity until the end of the duel. If you can't pay, you instead receive -3 to those attributes.",
             flavor_text="",
             mana_cost=10,
-            cooldown=-1,
+            cooldown=2,
             num_targets=0,
             level_requirement=10,
             target_own_group=True,
@@ -5467,7 +4942,7 @@ class ContractWealthForPowerIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
 
-        if caster.get_inventory().get_coins() < 50:
+        if caster.get_inventory().get_coins() < 75:
             int_debuff = IntDebuff(
                 turns_remaining=-1,
                 value=-5,
@@ -5771,7 +5246,7 @@ class ATidySumI(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum I",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into generated coins, awarding you 5 coins per successful attack.",
+            description="Whenever you attack for the next 4 turns, part of the enemy struck turns into generated coins, awarding you 5 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -5784,7 +5259,7 @@ class ATidySumI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         generating = Generating(
-            turns_remaining=3,
+            turns_remaining=4,
             value=5,
             source_str=self.get_icon_and_name()
         )
@@ -5810,7 +5285,7 @@ class ATidySumII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum II",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into generated coins, awarding you 10 coins per successful attack.",
+            description="Whenever you attack for the next 4 turns, part of the enemy struck turns into generated coins, awarding you 10 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -5823,7 +5298,7 @@ class ATidySumII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         generating = Generating(
-            turns_remaining=3,
+            turns_remaining=4,
             value=10,
             source_str=self.get_icon_and_name()
         )
@@ -5849,7 +5324,7 @@ class ATidySumIII(Ability):
             icon="\uD83D\uDCB0",
             name="A Tidy Sum III",
             class_key=ExpertiseClass.Merchant,
-            description="Whenever you attack for the next 3 turns, part of the enemy struck turns into generated coins, awarding you 15 coins per successful attack.",
+            description="Whenever you attack for the next 4 turns, part of the enemy struck turns into generated coins, awarding you 15 coins per successful attack.",
             flavor_text="",
             mana_cost=25,
             cooldown=5,
@@ -5862,7 +5337,7 @@ class ATidySumIII(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         generating = Generating(
-            turns_remaining=3,
+            turns_remaining=4,
             value=15,
             source_str=self.get_icon_and_name()
         )
@@ -5891,7 +5366,7 @@ class CursedCoinsI(Ability):
             icon="\uD83E\uDE99",
             name="Cursed Coins I",
             class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain generated coins, deal 25% of that as damage to all enemies.",
+            description="For the next 3 turns, whenever you gain generated coins, deal 50% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
@@ -5899,45 +5374,6 @@ class CursedCoinsI(Ability):
             level_requirement=10,
             target_own_group=True,
             purchase_cost=300,
-            scaling=[]
-        )
-
-    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        tarnished = Tarnished(
-            turns_remaining=3,
-            value=0.25,
-            source_str=self.get_icon_and_name()
-        )
-
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [tarnished])
-        result_str += "\n".join(results)
-
-        caster.get_stats().dueling.merchant_abilities_used += 1
-
-        return result_str
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, state: dict):
-        self.__init__() # type: ignore
-
-
-class CursedCoinsII(Ability):
-    def __init__(self):
-        super().__init__(
-            icon="\uD83E\uDE99",
-            name="Cursed Coins II",
-            class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain generated coins, deal 50% of that as damage to all enemies.",
-            flavor_text="",
-            mana_cost=25,
-            cooldown=4,
-            num_targets=0,
-            level_requirement=12,
-            target_own_group=True,
-            purchase_cost=600,
             scaling=[]
         )
 
@@ -5963,20 +5399,20 @@ class CursedCoinsII(Ability):
         self.__init__() # type: ignore
 
 
-class CursedCoinsIII(Ability):
+class CursedCoinsII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE99",
-            name="Cursed Coins III",
+            name="Cursed Coins II",
             class_key=ExpertiseClass.Merchant,
             description="For the next 3 turns, whenever you gain generated coins, deal 75% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
             num_targets=0,
-            level_requirement=14,
+            level_requirement=12,
             target_own_group=True,
-            purchase_cost=1200,
+            purchase_cost=600,
             scaling=[]
         )
 
@@ -6002,13 +5438,52 @@ class CursedCoinsIII(Ability):
         self.__init__() # type: ignore
 
 
+class CursedCoinsIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDE99",
+            name="Cursed Coins III",
+            class_key=ExpertiseClass.Merchant,
+            description="For the next 3 turns, whenever you gain generated coins, deal 100% of that as damage to all enemies.",
+            flavor_text="",
+            mana_cost=25,
+            cooldown=4,
+            num_targets=0,
+            level_requirement=14,
+            target_own_group=True,
+            purchase_cost=1200,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        tarnished = Tarnished(
+            turns_remaining=3,
+            value=1,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [tarnished])
+        result_str += "\n".join(results)
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
 class CursedCoinsIV(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83E\uDE99",
             name="Cursed Coins IV",
             class_key=ExpertiseClass.Merchant,
-            description="For the next 3 turns, whenever you gain generated coins, deal 100% of that as damage to all enemies.",
+            description="For the next 3 turns, whenever you gain generated coins, deal 125% of that as damage to all enemies.",
             flavor_text="",
             mana_cost=25,
             cooldown=4,
@@ -6022,7 +5497,7 @@ class CursedCoinsIV(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         tarnished = Tarnished(
             turns_remaining=3,
-            value=1,
+            value=1.25,
             source_str=self.get_icon_and_name()
         )
 
@@ -6356,11 +5831,11 @@ class ContractBloodForBloodI(Ability):
             icon="\uD83E\uDE78",
             name="Contract: Blood for Blood I",
             class_key=ExpertiseClass.Merchant,
-            description="Create a binding contract that exchanges 15% of your current health and deals 50% of that damage against up to 3 targets.",
+            description="Create a binding contract that exchanges 15% of your current health and deals 50% of that damage against up to 2 targets.",
             flavor_text="",
             mana_cost=75,
             cooldown=5,
-            num_targets=3,
+            num_targets=2,
             level_requirement=16,
             target_own_group=False,
             purchase_cost=1500,
@@ -6396,11 +5871,11 @@ class ContractBloodForBloodII(Ability):
             icon="\uD83E\uDE78",
             name="Contract: Blood for Blood II",
             class_key=ExpertiseClass.Merchant,
-            description="Create a binding contract that exchanges 10% of your current health and deals 100% of that damage against up to 3 targets.",
+            description="Create a binding contract that exchanges 10% of your current health and deals 100% of that damage against up to 2 targets.",
             flavor_text="",
             mana_cost=75,
             cooldown=5,
-            num_targets=3,
+            num_targets=2,
             level_requirement=18,
             target_own_group=False,
             purchase_cost=3000,
@@ -6436,11 +5911,11 @@ class ContractBloodForBloodIII(Ability):
             icon="\uD83E\uDE78",
             name="Contract: Blood for Blood III",
             class_key=ExpertiseClass.Merchant,
-            description="Create a binding contract that exchanges 5% of your current health and deals 300% of that damage against up to 3 targets.",
+            description="Create a binding contract that exchanges 5% of your current health and deals 300% of that damage against up to 2 targets.",
             flavor_text="",
             mana_cost=75,
             cooldown=5,
-            num_targets=3,
+            num_targets=2,
             level_requirement=20,
             target_own_group=False,
             purchase_cost=6000,
