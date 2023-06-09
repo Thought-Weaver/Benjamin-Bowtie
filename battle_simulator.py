@@ -169,7 +169,7 @@ CONSUMABLE_KEYS = [
 ]
 
 ALCHEMIST_ABILITIES: List[List[Type[Ability]]] = [
-    [IncenseI, IncenseII, IncenseIII],
+    [IncenseI, IncenseII, IncenseIII, IncenseIV, IncenseV],
     [PreparePotionsI, PreparePotionsII, PreparePotionsIII],
     [VitalityTransferI, VitalityTransferII, VitalityTransferIII],
     [CleanseI],
