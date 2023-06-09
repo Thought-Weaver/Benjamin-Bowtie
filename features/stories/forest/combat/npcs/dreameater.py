@@ -207,7 +207,7 @@ class Deterioration(Ability):
             icon="\uD83D\uDCAB",
             name="Deterioration",
             class_key=ExpertiseClass.Fisher,
-            description="Deal damage to all enemies equal to twice the number of status effects they have.",
+            description="Deal damage to all enemies equal to three times the number of status effects they have.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -223,7 +223,7 @@ class Deterioration(Ability):
         results: List[NegativeAbilityResult] = []
 
         for target in targets:
-            damage = int(2 * len(target.get_dueling().status_effects))
+            damage = int(3 * len(target.get_dueling().status_effects))
             target_result = self._use_damage_ability(caster, [target], range(damage, damage))
             results += target_result
 
@@ -245,6 +245,10 @@ class Deterioration(Ability):
 
 class Dreameater(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 36% chance of 4 player party (Lvl. 0-10) victory against 1
+        # Avg Number of Turns (per entity): 18
+
         super().__init__("Dreameater" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.MemoryOfVictory: 1
         })
