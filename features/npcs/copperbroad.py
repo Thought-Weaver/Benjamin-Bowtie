@@ -497,7 +497,8 @@ class ChefView(discord.ui.View):
 class Chef(NPC):
     def __init__(self):
         # Balance Simulation Results:
-        # 95% chance of 1 player party (Lvl. 25-35) victory against 1
+        # 84% chance of 1 player party (Lvl. 25-35) victory against 1
+        # Avg Number of Turns (per entity): 21
 
         super().__init__("Copperbroad", NPCRoles.Chef, NPCDuelingPersonas.Mage, {})
 
@@ -522,10 +523,10 @@ class Chef(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._expertise.add_xp_to_class(3500, ExpertiseClass.Fisher, self._equipment) # Level 10
-        self._expertise.add_xp_to_class(1750, ExpertiseClass.Merchant, self._equipment) # Level 10
-        self._expertise.add_xp_to_class(750, ExpertiseClass.Guardian, self._equipment) # Level 5
-        self._expertise.add_xp_to_class(600, ExpertiseClass.Alchemist, self._equipment) # Level 5
+        self._expertise.add_xp_to_class_until_level(10, ExpertiseClass.Fisher)
+        self._expertise.add_xp_to_class_until_level(10, ExpertiseClass.Merchant)
+        self._expertise.add_xp_to_class_until_level(5, ExpertiseClass.Guardian)
+        self._expertise.add_xp_to_class_until_level(5, ExpertiseClass.Alchemist)
 
         self._expertise.points_to_spend = 0
         
@@ -542,12 +543,12 @@ class Chef(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.IronHelmet))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.IronGauntlets))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.IronCuirass))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.AmberiteHelmet))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.GauntletsOfStunning))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.MailArmorOfStrength))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.CopperbroadsFryingPan))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.IronLeggings))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.IronGreaves))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Leggings, LOADED_ITEMS.get_new_item(ItemKey.ChaussesOfFocus))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.GreavesOfEndurance))
 
         self._expertise.update_stats(self.get_combined_attributes())
 

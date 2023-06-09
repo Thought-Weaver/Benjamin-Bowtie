@@ -46,7 +46,7 @@
             },
             {
                 "effect_type": "StrMod",
-                "effect_value": 20,
+                "effect_value": 10,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []

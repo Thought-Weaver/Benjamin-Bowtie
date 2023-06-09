@@ -486,15 +486,15 @@ class Druid(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._expertise.add_xp_to_class(35200, ExpertiseClass.Fisher, self._equipment) # Level 30
-        self._expertise.add_xp_to_class(7000, ExpertiseClass.Guardian, self._equipment) # Level 15
-        self._expertise.add_xp_to_class(15000, ExpertiseClass.Alchemist, self._equipment) # Level 25
+        self._expertise.add_xp_to_class_until_level(30, ExpertiseClass.Fisher)
+        self._expertise.add_xp_to_class_until_level(15, ExpertiseClass.Guardian)
+        self._expertise.add_xp_to_class_until_level(20, ExpertiseClass.Alchemist)
 
         self._expertise.points_to_spend = 0
         
         self._expertise.constitution = 30
         self._expertise.intelligence = 20
-        self._expertise.dexterity = 10
+        self._expertise.dexterity = 5
         self._expertise.strength = 0
         self._expertise.luck = 5
         self._expertise.memory = 5

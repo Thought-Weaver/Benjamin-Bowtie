@@ -44,9 +44,9 @@ class Galos(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._expertise.add_xp_to_class(600, ExpertiseClass.Alchemist, self._equipment) # Level 5
-        self._expertise.add_xp_to_class(4000, ExpertiseClass.Merchant, self._equipment) # Level 15
-        self._expertise.add_xp_to_class(29800, ExpertiseClass.Guardian, self._equipment) # Level 30
+        self._expertise.add_xp_to_class_until_level(5, ExpertiseClass.Alchemist)
+        self._expertise.add_xp_to_class_until_level(15, ExpertiseClass.Merchant)
+        self._expertise.add_xp_to_class_until_level(30, ExpertiseClass.Guardian)
         
         self._expertise.points_to_spend = 0
         

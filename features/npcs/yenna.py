@@ -850,9 +850,10 @@ class YennaView(discord.ui.View):
 class Yenna(NPC):
     def __init__(self):
         # Balance Simulation Results:
-        # 24% chance of 1 player party (Lvl. 50-60) victory against 1
+        # 18% chance of 1 player party (Lvl. 75-85) victory against 1
+        # Avg Number of Turns (per entity): 25
 
-        super().__init__("Yenna", NPCRoles.FortuneTeller, NPCDuelingPersonas.Healer, {})
+        super().__init__("Yenna", NPCRoles.FortuneTeller, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()
 
@@ -994,7 +995,7 @@ class Yenna(NPC):
         if self._inventory is None:
             self._inventory = Inventory()
 
-        health_potions = LOADED_ITEMS.get_new_item(ItemKey.HealthPotion)
+        health_potions = LOADED_ITEMS.get_new_item(ItemKey.GreaterHealthPotion)
         health_potions.add_amount(2)
         sapping_potions = LOADED_ITEMS.get_new_item(ItemKey.SappingPotion)
         sapping_potions.add_amount(1)
@@ -1030,13 +1031,13 @@ class Yenna(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.MothsilkCowl))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.MothsilkGloves))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Helmet, LOADED_ITEMS.get_new_item(ItemKey.CowlOfTheAntidote))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Gloves, LOADED_ITEMS.get_new_item(ItemKey.GlovesOfTheFated))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.Ring, LOADED_ITEMS.get_new_item(ItemKey.BandOfGreaterRestoration))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.RobeOfTheEyelessSeer))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.YennasStaff))
         self._equipment.equip_item_to_slot(ClassTag.Equipment.OffHand, LOADED_ITEMS.get_new_item(ItemKey.DeckOfFate))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.MothsilkBoots))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.Boots, LOADED_ITEMS.get_new_item(ItemKey.BootsOfTheComposed))
 
         self._expertise.update_stats(self.get_combined_attributes())
 

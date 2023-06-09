@@ -390,8 +390,8 @@ class RandomItemMerchant(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._expertise.add_xp_to_class(1750, ExpertiseClass.Merchant, self._equipment) # Level 10
-        self._expertise.add_xp_to_class(600, ExpertiseClass.Alchemist, self._equipment) # Level 5
+        self._expertise.add_xp_to_class_until_level(10, ExpertiseClass.Merchant)
+        self._expertise.add_xp_to_class_until_level(5, ExpertiseClass.Alchemist)
         
         self._expertise.points_to_spend = 0
         
