@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/leggings/mythril_leggings",
-    "icon": "\uD83D\uDC56",
+    "icon": "\ud83d\udc56",
     "name": "Mythril Leggings",
-    "value": 2550,
+    "value": 765,
     "rarity": "Epic",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Leggings"],
+    "class_tags": [
+        "Equipment",
+        "Leggings"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 45,

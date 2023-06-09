@@ -1,12 +1,16 @@
 {
     "key": "items/weapon/misc/copperbroads_frying_pan",
-    "icon": "\uD83C\uDF73",
+    "icon": "\ud83c\udf73",
     "name": "Copperbroad's Frying Pan",
-    "value": 750,
+    "value": 225,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Scrambled? Sunny-side up? Over-hard?",
-    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 25,

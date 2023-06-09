@@ -1,13 +1,18 @@
 {
     "key": "items/equipment/offhand/deepwood_talisman",
-    "icon": "\uD83D\uDC3B",
+    "icon": "\ud83d\udc3b",
     "name": "Deepwood Talisman",
-    "value": 1000,
+    "value": 300,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "A symbol of the strongest friendship.",
-    "class_tags": ["Equipment", "Off_Hand"],
-    "state_tags": ["Needs_Identification"],
+    "class_tags": [
+        "Equipment",
+        "Off_Hand"
+    ],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "item_effects": {
         "permanent": [

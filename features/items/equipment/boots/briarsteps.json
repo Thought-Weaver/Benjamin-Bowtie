@@ -2,7 +2,7 @@
     "key": "items/equipment/boots/briarsteps",
     "icon": "\ud83e\udd7e",
     "name": "Briarsteps",
-    "value": 4000,
+    "value": 1200,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "You'd think stepping on briars constantly would be painful, but turns out this actually helps you.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Boots"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 30,
     "altering_item_keys": [

@@ -2,7 +2,7 @@
     "key": "items/weapon/staff/poisonwood_staff",
     "icon": "\ud83e\ude84",
     "name": "Poisonwood Staff",
-    "value": 1755,
+    "value": 527,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "A rare wood that most avoid. On account of it being poisonous and all that.",
@@ -12,7 +12,9 @@
         "Staff",
         "Main_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 8,
     "altering_item_keys": [

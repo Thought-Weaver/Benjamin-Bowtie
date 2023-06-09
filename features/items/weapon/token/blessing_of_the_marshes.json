@@ -2,7 +2,7 @@
     "key": "items/weapon/token/blessing_of_the_marshes",
     "icon": "\ud83e\ude99",
     "name": "Blessing of the Marshes",
-    "value": 1000,
+    "value": 300,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Those who are called to the dreadmarsh seldom come back human.",

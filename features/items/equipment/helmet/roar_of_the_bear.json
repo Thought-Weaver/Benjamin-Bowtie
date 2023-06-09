@@ -2,7 +2,7 @@
     "key": "items/equipment/helmet/roar_of_the_bear",
     "icon": "\ud83c\udfa9",
     "name": "Roar of the Bear",
-    "value": 8450,
+    "value": 2535,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Roaring and growling isn't required, but is recommended.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Helmet"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 54,
     "altering_item_keys": [],

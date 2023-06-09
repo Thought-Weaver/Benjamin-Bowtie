@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/boots/leather_boots",
-    "icon": "\uD83E\uDD7E",
+    "icon": "\ud83e\udd7e",
     "name": "Leather Boots",
-    "value": 55,
+    "value": 17,
     "rarity": "Uncommon",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Boots"],
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 8,

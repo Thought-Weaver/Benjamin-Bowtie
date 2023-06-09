@@ -2,7 +2,7 @@
     "key": "items/equipment/ring/dancing_mushrooms",
     "icon": "\ud83c\udf44",
     "name": "Dancing Mushrooms",
-    "value": 6485,
+    "value": 1946,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "I wanna dance with some mushrooms! I wanna feel the heeeee--",
@@ -10,7 +10,9 @@
         "Equipment",
         "Ring"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 40,
     "altering_item_keys": [

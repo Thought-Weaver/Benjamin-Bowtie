@@ -1,12 +1,17 @@
 {
     "key": "items/weapon/dagger/iron_dagger",
-    "icon": "\uD83D\uDDE1\uFE0F",
+    "icon": "\ud83d\udde1\ufe0f",
     "name": "Iron Dagger",
-    "value": 30,
+    "value": 9,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Dagger", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Dagger",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 2,

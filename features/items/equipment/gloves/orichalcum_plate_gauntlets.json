@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/gloves/orichalcum_plate_gauntlets",
-    "icon": "\uD83E\uDDE4",
+    "icon": "\ud83e\udde4",
     "name": "Orichalcum Plate Gauntlets",
-    "value": 2300,
+    "value": 690,
     "rarity": "Legendary",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Gloves"],
+    "class_tags": [
+        "Equipment",
+        "Gloves"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 60,

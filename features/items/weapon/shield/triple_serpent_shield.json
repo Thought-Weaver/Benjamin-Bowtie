@@ -2,7 +2,7 @@
     "key": "items/weapon/shield/triple_serpent_shield",
     "icon": "\ud83d\udd30",
     "name": "Triple Serpent Shield",
-    "value": 15020,
+    "value": 4506,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "It's said with the right words, the serpents will come to life.",
@@ -11,7 +11,9 @@
         "Shield",
         "Off_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 128,
     "altering_item_keys": [

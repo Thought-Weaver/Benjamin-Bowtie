@@ -2,7 +2,7 @@
     "key": "items/equipment/ring/arcane_bastion",
     "icon": "\u2b55",
     "name": "Arcane Bastion",
-    "value": 4595,
+    "value": 1379,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Passed around by less-than-honorable students to help get ahead on their classes.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Ring"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 30,
     "altering_item_keys": [

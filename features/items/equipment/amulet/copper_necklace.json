@@ -1,14 +1,19 @@
 {
     "key": "items/equipment/amulet/copper_necklace",
-    "icon": "\uD83D\uDCFF",
+    "icon": "\ud83d\udcff",
     "name": "Copper Necklace",
-    "value": 75,
+    "value": 23,
     "rarity": "Uncommon",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Amulet"],
+    "class_tags": [
+        "Equipment",
+        "Amulet"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 5,
-    "altering_item_keys": [""]
+    "altering_item_keys": [
+        ""
+    ]
 }

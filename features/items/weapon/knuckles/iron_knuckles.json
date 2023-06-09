@@ -1,12 +1,17 @@
 {
     "key": "items/weapon/knuckles/iron_knuckles",
-    "icon": "\uD83E\uDD4A",
+    "icon": "\ud83e\udd4a",
     "name": "Iron Knuckles",
-    "value": 150,
+    "value": 45,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Knuckles", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Knuckles",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 15,

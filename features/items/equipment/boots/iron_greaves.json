@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/boots/iron_greaves",
-    "icon": "\uD83E\uDD7E",
+    "icon": "\ud83e\udd7e",
     "name": "Iron Greaves",
-    "value": 90,
+    "value": 27,
     "rarity": "Uncommon",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Boots"],
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 10,

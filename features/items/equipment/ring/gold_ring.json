@@ -1,14 +1,19 @@
 {
     "key": "items/equipment/ring/gold_ring",
-    "icon": "\uD83D\uDC8D",
+    "icon": "\ud83d\udc8d",
     "name": "Gold Ring",
-    "value": 110,
+    "value": 33,
     "rarity": "Rare",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Ring"],
+    "class_tags": [
+        "Equipment",
+        "Ring"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 5,
-    "altering_item_keys": [""]
+    "altering_item_keys": [
+        ""
+    ]
 }

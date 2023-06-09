@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/offhand/golden_knucklebone",
-    "icon": "\uD83E\uDEA8",
+    "icon": "\ud83e\udea8",
     "name": "Golden Knucklebone",
-    "value": 1000,
+    "value": 300,
     "rarity": "Artifact",
     "description": "When you win a game of knucklebones, receive 1/8th your final board total in coins.",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Off_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Off_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "item_effects": {

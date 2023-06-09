@@ -2,7 +2,7 @@
     "key": "items/weapon/shield/brambles_boundary",
     "icon": "\ud83d\udee1\ufe0f",
     "name": "Bramble's Boundary",
-    "value": 7870,
+    "value": 2361,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Had someone else walked that path before?",
@@ -11,7 +11,9 @@
         "Shield",
         "Off_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 59,
     "altering_item_keys": [

@@ -2,7 +2,7 @@
     "key": "items/weapon/shield/bloomcrest_greatshield",
     "icon": "\ud83d\udee1\ufe0f",
     "name": "Bloomcrest Greatshield",
-    "value": 6595,
+    "value": 1979,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "The grand floral design makes it seem more decorative than practical.",
@@ -11,7 +11,9 @@
         "Shield",
         "Off_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 46,
     "altering_item_keys": [

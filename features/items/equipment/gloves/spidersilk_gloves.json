@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/gloves/spidersilk_gloves",
-    "icon": "\uD83E\uDDE4",
+    "icon": "\ud83e\udde4",
     "name": "Spidersilk Gloves",
-    "value": 25,
+    "value": 8,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Gloves"],
+    "class_tags": [
+        "Equipment",
+        "Gloves"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 2,

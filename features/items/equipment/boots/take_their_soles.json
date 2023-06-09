@@ -2,7 +2,7 @@
     "key": "items/equipment/boots/take_their_soles",
     "icon": "\ud83e\udd7e",
     "name": "Take Their Soles",
-    "value": 3550,
+    "value": 1065,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "\"HAHA YES, BRING THEM TO ME. THEIR SOLES! THEIR SOLES!\" cackled the shoe demon.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Boots"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 32,
     "altering_item_keys": [],

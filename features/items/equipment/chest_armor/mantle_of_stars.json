@@ -2,7 +2,7 @@
     "key": "items/equipment/chest_armor/mantle_of_stars",
     "icon": "\ud83e\udde5",
     "name": "Mantle of Stars",
-    "value": 4380,
+    "value": 1314,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "To mages across the world, the existence of this artifact was mere speculation and rumor. Until now.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Chest_Armor"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 31,
     "altering_item_keys": [],

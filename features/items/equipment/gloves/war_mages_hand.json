@@ -2,7 +2,7 @@
     "key": "items/equipment/gloves/war_mages_hand",
     "icon": "\ud83e\udde4",
     "name": "War Mage's Hand",
-    "value": 9800,
+    "value": 2940,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "\"This rebellion ends here. Crush them.\"",
@@ -10,7 +10,9 @@
         "Equipment",
         "Gloves"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 76,
     "altering_item_keys": [

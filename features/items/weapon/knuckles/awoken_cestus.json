@@ -2,7 +2,7 @@
     "key": "items/weapon/knuckles/awoken_cestus",
     "icon": "\ud83e\udd4a",
     "name": "Awoken Cestus",
-    "value": 5890,
+    "value": 1767,
     "rarity": "Legendary",
     "description": "",
     "flavor_text": "",
@@ -12,7 +12,9 @@
         "Knuckles",
         "Main_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 52,
     "altering_item_keys": [],

@@ -1,14 +1,19 @@
 {
     "key": "items/equipment/amulet/gold_necklace",
-    "icon": "\uD83D\uDCFF",
+    "icon": "\ud83d\udcff",
     "name": "Gold Necklace",
-    "value": 215,
+    "value": 65,
     "rarity": "Rare",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Amulet"],
+    "class_tags": [
+        "Equipment",
+        "Amulet"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 5,
-    "altering_item_keys": [""]
+    "altering_item_keys": [
+        ""
+    ]
 }

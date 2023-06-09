@@ -2,7 +2,7 @@
     "key": "items/equipment/chest_armor/twisting_form",
     "icon": "\ud83e\udde5",
     "name": "Twisting Form",
-    "value": 5030,
+    "value": 1509,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "It never seems to sit still like good armor should.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Chest_Armor"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 39,
     "altering_item_keys": [],

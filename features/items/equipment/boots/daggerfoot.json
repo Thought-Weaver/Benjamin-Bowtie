@@ -2,7 +2,7 @@
     "key": "items/equipment/boots/daggerfoot",
     "icon": "\ud83e\udd7e",
     "name": "Daggerfoot",
-    "value": 5680,
+    "value": 1704,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "\"What do you mean I can't put some knives on my boots?\"",
@@ -10,7 +10,9 @@
         "Equipment",
         "Boots"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 42,
     "altering_item_keys": [

@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/boots/amberite_plate_greaves",
-    "icon": "\uD83E\uDD7E",
+    "icon": "\ud83e\udd7e",
     "name": "Amberite Plate Greaves",
-    "value": 1800,
+    "value": 540,
     "rarity": "Legendary",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Boots"],
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 50,

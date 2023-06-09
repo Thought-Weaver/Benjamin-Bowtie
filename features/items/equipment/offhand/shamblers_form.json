@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/offhand/shamblers_form",
-    "icon": "\uD83E\uDDB4",
+    "icon": "\ud83e\uddb4",
     "name": "Shambler's Form",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Off_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Off_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 100,

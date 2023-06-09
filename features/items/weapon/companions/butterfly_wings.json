@@ -1,12 +1,16 @@
 {
     "key": "items/weapon/companions/butterfly_wings",
-    "icon": "\uD83E\uDD8B",
+    "icon": "\ud83e\udd8b",
     "name": "Butterfly Wings",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 0,

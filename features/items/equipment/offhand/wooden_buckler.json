@@ -1,12 +1,16 @@
 {
     "key": "items/equipment/offhand/wooden_buckler",
-    "icon": "\uD83D\uDEE1\uFE0F",
+    "icon": "\ud83d\udee1\ufe0f",
     "name": "Wooden Buckler",
-    "value": 115,
+    "value": 35,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Off_Hand", "Shield"],
+    "class_tags": [
+        "Equipment",
+        "Off_Hand",
+        "Shield"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 8,

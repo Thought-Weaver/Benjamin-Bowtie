@@ -1,12 +1,16 @@
 {
     "key": "items/weapon/companions/bunny_paws",
-    "icon": "\uD83D\uDC07",
+    "icon": "\ud83d\udc07",
     "name": "Bunny Paws",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 0,

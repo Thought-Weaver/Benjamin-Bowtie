@@ -2,7 +2,7 @@
     "key": "items/equipment/boots/stunning_reproach",
     "icon": "\ud83e\udd7e",
     "name": "Stunning Reproach",
-    "value": 5565,
+    "value": 1670,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "A scorned lover never forgets.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Boots"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 40,
     "altering_item_keys": [

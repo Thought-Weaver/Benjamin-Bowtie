@@ -1,12 +1,17 @@
 {
     "key": "items/weapon/sword/iron_sword",
-    "icon": "\u2694\uFE0F",
+    "icon": "\u2694\ufe0f",
     "name": "Iron Sword",
-    "value": 50,
+    "value": 15,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Sword", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Sword",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 5,

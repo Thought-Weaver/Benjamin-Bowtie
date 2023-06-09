@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/chest_armor/spidersilk_robe",
-    "icon": "\uD83D\uDC58",
+    "icon": "\ud83d\udc58",
     "name": "Spidersilk Robe",
-    "value": 60,
+    "value": 18,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Chest_Armor"],
+    "class_tags": [
+        "Equipment",
+        "Chest_Armor"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 2,

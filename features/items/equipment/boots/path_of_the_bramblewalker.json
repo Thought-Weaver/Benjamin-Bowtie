@@ -2,7 +2,7 @@
     "key": "items/equipment/boots/path_of_the_bramblewalker",
     "icon": "\ud83e\udd7e",
     "name": "Path of the Bramblewalker",
-    "value": 7945,
+    "value": 2384,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Crafted by a long-forgotten druid, the thorns and flowers pattern has almost worn away.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Boots"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 58,
     "altering_item_keys": [

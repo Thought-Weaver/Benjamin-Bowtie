@@ -2,7 +2,7 @@
     "key": "items/weapon/dagger/necromancers_twisted_effigy",
     "icon": "\ud83d\udde1\ufe0f",
     "name": "Necromancer's Twisted Effigy",
-    "value": 11865,
+    "value": 3560,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "It could be a person. If you squint hard enough.",
@@ -12,7 +12,9 @@
         "Dagger",
         "Main_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 72,
     "altering_item_keys": [

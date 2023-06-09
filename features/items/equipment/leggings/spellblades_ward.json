@@ -2,7 +2,7 @@
     "key": "items/equipment/leggings/spellblades_ward",
     "icon": "\ud83d\udc56",
     "name": "Spellblade's Ward",
-    "value": 11515,
+    "value": 3455,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Spellblades often bridged the gap between mages and warriors, ultimately being rejected from either.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Leggings"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 72,
     "altering_item_keys": [],

@@ -2,7 +2,7 @@
     "key": "items/weapon/spear/harrowing_end",
     "icon": "\ud83c\udf62",
     "name": "Harrowing End",
-    "value": 9945,
+    "value": 2984,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "It matters not who they are. They all eventually meet the same fate.",
@@ -12,7 +12,9 @@
         "Spear",
         "Main_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 78,
     "altering_item_keys": [],

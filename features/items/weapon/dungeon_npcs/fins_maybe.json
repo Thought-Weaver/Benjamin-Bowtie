@@ -1,12 +1,16 @@
 {
     "key": "items/weapon/dungeon_npcs/fins_maybe",
-    "icon": "\uD83D\uDC1F",
+    "icon": "\ud83d\udc1f",
     "name": "Fins?",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 0,

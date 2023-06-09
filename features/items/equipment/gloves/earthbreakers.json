@@ -2,7 +2,7 @@
     "key": "items/equipment/gloves/earthbreakers",
     "icon": "\ud83e\udde4",
     "name": "Earthbreakers",
-    "value": 9130,
+    "value": 2739,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Yes, they really do crack the earth when you punch it.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Gloves"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 63,
     "altering_item_keys": [

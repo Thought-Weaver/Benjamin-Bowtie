@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/leggings/leather_leggings",
-    "icon": "\uD83D\uDC56",
+    "icon": "\ud83d\udc56",
     "name": "Leather Leggings",
-    "value": 70,
+    "value": 21,
     "rarity": "Uncommon",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Leggings"],
+    "class_tags": [
+        "Equipment",
+        "Leggings"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 8,

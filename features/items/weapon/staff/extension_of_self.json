@@ -2,7 +2,7 @@
     "key": "items/weapon/staff/extension_of_self",
     "icon": "\ud83e\ude84",
     "name": "Extension of Self",
-    "value": 6565,
+    "value": 1970,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Arguably all weapons should be treated this way.",
@@ -12,7 +12,9 @@
         "Staff",
         "Main_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 48,
     "altering_item_keys": [

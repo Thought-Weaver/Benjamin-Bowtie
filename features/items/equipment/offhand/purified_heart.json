@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/offhand/purified_heart",
-    "icon": "\uD83E\uDD0D",
+    "icon": "\ud83e\udd0d",
     "name": "Purified Heart",
-    "value": 5000,
+    "value": 1500,
     "rarity": "Artifact",
     "description": "The next time you perish, this will restore you to full health. It shatters after being used.",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Off_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Off_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "item_effects": {

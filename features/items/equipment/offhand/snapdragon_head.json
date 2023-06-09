@@ -1,8 +1,8 @@
 {
     "key": "items/equipment/offhand/snapdragon_head",
-    "icon": "\uD83D\uDC80",
+    "icon": "\ud83d\udc80",
     "name": "Snapdragon Head",
-    "value": 1500,
+    "value": 450,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Is it... staring at you?",
@@ -10,7 +10,9 @@
         "Equipment",
         "Off_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 20,
     "altering_item_keys": [],

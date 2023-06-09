@@ -2,7 +2,7 @@
     "key": "items/equipment/gloves/a_new_dream",
     "icon": "\ud83e\udde4",
     "name": "A New Dream",
-    "value": 10110,
+    "value": 3033,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Serve. Bring their minds.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Gloves"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 71,
     "altering_item_keys": [],

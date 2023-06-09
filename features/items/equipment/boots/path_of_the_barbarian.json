@@ -2,7 +2,7 @@
     "key": "items/equipment/boots/path_of_the_barbarian",
     "icon": "\ud83e\udd7e",
     "name": "Path of the Barbarian",
-    "value": 5725,
+    "value": 1718,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "You never knew bootprints could look furious.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Boots"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 52,
     "altering_item_keys": [],

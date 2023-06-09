@@ -1,12 +1,17 @@
 {
     "key": "items/weapon/spear/iron_spear",
-    "icon": "\uD83C\uDF62",
+    "icon": "\ud83c\udf62",
     "name": "Iron Spear",
-    "value": 65,
+    "value": 20,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Spear", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Spear",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 8,

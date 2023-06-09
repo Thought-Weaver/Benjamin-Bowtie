@@ -1,13 +1,20 @@
 {
     "key": "items/weapon/staff/yennas_staff",
-    "icon": "\uD83E\uDE84",
+    "icon": "\ud83e\ude84",
     "name": "Yenna's Staff",
-    "value": 3500,
+    "value": 1050,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "A powerful gift. Use it well.",
-    "class_tags": ["Equipment", "Weapon", "Staff", "Main_Hand"],
-    "state_tags": ["Needs_Identification"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Staff",
+        "Main_Hand"
+    ],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 50,
     "weapon_stats": {

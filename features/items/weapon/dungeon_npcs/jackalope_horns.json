@@ -1,12 +1,16 @@
 {
     "key": "items/weapon/dungeon_npcs/jackalope_horns",
-    "icon": "\uD83D\uDC07",
+    "icon": "\ud83d\udc07",
     "name": "Jackalope Horns",
-    "value": 250,
+    "value": 75,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 0,

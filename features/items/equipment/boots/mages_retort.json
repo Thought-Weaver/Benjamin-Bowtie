@@ -2,7 +2,7 @@
     "key": "items/equipment/boots/mages_retort",
     "icon": "\ud83e\udd7e",
     "name": "Mage's Retort",
-    "value": 10375,
+    "value": 3113,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "\"He lost my favorite retort!\"",
@@ -10,7 +10,9 @@
         "Equipment",
         "Boots"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 80,
     "altering_item_keys": [

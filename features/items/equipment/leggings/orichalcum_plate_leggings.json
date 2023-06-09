@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/leggings/orichalcum_plate_leggings",
-    "icon": "\uD83D\uDC56",
+    "icon": "\ud83d\udc56",
     "name": "Orichalcum Plate Leggings",
-    "value": 4800,
+    "value": 1440,
     "rarity": "Legendary",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Leggings"],
+    "class_tags": [
+        "Equipment",
+        "Leggings"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 60,

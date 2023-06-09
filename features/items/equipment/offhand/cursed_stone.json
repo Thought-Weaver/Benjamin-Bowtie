@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/offhand/cursed_stone",
-    "icon": "\uD83E\uDEA8",
+    "icon": "\ud83e\udea8",
     "name": "Cursed Stone",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Fuck me in particular.",
-    "class_tags": ["Equipment", "Off_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Off_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "item_effects": {

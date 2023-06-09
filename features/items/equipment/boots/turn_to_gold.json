@@ -2,7 +2,7 @@
     "key": "items/equipment/boots/turn_to_gold",
     "icon": "\ud83e\udd7e",
     "name": "Turn to Gold",
-    "value": 8130,
+    "value": 2439,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "What has it cost you?",
@@ -10,7 +10,9 @@
         "Equipment",
         "Boots"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 50,
     "altering_item_keys": [

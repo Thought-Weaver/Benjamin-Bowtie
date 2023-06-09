@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/offhand/form_of_flame_and_void",
-    "icon": "\uD83C\uDF0C",
+    "icon": "\ud83c\udf0c",
     "name": "Form of Flame and Void",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Off_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Off_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 100,

@@ -2,7 +2,7 @@
     "key": "items/weapon/spear/rusted_harpoon",
     "icon": "\ud83c\udf62",
     "name": "Rusted Harpoon",
-    "value": 500,
+    "value": 150,
     "rarity": "Uncommon",
     "description": "",
     "flavor_text": "",

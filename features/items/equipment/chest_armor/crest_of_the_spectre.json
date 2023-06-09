@@ -2,7 +2,7 @@
     "key": "items/equipment/chest_armor/crest_of_the_spectre",
     "icon": "\ud83e\udde5",
     "name": "Crest of the Spectre",
-    "value": 755,
+    "value": 227,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "The armor depicts a fascinating scene of a cloaked figure walking out into a wartorn field, facing away from the direction of the sun.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Chest_Armor"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 2,
     "altering_item_keys": [

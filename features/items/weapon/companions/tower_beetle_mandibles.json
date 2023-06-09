@@ -1,12 +1,16 @@
 {
     "key": "items/weapon/companions/tower_beetle_mandibles",
-    "icon": "\uD83E\uDEB2",
+    "icon": "\ud83e\udeb2",
     "name": "Tower Beetle Mandibles",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 0,

@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/gloves/mythril_gauntlets",
-    "icon": "\uD83E\uDDE4",
+    "icon": "\ud83e\udde4",
     "name": "Mythril Gauntlets",
-    "value": 1100,
+    "value": 330,
     "rarity": "Epic",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Gloves"],
+    "class_tags": [
+        "Equipment",
+        "Gloves"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 45,

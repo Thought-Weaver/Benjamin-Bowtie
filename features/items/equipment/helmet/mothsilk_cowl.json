@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/helmet/mothsilk_cowl",
-    "icon": "\uD83C\uDFA9",
+    "icon": "\ud83c\udfa9",
     "name": "Mothsilk Cowl",
-    "value": 32,
+    "value": 10,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Helmet"],
+    "class_tags": [
+        "Equipment",
+        "Helmet"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 3,

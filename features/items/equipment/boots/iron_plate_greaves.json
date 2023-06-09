@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/boots/iron_plate_greaves",
-    "icon": "\uD83E\uDD7E",
+    "icon": "\ud83e\udd7e",
     "name": "Iron Plate Greaves",
-    "value": 360,
+    "value": 108,
     "rarity": "Rare",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Boots"],
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 22,

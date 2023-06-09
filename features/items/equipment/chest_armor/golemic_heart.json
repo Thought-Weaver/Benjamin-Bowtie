@@ -1,13 +1,18 @@
 {
     "key": "items/equipment/chest_armor/golemic_heart",
-    "icon": "\uD83E\uDEA8",
+    "icon": "\ud83e\udea8",
     "name": "Golemic Heart",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Chest_Armor"],
-    "state_tags": ["Needs_Identification"],
+    "class_tags": [
+        "Equipment",
+        "Chest_Armor"
+    ],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 60,
     "armor_stats": {

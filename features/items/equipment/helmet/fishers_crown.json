@@ -2,7 +2,7 @@
     "key": "items/equipment/helmet/fishers_crown",
     "icon": "\ud83e\udee7",
     "name": "Fisher's Crown",
-    "value": 7595,
+    "value": 2279,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Fit for a king.",
@@ -10,7 +10,9 @@
         "Equipment",
         "Helmet"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 60,
     "altering_item_keys": [],

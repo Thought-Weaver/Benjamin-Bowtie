@@ -1,13 +1,20 @@
 {
     "key": "items/weapon/sword/galos_rapier",
-    "icon": "\u2694\uFE0F",
+    "icon": "\u2694\ufe0f",
     "name": "Galos' Rapier",
-    "value": 1000,
+    "value": 300,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Sword", "Main_Hand"],
-    "state_tags": ["Needs_Identification"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Sword",
+        "Main_Hand"
+    ],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 45,
     "weapon_stats": {

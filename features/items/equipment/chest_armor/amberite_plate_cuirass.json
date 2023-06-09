@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/chest_armor/amberite_plate_cuirass",
-    "icon": "\uD83D\uDC55",
+    "icon": "\ud83d\udc55",
     "name": "Amberite Plate Cuirass",
-    "value": 5600,
+    "value": 1680,
     "rarity": "Legendary",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Chest_Armor"],
+    "class_tags": [
+        "Equipment",
+        "Chest_Armor"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 50,

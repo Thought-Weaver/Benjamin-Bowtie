@@ -1,12 +1,16 @@
 {
     "key": "items/weapon/companions/froggy_legs",
-    "icon": "\uD83D\uDC38",
+    "icon": "\ud83d\udc38",
     "name": "Froggy Legs",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 0,

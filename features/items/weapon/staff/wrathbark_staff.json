@@ -1,12 +1,17 @@
 {
     "key": "items/weapon/staff/wrathbark_staff",
-    "icon": "\uD83E\uDE84",
+    "icon": "\ud83e\ude84",
     "name": "Wrathbark Staff",
-    "value": 95,
+    "value": 29,
     "rarity": "Common",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Staff", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Staff",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 8,

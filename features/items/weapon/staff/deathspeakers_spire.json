@@ -2,7 +2,7 @@
     "key": "items/weapon/staff/deathspeakers_spire",
     "icon": "\ud83e\ude84",
     "name": "Deathspeaker's Spire",
-    "value": 11835,
+    "value": 3551,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Among the necromantic order, the Deathspeakers were revered for their skill in reanimating corpses well enough to converse.",
@@ -12,7 +12,9 @@
         "Staff",
         "Main_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 80,
     "altering_item_keys": [

@@ -1,12 +1,16 @@
 {
     "key": "items/weapon/dungeon_npcs/cone_snail_stinger",
-    "icon": "\uD83D\uDC1A",
+    "icon": "\ud83d\udc1a",
     "name": "Cone Snail Stinger",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Weapon", "Main_Hand"],
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 0,

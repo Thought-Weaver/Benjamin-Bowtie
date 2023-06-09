@@ -2,7 +2,7 @@
     "key": "items/weapon/staff/last_malediction",
     "icon": "\ud83e\ude84",
     "name": "Last Malediction",
-    "value": 21155,
+    "value": 6347,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Only at the in-between of night and day could the curse be broken.",
@@ -12,7 +12,9 @@
         "Staff",
         "Main_Hand"
     ],
-    "state_tags": ["Needs_Identification"],
+    "state_tags": [
+        "Needs_Identification"
+    ],
     "count": 1,
     "level_requirement": 130,
     "altering_item_keys": [

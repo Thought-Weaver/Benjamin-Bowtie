@@ -1,12 +1,15 @@
 {
     "key": "items/equipment/boots/mythril_greaves",
-    "icon": "\uD83E\uDD7E",
+    "icon": "\ud83e\udd7e",
     "name": "Mythril Greaves",
-    "value": 1550,
+    "value": 465,
     "rarity": "Epic",
     "description": "",
     "flavor_text": "",
-    "class_tags": ["Equipment", "Boots"],
+    "class_tags": [
+        "Equipment",
+        "Boots"
+    ],
     "state_tags": [],
     "count": 1,
     "level_requirement": 45,
