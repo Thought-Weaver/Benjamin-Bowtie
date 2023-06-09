@@ -14,6 +14,7 @@ from discord.ext import commands, tasks
 from bot import BenjaminBowtieBot
 from features.companions.companion import BlueFlitterwingButterflyCompanion, ShadowfootRaccoonCompanion, TidewaterCrabCompanion
 from features.companions.player_companions import PlayerCompanionsView
+from features.settings import SettingsView
 from features.views.dueling_view import CompanionBattleView, GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
@@ -1285,6 +1286,16 @@ class Adventures(commands.Cog):
         forest = ForestDungeonEntranceView(self._bot, self._database, context.guild.id, [context.author, *users], section)
 
         await context.send(embed=forest.get_initial_embed(), view=forest)
+
+    @commands.command(name="settings", help="Adjust your gameplay settings")
+    async def settings_handler(self, context: commands.Context):
+        assert(context.guild is not None)
+
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+
+        settings_view = SettingsView(self._bot, self._database, context.guild.id, context.author)
+
+        await context.send(embed=settings_view.get_initial_embed(), view=settings_view)
 
 
 async def setup(bot: BenjaminBowtieBot):
