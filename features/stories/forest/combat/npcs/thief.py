@@ -19,11 +19,11 @@ from features.stats import Stats
 class Thief(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Thief" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {
-            ItemKey.IronDagger: 0.5,
-            ItemKey.IronDagger: 0.5,
-            ItemKey.LesserDexterityPotion: 0.2,
-            ItemKey.Leather: 0.8,
-            ItemKey.DaggerOfTheHemocrafter: 0.02
+            ItemKey.IronDagger: 0.3,
+            ItemKey.IronDagger: 0.3,
+            ItemKey.LesserDexterityPotion: 0.1,
+            ItemKey.Leather: 0.6,
+            ItemKey.DaggerOfTheHemocrafter: 0.01
         })
 
         self._setup_npc_params()

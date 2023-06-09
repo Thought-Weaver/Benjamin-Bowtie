@@ -118,7 +118,7 @@ class WildBoar(NPC):
             ItemKey.Bones: 0.85,
             ItemKey.RawBoarMeat: 0.9,
             ItemKey.IronDagger: 0.05,
-            ItemKey.IronSpear: 0.15
+            ItemKey.IronSpear: 0.1
         })
 
         self._setup_npc_params()

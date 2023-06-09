@@ -205,7 +205,7 @@ class WailingBones(NPC):
             ItemKey.Bones: 0.9,
             ItemKey.Bones: 0.7,
             ItemKey.Bones: 0.5,
-            ItemKey.VoidseenBone: 0.8
+            ItemKey.VoidseenBone: 0.2
         })
 
         self._setup_npc_params()

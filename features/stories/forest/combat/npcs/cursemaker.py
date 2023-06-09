@@ -152,7 +152,7 @@ class Cursemaker(NPC):
             ItemKey.MagesBaneSeed: 0.9,
             ItemKey.MagesBaneSeed: 0.7,
             ItemKey.MagesBaneSeed: 0.5,
-            ItemKey.TreantCuttings: 0.5,
+            ItemKey.TreantCuttings: 0.3,
             ItemKey.DoomCharm: 0.1
         })
 

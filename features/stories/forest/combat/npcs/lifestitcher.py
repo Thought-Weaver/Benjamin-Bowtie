@@ -19,10 +19,10 @@ from features.stats import Stats
 class Lifestitcher(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Lifestitcher" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {
-            ItemKey.WrathbarkStaff: 0.6,
-            ItemKey.LesserManaPotion: 0.2,
-            ItemKey.PileOfCoins: 0.4,
-            ItemKey.AFewCoins: 1,
+            ItemKey.WrathbarkStaff: 0.3,
+            ItemKey.LesserManaPotion: 0.1,
+            ItemKey.PileOfCoins: 0.1,
+            ItemKey.AFewCoins: 0.5,
         })
 
         self._setup_npc_params()

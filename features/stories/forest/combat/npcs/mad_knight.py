@@ -121,9 +121,9 @@ class MaddeningScream(Ability):
 class MadKnight(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Mad Knight" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
-            ItemKey.IronGreatsword: 0.6,
-            ItemKey.LesserHealthPotion: 0.2,
-            ItemKey.Leather: 0.8,
+            ItemKey.IronGreatsword: 0.3,
+            ItemKey.LesserHealthPotion: 0.1,
+            ItemKey.Leather: 0.4,
         })
 
         self._setup_npc_params()

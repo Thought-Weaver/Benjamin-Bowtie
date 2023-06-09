@@ -19,11 +19,11 @@ from features.stats import Stats
 class Stormcaller(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Stormcaller" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
-            ItemKey.WrathbarkStaff: 0.6,
+            ItemKey.WrathbarkStaff: 0.3,
             ItemKey.LesserManaPotion: 0.2,
-            ItemKey.FishersStaffOfFocus: 0.02,
-            ItemKey.PileOfCoins: 0.4,
-            ItemKey.AFewCoins: 1,
+            ItemKey.FishersStaffOfFocus: 0.01,
+            ItemKey.PileOfCoins: 0.1,
+            ItemKey.AFewCoins: 0.6,
         })
 
         self._setup_npc_params()

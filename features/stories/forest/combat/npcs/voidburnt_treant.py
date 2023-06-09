@@ -148,8 +148,8 @@ class VoidburntTreant(NPC):
             ItemKey.Wrathbark: 0.9,
             ItemKey.Wrathbark: 0.8,
             ItemKey.Wrathbark: 0.7,
-            ItemKey.TreantCuttings: 0.5,
-            ItemKey.CharredUndeadWood: 0.75
+            ItemKey.TreantCuttings: 0.3,
+            ItemKey.CharredUndeadWood: 0.15
         })
 
         self._setup_npc_params()

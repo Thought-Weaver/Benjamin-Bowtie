@@ -232,7 +232,7 @@ class SmallSnake(NPC):
 
         persona = NPCDuelingPersonas.Mage if random.random() < 0.67 else NPCDuelingPersonas.Specialist
         super().__init__("Small Snake" + name_suffix, NPCRoles.DungeonEnemy, persona, {
-            ItemKey.LesserPoison: 0.9
+            ItemKey.LesserPoison: 0.5
         })
 
         self._setup_npc_params()

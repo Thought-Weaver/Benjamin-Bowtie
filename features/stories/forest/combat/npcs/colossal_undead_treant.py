@@ -149,7 +149,7 @@ class ColossalUndeadTreant(NPC):
             ItemKey.Wrathbark: 0.9,
             ItemKey.Wrathbark: 0.8,
             ItemKey.Wrathbark: 0.7,
-            ItemKey.TreantCuttings: 0.8
+            ItemKey.TreantCuttings: 0.2
         })
 
         self._setup_npc_params()

@@ -22,7 +22,7 @@ class GiantSnake(NPC):
         # 89% chance of 4 player party (Lvl. 0-10) victory against 1
 
         super().__init__("Giant Snake" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
-            ItemKey.LesserPoison: 0.9
+            ItemKey.LesserPoison: 0.7
         })
 
         self._setup_npc_params()

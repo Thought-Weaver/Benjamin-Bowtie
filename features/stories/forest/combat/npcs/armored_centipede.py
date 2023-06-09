@@ -155,8 +155,8 @@ class ArmoredCentipede(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Armored Centipede" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.LesserPoison: 0.7,
-            ItemKey.CentipedeArmorPlating: 0.9,
-            ItemKey.CentipedeCarapace: 0.05
+            ItemKey.CentipedeArmorPlating: 0.4,
+            ItemKey.CentipedeCarapace: 0.03
         })
 
         self._setup_npc_params()

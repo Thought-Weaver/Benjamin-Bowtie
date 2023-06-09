@@ -166,8 +166,8 @@ class DireWolf(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Dire Wolf" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
-            ItemKey.RawWolfMeat: 0.9,
-            ItemKey.IronDagger: 0.05
+            ItemKey.RawWolfMeat: 0.7,
+            ItemKey.IronDagger: 0.02
         })
 
         self._setup_npc_params()

@@ -150,9 +150,9 @@ class BriarWall(NPC):
     def __init__(self, name_suffix: str=""):
         artifact_reward = random.choice([ItemKey.Briarbound, ItemKey.Briareyes, ItemKey.Briarfists, ItemKey.Briarfold, ItemKey.Briarpierce, ItemKey.Briarsteps])
         super().__init__("Briar Wall" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
-            ItemKey.BagOfCoins: 0.9,
-            ItemKey.BagOfCoins: 0.6,
-            artifact_reward: 0.75
+            ItemKey.BagOfCoins: 0.7,
+            ItemKey.BagOfCoins: 0.5,
+            artifact_reward: 0.4
         })
 
         self._setup_npc_params()

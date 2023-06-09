@@ -19,9 +19,9 @@ from features.stats import Stats
 class Ironbound(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Ironbound" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Tank, {
-            ItemKey.IronSword: 0.6,
-            ItemKey.LesserConstitutionPotion: 0.2,
-            ItemKey.Leather: 0.8,
+            ItemKey.IronSword: 0.3,
+            ItemKey.LesserConstitutionPotion: 0.1,
+            ItemKey.Leather: 0.5,
         })
 
         self._setup_npc_params()

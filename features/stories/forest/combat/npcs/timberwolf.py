@@ -167,9 +167,8 @@ class ScentForBlood(Ability):
 class Timberwolf(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Timberwolf" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
-            ItemKey.Bones: 0.85,
-            ItemKey.RawWolfMeat: 0.9,
-            ItemKey.IronDagger: 0.05
+            ItemKey.Bones: 0.7,
+            ItemKey.RawWolfMeat: 0.8
         })
 
         self._setup_npc_params()

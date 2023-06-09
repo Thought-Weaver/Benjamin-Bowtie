@@ -144,7 +144,7 @@ class FleeingTreant(NPC):
             ItemKey.Lithewood: 0.9,
             ItemKey.Lithewood: 0.8,
             ItemKey.Lithewood: 0.7,
-            ItemKey.TreantCuttings: 0.8
+            ItemKey.TreantCuttings: 0.2
         })
 
         self._setup_npc_params()
