@@ -1380,22 +1380,28 @@ class DuelView(discord.ui.View):
         if splash_dmg > 0 or splash_percent_dmg > 0:
             if attacker in self._enemies:
                 for target in self._allies:
+                    org_armor = target.get_dueling().armor
                     percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
                     damage_dealt = target.get_expertise().damage(splash_dmg + splash_percent_dmg, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+
+                    armor_str = f" ({target.get_dueling().armor - org_armor} Armor)" if target.get_dueling().armor - org_armor < 0 else ""
 
                     attacker.get_stats().dueling.damage_dealt += damage_dealt
                     target.get_stats().dueling.damage_taken += damage_dealt
 
-                    result_strs.append(f"{attacker_name} dealt {damage_dealt} splash damage to {self.get_name(target)}")
+                    result_strs.append(f"{attacker_name} dealt {damage_dealt}{armor_str} splash damage to {self.get_name(target)}")
             else:
                 for target in self._enemies:
+                    org_armor = target.get_dueling().armor
                     percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
                     damage_dealt = target.get_expertise().damage(splash_dmg + splash_percent_dmg, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+
+                    armor_str = f" ({target.get_dueling().armor - org_armor} Armor)" if target.get_dueling().armor - org_armor < 0 else ""
 
                     attacker.get_stats().dueling.damage_dealt += damage_dealt
                     target.get_stats().dueling.damage_taken += damage_dealt
 
-                    result_strs.append(f"{attacker_name} dealt {damage_dealt} splash damage to {self.get_name(target)}")
+                    result_strs.append(f"{attacker_name} dealt {damage_dealt}{armor_str} splash damage to {self.get_name(target)}")
 
         return "\n".join(result_strs)
 
