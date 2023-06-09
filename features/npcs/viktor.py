@@ -333,7 +333,7 @@ class RandomItemMerchant(NPC):
         self._setup_npc_params()
 
     def tick(self):
-        possible_items = list(filter(lambda x: x.get_rarity() < Rarity.Artifact and (ClassTag.Equipment.Equipment not in x.get_class_tags() or random.random() < 0.2), [LOADED_ITEMS.get_new_item(key) for key in ItemKey]))
+        possible_items = list(filter(lambda x: x.get_rarity() < Rarity.Artifact and (ClassTag.Equipment.Equipment not in x.get_class_tags() or random.random() < 0.1), [LOADED_ITEMS.get_new_item(key) for key in ItemKey]))
         prob_map: Dict[Rarity, float] = {
             Rarity.Common: 0.7,
             Rarity.Uncommon: 0.22,
