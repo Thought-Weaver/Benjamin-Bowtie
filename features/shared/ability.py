@@ -4481,7 +4481,7 @@ class PressTheAdvantageIII(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = DmgBuff(
             turns_remaining=3,
-            value=0.6,
+            value=0.75,
             source_str=self.get_icon_and_name()
         )
 
