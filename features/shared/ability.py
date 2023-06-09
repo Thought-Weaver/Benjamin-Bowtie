@@ -4397,7 +4397,7 @@ class PressTheAdvantageI(Ability):
             if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF:
                 se.turns_remaining += 1
                 se_results.add(se.name)
-        se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn."
+        se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn.\n"
         result_str += se_result_str
 
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
@@ -4444,7 +4444,7 @@ class PressTheAdvantageII(Ability):
             if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF:
                 se.turns_remaining += 1
                 se_results.add(se.name)
-        se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn."
+        se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn.\n"
         result_str += se_result_str
 
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
@@ -4492,7 +4492,7 @@ class PressTheAdvantageIII(Ability):
             if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF:
                 se.turns_remaining += 1
                 se_results.add(se.name)
-        se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn."
+        se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn.\n"
         result_str += se_result_str
 
         results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
