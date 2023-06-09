@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import logging
 import random
 import time
 
-from bot import bot
+from bot import ERROR_LOGGER
 from features.companions.player_companions import PlayerCompanions
 from features.dueling import Dueling
 from features.equipment import Equipment
@@ -18,7 +19,9 @@ from features.shared.item import LOADED_ITEMS
 from features.stats import Stats
 from features.stories.player_dungeon_run import PlayerDungeonRun
 
-from typing import List
+from typing import List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from bot import BenjaminBowtieBot
 
 class Player():
     def __init__(self, id: str):
@@ -35,7 +38,7 @@ class Player():
         self._dungeon_run: PlayerDungeonRun = PlayerDungeonRun()
         self._settings: Settings = Settings()
 
-    async def tick(self):
+    async def tick(self, bot: BenjaminBowtieBot):
         self._house.tick()
         self._companions.tick()
 
@@ -54,9 +57,12 @@ class Player():
         if self._settings.mature_plant_notifications:
             plants_just_matured = self._house.get_plants_just_matured()
             if len(plants_just_matured) > 0:
-                plants_str: str = "\n".join(list(map(lambda plant: plant.get_full_name(), plants_just_matured)))
-                user = await bot.fetch_user(int(self._id))
-                await user.send(f"The following plants have matured in your garden:\n\n{plants_str}")
+                try:
+                    plants_str: str = "\n".join(list(map(lambda plant: plant.get_full_name(), plants_just_matured)))
+                    user = await bot.fetch_user(int(self._id))
+                    await user.send(f"The following plants have matured in your garden:\n\n{plants_str}")
+                except Exception as e:
+                    ERROR_LOGGER.log(logging.ERROR, f"Failed to send plant notification to user: {e}")
 
     def get_id(self):
         return self._id
@@ -97,8 +103,11 @@ class Player():
         self._mailbox.append(mail)
 
         if self._settings.mail_notifications:
-            user = await bot.fetch_user(int(self._id))
-            await user.send(f"You have new mail from {mail.get_sender_name()}!")
+            try:
+                user = await bot.fetch_user(int(self._id))
+                await user.send(f"You have new mail from {mail.get_sender_name()}!")
+            except Exception as e:
+                ERROR_LOGGER.log(logging.ERROR, f"Failed to send mail notification to user: {e}")
 
     def get_stats(self):
         return self._stats
