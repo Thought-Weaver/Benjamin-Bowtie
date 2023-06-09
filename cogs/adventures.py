@@ -894,7 +894,7 @@ class Adventures(commands.Cog):
             "**Enraged:** Gain additional attributes whenever you take damage\n"
             "**Taunted:** Forced to attack the caster\n"
             "**Convinced:** Can't attack the caster\n"
-            "**Generating:** When hit, whoever applied this status gains coins\n"
+            "**Generating:** Whenever you attack, generate coins\n"
             "**Tarnished:** Whenever you gain coins, damage is dealt relative to the amount gained\n"
             "**Sanguinated:** All abilities use HP instead of Mana\n\n"
             "**Eureka:** Potions used are more powerful\n"
