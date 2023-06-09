@@ -11,7 +11,7 @@ from features.equipment import Equipment
 from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.house.recipe import LOADED_RECIPES, Recipe, RecipeKey
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
-from features.shared.ability import BoundToGetLuckyIII, ContractManaToBloodIII, ContractWealthForPowerIII, EmpowermentI, IncenseIII, ParalyzingFumesI, PreparePotionsIII, QuickAccessI, RegenerationIII, SecondWindI, ShatteringStormIII, SilkspeakingI, ThunderingTorrentIII, ThunderingTorrentIV, VitalityTransferIII
+from features.shared.ability import BoundToGetLuckyIII, BoundToGetLuckyIV, ContractWealthForPowerIII, EmpowermentI, EmpowermentII, IncenseIII, ParalyzingFumesI, ParalyzingFumesII, RegenerationIII, SecondWindI, SecondWindIII, ShatteringStormIII, ThunderingTorrentIV
 from features.shared.enums import ClassTag, StateTag
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.shared.nextbutton import NextButton
@@ -1011,17 +1011,17 @@ class Yenna(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._expertise.add_xp_to_class(96600, ExpertiseClass.Merchant, self._equipment) # Level 20
-        self._expertise.add_xp_to_class(1600, ExpertiseClass.Guardian, self._equipment) # Level 5
-        self._expertise.add_xp_to_class(22000, ExpertiseClass.Alchemist, self._equipment) # Level 30
+        self._expertise.add_xp_to_class_until_level(30, ExpertiseClass.Merchant)
+        self._expertise.add_xp_to_class_until_level(20, ExpertiseClass.Guardian)
+        self._expertise.add_xp_to_class_until_level(30, ExpertiseClass.Alchemist)
 
         self._expertise.points_to_spend = 0
         
-        self._expertise.constitution = 23
-        self._expertise.intelligence = 28
-        self._expertise.dexterity = 10
+        self._expertise.constitution = 30
+        self._expertise.intelligence = 30
+        self._expertise.dexterity = 5
         self._expertise.strength = 0
-        self._expertise.luck = 10
+        self._expertise.luck = 6
         self._expertise.memory = 9
 
     def _setup_equipment(self):
@@ -1046,8 +1046,8 @@ class Yenna(NPC):
 
         # TODO: Also add fate-bending abilities
         self._dueling.abilities = [
-            BoundToGetLuckyIII(), SecondWindI(), ParalyzingFumesI(),
-            RegenerationIII(), ThunderingTorrentIV(), EmpowermentI(),
+            BoundToGetLuckyIV(), SecondWindIII(), ParalyzingFumesII(),
+            RegenerationIII(), ThunderingTorrentIV(), EmpowermentII(),
             IncenseIII(), ContractWealthForPowerIII(), ShatteringStormIII()
         ]
 

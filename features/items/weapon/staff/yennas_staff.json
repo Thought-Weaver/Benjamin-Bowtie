@@ -16,10 +16,10 @@
         "Needs_Identification"
     ],
     "count": 1,
-    "level_requirement": 50,
+    "level_requirement": 75,
     "weapon_stats": {
-        "min_damage": 20,
-        "max_damage": 25
+        "min_damage": 35,
+        "max_damage": 38
     },
     "item_effects": {
         "permanent": [
