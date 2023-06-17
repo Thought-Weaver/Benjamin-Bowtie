@@ -267,6 +267,17 @@ class Adventures(commands.Cog):
 
         await context.send("The dungeon run has been ended for those players.")
 
+    @commands.is_owner()
+    @commands.command(name="giveitem", help="Gives an item to a player", hidden=True)
+    async def give_item_handler(self, context: commands.Context, user: User, item_key: ItemKey):
+        assert(context.guild is not None)
+
+        item: Item = LOADED_ITEMS.get_new_item(item_key)
+        player: Player = self._get_player(context.guild.id, user.id)
+        player.get_inventory().add_item(item)
+        
+        await context.send("The adventures database has been saved!")
+
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items", aliases=["ghoti"])
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def fish_handler(self, context: commands.Context):
