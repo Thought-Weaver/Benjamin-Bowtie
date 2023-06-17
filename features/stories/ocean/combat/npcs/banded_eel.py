@@ -163,7 +163,8 @@ class Constrict(Ability):
 class BandedEel(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 72% chance of 4 player party (Lvl. 40-50) victory against 1
+        # 66% chance of 4 player party (Lvl. 40-50) victory against 1
+        # Avg Number of Turns (per entity): 11
 
         super().__init__("Banded Eel" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 

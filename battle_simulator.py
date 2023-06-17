@@ -797,11 +797,11 @@ def get_full_equipment_str(npc: NPC):
 # -----------------------------------------------------------------------------
 
 ENEMY_CLASSES: List[List[type]] = [
-    [Sandwyrm],
+    [BandedEel],
 ]
-ALLY_CLASS_RANGE: range = range(60, 70)
+ALLY_CLASS_RANGE: range = range(40, 50)
 
-SIMULATION_ITERATIONS = 128
+SIMULATION_ITERATIONS = 256
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 
