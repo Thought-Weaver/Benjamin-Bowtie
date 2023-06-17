@@ -1,130 +1,131 @@
 from __future__ import annotations
 
-from math import ceil
 from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Expertise, ExpertiseClass
+from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.player import Player
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import FixedDmgTick
+from features.shared.statuseffect import Marked, TurnSkipChance
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
-    from features.player import Player
     from features.shared.ability import NegativeAbilityResult
 
 # -----------------------------------------------------------------------------
 # ABILITIES
 # -----------------------------------------------------------------------------
 
-class BonePierce(Ability):
+class Emergence(Ability):
     def __init__(self):
         super().__init__(
-            icon="\uD83E\uDDB4",
-            name="Bone Pierce",
+            icon="\uD83E\uDEB1",
+            name="Emergence",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 20% of an enemy's max health to them.",
-            flavor_text="",
-            mana_cost=0,
-            cooldown=1,
-            num_targets=1,
-            level_requirement=20,
-            target_own_group=False,
-            purchase_cost=0,
-            scaling=[]
-        )
-
-    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-
-        damage = ceil(0.2 * targets[0].get_expertise().max_hp)
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().dueling.guardian_abilities_used += 1
-
-        return result_str
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, state: dict):
-        self.__init__() # type: ignore
-
-
-class GraspOfTheStarved(Ability):
-    def __init__(self):
-        super().__init__(
-            icon="\u26B0\uFE0F",
-            name="Grasp of the Starved",
-            class_key=ExpertiseClass.Guardian,
-            description="Deal 40-45 damage to a target and cause 10 damage tick for 4 turns.",
-            flavor_text="",
-            mana_cost=0,
-            cooldown=5,
-            num_targets=1,
-            level_requirement=20,
-            target_own_group=False,
-            purchase_cost=0,
-            scaling=[]
-        )
-
-    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-
-        fixed_dmg_tick = FixedDmgTick(
-            turns_remaining=4,
-            value=10,
-            source_str=self.get_icon_and_name()
-        )
-
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(40, 45), [fixed_dmg_tick])
-        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
-
-        caster.get_stats().dueling.guardian_abilities_used += 1
-
-        return result_str
-
-    def __getstate__(self):
-        return self.__dict__
-
-    def __setstate__(self, state: dict):
-        self.__init__() # type: ignore
-
-
-class ShamblingForm(Ability):
-    def __init__(self):
-        super().__init__(
-            icon="\uD83D\uDC80",
-            name="Shambling Form",
-            class_key=ExpertiseClass.Guardian,
-            description="Restore and increase max armor by 50.",
+            description="Deal 150 damage to an enemy, doubled against Marked targets.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
-            num_targets=0,
+            num_targets=1,
             level_requirement=20,
-            target_own_group=True,
+            target_own_group=False,
             purchase_cost=0,
-            scaling=[]
+            scaling=[Attribute.Strength]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        caster.get_dueling().armor += 50
+        damage = range(150, 150) if any(isinstance(se, Marked) and se.caster == caster for se in targets[0].get_dueling().status_effects) else range(300, 300)
 
-        result_str += "{0} gained 50 armor and increased their max armor by 50."
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
 
-        mana_and_cd_str: str | None = self.remove_mana_and_set_cd(caster)
-        if mana_and_cd_str is not None:
-            result_str += mana_and_cd_str
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class TremorsInTheSand(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDFDD\uFE0F",
+            name="Tremors in the Sand",
+            class_key=ExpertiseClass.Guardian,
+            description="Mark an enemy for 2 turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        debuff = Marked(
+            turns_remaining=2,
+            value=1,
+            source_str=self.get_icon_and_name(),
+            caster=caster
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class Seaquake(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF0A",
+            name="Seaquake",
+            class_key=ExpertiseClass.Guardian,
+            description="Falter all enemies for 2 turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=7,
+            num_targets=-1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        debuff = TurnSkipChance(
+            turns_remaining=2,
+            value=1,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
 
@@ -140,14 +141,13 @@ class ShamblingForm(Ability):
 # NPC CLASS
 # -----------------------------------------------------------------------------
 
-class HulkingBoneShambler(NPC):
+class Sandwyrm(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Hulking Bone Shambler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
-            ItemKey.Bones: 0.9,
-            ItemKey.Bones: 0.7,
-            ItemKey.Bones: 0.5,
-            ItemKey.VoidseenBone: 0.2
-        })
+        # Balance Simulation Results:
+        # 6% chance of 4 player party (Lvl. 60-70) victory against 1
+        # Avg Number of Turns (per entity): 13
+
+        super().__init__("Sandwyrm" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()
 
@@ -161,12 +161,12 @@ class HulkingBoneShambler(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(250, ExpertiseClass.Guardian)
-        self._expertise.constitution = 150
-        self._expertise.strength = 40
-        self._expertise.dexterity = 0
-        self._expertise.intelligence = 0
-        self._expertise.luck = 40
+        self._expertise.add_xp_to_class_until_level(600, ExpertiseClass.Guardian)
+        self._expertise.constitution = 275
+        self._expertise.strength = 150
+        self._expertise.dexterity = 25
+        self._expertise.intelligence = 100
+        self._expertise.luck = 47
         self._expertise.memory = 3
 
     def _setup_equipment(self):
@@ -175,17 +175,16 @@ class HulkingBoneShambler(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.ShamblersBones))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.OffHand, LOADED_ITEMS.get_new_item(ItemKey.ShamblersForm))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.SandwyrmMaw))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.SandwyrmForm))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
     def _setup_abilities(self):
         if self._dueling is None:
             self._dueling = Dueling()
-            self._dueling.is_legendary = True
         
-        self._dueling.abilities = [BonePierce(), ShamblingForm(), GraspOfTheStarved()]
+        self._dueling.abilities = [TremorsInTheSand(), Emergence(), Seaquake()]
 
     def _setup_npc_params(self):
         self._setup_inventory()
@@ -198,15 +197,10 @@ class HulkingBoneShambler(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Hulking Bone Shambler"
+        self._name = "Wriggling Mass"
         self._role = NPCRoles.DungeonEnemy
-        self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {
-            ItemKey.Bones: 0.9,
-            ItemKey.Bones: 0.7,
-            ItemKey.Bones: 0.5,
-            ItemKey.VoidseenBone: 0.8
-        }
+        self._dueling_persona = NPCDuelingPersonas.Mage
+        self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

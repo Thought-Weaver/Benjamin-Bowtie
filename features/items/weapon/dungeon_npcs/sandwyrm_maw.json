@@ -1,7 +1,7 @@
 {
-    "key": "items/weapon/dungeon_npcs/barbed_tendrils",
-    "icon": "\ud83d\udc19",
-    "name": "Barbed Tendrils",
+    "key": "items/weapon/dungeon_npcs/sandwyrm_maw",
+    "icon": "\uD83E\uDEB1",
+    "name": "Sandwyrm Maw",
     "value": 1,
     "rarity": "Artifact",
     "description": "",
@@ -15,13 +15,13 @@
     "count": 1,
     "level_requirement": 0,
     "weapon_stats": {
-        "min_damage": 8,
-        "max_damage": 10
+        "min_damage": 100,
+        "max_damage": 110
     },
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "DmgBuffFromInt",
+                "effect_type": "DmgBuffFromStr",
                 "effect_value": 0.025,
                 "effect_time": -1,
                 "conditions": [],

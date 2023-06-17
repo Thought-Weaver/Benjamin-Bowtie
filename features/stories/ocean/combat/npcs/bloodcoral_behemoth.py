@@ -5,13 +5,13 @@ from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Attribute, Expertise, ExpertiseClass
+from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import ConBuff, ConDebuff, StrDebuff
+from features.shared.statuseffect import ConBuff
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -29,10 +29,10 @@ class Absorption(Ability):
             icon="\uD83E\uDE78",
             name="Absorption",
             class_key=ExpertiseClass.Guardian,
-            description="Steal 20% of the average enemy health from all enemies.",
+            description="Steal 25% of the average enemy health from all enemies.",
             flavor_text="",
             mana_cost=0,
-            cooldown=7,
+            cooldown=6,
             num_targets=-1,
             level_requirement=20,
             target_own_group=False,
@@ -43,9 +43,9 @@ class Absorption(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         
-        damage: int = ceil(0.2 * sum(target.get_expertise().max_hp for target in targets) / len(targets))
+        damage: int = ceil(0.25 * sum(target.get_expertise().max_hp for target in targets) / len(targets))
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
-        heal_results: List[str] = self._use_heal_ability(caster, [caster], range(damage, damage))
+        heal_results: List[str] = self._use_heal_ability(caster, [caster], range(damage * len(targets), damage * len(targets)))
 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
         result_str += "\n"
@@ -69,10 +69,10 @@ class Pulverize(Ability):
             icon="\uD83D\uDCA5",
             name="Pulverize",
             class_key=ExpertiseClass.Guardian,
-            description="Deal damage to an enemy equal to 50% of its remaining health.",
+            description="Deal damage to an enemy equal to 75% of its max health.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=2,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -83,7 +83,7 @@ class Pulverize(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage: int = ceil(0.5 * targets[0].get_expertise().max_hp)
+        damage: int = ceil(0.75 * targets[0].get_expertise().max_hp)
 
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -105,7 +105,7 @@ class Amass(Ability):
             icon="\uD83E\uDEB8",
             name="Amass",
             class_key=ExpertiseClass.Guardian,
-            description="Increase your Con by 2 for the rest of the duel.",
+            description="Increase your Con by 20 for the rest of the duel.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -119,7 +119,7 @@ class Amass(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         con_buff = ConBuff(
             turns_remaining=-1,
-            value=2,
+            value=20,
             source_str=self.get_icon_and_name()
         )
 
@@ -144,6 +144,10 @@ class Amass(Ability):
 
 class BloodcoralBehemoth(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 15% chance of 4 player party (Lvl. 50-60) victory against 1
+        # Avg Number of Turns (per entity): 13
+
         super().__init__("Bloodcoral Behemoth" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
         self._setup_npc_params()
@@ -158,11 +162,11 @@ class BloodcoralBehemoth(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(600, ExpertiseClass.Guardian)
+        self._expertise.add_xp_to_class_until_level(550, ExpertiseClass.Guardian)
         self._expertise.constitution = 250
-        self._expertise.strength = 100
+        self._expertise.strength = 150
         self._expertise.dexterity = 0
-        self._expertise.intelligence = 0
+        self._expertise.intelligence = 100
         self._expertise.luck = 47
         self._expertise.memory = 3
 

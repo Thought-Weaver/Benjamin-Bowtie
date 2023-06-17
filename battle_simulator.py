@@ -27,17 +27,21 @@ from features.stories.forest.combat.npcs.desiccated_undead_treant import Desicca
 from features.stories.forest.combat.npcs.evoker import Evoker
 from features.stories.forest.combat.npcs.giant_snake import GiantSnake
 from features.stories.forest.combat.npcs.horrifying_bone_amalgam import HorrifyingBoneAmalgam
+from features.stories.forest.combat.npcs.hulking_bone_shambler import HulkingBoneShambler
 from features.stories.forest.combat.npcs.marauder import Marauder
 from features.stories.forest.combat.npcs.mystic import Mystic
 from features.stories.forest.combat.npcs.small_snake import SmallSnake
+from features.stories.forest.combat.npcs.song_of_the_woods import SongOfTheWoods
 from features.stories.forest.combat.npcs.starving_dire_wolf import StarvingDireWolf
 from features.stories.forest.combat.npcs.thief import Thief
 from features.stories.forest.combat.npcs.timberwolf import Timberwolf
 from features.stories.forest.combat.npcs.voidburnt_treant import VoidburntTreant
 from features.stories.forest.combat.npcs.wailing_bones import WailingBones
+from features.stories.forest.combat.npcs.whirling_bone_shambler import WhirlingBoneShambler
 from features.stories.forest.combat.npcs.wild_boar import WildBoar
 from features.stories.ocean.combat.npcs.ancient_kraken import AncientKraken
 from features.stories.ocean.combat.npcs.banded_eel import BandedEel
+from features.stories.ocean.combat.npcs.bloodcoral_behemoth import BloodcoralBehemoth
 from features.stories.ocean.combat.npcs.brittle_star import BrittleStar
 from features.stories.ocean.combat.npcs.faceless_husk import FacelessHusk
 from features.stories.ocean.combat.npcs.fish_maybe import FishMaybe
@@ -50,6 +54,7 @@ from features.stories.ocean.combat.npcs.mesmerfish import Mesmerfish
 from features.stories.ocean.combat.npcs.mysterious_tentacle import MysteriousTentacle
 from features.stories.ocean.combat.npcs.rockfish import Rockfish
 from features.stories.ocean.combat.npcs.sand_lurker import SandLurker
+from features.stories.ocean.combat.npcs.sandwyrm import Sandwyrm
 from features.stories.ocean.combat.npcs.sea_dragon import SeaDragon
 from features.stories.ocean.combat.npcs.shallows_shark import ShallowsShark
 from features.stories.ocean.combat.npcs.stranglekelp_holdfast import StranglekelpHoldfast
@@ -792,11 +797,11 @@ def get_full_equipment_str(npc: NPC):
 # -----------------------------------------------------------------------------
 
 ENEMY_CLASSES: List[List[type]] = [
-    # [Mesmerfish, Mesmerfish, Mesmerfish]
+    [Sandwyrm],
 ]
-ALLY_CLASS_RANGE: range = range(30, 40)
+ALLY_CLASS_RANGE: range = range(60, 70)
 
-SIMULATION_ITERATIONS = 512
+SIMULATION_ITERATIONS = 128
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 

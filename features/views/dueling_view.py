@@ -1065,6 +1065,9 @@ class DuelView(discord.ui.View):
     def set_intent(self, intent: Intent):
         self._intent = intent
 
+    def filter_entity(self, entity: Player | NPC, entities: List[Player | NPC]):
+        return [other for other in entities if other.get_id() != entity.get_id()]
+
     def show_targets(self, target_own_group: bool=False):
         self.clear_items()
 
@@ -1092,12 +1095,12 @@ class DuelView(discord.ui.View):
         charmed: bool = any(se.key == StatusEffectKey.Charmed for se in cur_turn_entity.get_dueling().status_effects)
             
         if (cur_turn_entity in self._enemies and target_own_group) or (cur_turn_entity in self._allies and not target_own_group):
-            targets = self._enemies if not charmed else self._allies
+            targets = self.filter_entity(cur_turn_entity, self._enemies) if not charmed else self.filter_entity(cur_turn_entity, self._allies)
             target_str = "target" if self._targets_remaining == 1 else "targets"
             ally_or_op_str = "ally" if target_own_group else "opponent"
             description += f"{selected_targets_str}Choose an {ally_or_op_str}. {self._targets_remaining} {target_str} remaining."
         elif (cur_turn_entity in self._enemies and not target_own_group) or (cur_turn_entity in self._allies and target_own_group):
-            targets = self._allies if not charmed else self._enemies
+            targets = self.filter_entity(cur_turn_entity, self._allies) if not charmed else self.filter_entity(cur_turn_entity, self._enemies)
             target_str = "target" if self._targets_remaining == 1 else "targets"
             ally_or_op_str = "ally" if target_own_group else "opponent"
             description += f"{selected_targets_str}Choose an {ally_or_op_str}. {self._targets_remaining} {target_str} remaining."

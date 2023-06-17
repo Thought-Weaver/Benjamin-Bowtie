@@ -142,6 +142,10 @@ class AlluringSong(Ability):
 
 class SongOfTheWoods(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 4% chance of 4 player party (Lvl. 10-20) victory against 1
+        # Avg Number of Turns (per entity): 8
+
         super().__init__("Song of the Woods" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.SnapdragonHead: 1,
         })

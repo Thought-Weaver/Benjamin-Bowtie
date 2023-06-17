@@ -28,7 +28,7 @@ class ConsumingGrasp(Ability):
             icon="\uD83D\uDC19",
             name="Consuming Grasp",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 15-20 damage to an enemy. Deals triple damage to Charmed or Convinced enemies.",
+            description="Deal 10-12 damage to an enemy. Deals triple damage to Charmed or Convinced enemies.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
@@ -42,7 +42,7 @@ class ConsumingGrasp(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = range(15, 20) if any(se.key == StatusEffectKey.Charmed or se.key == StatusEffectKey.CannotTarget for se in targets[0].get_dueling().status_effects) else range(45, 60)
+        damage = range(9, 11) if any(se.key == StatusEffectKey.Charmed or se.key == StatusEffectKey.CannotTarget for se in targets[0].get_dueling().status_effects) else range(27, 33)
 
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
 
@@ -148,6 +148,10 @@ class Whisper(Ability):
 
 class Mesmerfish(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 35% chance of 4 player party (Lvl. 30-40) victory against 3
+        # Avg Number of Turns (per entity): 14
+
         super().__init__("Mesmerfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()

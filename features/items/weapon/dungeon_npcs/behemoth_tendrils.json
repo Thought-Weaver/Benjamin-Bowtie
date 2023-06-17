@@ -15,8 +15,8 @@
     "count": 1,
     "level_requirement": 0,
     "weapon_stats": {
-        "min_damage": 35,
-        "max_damage": 40
+        "min_damage": 120,
+        "max_damage": 125
     },
     "item_effects": {
         "permanent": [
@@ -32,7 +32,7 @@
         "on_successful_attack": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": 0.5,
+                "effect_value": 1,
                 "effect_time": 1,
                 "conditions": [],
                 "condition_values": [],

@@ -171,8 +171,8 @@ class WhirlingBoneShambler(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(300, ExpertiseClass.Fisher)
-        self._expertise.constitution = 150
+        self._expertise.add_xp_to_class_until_level(250, ExpertiseClass.Fisher)
+        self._expertise.constitution = 100
         self._expertise.strength = 0
         self._expertise.dexterity = 30
         self._expertise.intelligence = 100

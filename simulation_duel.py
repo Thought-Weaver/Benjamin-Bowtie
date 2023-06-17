@@ -855,14 +855,14 @@ class SimulationDuel():
                         target_own_group = ability.get_target_own_group()
                         if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
                             if not charmed:
-                                targets = self._enemies
+                                targets = [entity for entity in self._enemies if entity.get_id() != cur_npc.get_id()]
                             else:
-                                targets = self._allies
+                                targets = [entity for entity in self._allies if entity.get_id() != cur_npc.get_id()]
                         elif (cur_npc in self._enemies and not target_own_group) or (cur_npc in self._allies and target_own_group):
                             if not charmed:
-                                targets = self._allies
+                                targets = [entity for entity in self._allies if entity.get_id() != cur_npc.get_id()]
                             else:
-                                targets = self._enemies
+                                targets = [entity for entity in self._enemies if entity.get_id() != cur_npc.get_id()]
 
                         if len(targets) > 0:
                             combinations = list(itertools.combinations(targets, min(self._targets_remaining, len(enemies))))
@@ -957,14 +957,14 @@ class SimulationDuel():
                     target_own_group = consumable_stats.get_target_own_group()
                     if (cur_npc in self._enemies and target_own_group) or (cur_npc in self._allies and not target_own_group):
                         if not charmed:
-                            targets = self._enemies
+                            targets = [entity for entity in self._enemies if entity.get_id() != cur_npc.get_id()]
                         else:
-                            targets = self._allies
+                            targets = [entity for entity in self._allies if entity.get_id() != cur_npc.get_id()]
                     elif (cur_npc in self._enemies and not target_own_group) or (cur_npc in self._allies and target_own_group):
                         if not charmed:
-                            targets = self._allies
+                            targets = [entity for entity in self._allies if entity.get_id() != cur_npc.get_id()]
                         else:
-                            targets = self._enemies
+                            targets = [entity for entity in self._enemies if entity.get_id() != cur_npc.get_id()]
 
                     if len(targets) > 0:
                         combinations = list(itertools.combinations(enemies, min(self._targets_remaining, len(enemies))))

@@ -606,6 +606,8 @@ class ItemKey(StrEnum):
     MesmerfishForm = "items/equipment/chest_armor/mesmerfish_form"
     RockfishForm = "items/equipment/chest_armor/rockfish_form"
     RockfishJaws = "items/weapon/dungeon_npcs/rockfish_jaws"
+    SandwyrmForm = "items/equipment/chest_armor/sandwyrm_form"
+    SandwyrmMaw = "items/weapon/dungeon_npcs/sandwyrm_maw"
     ShamblersBones = "items/weapon/dungeon_npcs/shamblers_bones"
     ShamblersForm = "items/equipment/offhand/shamblers_form"
     SmallSnakeFangs = "items/weapon/dungeon_npcs/small_snake_fangs"
