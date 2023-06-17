@@ -272,11 +272,14 @@ class Adventures(commands.Cog):
     async def give_item_handler(self, context: commands.Context, user: User, item_key: ItemKey):
         assert(context.guild is not None)
 
-        item: Item = LOADED_ITEMS.get_new_item(item_key)
-        player: Player = self._get_player(context.guild.id, user.id)
-        player.get_inventory().add_item(item)
-        
-        await context.send(f"{item.get_full_name()} has been sent to {user.display_name}!")
+        try:
+            item: Item = LOADED_ITEMS.get_new_item(item_key)
+            player: Player = self._get_player(context.guild.id, user.id)
+            player.get_inventory().add_item(item)
+
+            await context.send(f"{item.get_full_name()} has been sent to {user.display_name}!")
+        except Exception as e:
+            await context.send(f"Failed to send that item to the player! Error: {e}")
 
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items", aliases=["ghoti"])
     @commands.cooldown(1, 30, commands.BucketType.user)
