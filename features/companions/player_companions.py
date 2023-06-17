@@ -257,25 +257,8 @@ class PlayerCompanionsView(discord.ui.View):
     def _get_player(self) -> Player:
         return self._database[str(self._guild_id)]["members"][str(self._user.id)]
 
-    def send_talismans(self):
-        player: Player = self._get_player()
-        companions: PlayerCompanions = player.get_companions()
-
-        result_str: str = ""
-        for companion_key in companions.companions.keys():
-            companion = companions.companions[companion_key]
-            if companion.get_tier() == CompanionTier.Best and not companion.talisman_given:
-                talisman = LOADED_ITEMS.get_new_item(companion.talisman)
-                player.send_mail(Mail(companion.get_name(), talisman, 0, f"{companion.get_icon_and_name()} has given this to you as a symbol of your incredible bond!", str(time.time()).split(".")[0], -1))
-                result_str += f"{companion.get_icon_and_name()} has sent a token of your bond to your b!mailbox!\n"
-                companion.talisman_given = True
-        
-        return result_str + "\n\n"
-
     def get_initial_embed(self):
-        talisman_strs = self.send_talismans()
-
-        return Embed(title="Companions", description=f"{talisman_strs}Browse your companions using the next and prev buttons.")
+        return Embed(title="Companions", description=f"Browse your companions using the next and prev buttons.")
 
     def _get_companions_page_buttons(self):
         self.clear_items()
@@ -329,12 +312,10 @@ class PlayerCompanionsView(discord.ui.View):
 
         self._get_companions_page_buttons()
 
-        talisman_strs = self.send_talismans()
-
         return Embed(
             title="Companions",
             description=(
-                f"{talisman_strs}Navigate through your companions using the Prev and Next buttons."
+                f"Navigate through your companions using the Prev and Next buttons."
             )
         )
 
@@ -486,6 +467,7 @@ class PlayerCompanionsView(discord.ui.View):
                 )
             )
 
+        best_bond_before: bool = self._selected_companion.get_tier() == CompanionTier.Best
         companion_points: int = COMPANION_FEEDING_POINTS
         message: str = f"Your companion eats the {self._selected_item.get_full_name()} and your bond grows stronger."
         if removed_item.get_key() in self._selected_companion.preferred_foods and self._selected_companion.get_tier() >= CompanionTier.Good:
@@ -493,6 +475,9 @@ class PlayerCompanionsView(discord.ui.View):
             message += " They love it!"
         self._selected_companion.add_companion_points(companion_points)
         self._selected_companion.fed_this_tick = True
+
+        if not best_bond_before and self._selected_companion.get_tier() == CompanionTier.Best:
+            message += "\n\nYou've reached the best possible bond with your companion! You'll receive a token of this bond in your mail at the start of the next hour."
 
         player.get_stats().companions.bond_points_earned += companion_points
         player.get_stats().companions.items_fed += 1

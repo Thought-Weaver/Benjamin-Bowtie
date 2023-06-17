@@ -44,15 +44,25 @@ class Player():
 
         for key in self._companions.companions.keys():
             if self._companions.companions[key].get_tier() == CompanionTier.Best:
+                companion = self._companions.companions[key]
+
                 # 5% chance per tick means roughly an item a day
                 if random.random() < 0.05:
-                    item_key = random.choice(self._companions.companions[key].get_best_tier_items())
+                    item_key = random.choice(companion.get_best_tier_items())
                     item = LOADED_ITEMS.get_new_item(item_key)
                     
                     time_str: str = str(time.time()).split(".")[0]
-                    mail: Mail = Mail(self._companions.companions[key].get_name(), item, 0, f"{self._companions.companions[key].get_icon_and_name()} found this and brought it to you!", time_str, -1)
+                    mail: Mail = Mail(companion.get_name(), item, 0, f"{companion.get_icon_and_name()} found this and brought it to you!", time_str, -1)
                     
-                    await self.send_mail(mail)
+                    await self.send_mail(mail, bot)
+
+                if not companion.talisman_given:
+                    talisman = LOADED_ITEMS.get_new_item(companion.talisman)
+
+                    mail = Mail(companion.get_name(), talisman, 0, f"{companion.get_icon_and_name()} has given this to you as a symbol of your incredible bond!", str(time.time()).split(".")[0], -1)
+                    await self.send_mail(mail, bot)
+                    
+                    companion.talisman_given = True
 
         if self._settings.mature_plant_notifications:
             plants_just_matured = self._house.get_plants_just_matured()
@@ -99,7 +109,7 @@ class Player():
     def get_mailbox(self):
         return self._mailbox
 
-    async def send_mail(self, mail: Mail):
+    async def send_mail(self, mail: Mail, bot: BenjaminBowtieBot):
         self._mailbox.append(mail)
 
         if self._settings.mail_notifications:
