@@ -15,7 +15,7 @@
     "count": 1,
     "level_requirement": 0,
     "weapon_stats": {
-        "min_damage": 2,
-        "max_damage": 4
+        "min_damage": 1,
+        "max_damage": 2
     }
 }

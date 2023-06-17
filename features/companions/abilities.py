@@ -7277,7 +7277,7 @@ class BulkEnduranceI(Ability):
             description="Restore your Armor equal to 5% of your current health. This can restore more than your maximum Armor.",
             flavor_text="",
             mana_cost=0,
-            cooldown=4,
+            cooldown=7,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7313,7 +7313,7 @@ class BulkEnduranceII(Ability):
             description="Restore your Armor equal to 10% of your current health. This can restore more than your maximum Armor.",
             flavor_text="",
             mana_cost=0,
-            cooldown=4,
+            cooldown=7,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7349,7 +7349,7 @@ class BulkEnduranceIII(Ability):
             description="Restore your Armor equal to 15% of your current health. This can restore more than your maximum Armor.",
             flavor_text="",
             mana_cost=0,
-            cooldown=4,
+            cooldown=7,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7385,7 +7385,7 @@ class BulkEnduranceIV(Ability):
             description="Restore your Armor equal to 20% of your current health. This can restore more than your maximum Armor.",
             flavor_text="",
             mana_cost=0,
-            cooldown=4,
+            cooldown=7,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7421,7 +7421,7 @@ class BulkEnduranceV(Ability):
             description="Restore your Armor equal to 25% of your current health. This can restore more than your maximum Armor.",
             flavor_text="",
             mana_cost=0,
-            cooldown=4,
+            cooldown=7,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7457,10 +7457,10 @@ class HibernateI(Ability):
             icon="\uD83D\uDCA4",
             name="Hibernate I",
             class_key=ExpertiseClass.Guardian,
-            description="Put yourself to Sleep for 2 turns and regenerate 10% of your health at the start of each turn.",
+            description="Put yourself to Sleep for 2 turns and regenerate 5% of your health next turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=5,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7476,8 +7476,8 @@ class HibernateI(Ability):
         )
 
         regenerating = RegenerateHP(
-            turns_remaining=2,
-            value=0.1,
+            turns_remaining=1,
+            value=0.05,
             source_str=self.get_icon_and_name()
         )
 
@@ -7500,10 +7500,10 @@ class HibernateII(Ability):
             icon="\uD83D\uDCA4",
             name="Hibernate II",
             class_key=ExpertiseClass.Guardian,
-            description="Put yourself to Sleep for 2 turns and regenerate 15% of your health at the start of each turn.",
+            description="Put yourself to Sleep for 2 turns and regenerate 10% of your health next turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=5,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7519,8 +7519,8 @@ class HibernateII(Ability):
         )
 
         regenerating = RegenerateHP(
-            turns_remaining=2,
-            value=0.15,
+            turns_remaining=1,
+            value=0.1,
             source_str=self.get_icon_and_name()
         )
 
@@ -7543,10 +7543,10 @@ class HibernateIII(Ability):
             icon="\uD83D\uDCA4",
             name="Hibernate III",
             class_key=ExpertiseClass.Guardian,
-            description="Put yourself to Sleep for 2 turns and regenerate 20% of your health at the start of each turn.",
+            description="Put yourself to Sleep for 2 turns and regenerate 15% of your health next turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=5,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7562,8 +7562,8 @@ class HibernateIII(Ability):
         )
 
         regenerating = RegenerateHP(
-            turns_remaining=2,
-            value=0.2,
+            turns_remaining=1,
+            value=0.15,
             source_str=self.get_icon_and_name()
         )
 
@@ -7586,10 +7586,10 @@ class HibernateIV(Ability):
             icon="\uD83D\uDCA4",
             name="Hibernate IV",
             class_key=ExpertiseClass.Guardian,
-            description="Put yourself to Sleep for 2 turns and regenerate 25% of your health at the start of each turn.",
+            description="Put yourself to Sleep for 2 turns and regenerate 20% of your health next turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=5,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7605,8 +7605,8 @@ class HibernateIV(Ability):
         )
 
         regenerating = RegenerateHP(
-            turns_remaining=2,
-            value=0.25,
+            turns_remaining=1,
+            value=0.2,
             source_str=self.get_icon_and_name()
         )
 
@@ -7629,10 +7629,10 @@ class HibernateV(Ability):
             icon="\uD83D\uDCA4",
             name="Hibernate V",
             class_key=ExpertiseClass.Guardian,
-            description="Put yourself to Sleep for 2 turns and regenerate 30% of your health at the start of each turn.",
+            description="Put yourself to Sleep for 2 turns and regenerate 25% of your health next turn.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=5,
             num_targets=0,
             level_requirement=0,
             target_own_group=True,
@@ -7648,8 +7648,8 @@ class HibernateV(Ability):
         )
 
         regenerating = RegenerateHP(
-            turns_remaining=2,
-            value=0.3,
+            turns_remaining=1,
+            value=0.25,
             source_str=self.get_icon_and_name()
         )
 
