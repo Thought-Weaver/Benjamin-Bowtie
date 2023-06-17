@@ -276,7 +276,7 @@ class Adventures(commands.Cog):
         player: Player = self._get_player(context.guild.id, user.id)
         player.get_inventory().add_item(item)
         
-        await context.send("The adventures database has been saved!")
+        await context.send(f"{item.get_full_name()} has been sent to {user.display_name}!")
 
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items", aliases=["ghoti"])
     @commands.cooldown(1, 30, commands.BucketType.user)
