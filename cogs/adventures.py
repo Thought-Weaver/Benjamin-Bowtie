@@ -277,9 +277,9 @@ class Adventures(commands.Cog):
             player: Player = self._get_player(context.guild.id, user.id)
             player.get_inventory().add_item(item)
 
-            await context.send(f"{item.get_full_name()} has been sent to {user.display_name}!")
+            await context.send(f"{item.get_full_name()} has been added to {user.display_name}'s inventory!")
         except Exception as e:
-            await context.send(f"Failed to send that item to the player! Error: {e}")
+            await context.send(f"Failed to add that item to the {user.display_name}'s inventory! Error: {e}")
 
     @commands.command(name="fish", help="Begins a fishing minigame to catch fish and mysterious items", aliases=["ghoti"])
     @commands.cooldown(1, 30, commands.BucketType.user)
