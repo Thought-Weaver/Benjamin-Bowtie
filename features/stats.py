@@ -496,6 +496,16 @@ class Stats():
             self.forest_adventures_won: int = 0
             self.forest_adventures_played: int = 0
 
+            self.ocean_rooms_explored: int = 0
+            self.ocean_combat_encounters: int = 0
+            self.ocean_treasure_rooms_encountered: int = 0
+            self.ocean_shopkeeps_encountered: int = 0
+            self.ocean_events_encountered: int = 0
+            self.ocean_rests_taken: int = 0
+            self.ocean_bosses_defeated: int = 0
+            self.ocean_adventures_won: int = 0
+            self.ocean_adventures_played: int = 0
+
         def get_name(self):
             return "Adventure Stats"
 
@@ -510,7 +520,18 @@ class Stats():
                 f"Rests Taken: *{self.forest_rests_taken}*\n"
                 f"Bosses Defeated: *{self.forest_bosses_defeated}*\n"
                 f"Adventures Won: *{self.forest_adventures_won}*\n"
-                f"Adventures Played: *{self.forest_adventures_played}*"
+                f"Adventures Played: *{self.forest_adventures_played}*\n\n"
+
+                f"**Ocean:**\n\n"
+                f"Rooms Explored: *{self.ocean_rooms_explored}*\n"
+                f"Combat Encounters: *{self.ocean_combat_encounters}*\n"
+                f"Treasure Rooms Found: *{self.ocean_treasure_rooms_encountered}*\n"
+                f"Shopkeepers Met: *{self.ocean_shopkeeps_encountered}*\n"
+                f"Events Encountered: *{self.ocean_events_encountered}*\n"
+                f"Rests Taken: *{self.ocean_rests_taken}*\n"
+                f"Bosses Defeated: *{self.ocean_bosses_defeated}*\n"
+                f"Adventures Won: *{self.ocean_adventures_won}*\n"
+                f"Adventures Played: *{self.ocean_adventures_played}*"
             )
 
         def __getstate__(self):
@@ -526,6 +547,16 @@ class Stats():
             self.forest_bosses_defeated = state.get("forest_bosses_defeated", 0)
             self.forest_adventures_won = state.get("forest_adventures_won", 0)
             self.forest_adventures_played = state.get("forest_adventures_played", 0)
+
+            self.ocean_rooms_explored = state.get("ocean_rooms_explored", 0)
+            self.ocean_combat_encounters = state.get("ocean_combat_encounters", 0)
+            self.ocean_treasure_rooms_encountered = state.get("ocean_treasure_rooms_encountered", 0)
+            self.ocean_shopkeeps_encountered = state.get("ocean_shopkeeps_encountered", 0)
+            self.ocean_events_encountered = state.get("ocean_events_encountered", 0)
+            self.ocean_rests_taken = state.get("ocean_rests_taken", 0)
+            self.ocean_bosses_defeated = state.get("ocean_bosses_defeated", 0)
+            self.ocean_adventures_won = state.get("ocean_adventures_won", 0)
+            self.ocean_adventures_played = state.get("ocean_adventures_played", 0)
 
     def __init__(self):
         self.fish = self.FishStats()
