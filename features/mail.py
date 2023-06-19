@@ -3,6 +3,7 @@ from __future__ import annotations
 import discord
 import time
 
+from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from discord.ext import commands
 from features.shared.nextbutton import NextButton
@@ -80,6 +81,7 @@ class InventoryMailButton(discord.ui.Button):
 
         if view.get_user() == interaction.user:
             await interaction.response.send_modal(MailModal(
+                view.get_bot(),
                 view.get_database(),
                 view.get_guild_id(),
                 view.get_user(),
@@ -92,7 +94,7 @@ class InventoryMailButton(discord.ui.Button):
 
 
 class MailView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, giftee: discord.User, context: commands.Context):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, giftee: discord.User, context: commands.Context):
         super().__init__(timeout=900)
 
         self._bot = bot
@@ -147,12 +149,16 @@ class MailView(discord.ui.View):
 
     def get_guild_id(self):
         return self._guild_id
+    
+    def get_bot(self):
+        return self._bot
 
 
 class MailModal(discord.ui.Modal):
-    def __init__(self, database: dict, guild_id: int, user: discord.User, giftee: discord.User, adjusted_item_index: int, item: Item, view: MailView, message_id: int):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, giftee: discord.User, adjusted_item_index: int, item: Item, view: MailView, message_id: int):
         super().__init__(title=f"Mailing a gift to {giftee.display_name}!")
 
+        self._bot = bot
         self._database = database
         self._guild_id = guild_id
         self._user = user
@@ -222,7 +228,7 @@ class MailModal(discord.ui.Modal):
             return
 
         mail = Mail(self._user.display_name, sent_item, sent_coins, self._message_input.value, str(time.time()).split(".")[0], self._user.id)
-        await giftee_player.send_mail(mail)
+        await giftee_player.send_mail(mail, self._bot)
         
         if sent_coins > 0:
             coin_str = "coin" if sent_coins == 1 else "coins"
@@ -281,8 +287,9 @@ class MailboxButton(discord.ui.Button):
 
                 coins_received = self._mail.get_coins()
                 mail_message = f"From: {self._mail.get_sender_name()} (<t:{self._mail.get_send_date()}:R>)"
-                if self._mail.get_item() is not None:
-                    mail_message += f"\n\nItem: {self._mail.get_item().get_full_name_and_count()} each worth {self._mail.get_item().get_value_str()}"
+                mail_item = self._mail.get_item()
+                if mail_item is not None:
+                    mail_message += f"\n\nItem: {mail_item.get_full_name_and_count()} each worth {mail_item.get_value_str()}"
                     if interaction.user.id != self._mail.get_sender_id():
                         player_stats.mail.items_received += 1
                 if coins_received > 0:
@@ -300,7 +307,8 @@ class MailboxButton(discord.ui.Button):
                 await interaction.user.send(mail_message)
             else:
                 embed = view.get_current_page_info()
-                embed.description += "\n\n*Error: That mail is no longer available.*"
+                if embed.description is not None:
+                    embed.description += "\n\n*Error: That mail is no longer available.*"
                 await interaction.response.edit_message(content=None, embed=embed, view=view)
 
 
@@ -323,7 +331,7 @@ class ExitToHouseButton(discord.ui.Button):
 
 
 class MailboxView(discord.ui.View):
-    def __init__(self, bot: commands.Bot, database: dict, guild_id: int, user: discord.User, house_view: HouseView | None=None):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView | None=None):
         super().__init__(timeout=900)
 
         self._bot = bot
