@@ -32,6 +32,7 @@ class EffectType(StrEnum):
     # Everything in this group is associated with percent effect values
     DmgReflect = "DmgReflect"
     DmgResist = "DmgResist"
+    DmgVulnerability = "DmgVulnerability"
     DmgBuff = "DmgBuff"
     DmgBuffSelfMaxHealth = "DmgBuffSelfMaxHealth"
     DmgBuffSelfRemainingHealth = "DmgBuffSelfRemainingHealth"
@@ -121,52 +122,53 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
 
     EffectType.DmgReflect: 7,
     EffectType.DmgResist: 8,
-    EffectType.DmgBuff: 9,
-    EffectType.DmgBuffSelfMaxHealth: 10,
-    EffectType.DmgBuffSelfRemainingHealth: 11,
-    EffectType.DmgBuffOtherMaxHealth: 12,
-    EffectType.DmgBuffOtherRemainingHealth: 13,
-    EffectType.DmgBuffLegends: 14,
-    EffectType.DmgBuffPoisoned: 15,
-    EffectType.DmgBuffBleeding: 16,
+    EffectType.DmgVulnerability: 9,
+    EffectType.DmgBuff: 10,
+    EffectType.DmgBuffSelfMaxHealth: 11,
+    EffectType.DmgBuffSelfRemainingHealth: 12,
+    EffectType.DmgBuffOtherMaxHealth: 13,
+    EffectType.DmgBuffOtherRemainingHealth: 14,
+    EffectType.DmgBuffLegends: 15,
+    EffectType.DmgBuffPoisoned: 16,
+    EffectType.DmgBuffBleeding: 17,
 
-    EffectType.DmgBuffFromStr: 17,
-    EffectType.DmgBuffFromDex: 18,
-    EffectType.DmgBuffFromInt: 19,
-    EffectType.DmgBuffFromLck: 20,
+    EffectType.DmgBuffFromStr: 18,
+    EffectType.DmgBuffFromDex: 19,
+    EffectType.DmgBuffFromInt: 20,
+    EffectType.DmgBuffFromLck: 21,
 
-    EffectType.RestoreArmor: 21,
-    EffectType.RestorePercentArmor: 22,
+    EffectType.RestoreArmor: 22,
+    EffectType.RestorePercentArmor: 23,
     
-    EffectType.PiercingDmg: 23,
-    EffectType.PiercingPercentDmg: 24,
-    EffectType.SplashDmg: 25,
-    EffectType.SplashPercentMaxDmg: 26,
+    EffectType.PiercingDmg: 24,
+    EffectType.PiercingPercentDmg: 25,
+    EffectType.SplashDmg: 26,
+    EffectType.SplashPercentMaxDmg: 27,
 
-    EffectType.CritDmgBuff: 27,
-    EffectType.CritDmgReduction: 28,
+    EffectType.CritDmgBuff: 28,
+    EffectType.CritDmgReduction: 29,
 
-    EffectType.HealthSteal: 29,
-    EffectType.ManaSteal: 30,
+    EffectType.HealthSteal: 30,
+    EffectType.ManaSteal: 31,
 
-    EffectType.AdjustedCDs: 31,
+    EffectType.AdjustedCDs: 32,
 
-    EffectType.ChanceStatusEffect: 32,
-    EffectType.ResistStatusEffect: 33,
+    EffectType.ChanceStatusEffect: 33,
+    EffectType.ResistStatusEffect: 34,
 
-    EffectType.RestoreHealth: 34,
-    EffectType.RestorePercentHealth: 35,
-    EffectType.RestoreMana: 36,
-    EffectType.RestorePercentMana: 37,
+    EffectType.RestoreHealth: 35,
+    EffectType.RestorePercentHealth: 36,
+    EffectType.RestoreMana: 37,
+    EffectType.RestorePercentMana: 38,
 
-    EffectType.AdjustedManaCosts: 38,
-    EffectType.HealingAbilityBuff: 39,
-    EffectType.AdditionalXP: 40,
-    EffectType.PotionMod: 41,
+    EffectType.AdjustedManaCosts: 39,
+    EffectType.HealingAbilityBuff: 40,
+    EffectType.AdditionalXP: 41,
+    EffectType.PotionMod: 42,
 
-    EffectType.Damage: 42,
+    EffectType.Damage: 43,
 
-    EffectType.ResurrectOnce: 43
+    EffectType.ResurrectOnce: 44
 })
 
 # -----------------------------------------------------------------------------
@@ -237,6 +239,8 @@ class Effect():
                 return "Damage Reflect"
             case EffectType.DmgResist:
                 return "Damage Resist"
+            case EffectType.DmgVulnerability:
+                return "Damage Vulnerability"
             case EffectType.DmgBuff:
                 return "Damage Buff"
             case EffectType.DmgBuffSelfMaxHealth:
@@ -400,6 +404,8 @@ class Effect():
             if self.effect_value > 0:
                 display_string += "+"
             display_string += f"{round(self.effect_value * 100, 2)}% Damage Resist"
+        if self.effect_type == EffectType.DmgVulnerability:
+            display_string += f"{round(self.effect_value * 100, 2)}% Damage Vulnerability"
         if self.effect_type == EffectType.DmgBuff:
             if self.effect_value > 0:
                 display_string += "+"

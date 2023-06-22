@@ -649,6 +649,7 @@ class ItemKey(StrEnum):
     DoomCharm = "items/equipment/offhand/doom_charm"
     GolemicAssembly = "items/equipment/chest_armor/golemic_assembly"
     GolemsEye = "items/weapon/staff/golems_eye"
+    MarkOfCorruption = "items/equipment/offhand/mark_of_corruption"
     MemoryOfVictory = "items/consumable/potions/memory_of_victory"
     SnapdragonHead = "items/equipment/offhand/snapdragon_head"
     TreantCuttings = "items/valuable/treant_cuttings"

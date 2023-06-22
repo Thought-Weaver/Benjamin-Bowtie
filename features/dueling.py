@@ -74,12 +74,14 @@ class Dueling():
             if status_effect.key == StatusEffectKey.DmgReduction:
                 total_percent_reduction = min(0.75, total_percent_reduction + status_effect.value)
             elif status_effect.key == StatusEffectKey.DmgVulnerability:
-                total_percent_reduction = max(-0.5, total_percent_reduction - status_effect.value)
+                total_percent_reduction = max(-1, total_percent_reduction - status_effect.value)
 
         for effect in item_effects.permanent:
             if effect.effect_type == EffectType.DmgResist:
                 total_percent_reduction = min(0.75, total_percent_reduction + effect.effect_value)
-        
+            elif effect.effect_type == EffectType.DmgVulnerability:
+                total_percent_reduction = max(-1, total_percent_reduction - effect.effect_value)
+
         return total_percent_reduction
 
     def reset_ability_cds(self):
@@ -323,6 +325,15 @@ class Dueling():
             )
             self.status_effects.append(status_effect)
             return (damage_dealt, "{0}" + f" is now {status_effect.name} from {source_str}")
+
+        if item_effect.effect_type == EffectType.DmgVulnerability:
+            status_effect = DmgVulnerability(
+                item_effect.effect_time,
+                item_effect.effect_value,
+                trigger_first_turn=False
+            )
+            other_entity.get_dueling().status_effects.append(status_effect)
+            return (damage_dealt, "{" + f"{other_entity_index}" + "}" + f" is now {status_effect.name} from {source_str}")
 
         if item_effect.effect_type == EffectType.DmgBuff:
             status_effect = None
@@ -581,6 +592,15 @@ class Dueling():
                 item_effect.effect_time,
                 item_effect.effect_value,
                 source_str=f"{source_str}",
+                trigger_first_turn=False
+            )
+            self.status_effects.append(status_effect)
+            return (damage_dealt, "{" + f"{self_entity_index}" + "}" + f" is now {status_effect.name} from {source_str}")
+
+        if item_effect.effect_type == EffectType.DmgVulnerability:
+            status_effect = DmgVulnerability(
+                item_effect.effect_time,
+                item_effect.effect_value,
                 trigger_first_turn=False
             )
             self.status_effects.append(status_effect)
@@ -1260,6 +1280,15 @@ class Dueling():
             self.status_effects.append(status_effect)
             return f"{entity_name} is now {status_effect.name} from {source_str}"
 
+        if item_effect.effect_type == EffectType.DmgVulnerability:
+            status_effect = DmgVulnerability(
+                item_effect.effect_time,
+                item_effect.effect_value,
+                trigger_first_turn=False
+            )
+            self.status_effects.append(status_effect)
+            return "{" + f"{entity_name}" + "}" + f" is now {status_effect.name} from {source_str}"
+
         if item_effect.effect_type == EffectType.DmgBuff:
             status_effect = None
             if item_effect.effect_value >= 0:
@@ -1362,7 +1391,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}",
                     trigger_first_turn=False
                 )
-            self.status_effects.append(attr_mod)
+            target_entity.get_dueling().status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
         
         if item_effect.effect_type == EffectType.StrMod:
@@ -1381,7 +1410,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}",
                     trigger_first_turn=False
                 )
-            self.status_effects.append(attr_mod)
+            target_entity.get_dueling().status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.DexMod:
@@ -1400,7 +1429,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}",
                     trigger_first_turn=False
                 )
-            self.status_effects.append(attr_mod)
+            target_entity.get_dueling().status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.IntMod:
@@ -1419,7 +1448,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}",
                     trigger_first_turn=False
                 )
-            self.status_effects.append(attr_mod)
+            target_entity.get_dueling().status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.LckMod:
@@ -1438,7 +1467,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}",
                     trigger_first_turn=False
                 )
-            self.status_effects.append(attr_mod)
+            target_entity.get_dueling().status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.MemMod:
@@ -1457,7 +1486,7 @@ class Dueling():
                     source_str=f"{item.get_full_name()}",
                     trigger_first_turn=False
                 )
-            self.status_effects.append(attr_mod)
+            target_entity.get_dueling().status_effects.append(attr_mod)
             return "{1}" + f" is now {attr_mod.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.DmgResist:
@@ -1467,7 +1496,16 @@ class Dueling():
                 source_str=f"{item.get_full_name()}",
                 trigger_first_turn=False
             )
-            self.status_effects.append(status_effect)
+            target_entity.get_dueling().status_effects.append(status_effect)
+            return "{1}" + f" is now {status_effect.name} from {item.get_full_name()}"
+
+        if item_effect.effect_type == EffectType.DmgVulnerability:
+            status_effect = DmgVulnerability(
+                item_effect.effect_time,
+                item_effect.effect_value,
+                trigger_first_turn=False
+            )
+            target_entity.get_dueling().status_effects.append(status_effect)
             return "{1}" + f" is now {status_effect.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.DmgBuff:
@@ -1486,20 +1524,20 @@ class Dueling():
                     source_str=f"{item.get_full_name()}",
                     trigger_first_turn=False
                 )
-            self.status_effects.append(status_effect)
+            target_entity.get_dueling().status_effects.append(status_effect)
             return "{1}" + f" is now {status_effect.name} from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestoreArmor:
-            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
+            max_reduced_armor: int = target_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
             to_restore = min(ceil(item_effect.effect_value * potion_effect_mod), max(0, max_reduced_armor - self_entity.get_dueling().armor))
-            self_entity.get_dueling().armor += to_restore
+            target_entity.get_dueling().armor += to_restore
             return "{1}" + f" restored {to_restore} Armor using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestorePercentArmor:
-            max_reduced_armor: int = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
+            max_reduced_armor: int = target_entity.get_equipment().get_total_reduced_armor(target_entity.get_expertise().level, target_entity.get_expertise().get_all_attributes() + self_entity.get_equipment().get_total_attribute_mods())
             armor_from_effect: int = ceil(max_reduced_armor * item_effect.effect_value * potion_effect_mod)
-            to_restore = min(armor_from_effect, max(0, max_reduced_armor - self_entity.get_dueling().armor))
-            self_entity.get_dueling().armor += to_restore
+            to_restore = min(armor_from_effect, max(0, max_reduced_armor - target_entity.get_dueling().armor))
+            target_entity.get_dueling().armor += to_restore
             return "{1}" + f" restored {to_restore} Armor using {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.HealthSteal:
@@ -1525,31 +1563,31 @@ class Dueling():
             if decaying_adjustment != 0:
                 healing += ceil(healing * -decaying_adjustment)
 
-            self_entity.get_expertise().heal(healing)
+            target_entity.get_expertise().heal(healing)
             return "{1}" + f" healed {healing} HP from {item.get_full_name()}"
         
         if item_effect.effect_type == EffectType.RestorePercentHealth:
-            healing = ceil(item_effect.effect_value * potion_effect_mod * self_entity.get_expertise().max_hp)
+            healing = ceil(item_effect.effect_value * potion_effect_mod * target_entity.get_expertise().max_hp)
 
             decaying_adjustment: float = 0
-            for se in self_entity.get_dueling().status_effects:
+            for se in target_entity.get_dueling().status_effects:
                 if se.key == StatusEffectKey.Decaying:
                     decaying_adjustment += se.value
 
             if decaying_adjustment != 0:
                 healing += ceil(healing * -decaying_adjustment)
 
-            self_entity.get_expertise().heal(healing)
+            target_entity.get_expertise().heal(healing)
             return "{1}" + f" healed {healing} HP from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.RestoreMana:
             restoration = ceil(item_effect.effect_value * potion_effect_mod)
-            self_entity.get_expertise().restore_mana(restoration)
+            target_entity.get_expertise().restore_mana(restoration)
             return "{1}" + f" restored {restoration} mana from {item.get_full_name()}"
         
         if item_effect.effect_type == EffectType.RestorePercentMana:
-            restoration = ceil(item_effect.effect_value * potion_effect_mod * self_entity.get_expertise().max_mana)
-            self_entity.get_expertise().restore_mana(restoration)
+            restoration = ceil(item_effect.effect_value * potion_effect_mod * target_entity.get_expertise().max_mana)
+            target_entity.get_expertise().restore_mana(restoration)
             return "{1}" + f" restored {restoration} mana from {item.get_full_name()}"
 
         if item_effect.effect_type == EffectType.Damage:
