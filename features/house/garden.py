@@ -661,7 +661,8 @@ class GardenView(discord.ui.View):
                     if random.random() < seed_data.chance_to_drop_seed:
                         num_seeds_to_add += 1
                         inventory.add_item(LOADED_ITEMS.get_new_item(seed_key))
-                seeds_added_str = f" and {num_seeds_to_add} seeds" if num_seeds_to_add > 0 else ""
+                seed_str = "seed" if num_seeds_to_add == 1 else "seeds" 
+                seeds_added_str = f" and {num_seeds_to_add} {seed_str}" if num_seeds_to_add > 0 else ""
                 
                 result_str += plant_result_str + seeds_added_str + "\n"
 
