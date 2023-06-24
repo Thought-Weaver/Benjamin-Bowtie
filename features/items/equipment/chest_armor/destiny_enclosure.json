@@ -23,7 +23,7 @@
         "permanent": [
             {
                 "effect_type": "SplashDmg",
-                "effect_value": 21,
+                "effect_value": 20,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

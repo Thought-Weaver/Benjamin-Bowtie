@@ -42,7 +42,7 @@
         "on_successful_attack": [
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": 23,
+                "effect_value": 20,
                 "effect_time": 2,
                 "conditions": [],
                 "condition_values": [],

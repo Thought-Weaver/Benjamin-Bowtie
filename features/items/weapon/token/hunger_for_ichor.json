@@ -22,7 +22,7 @@
         "permanent": [
             {
                 "effect_type": "PiercingDmg",
-                "effect_value": 20,
+                "effect_value": 10,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
@@ -30,7 +30,7 @@
             },
             {
                 "effect_type": "DmgResist",
-                "effect_value": 0.15,
+                "effect_value": 0.1,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
@@ -38,7 +38,7 @@
             },
             {
                 "effect_type": "DmgBuffSelfMaxHealth",
-                "effect_value": 0.05,
+                "effect_value": 0.03,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

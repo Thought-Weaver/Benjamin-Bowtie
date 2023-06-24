@@ -29,8 +29,8 @@
                 "associated_status_effect": null
             },
             {
-                "effect_type": "AdditionalXP",
-                "effect_value": 1,
+                "effect_type": "PotionMod",
+                "effect_value": 0.5,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

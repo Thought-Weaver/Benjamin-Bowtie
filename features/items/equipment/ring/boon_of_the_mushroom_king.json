@@ -28,7 +28,7 @@
             },
             {
                 "effect_type": "DmgBuffLegends",
-                "effect_value": 0.55,
+                "effect_value": 0.25,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
@@ -48,7 +48,7 @@
             },
             {
                 "effect_type": "ChanceStatusEffect",
-                "effect_value": 8,
+                "effect_value": 5,
                 "effect_time": 3,
                 "conditions": [],
                 "condition_values": [],
