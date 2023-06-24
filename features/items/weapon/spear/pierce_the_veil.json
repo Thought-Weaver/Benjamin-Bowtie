@@ -34,7 +34,7 @@
             },
             {
                 "effect_type": "DmgResist",
-                "effect_value": 0.25,
+                "effect_value": 0.15,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
