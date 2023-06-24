@@ -29,10 +29,10 @@
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
-                "associated_status_effect": "Poisoned"
+                "associated_status_effect": "Bleeding"
             },
             {
-                "effect_type": "DmgBuffPoisoned",
+                "effect_type": "DmgBuffBleeding",
                 "effect_value": 0.75,
                 "effect_time": -1,
                 "conditions": [],
