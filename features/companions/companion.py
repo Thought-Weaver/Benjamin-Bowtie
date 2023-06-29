@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from math import ceil
 
-from features.companions.abilities import PINCHI, BearDownI, BeetleBashI, BouncingKickI, BulkEnduranceI, ChargeI, CoiledStrikeI, CraftWebI, DeadlyVenomI, DeflectionI, DiveI, EruptionOfBoneI, ExposeTummyI, FeathersFlyI, FleeI, GhostlyMovementI, GlassPierceI, GoreI, GraspingClawsI, GustI, HibernateI, HippityHopI, HypnoticGazeI, InnervateI, IntoTheShadowsI, IsThatAFlyI, LuckyPawsI, LungeI, ManaBurnI, ManaLeechI, ManaLeechII, ManaLeechIII, ManaLeechIV, ManaLeechV, MesmerizeI, MightOfTheVoidI, MightyBoneFistI, MiniCrabnadoI, MysticShroudI, PatientStrikeI, PeckPeckPeckI, PlatedArmorI, PowerfulPierceI, PummelI, RecklessBiteI, ScuttleI, ShellterI, ShriekingCawI, SiphoningSwipeI, StrikeFromBehindI, TerraspinI, TheDarkBarkI, ThickHideI, ToTheSkiesI, TowerStanceI, ToxungenI, UndeathIsJustTheBeginningI, WhatLuckI, WingbeatI, WithTheWindI, WrapTheMealI, QuickeningPaceV, QuickeningPaceIV, QuickeningPaceIII, QuickeningPaceII, QuickeningPaceI, ToweringArmorV, ToweringArmorIV, ToweringArmorIII, ToweringArmorII, ToweringArmorI, ThrowTheBonesV, ThrowTheBonesIV, ThrowTheBonesIII, ThrowTheBonesII, ThrowTheBonesI, VenomousBiteV, VenomousBiteIV, VenomousBiteIII, VenomousBiteII, VenomousBiteI, IsThatAFlyV, IsThatAFlyIV, IsThatAFlyIII, IsThatAFlyII, SneakyManeuversV, SneakyManeuversIV, SneakyManeuversIII, SneakyManeuversII, SneakyManeuversI, WebShotV, WebShotIV, WebShotIII, WebShotII, WebShotI, PINCHV, PINCHIV, PINCHIII, PINCHII, MightOfTheVoidV, MightOfTheVoidIV, MightOfTheVoidIII, MightOfTheVoidII
+from features.companions.abilities import PINCHI, BearDownI, BeetleBashI, BouncingKickI, BulkEnduranceI, ChargeI, CoiledStrikeI, CopyI, CorruptI, CraftWebI, DeadlyVenomI, DeflectionI, DiveI, EruptionOfBoneI, ExposeTummyI, FeathersFlyI, FleeI, GhostlyMovementI, GlassPierceI, GoreI, GraspingClawsI, GustI, HibernateI, HippityHopI, HypnoticGazeI, InnervateI, IntoTheShadowsI, IsThatAFlyI, LeechingStrikeI, LuckyPawsI, LungeI, ManaBurnI, ManaLeechI, ManaLeechII, ManaLeechIII, ManaLeechIV, ManaLeechV, MesmerizeI, MightOfTheVoidI, MightyBoneFistI, MiniCrabnadoI, MysticShroudI, PatientStrikeI, PeckPeckPeckI, PlatedArmorI, PowerfulPierceI, PummelI, RecklessBiteI, ScuttleI, ShellterI, ShriekingCawI, SiphoningSwipeI, StrikeFromBehindI, TerraspinI, TheDarkBarkI, ThickHideI, ToTheSkiesI, TowerStanceI, ToxungenI, UndeathIsJustTheBeginningI, WhatLuckI, WingbeatI, WithTheWindI, WrapTheMealI, QuickeningPaceV, QuickeningPaceIV, QuickeningPaceIII, QuickeningPaceII, QuickeningPaceI, ToweringArmorV, ToweringArmorIV, ToweringArmorIII, ToweringArmorII, ToweringArmorI, ThrowTheBonesV, ThrowTheBonesIV, ThrowTheBonesIII, ThrowTheBonesII, ThrowTheBonesI, VenomousBiteV, VenomousBiteIV, VenomousBiteIII, VenomousBiteII, VenomousBiteI, IsThatAFlyV, IsThatAFlyIV, IsThatAFlyIII, IsThatAFlyII, SneakyManeuversV, SneakyManeuversIV, SneakyManeuversIII, SneakyManeuversII, SneakyManeuversI, WebShotV, WebShotIV, WebShotIII, WebShotII, WebShotI, PINCHV, PINCHIV, PINCHIII, PINCHII, MightOfTheVoidV, MightOfTheVoidIV, MightOfTheVoidIII, MightOfTheVoidII
 from features.companions.npcs.blue_flitterwing_butterfly import BlueFlitterwingButterfly
 from features.companions.npcs.deepwood_cub import DeepwoodCub
 from features.companions.npcs.fleetfoot_rabbit import FleetfootRabbit
@@ -20,6 +20,7 @@ from features.companions.npcs.sunbask_turtle import SunbaskTurtle
 from features.companions.npcs.tangleweb_spider import TanglewebSpider
 from features.companions.npcs.tidewater_crab import TidewaterCrab
 from features.companions.npcs.verdant_slitherer import VerdantSlitherer
+from features.companions.npcs.voidformed_mimic import VoidformedMimic
 from features.companions.npcs.voidseen_cat import VoidseenCat
 from features.companions.npcs.voidseen_pup import VoidseenPup
 from features.companions.npcs.wanderbound_raven import WanderboundRaven
@@ -1567,6 +1568,111 @@ class VerdantSlithererCompanion(Companion):
         self._id = state.get("_id", "")
 
         self._display_name = state.get("_display_name", "Verdant Slitherer")
+
+        self._xp = state.get("_xp", 0)
+        self._level = state.get("_level", 0)
+        self._remaining_xp = state.get("_remaining_xp", 1)
+
+        self._companion_tier_points = state.get("_companion_tier_points", 0)
+        self._companion_tier = state.get("_companion_tier", CompanionTier.NoTier)
+
+        self.fed_this_tick = state.get("fed_this_tick", False)
+        self.custom_named = state.get("custom_named", False)
+        self.talisman_given = state.get("talisman_given", False)
+
+
+class VoidformedMimicCompanion(Companion):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDDA4",
+            display_name="Voidformed Mimic",
+            key=CompanionKey.VoidformedMimic,
+            rarity=Rarity.Legendary,
+            value=5000,
+            has_active_ability=False,
+            duel_xp_gain=3,
+            pet_battle_xp_gain=5,
+            preferred_foods=[ItemKey.Bones, ItemKey.Stranglekelp, ItemKey.FishMaybe, ItemKey.Minnow, ItemKey.Roughy, ItemKey.Lobster, ItemKey.Pufferfish, ItemKey.Oyster, ItemKey.TatteredBoot],
+            valid_food_categories=[ClassTag.Consumable.Food, ClassTag.Ingredient.Herb, ClassTag.Ingredient.RawFish, ClassTag.Ingredient.RawFood, ClassTag.Misc.Junk], # type: ignore
+            best_tier_items=[ItemKey.VoidseenOre, ItemKey.LesserIntelligencePotion, ItemKey.IntelligencePotion, ItemKey.GreaterIntelligencePotion],
+            talisman=ItemKey.MimicTalisman
+        )
+
+    def get_dueling_ability(self, effect_category: ItemEffectCategory | None) -> Effect | None:
+        if effect_category is not None and effect_category != ItemEffectCategory.OnTurnStart:
+            return None
+        
+        great_bond_modifier = 10 if self.get_tier() >= CompanionTier.Great else 0
+
+        if self._level >= 40 - great_bond_modifier:
+            return Effect(
+                EffectType.RestoreHealth,
+                effect_value=1,
+                effect_time=-1,
+                conditions=[],
+                condition_values=[],
+                associated_status_effect=None
+            )
+        elif self._level >= 30 - great_bond_modifier:
+            return Effect(
+                EffectType.RestoreHealth,
+                effect_value=2,
+                effect_time=-1,
+                conditions=[],
+                condition_values=[],
+                associated_status_effect=None
+            )
+        elif self._level >= 20 - great_bond_modifier:
+            return Effect(
+                EffectType.RestoreHealth,
+                effect_value=3,
+                effect_time=-1,
+                conditions=[],
+                condition_values=[],
+                associated_status_effect=None
+            )
+        elif self._level >= 10 - great_bond_modifier:
+            return Effect(
+                EffectType.RestoreHealth,
+                effect_value=4,
+                effect_time=-1,
+                conditions=[],
+                condition_values=[],
+                associated_status_effect=None
+            )
+        else:
+            return Effect(
+                EffectType.RestoreHealth,
+                effect_value=5,
+                effect_time=-1,
+                conditions=[],
+                condition_values=[],
+                associated_status_effect=None
+            )
+
+    def get_pet_battle_entity(self) -> NPC:
+        entity = VoidformedMimic(self._level, self._display_name)
+        entity.set_id(self._id)
+        return entity
+
+    def get_base_abilities(self) -> List[Ability]:
+        return [LeechingStrikeI(), CopyI(), CorruptI()]
+
+    def get_attribute_scaling(self) -> Attributes:
+        return Attributes(3, 2, 2, 1, 3, 5)
+
+    def get_ability_effect_category(self) -> ItemEffectCategory | None:
+        return ItemEffectCategory.OnTurnStart
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+        self._id = state.get("_id", "")
+
+        self._display_name = state.get("_display_name", "Voidformed Mimic")
 
         self._xp = state.get("_xp", 0)
         self._level = state.get("_level", 0)

@@ -533,6 +533,7 @@ class ItemKey(StrEnum):
     TurtleBeak = "items/weapon/companions/turtle_beak"
     VoidBite = "items/weapon/companions/void_bite"
     VoidClaws = "items/weapon/companions/void_claws"
+    VoidStrike = "items/weapon/companions/void_strike"
 
     # Companion Talismans
     CrabTalisman = "items/equipment/offhand/crab_talisman"
@@ -542,6 +543,7 @@ class ItemKey(StrEnum):
     GnashtuskTalisman = "items/equipment/offhand/gnashtusk_talisman"
     LuckyPawTalisman = "items/equipment/offhand/lucky_paw_talisman"
     LuckyRockTalisman = "items/equipment/offhand/lucky_rock_talisman"
+    MimicTalisman = "items/equipment/offhand/mimic_talisman"
     PaleTalisman = "items/equipment/offhand/pale_talisman"
     PondloverTalisman = "items/equipment/offhand/pondlover_talisman"
     ScuttledarkTalisman = "items/equipment/offhand/scuttledark_talisman"

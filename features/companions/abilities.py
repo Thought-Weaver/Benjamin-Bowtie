@@ -5938,6 +5938,807 @@ class ChargeV(Ability):
         self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
+# VOIDFORMED MIMIC ABILITIES
+# -----------------------------------------------------------------------------
+# COPY (Companion Battle)
+# -----------------------------------------------------------------------------
+
+class CopyI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDFAD",
+            name="Copy I",
+            class_key=ExpertiseClass.Fisher,
+            description="Copy 25% of an enemy's stats for 3 turns.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=5,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and copied part of " + "{1}'s" " stats!\n\n"
+        
+        target_expertise = targets[0].get_expertise()
+
+        con_buff = ConBuff(
+            turns_remaining=3,
+            value=ceil(0.25 * target_expertise.constitution),
+            source_str=self.get_icon_and_name()
+        )
+
+        str_buff = StrBuff(
+            turns_remaining=3,
+            value=ceil(0.25 * target_expertise.strength),
+            source_str=self.get_icon_and_name()
+        )
+
+        dex_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(0.25 * target_expertise.dexterity),
+            source_str=self.get_icon_and_name()
+        )
+
+        int_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(0.25 * target_expertise.intelligence),
+            source_str=self.get_icon_and_name()
+        )
+
+        lck_buff = LckBuff(
+            turns_remaining=3,
+            value=ceil(0.25 * target_expertise.luck),
+            source_str=self.get_icon_and_name()
+        )
+        
+        results: List[str] = self._use_positive_status_effect_ability(caster, [caster], [con_buff, str_buff, dex_buff, int_buff, lck_buff])
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CopyII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDFAD",
+            name="Copy II",
+            class_key=ExpertiseClass.Fisher,
+            description="Copy 50% of an enemy's stats for 3 turns.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=5,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and copied part of " + "{1}'s" " stats!\n\n"
+        
+        target_expertise = targets[0].get_expertise()
+
+        con_buff = ConBuff(
+            turns_remaining=3,
+            value=ceil(0.5 * target_expertise.constitution),
+            source_str=self.get_icon_and_name()
+        )
+
+        str_buff = StrBuff(
+            turns_remaining=3,
+            value=ceil(0.5 * target_expertise.strength),
+            source_str=self.get_icon_and_name()
+        )
+
+        dex_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(0.5 * target_expertise.dexterity),
+            source_str=self.get_icon_and_name()
+        )
+
+        int_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(0.5 * target_expertise.intelligence),
+            source_str=self.get_icon_and_name()
+        )
+
+        lck_buff = LckBuff(
+            turns_remaining=3,
+            value=ceil(0.5 * target_expertise.luck),
+            source_str=self.get_icon_and_name()
+        )
+        
+        results: List[str] = self._use_positive_status_effect_ability(caster, [caster], [con_buff, str_buff, dex_buff, int_buff, lck_buff])
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CopyIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDFAD",
+            name="Copy III",
+            class_key=ExpertiseClass.Fisher,
+            description="Copy 75% of an enemy's stats for 3 turns.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=5,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and copied part of " + "{1}'s" " stats!\n\n"
+        
+        target_expertise = targets[0].get_expertise()
+
+        con_buff = ConBuff(
+            turns_remaining=3,
+            value=ceil(0.75 * target_expertise.constitution),
+            source_str=self.get_icon_and_name()
+        )
+
+        str_buff = StrBuff(
+            turns_remaining=3,
+            value=ceil(0.75 * target_expertise.strength),
+            source_str=self.get_icon_and_name()
+        )
+
+        dex_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(0.75 * target_expertise.dexterity),
+            source_str=self.get_icon_and_name()
+        )
+
+        int_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(0.75 * target_expertise.intelligence),
+            source_str=self.get_icon_and_name()
+        )
+
+        lck_buff = LckBuff(
+            turns_remaining=3,
+            value=ceil(0.75 * target_expertise.luck),
+            source_str=self.get_icon_and_name()
+        )
+        
+        results: List[str] = self._use_positive_status_effect_ability(caster, [caster], [con_buff, str_buff, dex_buff, int_buff, lck_buff])
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CopyIV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDFAD",
+            name="Copy IV",
+            class_key=ExpertiseClass.Fisher,
+            description="Copy 100% of an enemy's stats for 3 turns.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=5,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and copied part of " + "{1}'s" " stats!\n\n"
+        
+        target_expertise = targets[0].get_expertise()
+
+        con_buff = ConBuff(
+            turns_remaining=3,
+            value=ceil(1 * target_expertise.constitution),
+            source_str=self.get_icon_and_name()
+        )
+
+        str_buff = StrBuff(
+            turns_remaining=3,
+            value=ceil(1 * target_expertise.strength),
+            source_str=self.get_icon_and_name()
+        )
+
+        dex_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(1 * target_expertise.dexterity),
+            source_str=self.get_icon_and_name()
+        )
+
+        int_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(1 * target_expertise.intelligence),
+            source_str=self.get_icon_and_name()
+        )
+
+        lck_buff = LckBuff(
+            turns_remaining=3,
+            value=ceil(1 * target_expertise.luck),
+            source_str=self.get_icon_and_name()
+        )
+        
+        results: List[str] = self._use_positive_status_effect_ability(caster, [caster], [con_buff, str_buff, dex_buff, int_buff, lck_buff])
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CopyV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDFAD",
+            name="Copy V",
+            class_key=ExpertiseClass.Fisher,
+            description="Copy 100% of an enemy's stats for 3 turns.",
+            flavor_text="",
+            mana_cost=5,
+            cooldown=5,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and copied part of " + "{1}'s" " stats!\n\n"
+        
+        target_expertise = targets[0].get_expertise()
+
+        con_buff = ConBuff(
+            turns_remaining=3,
+            value=ceil(1.25 * target_expertise.constitution),
+            source_str=self.get_icon_and_name()
+        )
+
+        str_buff = StrBuff(
+            turns_remaining=3,
+            value=ceil(1.25 * target_expertise.strength),
+            source_str=self.get_icon_and_name()
+        )
+
+        dex_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(1.25 * target_expertise.dexterity),
+            source_str=self.get_icon_and_name()
+        )
+
+        int_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(1.25 * target_expertise.intelligence),
+            source_str=self.get_icon_and_name()
+        )
+
+        lck_buff = LckBuff(
+            turns_remaining=3,
+            value=ceil(1.25 * target_expertise.luck),
+            source_str=self.get_icon_and_name()
+        )
+        
+        results: List[str] = self._use_positive_status_effect_ability(caster, [caster], [con_buff, str_buff, dex_buff, int_buff, lck_buff])
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# LEECHING STRIKE (Companion Battle)
+# -----------------------------------------------------------------------------
+
+class LeechingStrikeI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDE78",
+            name="Leeching Strike I",
+            class_key=ExpertiseClass.Fisher,
+            description="Steal 10% of an enemy's max health.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=6,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        
+        damage: int = ceil(0.1 * targets[0].get_expertise().max_hp)
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        heal_results: List[str] = self._use_heal_ability(caster, [caster], range(damage, damage))
+
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        result_str += "\n"
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in heal_results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class LeechingStrikeII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDE78",
+            name="Leeching Strike II",
+            class_key=ExpertiseClass.Fisher,
+            description="Steal 15% of an enemy's max health.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=6,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        
+        damage: int = ceil(0.15 * targets[0].get_expertise().max_hp)
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        heal_results: List[str] = self._use_heal_ability(caster, [caster], range(damage, damage))
+
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        result_str += "\n"
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in heal_results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class LeechingStrikeIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDE78",
+            name="Leeching Strike III",
+            class_key=ExpertiseClass.Fisher,
+            description="Steal 20% of an enemy's max health.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=6,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        
+        damage: int = ceil(0.2 * targets[0].get_expertise().max_hp)
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        heal_results: List[str] = self._use_heal_ability(caster, [caster], range(damage, damage))
+
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        result_str += "\n"
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in heal_results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class LeechingStrikeIV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDE78",
+            name="Leeching Strike IV",
+            class_key=ExpertiseClass.Fisher,
+            description="Steal 25% of an enemy's max health.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=6,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        
+        damage: int = ceil(0.25 * targets[0].get_expertise().max_hp)
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        heal_results: List[str] = self._use_heal_ability(caster, [caster], range(damage, damage))
+
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        result_str += "\n"
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in heal_results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class LeechingStrikeV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83E\uDE78",
+            name="Leeching Strike V",
+            class_key=ExpertiseClass.Fisher,
+            description="Steal 30% of an enemy's max health.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=6,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        
+        damage: int = ceil(0.3 * targets[0].get_expertise().max_hp)
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        heal_results: List[str] = self._use_heal_ability(caster, [caster], range(damage, damage))
+
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+        result_str += "\n"
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in heal_results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# CORRUPT (Companion Battle)
+# -----------------------------------------------------------------------------
+
+class CorruptI(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDDA4",
+            name="Corrupt I",
+            class_key=ExpertiseClass.Fisher,
+            description="Mark a target for 10 turns. There's a 5% chance to Charm the target per Mark for 2 turns.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=0,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        debuff = Marked(
+            turns_remaining=10,
+            value=1,
+            caster=caster,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
+        
+        charmed = Charmed(
+            turns_remaining=2,
+            value=1,
+            source_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged:
+                num_marks = sum([1 if (isinstance(se, Marked) and se.caster == caster and se.source_str == self.get_icon_and_name()) else 0 for se in targets[i].get_dueling().status_effects])
+                if random.random() < 0.05 * num_marks:
+                    se_str = targets[i].get_dueling().add_status_effect_with_resist(charmed, targets[i], i + 1)
+                    targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
+                    results[i].target_str += f" and {se_str}"
+            
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CorruptII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDDA4",
+            name="Corrupt II",
+            class_key=ExpertiseClass.Fisher,
+            description="Mark a target for 10 turns. There's a 10% chance to Charm the target per Mark for 2 turns.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=0,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        debuff = Marked(
+            turns_remaining=10,
+            value=1,
+            caster=caster,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
+        
+        charmed = Charmed(
+            turns_remaining=2,
+            value=1,
+            source_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged:
+                num_marks = sum([1 if (isinstance(se, Marked) and se.caster == caster and se.source_str == self.get_icon_and_name()) else 0 for se in targets[i].get_dueling().status_effects])
+                if random.random() < 0.1 * num_marks:
+                    se_str = targets[i].get_dueling().add_status_effect_with_resist(charmed, targets[i], i + 1)
+                    targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
+                    results[i].target_str += f" and {se_str}"
+            
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CorruptIII(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDDA4",
+            name="Corrupt III",
+            class_key=ExpertiseClass.Fisher,
+            description="Mark a target for 10 turns. There's a 15% chance to Charm the target per Mark for 2 turns.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=0,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        debuff = Marked(
+            turns_remaining=10,
+            value=1,
+            caster=caster,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
+        
+        charmed = Charmed(
+            turns_remaining=2,
+            value=1,
+            source_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged:
+                num_marks = sum([1 if (isinstance(se, Marked) and se.caster == caster and se.source_str == self.get_icon_and_name()) else 0 for se in targets[i].get_dueling().status_effects])
+                if random.random() < 0.15 * num_marks:
+                    se_str = targets[i].get_dueling().add_status_effect_with_resist(charmed, targets[i], i + 1)
+                    targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
+                    results[i].target_str += f" and {se_str}"
+            
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CorruptIV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDDA4",
+            name="Corrupt IV",
+            class_key=ExpertiseClass.Fisher,
+            description="Mark a target for 10 turns. There's a 20% chance to Charm the target per Mark for 2 turns.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=0,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        debuff = Marked(
+            turns_remaining=10,
+            value=1,
+            caster=caster,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
+        
+        charmed = Charmed(
+            turns_remaining=2,
+            value=1,
+            source_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged:
+                num_marks = sum([1 if (isinstance(se, Marked) and se.caster == caster and se.source_str == self.get_icon_and_name()) else 0 for se in targets[i].get_dueling().status_effects])
+                if random.random() < 0.2 * num_marks:
+                    se_str = targets[i].get_dueling().add_status_effect_with_resist(charmed, targets[i], i + 1)
+                    targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
+                    results[i].target_str += f" and {se_str}"
+            
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+
+class CorruptV(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDDA4",
+            name="Corrupt V",
+            class_key=ExpertiseClass.Fisher,
+            description="Mark a target for 10 turns. There's a 25% chance to Charm the target per Mark for 2 turns.",
+            flavor_text="",
+            mana_cost=10,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=0,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        debuff = Marked(
+            turns_remaining=10,
+            value=1,
+            caster=caster,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
+        
+        charmed = Charmed(
+            turns_remaining=2,
+            value=1,
+            source_str=self.get_icon_and_name()
+        )
+
+        for i in range(len(results)):
+            if not results[i].dodged:
+                num_marks = sum([1 if (isinstance(se, Marked) and se.caster == caster and se.source_str == self.get_icon_and_name()) else 0 for se in targets[i].get_dueling().status_effects])
+                if random.random() < 0.25 * num_marks:
+                    se_str = targets[i].get_dueling().add_status_effect_with_resist(charmed, targets[i], i + 1)
+                    targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
+                    results[i].target_str += f" and {se_str}"
+            
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
 # VOIDSEEN CAT ABILITIES
 # -----------------------------------------------------------------------------
 # EXPOSE TUMMY (Companion Battle)
@@ -5953,7 +6754,7 @@ class ExposeTummyI(Ability):
             flavor_text="",
             mana_cost=15,
             cooldown=6,
-            num_targets=-1,
+            num_targets=1,
             level_requirement=0,
             target_own_group=False,
             purchase_cost=0,
@@ -5990,7 +6791,7 @@ class ExposeTummyII(Ability):
             flavor_text="",
             mana_cost=15,
             cooldown=6,
-            num_targets=-1,
+            num_targets=1,
             level_requirement=0,
             target_own_group=False,
             purchase_cost=0,
@@ -6027,7 +6828,7 @@ class ExposeTummyIII(Ability):
             flavor_text="",
             mana_cost=15,
             cooldown=6,
-            num_targets=-1,
+            num_targets=1,
             level_requirement=0,
             target_own_group=False,
             purchase_cost=0,
@@ -6064,7 +6865,7 @@ class ExposeTummyIV(Ability):
             flavor_text="",
             mana_cost=15,
             cooldown=5,
-            num_targets=-1,
+            num_targets=1,
             level_requirement=0,
             target_own_group=False,
             purchase_cost=0,
@@ -6101,7 +6902,7 @@ class ExposeTummyV(Ability):
             flavor_text="",
             mana_cost=15,
             cooldown=4,
-            num_targets=-1,
+            num_targets=1,
             level_requirement=0,
             target_own_group=False,
             purchase_cost=0,
@@ -6329,7 +7130,7 @@ class SiphoningSwipeI(Ability):
 
         mana_to_steal = 1
         for i, target in enumerate(targets):
-            if target.get_expertise().mana > mana_to_steal:
+            if target.get_expertise().mana >= mana_to_steal:
                 target.get_expertise().remove_mana(mana_to_steal)
                 caster.get_expertise().restore_mana(mana_to_steal)
                 result_str += "\n{0} stole " + f"{mana_to_steal} mana from " + "{" + f"{i + 1}" + "}"
@@ -6368,7 +7169,7 @@ class SiphoningSwipeII(Ability):
 
         mana_to_steal = 2
         for i, target in enumerate(targets):
-            if target.get_expertise().mana > mana_to_steal:
+            if target.get_expertise().mana >= mana_to_steal:
                 target.get_expertise().remove_mana(mana_to_steal)
                 caster.get_expertise().restore_mana(mana_to_steal)
                 result_str += "\n{0} stole " + f"{mana_to_steal} mana from " + "{" + f"{i + 1}" + "}"
@@ -6407,7 +7208,7 @@ class SiphoningSwipeIII(Ability):
 
         mana_to_steal = 3
         for i, target in enumerate(targets):
-            if target.get_expertise().mana > mana_to_steal:
+            if target.get_expertise().mana >= mana_to_steal:
                 target.get_expertise().remove_mana(mana_to_steal)
                 caster.get_expertise().restore_mana(mana_to_steal)
                 result_str += "\n{0} stole " + f"{mana_to_steal} mana from " + "{" + f"{i + 1}" + "}"
@@ -6446,7 +7247,7 @@ class SiphoningSwipeIV(Ability):
 
         mana_to_steal = 4
         for i, target in enumerate(targets):
-            if target.get_expertise().mana > mana_to_steal:
+            if target.get_expertise().mana >= mana_to_steal:
                 target.get_expertise().remove_mana(mana_to_steal)
                 caster.get_expertise().restore_mana(mana_to_steal)
                 result_str += "\n{0} stole " + f"{mana_to_steal} mana from " + "{" + f"{i + 1}" + "}"
@@ -6464,7 +7265,7 @@ class SiphoningSwipeV(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDC3E",
-            name="Siphoning Swipe IV",
+            name="Siphoning Swipe V",
             class_key=ExpertiseClass.Fisher,
             description="Strike with your claws at all enemies, dealing 5-6 damage and stealing 5 mana from each.",
             flavor_text="",
@@ -6485,7 +7286,7 @@ class SiphoningSwipeV(Ability):
 
         mana_to_steal = 5
         for i, target in enumerate(targets):
-            if target.get_expertise().mana > mana_to_steal:
+            if target.get_expertise().mana >= mana_to_steal:
                 target.get_expertise().remove_mana(mana_to_steal)
                 caster.get_expertise().restore_mana(mana_to_steal)
                 result_str += "\n{0} stole " + f"{mana_to_steal} mana from " + "{" + f"{i + 1}" + "}"

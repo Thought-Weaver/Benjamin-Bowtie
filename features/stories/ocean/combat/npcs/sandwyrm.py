@@ -198,9 +198,9 @@ class Sandwyrm(NPC):
 
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
-        self._name = "Wriggling Mass"
+        self._name = "Sandwyrm"
         self._role = NPCRoles.DungeonEnemy
-        self._dueling_persona = NPCDuelingPersonas.Mage
+        self._dueling_persona = NPCDuelingPersonas.Bruiser
         self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")

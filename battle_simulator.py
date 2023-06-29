@@ -44,6 +44,7 @@ from features.stories.ocean.combat.npcs.banded_eel import BandedEel
 from features.stories.ocean.combat.npcs.bloodcoral_behemoth import BloodcoralBehemoth
 from features.stories.ocean.combat.npcs.brittle_star import BrittleStar
 from features.stories.ocean.combat.npcs.faceless_husk import FacelessHusk
+from features.stories.ocean.combat.npcs.false_village import FalseVillage
 from features.stories.ocean.combat.npcs.fish_maybe import FishMaybe
 from features.stories.ocean.combat.npcs.giant_cone_snail import GiantConeSnail
 from features.stories.ocean.combat.npcs.grand_lionfish import GrandLionfish
@@ -796,10 +797,8 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [
-    [BandedEel],
-]
-ALLY_CLASS_RANGE: range = range(40, 50)
+ENEMY_CLASSES: List[List[type]] = [[FalseVillage]]
+ALLY_CLASS_RANGE: range = range(60, 70)
 
 SIMULATION_ITERATIONS = 256
 NUM_ALLIES = 4
