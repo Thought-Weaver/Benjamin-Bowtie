@@ -26,6 +26,8 @@ class Dueling():
         self.available_abilities: List[Ability] = []
         # Abilities that the player has equipped and can be used
         self.abilities: List[Ability] = []
+        # Abilities granted during a duel that should be removed at the end
+        self.temp_abilities: List[Ability] = []
 
         # Temporary variables maintained for duels
         # They're stored here to make it easier to check if a Player/NPC
@@ -162,6 +164,7 @@ class Dueling():
     def __setstate__(self, state: dict):
         self.available_abilities = state.get("available_abilities", [])
         self.abilities = state.get("abilities", [])
+        self.temp_abilities = state.get("temp_abilities", [])
 
         self.is_in_combat = state.get("is_in_combat", False)
         self.status_effects = state.get("status_effects", [])

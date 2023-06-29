@@ -36,7 +36,15 @@ class SimulationDuel():
 
     def __init__(self, allies: List[NPC], enemies: List[NPC], logger: logging.Logger | None, max_turns: int, skip_init_updates: bool=False):
         self._allies: List[NPC] = allies
+        for ally in self._allies:
+            for summon in ally.get_equipment().get_summons(ally):
+                self._allies.append(summon)
+        
         self._enemies: List[NPC] = enemies
+        for enemy in self._enemies:
+            for summon in enemy.get_equipment().get_summons(enemy):
+                self._enemies.append(summon)
+        
         self._turn_order: List[NPC] = sorted(allies + enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
         self._turn_index: int = 0
 
@@ -791,7 +799,7 @@ class SimulationDuel():
 
             if not cannot_use_abilities:
                 # Step 2: Try using all abilities
-                for i, ability in enumerate(npc_dueling.abilities):
+                for i, ability in enumerate(npc_dueling.abilities + npc_dueling.temp_abilities):
                     if cur_npc.get_expertise().mana < ability.get_mana_cost() or ability.get_cur_cooldown() != 0:
                         continue
 
@@ -801,7 +809,7 @@ class SimulationDuel():
                         dueling_copy: SimulationDuel = self.create_copy()
 
                         copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
-                        dueling_copy._selected_ability = copy_cur_npc.get_dueling().abilities[i]
+                        dueling_copy._selected_ability = (copy_cur_npc.get_dueling().abilities + copy_cur_npc.get_dueling().temp_abilities)[i]
                         dueling_copy._selected_ability_index = i
 
                         targets = []
@@ -835,8 +843,8 @@ class SimulationDuel():
                     elif self._targets_remaining == 0:
                         dueling_copy: SimulationDuel = self.create_copy()
 
-                        npc_in_copy = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0]
-                        dueling_copy._selected_ability = npc_in_copy.get_dueling().abilities[i]
+                        copy_cur_npc = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0]
+                        dueling_copy._selected_ability = (copy_cur_npc.get_dueling().abilities + copy_cur_npc.get_dueling().temp_abilities)[i]
                         dueling_copy._selected_ability_index = i
 
                         targets = [cur_npc]
@@ -869,8 +877,8 @@ class SimulationDuel():
                             for targets in combinations:
                                 dueling_copy: SimulationDuel = self.create_copy()
 
-                                npc_in_copy = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0]
-                                dueling_copy._selected_ability = npc_in_copy.get_dueling().abilities[i]
+                                copy_cur_npc = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0]
+                                dueling_copy._selected_ability = (copy_cur_npc.get_dueling().abilities + copy_cur_npc.get_dueling().temp_abilities)[i]
                                 dueling_copy._selected_ability_index = i
 
                                 target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)

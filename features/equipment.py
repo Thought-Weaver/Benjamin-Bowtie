@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import discord
+import features.shared.ability
 
 from discord.embeds import Embed
 from features.expertise import Expertise
 from features.shared.attributes import Attributes
 from features.shared.constants import ARMOR_OVERLEVELED_DEBUFF
 from features.shared.effect import EffectType, ItemEffectCategory, ItemEffects
-from features.shared.enums import ClassTag
+from features.shared.enums import ClassTag, Summons
 from features.shared.item import Item
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -18,6 +19,7 @@ if TYPE_CHECKING:
     from features.inventory import Inventory
     from features.npcs.npc import NPC
     from features.player import Player
+    from features.shared.ability import Ability
     from features.shared.item import ArmorStats
 
 # -----------------------------------------------------------------------------
@@ -253,6 +255,37 @@ class Equipment():
                         result[item_effect.effect_type] = result.get(item_effect.effect_type, 0) + item_effect.effect_value
         
         return result
+
+    def get_granted_abilities(self, entity: Player | NPC):
+        abilities: List[Ability] = []
+        for item in self.get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for item_effect in item_effects.permanent:
+                    if not item_effect.meets_conditions(entity, item):
+                        continue
+
+                    if item_effect.effect_type == EffectType.GrantAbility:
+                        if item_effect.granted_ability is not None:
+                            ability = next(ability() for ability in features.shared.ability.ALL_ABILITIES if ability().get_name() == item_effect.granted_ability)
+                            if ability is not None:
+                                abilities.append(ability)
+        return abilities
+    
+    def get_summons(self, entity: Player | NPC):
+        summons: List[NPC] = []
+        for item in self.get_all_equipped_items():
+            item_effects = item.get_item_effects()
+            if item_effects is not None:
+                for item_effect in item_effects.permanent:
+                    if not item_effect.meets_conditions(entity, item):
+                        continue
+
+                    if item_effect.effect_type == EffectType.Summon:
+                        if item_effect.summon == Summons.Waveform:
+                            # TODO: Implement summons NPCs
+                            pass
+        return summons
 
     def __getstate__(self):
         return self.__dict__

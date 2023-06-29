@@ -330,8 +330,17 @@ class DuelView(discord.ui.View):
         self._database = database
         self._guild_id = guild_id
         self._users = users
+
         self._allies: List[Player | NPC] = allies
+        for ally in self._allies:
+            for summon in ally.get_equipment().get_summons(ally):
+                self._allies.append(summon)
+
         self._enemies: List[Player | NPC] = enemies
+        for enemy in self._enemies:
+            for summon in enemy.get_equipment().get_summons(enemy):
+                self._enemies.append(summon)
+
         self._turn_order: List[Player | NPC] = sorted(allies + enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
         self._turn_index: int = 0
         self._last_player_turn_user: discord.User | None = next(self.get_user_from_player(entity) for entity in self._turn_order if isinstance(entity, Player)) if not companion_battle else None
@@ -379,10 +388,13 @@ class DuelView(discord.ui.View):
                         
                         if isinstance(companion_ability, Ability):
                             self._companion_abilities[entity.get_id()] = companion_ability
-                            entity.get_dueling().abilities.append(companion_ability)
+                            entity.get_dueling().temp_abilities.append(companion_ability)
 
                     if entity.get_dungeon_run().in_dungeon_run and entity.get_dungeon_run().corruption > 0:
                         entity.get_dueling().status_effects.append(Corrupted(-1, entity.get_dungeon_run().corruption))
+
+                for ability in entity.get_equipment().get_granted_abilities(entity):
+                    entity.get_dueling().temp_abilities.append(ability)
 
             cur_entity: (Player | NPC) = self._turn_order[self._turn_index]
             if isinstance(cur_entity, Player) or self._companion_battle:
@@ -645,7 +657,8 @@ class DuelView(discord.ui.View):
                     info_str += f"\n\n{statuses_str}"
             info_str += "\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n"
 
-        player_name = self.get_user_for_current_turn().display_name
+        cur_player = self.get_user_for_current_turn()
+        player_name = cur_player.display_name if cur_player is not None else "Someone"
 
         additional_info_str = f"\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{self._additional_info_string_data}" if self._additional_info_string_data != "" else ""
         return info_str + f"\n*It's {player_name}'s turn!*{additional_info_str}"
@@ -667,12 +680,6 @@ class DuelView(discord.ui.View):
             duel_string += f"\n\n{dueling.get_statuses_string()}"
 
         return f"{duel_string}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
-
-    def _remove_companion_ability(self, entity: Player | NPC):
-        if isinstance(entity, Player):
-            companion_ability = self._companion_abilities.get(entity.get_id())
-            if companion_ability is not None:
-                entity.get_dueling().abilities.remove(companion_ability)
 
     def get_victory_screen(self, duel_result: DuelResult):
         self.clear_items()
@@ -749,10 +756,10 @@ class DuelView(discord.ui.View):
         for winner in duel_result.winners:
             winner.get_stats().dueling.duels_fought += 1
             winner.get_stats().dueling.duels_won += 1
-            self._remove_companion_ability(winner)
+            winner.get_dueling().temp_abilities = []
         for loser in losers:
             loser.get_stats().dueling.duels_fought += 1
-            self._remove_companion_ability(loser)
+            loser.get_dueling().temp_abilities = []
 
         if all(isinstance(entity, Player) for entity in self._turn_order):
             # This should only happen in a PvP duel
@@ -1561,16 +1568,17 @@ class DuelView(discord.ui.View):
         expertise: Expertise = player.get_expertise()
         dueling: Dueling = player.get_dueling()
         # Theoretically, this should only account for equipment/expertise, but if I add in an ability that reduces memory,
-        # I'll want to have this.
+        # I'll want to make sure I'm using this combined attributes function.
         available_memory: int = max(0, player.get_combined_attributes().memory)
+        combined_abilities = dueling.abilities[:available_memory] + dueling.temp_abilities
 
-        page_slots = dueling.abilities[self._page * self._NUM_PER_PAGE:min(len(dueling.abilities), (self._page + 1) * self._NUM_PER_PAGE)][:available_memory]
+        page_slots = combined_abilities[self._page * self._NUM_PER_PAGE:min(len(combined_abilities), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, ability in enumerate(page_slots):
             self.add_item(ChooseAbilityButton(i + (self._page * self._NUM_PER_PAGE), ability, i))
         
         if self._page != 0:
             self.add_item(DuelingPrevButton(min(4, len(page_slots))))
-        if len(dueling.abilities) - self._NUM_PER_PAGE * (self._page + 1) > 0:
+        if len(combined_abilities) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(DuelingNextButton(min(4, len(page_slots))))
 
         sanguinated_active = any(se.key == StatusEffectKey.ManaToHP for se in dueling.status_effects)
@@ -1948,7 +1956,7 @@ class DuelView(discord.ui.View):
 
             if not cannot_use_abilities:
                 # Step 2: Try using all abilities
-                for i, ability in enumerate(npc_dueling.abilities):
+                for i, ability in enumerate(npc_dueling.abilities + npc_dueling.temp_abilities):
                     if cur_npc.get_expertise().mana < ability.get_mana_cost() or ability.get_cur_cooldown() != 0:
                         continue
 
@@ -1958,7 +1966,7 @@ class DuelView(discord.ui.View):
                         dueling_copy: DuelView = self.create_copy()
 
                         copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
-                        dueling_copy._selected_ability = copy_cur_npc.get_dueling().abilities[i]
+                        dueling_copy._selected_ability = (copy_cur_npc.get_dueling().abilities + copy_cur_npc.get_dueling().temp_abilities)[i]
                         dueling_copy._selected_ability_index = i
 
                         targets = []
@@ -1993,7 +2001,7 @@ class DuelView(discord.ui.View):
                         dueling_copy: DuelView = self.create_copy()
 
                         copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
-                        dueling_copy._selected_ability = copy_cur_npc.get_dueling().abilities[i]
+                        dueling_copy._selected_ability = (copy_cur_npc.get_dueling().abilities + copy_cur_npc.get_dueling().temp_abilities)[i]
                         dueling_copy._selected_ability_index = i
 
                         targets = [cur_npc]
@@ -2027,7 +2035,7 @@ class DuelView(discord.ui.View):
                                 dueling_copy: DuelView = self.create_copy()
 
                                 copy_cur_npc: NPC = dueling_copy.get_entities_by_ids([cur_npc.get_id()])[0] # type: ignore
-                                dueling_copy._selected_ability = copy_cur_npc.get_dueling().abilities[i]
+                                dueling_copy._selected_ability = (copy_cur_npc.get_dueling().abilities + copy_cur_npc.get_dueling().temp_abilities)[i]
                                 dueling_copy._selected_ability_index = i
 
                                 target_ids: List[str] = get_target_ids(list(targets), cannot_target_ids, target_own_group)

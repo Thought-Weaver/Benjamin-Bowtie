@@ -122,6 +122,7 @@ class CompanionKey(StrEnum):
     TidewaterCrab = "TidewaterCrab"
     TanglewebSpider = "TanglewebSpider"
     VerdantSlitherer = "VerdantSlitherer"
+    VoidformedMimic = "VoidformedMimic"
     VoidseenCat = "VoidseenCat"
     VoidseenPup = "VoidseenPup"
     WanderboundRaven = "WanderboundRaven"
@@ -226,3 +227,10 @@ class RoomType(StrEnum):
     Event = "Event"
     Boss = "Boss"
     Rest = "Rest"
+
+# -----------------------------------------------------------------------------
+# SUMMONS ENUM
+# -----------------------------------------------------------------------------
+
+class Summons(StrEnum):
+    Waveform = "Waveform"

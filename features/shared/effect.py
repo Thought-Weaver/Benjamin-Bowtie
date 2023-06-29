@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from features.shared.attributes import Attributes
-from features.shared.enums import ClassTag
+from features.shared.enums import ClassTag, Summons
 from types import MappingProxyType
 from enum import StrEnum
 
@@ -81,6 +81,8 @@ class EffectType(StrEnum):
     Damage = "Damage"
     
     ResurrectOnce = "ResurrectOnce"
+    Summon = "Summon"
+    GrantAbility = "GrantAbility"
 
 
 class ConditionType(StrEnum):
@@ -168,7 +170,9 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
 
     EffectType.Damage: 43,
 
-    EffectType.ResurrectOnce: 44
+    EffectType.ResurrectOnce: 44,
+    EffectType.Summon: 45,
+    EffectType.GrantAbility: 46,
 })
 
 # -----------------------------------------------------------------------------
@@ -176,13 +180,15 @@ EFFECT_PRIORITY: MappingProxyType[EffectType, int] = MappingProxyType({
 # -----------------------------------------------------------------------------
 
 class Effect():
-    def __init__(self, effect_type: EffectType, effect_value: int | float, effect_time: int, conditions: List[ConditionType], condition_values: List[int | float], associated_status_effect: StatusEffectKey | None=None):
+    def __init__(self, effect_type: EffectType, effect_value: int | float, effect_time: int, conditions: List[ConditionType], condition_values: List[int | float], associated_status_effect: StatusEffectKey | None=None, summon: Summons | None=None, granted_ability: str | None=None):
         self.effect_type = effect_type
         self.effect_value = effect_value
         self.effect_time = effect_time
         self.conditions = conditions
         self.condition_values = condition_values
         self.associated_status_effect = associated_status_effect
+        self.summon = summon
+        self.granted_ability = granted_ability
 
     @staticmethod
     def load_from_state(effect_data: dict):
@@ -192,7 +198,9 @@ class Effect():
             effect_data.get("effect_time", 0),
             effect_data.get("conditions", []),
             effect_data.get("condition_values", []),
-            effect_data.get("associated_status_effect", None)
+            effect_data.get("associated_status_effect", None),
+            effect_data.get("granted_ability", None),
+            effect_data.get("summon", None)
         )
 
     def meets_conditions(self, entity: Player | NPC, item: Item):
@@ -365,6 +373,10 @@ class Effect():
                 return "Cause Damage"
             case EffectType.ResurrectOnce:
                 return "Resurrect Once"
+            case EffectType.Summon:
+                return "Summon"
+            case EffectType.GrantAbility:
+                return "Grant Ability"
         return "Unknown"
 
     def __str__(self, filter_condition: ConditionType | None=None):
@@ -638,6 +650,10 @@ class Effect():
 
         if self.effect_type == EffectType.Damage:
             display_string += f"Deals {int(self.effect_value)} Damage"
+        elif self.effect_type == EffectType.Summon:
+            display_string += f"Summons {int(self.effect_value)} {self.summon} at the start of the duel"
+        elif self.effect_type == EffectType.GrantAbility:
+            display_string += f"Grants Ability: {self.granted_ability}"
 
         # For now, specifically skip ResurrectOnce, since it's in the item description.
 

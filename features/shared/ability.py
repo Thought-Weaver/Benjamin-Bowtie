@@ -7305,3 +7305,55 @@ class QuickAccessI(Ability):
 
     def __setstate__(self, state: dict):
         self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# CONSTANTS
+# -----------------------------------------------------------------------------
+
+ALL_ABILITIES: List[type] = [
+    SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV,
+    CrabnadoI, CrabnadoII, CrabnadoIII,
+    CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CurseOfTheSeaIV,
+    HookI, HookII, HookIII, HookIV,
+    WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII,
+    HighTideI, HighTideII, HighTideIII, HighTideIV,
+    ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV,
+    DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII,
+    WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlpoolIV,
+    ShatteringStormI, ShatteringStormII, ShatteringStormIII,
+
+    WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV,
+    SecondWindI, SecondWindII, SecondWindIII,
+    ScarArmorI, ScarArmorII,
+    UnbreakingI, UnbreakingII,
+    CounterstrikeI, CounterstrikeII, CounterstrikeIII,
+    BidedAttackI, BidedAttackII, BidedAttackIII,
+    TauntI, TauntII, TauntIII,
+    PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII,
+    PressTheAdvantageI, PressTheAdvantageII, PressTheAdvantageIII,
+    EvadeI, EvadeII, EvadeIII,
+    HeavySlamI, HeavySlamII, HeavySlamIII,
+
+    ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII,
+    BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, BoundToGetLuckyIV, BoundToGetLuckyV,
+    SilkspeakingI,
+    ATidySumI, ATidySumII, ATidySumIII,
+    CursedCoinsI, CursedCoinsII, CursedCoinsIII, CursedCoinsIV,
+    UnseenRichesI, UnseenRichesII, UnseenRichesIII,
+    ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII,
+    ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII,
+    DeepPocketsI, DeepPocketsII, DeepPocketsIII,
+
+    IncenseI, IncenseII, IncenseIII, IncenseIV, IncenseV,
+    PreparePotionsI, PreparePotionsII, PreparePotionsIII,
+    VitalityTransferI, VitalityTransferII, VitalityTransferIII,
+    CleanseI,
+    ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV,
+    SmokescreenI, SmokescreenII, SmokescreenIII,
+    EmpowermentI, EmpowermentII,
+    FesteringVaporI, FesteringVaporII, FesteringVaporIII,
+    PoisonousSkinI,
+    RegenerationI, RegenerationII, RegenerationIII,
+    ParalyzingFumesI, ParalyzingFumesII,
+    QuickAccessI
+]
