@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import discord
+import random
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from features.player import Player
+from features.shared.statuseffect import ConBuff, DexBuff, IntBuff, LckBuff, StrBuff
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
 
-from typing import Dict, List
+from typing import List
 
 
 class ContinueButton(discord.ui.Button):
@@ -18,7 +20,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: HallucinatorySmokeView = self.view
+        view: StrangeEffigyView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -30,43 +32,35 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
 
 
-class FocusButton(discord.ui.Button):
+class ApproachButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Focus")
+        super().__init__(style=discord.ButtonStyle.secondary, label="Approach")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
         
-        view: HallucinatorySmokeView = self.view
-        view.users_focused[interaction.user.id] = True
-
-        if len(view.users_focused) == len(view.get_users()):
-            response = view.resolve()
+        view: StrangeEffigyView = self.view
+        if interaction.user.id == view.get_group_leader().id:
+            response = view.approach()
             await interaction.response.edit_message(content=None, embed=response, view=view)
-        else:
-            await interaction.response.edit_message(content=None, embed=view.get_initial_embed(), view=view)
 
 
-class HoldBreathButton(discord.ui.Button):
+class ResistButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Hold Breath")
+        super().__init__(style=discord.ButtonStyle.secondary, label="Resist")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
         
-        view: HallucinatorySmokeView = self.view
-        view.users_focused[interaction.user.id] = False
-
-        if len(view.users_focused) == len(view.get_users()):
-            response = view.resolve()
+        view: StrangeEffigyView = self.view
+        if interaction.user.id == view.get_group_leader().id:
+            response = view.resist()
             await interaction.response.edit_message(content=None, embed=response, view=view)
-        else:
-            await interaction.response.edit_message(content=None, embed=view.get_initial_embed(), view=view)
 
 
-class HallucinatorySmokeView(discord.ui.View):
+class StrangeEffigyView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -76,8 +70,6 @@ class HallucinatorySmokeView(discord.ui.View):
         self._users = users
         self._group_leader = users[0]
         self._dungeon_run = dungeon_run
-
-        self.users_focused: Dict[int, bool] = {}
         
         self._display_initial_buttons()
 
@@ -85,35 +77,44 @@ class HallucinatorySmokeView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Hallucinatory Smoke", description=f"The mist grows thicker here, darker than it was before. As you try to move through it, you find your vision beginning to swim as the world becomes a swirl of strange colors. Each of you doesn't have much time to act, but two options pierce through the fog that is becoming your mind.\n\n{len(self.users_focused)}/{len(self._users)} have decided on their course of action.")
+        return Embed(title="Strange Effigy", description="At first, you thought the object before you was just an oddly shaped rock, but as you approach closer, you realize it’s something constructed: A curious homunculus with tendrils rests nestled in the sand, formed of kelp, conches, bone, and sand.\n\nYou get a sense of power from it, perhaps something that would be a boon for all of you in the trials ahead.")
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(FocusButton())
-        self.add_item(HoldBreathButton())
+        self.add_item(ApproachButton())
+        self.add_item(ResistButton())
 
-    def resolve(self):
+    def approach(self):
         self.clear_items()
         self.add_item(ContinueButton())
 
-        results: List[str] = []
         for user in self._users:
             player = self._get_player(user.id)
-            if self.users_focused[user.id]:
-                if player.get_expertise().intelligence > 20:
-                    results.append(f"{user.display_name} successfully focused their mind and made it through the smoke.")
-                else:
-                    results.append(f"{user.display_name} tried to focus their mind, but became lost in the smoke -- the party found them far astray from the path some time later.")
-                    self._dungeon_run.rooms_until_boss += 1
-            else:
-                if player.get_expertise().constitution > 20:
-                    results.append(f"{user.display_name} successfully held their breath and made it through the smoke.")
-                else:
-                    results.append(f"{user.display_name} tried to hold their breath, but it proved too difficult a task and they became lost in the smoke -- the party found them far astray from the path some time later.")
-                    self._dungeon_run.rooms_until_boss += 1
 
-        final_str: str = "\n\n".join(results)
-        return Embed(title="Through the Smoke", description=f"{final_str}")
+            buffs = [
+                ConBuff(-1, 5, "Strange Effigy"),
+                StrBuff(-1, 5, "Strange Effigy"),
+                DexBuff(-1, 5, "Strange Effigy"),
+                IntBuff(-1, 5, "Strange Effigy"),
+                LckBuff(-1, 5, "Strange Effigy")
+            ]
+
+            player.get_dueling().status_effects += buffs
+            player.get_dungeon_run().corruption += 3
+
+        return Embed(title="You'll Be Better", description=f"You move towards the strange effigy and a darkness seems to creep around all of you, something that almost wants to... taste you. It recedes, however, and you all find yourselves feeling empowered with whatever it left behind.")
+
+    def resist(self):
+        self.clear_items()
+        self.add_item(ContinueButton())
+
+        player = self._get_player(self._group_leader.id)
+        resists: bool = random.random() < 0.05 * player.get_dungeon_run().corruption
+
+        if not resists:
+            return self.approach()
+        else:
+            return Embed(title="Don't Leave", description=f"Deciding it's better left where it lays, you ignore the sensation and continue through the darkness of the abyss.")
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)

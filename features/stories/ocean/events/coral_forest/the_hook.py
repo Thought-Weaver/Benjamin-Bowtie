@@ -6,8 +6,6 @@ import random
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from features.player import Player
-from features.shared.enums import ClassTag
-from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
 
 from typing import List
@@ -21,7 +19,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: QuietGroveWildHerbsView = self.view
+        view: TheHookView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -33,7 +31,21 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
 
 
-class QuietGroveWildHerbsView(discord.ui.View):
+class TouchItButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.secondary, label="Touch It")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: TheHookView = self.view
+        if interaction.user.id == view.get_group_leader().id:
+            response = view.touch_it()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class TheHookView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -44,54 +56,32 @@ class QuietGroveWildHerbsView(discord.ui.View):
         self._group_leader = users[0]
         self._dungeon_run = dungeon_run
         
-        self._prob_map = {
-            Rarity.Common: 0.4,
-            Rarity.Uncommon: 0.3,
-            Rarity.Rare: 0.15,
-            Rarity.Epic: 0.1,
-            Rarity.Legendary: 0.05
-        }
-
-        self._valid_class_tags = [ClassTag.Ingredient.Herb]
-        self._possible_rewards: List[ItemKey] = []
-
-        for item_key in ItemKey:
-            if item_key not in [ItemKey.AntlerCoral, ItemKey.BandedCoral, ItemKey.Seaclover, ItemKey.SingingCoral, ItemKey.SirensKiss, ItemKey.Stranglekelp]:
-                item = LOADED_ITEMS.get_new_item(item_key)
-                if any(tag in item.get_class_tags() for tag in self._valid_class_tags):
-                    self._possible_rewards.append(item_key)
-        self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
-
         self._display_initial_buttons()
 
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
-    def _generate_and_add_herbs(self):
-        result_str: str = ""
-
-        for user in self._users:
-            player = self._get_player(user.id)
-            herb_keys = random.choices(self._possible_rewards, k=random.randint(1, 3), weights=self._weights)
-
-            for herb_key in herb_keys:
-                item = LOADED_ITEMS.get_new_item(herb_key)
-                item.add_amount(random.randint(0, 2))
-
-                player.get_inventory().add_item(item)
-                result_str += f"{user.display_name} found {item.get_full_name_and_count()}\n"
-
-            result_str += "\n"
-
-        return result_str
-
     def get_initial_embed(self):
-        herb_results: str = self._generate_and_add_herbs()
-        return Embed(title="Wild Herbs", description=f"Along your journey, you find some herbs -- more than enough to split between the party.\n\n{herb_results}")
+        return Embed(title="The Hook", description="A shadow suddenly comes over your party and as you look upwards, you see a shifting, dark shape and something descending closer and closer towards you all. As it approaches the ocean floor, you instantly recognize the shape -- even if the size comes as a surprise:\n\nIt’s an enormous iron hook, as though it should be attached to the fishing rod of a colossus. After a few moments, hovering about 50 feet above the sand and coral, it stops. You feel oddly compelled to reach out and touch it.")
 
     def _display_initial_buttons(self):
         self.clear_items()
+        self.add_item(TouchItButton())
         self.add_item(ContinueButton())
+
+    def touch_it(self):
+        self.clear_items()
+        self.add_item(ContinueButton())
+
+        for user in self._users:
+            player = self._get_player(user.id)
+            player.get_dungeon_run().corruption += 2
+
+        rooms_to_move = random.randint(1, 3)
+        direction = -1 if random.random() < 0.5 else 1
+        self._dungeon_run.rooms_until_boss = max(0, self._dungeon_run.rooms_until_boss + (direction * rooms_to_move))
+
+        return Embed(title="Where Do They Go", description=f"There's a powerful force emanating from the hook that draws you closer towards it -- but just as you're about to touch it, the world begins to spin and warp as though being projected against a glass sphere. When it finally stops, your party realizes they're not where they were previously, though further back or forward along the path is difficult to say. The hook is nowhere to be seen.")
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)

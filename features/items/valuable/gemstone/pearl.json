@@ -1,0 +1,24 @@
+{
+    "key": "items/valuable/gemstone/pearl",
+    "icon": "\uD83E\uDDAA",
+    "name": "Pearl",
+    "value": 400,
+    "rarity": "Epic",
+    "description": "Can be socketed into armor or an item in your hand.",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Gemstone"],
+    "state_tags": [],
+    "count": 1,
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffLegends",
+                "effect_value": 0.08,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ]
+    }
+}

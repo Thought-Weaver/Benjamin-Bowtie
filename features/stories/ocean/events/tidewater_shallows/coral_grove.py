@@ -6,7 +6,6 @@ import random
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from features.player import Player
-from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
 from features.stories.dungeon_run import DungeonRun, RoomSelectionView
 
@@ -21,7 +20,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: QuietGroveWildHerbsView = self.view
+        view: TidewaterShallowsCoralGroveView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -33,7 +32,7 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
 
 
-class QuietGroveWildHerbsView(discord.ui.View):
+class TidewaterShallowsCoralGroveView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -52,14 +51,7 @@ class QuietGroveWildHerbsView(discord.ui.View):
             Rarity.Legendary: 0.05
         }
 
-        self._valid_class_tags = [ClassTag.Ingredient.Herb]
-        self._possible_rewards: List[ItemKey] = []
-
-        for item_key in ItemKey:
-            if item_key not in [ItemKey.AntlerCoral, ItemKey.BandedCoral, ItemKey.Seaclover, ItemKey.SingingCoral, ItemKey.SirensKiss, ItemKey.Stranglekelp]:
-                item = LOADED_ITEMS.get_new_item(item_key)
-                if any(tag in item.get_class_tags() for tag in self._valid_class_tags):
-                    self._possible_rewards.append(item_key)
+        self._possible_rewards: List[ItemKey] = [ItemKey.AntlerCoral, ItemKey.BandedCoral, ItemKey.Seaclover, ItemKey.SingingCoral, ItemKey.SirensKiss, ItemKey.Stranglekelp]
         self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
 
         self._display_initial_buttons()
@@ -72,7 +64,7 @@ class QuietGroveWildHerbsView(discord.ui.View):
 
         for user in self._users:
             player = self._get_player(user.id)
-            herb_keys = random.choices(self._possible_rewards, k=random.randint(1, 3), weights=self._weights)
+            herb_keys = random.choices(self._possible_rewards, k=random.randint(1, 2), weights=self._weights)
 
             for herb_key in herb_keys:
                 item = LOADED_ITEMS.get_new_item(herb_key)
@@ -87,7 +79,7 @@ class QuietGroveWildHerbsView(discord.ui.View):
 
     def get_initial_embed(self):
         herb_results: str = self._generate_and_add_herbs()
-        return Embed(title="Wild Herbs", description=f"Along your journey, you find some herbs -- more than enough to split between the party.\n\n{herb_results}")
+        return Embed(title="Coral Grove", description=f"Along your journey, you find some underwater herbs -- more than enough to split between the party.\n\n{herb_results}")
 
     def _display_initial_buttons(self):
         self.clear_items()

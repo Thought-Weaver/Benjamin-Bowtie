@@ -1,0 +1,34 @@
+{
+    "key": "items/weapon/dungeon_npcs/crab_king_claws",
+    "icon": "\uD83E\uDD80",
+    "name": "Crab King Claws",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 25,
+        "max_damage": 30,
+        "num_targets": 2
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromInt",
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ]
+    }
+}

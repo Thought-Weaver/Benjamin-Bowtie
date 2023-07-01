@@ -43,6 +43,8 @@ from features.stories.ocean.combat.npcs.ancient_kraken import AncientKraken
 from features.stories.ocean.combat.npcs.banded_eel import BandedEel
 from features.stories.ocean.combat.npcs.bloodcoral_behemoth import BloodcoralBehemoth
 from features.stories.ocean.combat.npcs.brittle_star import BrittleStar
+from features.stories.ocean.combat.npcs.crab_king import CrabKing
+from features.stories.ocean.combat.npcs.crab_servant import CrabServant
 from features.stories.ocean.combat.npcs.faceless_husk import FacelessHusk
 from features.stories.ocean.combat.npcs.false_village import FalseVillage
 from features.stories.ocean.combat.npcs.fish_maybe import FishMaybe
@@ -797,8 +799,8 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [[FalseVillage]]
-ALLY_CLASS_RANGE: range = range(60, 70)
+ENEMY_CLASSES: List[List[type]] = [[CrabServant, CrabKing, CrabServant]]
+ALLY_CLASS_RANGE: range = range(30, 40)
 
 SIMULATION_ITERATIONS = 256
 NUM_ALLIES = 4
