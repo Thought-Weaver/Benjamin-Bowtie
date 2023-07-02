@@ -55,4 +55,4 @@ COMPANION_BATTLE_POINTS = 6
 # -----------------------------------------------------------------------------
 
 FOREST_ROOMS = 15
-OCEAN_ROOMS = 1
+OCEAN_ROOMS = 15
