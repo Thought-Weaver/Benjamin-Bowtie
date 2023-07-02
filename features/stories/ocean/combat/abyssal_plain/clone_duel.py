@@ -149,6 +149,10 @@ class CloneDefeatView(discord.ui.View):
             
             player.get_inventory().add_item(LOADED_ITEMS.get_new_item(ItemKey.MarkOfCorruption))
 
+        for user in self._users:
+            player = self._get_player(user.id)
+            player.get_dungeon_run().in_dungeon_run = False
+
         return Embed(title="From the Mirror", description=f"The cacophony of the chant grows louder and louder as the lights around you shift and dance madly. The throne is before you -- take it, take it! This is the world now, the screaming terror of those with sight of what is yet to come. Or is it already?\n\nSomething latches onto you, crawling up your leg like a misshapen, sloughing worm. Everything begins to fade as it grows and moves upwards towards your head. You collapse to the sand, the world spinning--\n\nThen suddenly there's a flash somewhere just beyond your vision. A bolt of lightning streaks through the water and pierces the figure by the throne, arcing across your party and the eldritch creatures attached to you. A hand grabs your own and pulls as your vision finally goes dark.\n\nThose who willingly chose to take the throne feel not all of it was destroyed by the attack. A new companion has been added to b!companions and a Mark of Corruption added to your inventory.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{post_run_info_str}")
 
     def any_in_duels_currently(self):
@@ -186,8 +190,8 @@ class JoinButton(discord.ui.Button):
         
         view: CloneDuelView = self.view
 
+        result_embed: Embed = view.join(interaction.user)
         if len(view.get_users()) != len(view.players_joined_with_fail) + len(view.players_resisted) + len(view.players_joined_willingly):
-            result_embed: Embed = view.join(interaction.user)
             await interaction.response.edit_message(embed=result_embed, view=view, content=None)
             return
 
@@ -217,8 +221,8 @@ class ResistButton(discord.ui.Button):
         
         view: CloneDuelView = self.view
 
+        result_embed: Embed = view.resist(interaction.user)
         if len(view.get_users()) != len(view.players_joined_with_fail) + len(view.players_resisted) + len(view.players_joined_willingly):
-            result_embed: Embed = view.resist(interaction.user)
             await interaction.response.edit_message(embed=result_embed, view=view, content=None)
             return
 
@@ -292,7 +296,7 @@ class CloneDuelView(discord.ui.View):
         return Embed(title="The Outskirts", description="Venturing on across the endless waste of sand and stone, you soon come to the outskirts of the false village. The lights you saw before cast an eerie pallor across the entire scene: The structures here are warped and appear like dilapidated homes and stores. You can even see some kind of tent a ways from where you stand and a pier -- though it makes no sense for one to exist underwater.\n\nEverything is malformed, as if created by some twisted sense of reality, and the very materials used to construct them are wrong: They seem to be some amalgam of kelp, broken shells, the carapaces of crustaceans, driftwood, and worse. Their windows emit a radiance like the lights above you, which seem to be growing out of the buildings like anglerfish stalks; inside, you can't see anything except shadows that seem to move even though your party stands still.\n\nSomething here whispers in your mind with an otherworldly sentience -- perhaps not malevolent, but clearly unable to understand you or those like you. It's at this moment, the building begins to shift and undulate, rearranging itself into a slightly different form, though no less flawed.")
 
     def get_second_page(self):
-        return Embed(title="Somewhere Familiar", description="As you continue past what could only be described as a warped tavern, you begin to reach the center of this imitation. Fragments of voices seem to call out to you from each place you pass, repeating in an uneasy chorus: \"You walk on chains with your eyes. Push the fingers through the surface into the void...\"\n\nHere, at the heart of the village, stands a mound of conches, scuttling crabs all incorrectly formed, and smothering stranglekelp. It looks almost as though it's been shaped into a grand seat. A throne. From it, something detaches, stretches, and reforms into something that looks oddly like paper. It floats away from the village outwards into the darkness of the plan.\n\nKneeling before the throne is a husk -- not unlike those you encountered before reaching the village. As you get closer, it begins to move, turning to face you all. The voice that emerges from somewhere, despite a nonexistent mouth, is guttural but cordial, \"You have come at last. The throne is yours, Fisher King. Join us. Let us know.\"")
+        return Embed(title="Somewhere Familiar", description="As you continue past what could only be described as a warped tavern, you begin to reach the center of this imitation. Fragments of voices seem to call out to you from each place you pass, repeating in an uneasy chorus: \"You walk on chains with your eyes. Push the fingers through the surface into the void...\"\n\nHere, at the heart of the village, stands a mound of conches, scuttling crabs all incorrectly formed, and smothering stranglekelp. It looks almost as though it's been shaped into a grand seat. A throne. From it, something detaches, stretches, and reforms into something that looks oddly like paper. It floats away from the village outwards into the darkness of the plan.\n\nKneeling before the throne is a husk -- not unlike those you encountered before reaching the village. As you get closer, it begins to move, turning to face you all. The voice that emerges from somewhere, despite a nonexistent mouth, is guttural but cordial, \"You have come at last. The throne is yours, Fisher King. Join us. JOIN US.\"")
 
     def get_resist_or_join_page(self):
         self.clear_items()
@@ -356,7 +360,7 @@ class CloneDuelView(discord.ui.View):
             enemy = Clone(name + "?", player.get_expertise(), player.get_equipment(), player.get_dueling().abilities, persona)
             enemies.append(enemy)
 
-        while len(enemies) < 4:
+        while len(enemies) < 3:
             fh = FacelessHusk()
             enemy = Clone("Faceless Husk", fh.get_expertise(), fh.get_equipment(), fh.get_dueling().abilities, fh._dueling_persona)
             enemies.append(enemy)

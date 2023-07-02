@@ -56,7 +56,7 @@ class VictoryView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Do You Hear the People Sing?", description=f"With the sharks vanquished, the rest of the ocean awaits.")
+        return Embed(title="Do You Hear the People Sing?", description=f"With the crab king dethroned, the rest of the ocean awaits.")
 
     def _display_initial_buttons(self):
         self.clear_items()

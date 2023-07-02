@@ -28,7 +28,7 @@ class Emergence(Ability):
             icon="\uD83E\uDEB1",
             name="Emergence",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 150 damage to an enemy, doubled against Marked targets.",
+            description="Deal 100 damage to an enemy, doubled against Marked targets.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -42,7 +42,7 @@ class Emergence(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = range(150, 150) if any(isinstance(se, Marked) and se.caster == caster for se in targets[0].get_dueling().status_effects) else range(300, 300)
+        damage = range(100, 100) if any(isinstance(se, Marked) and se.caster == caster for se in targets[0].get_dueling().status_effects) else range(200, 200)
 
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
 
@@ -147,7 +147,7 @@ class Sandwyrm(NPC):
         # 6% chance of 4 player party (Lvl. 60-70) victory against 1
         # Avg Number of Turns (per entity): 13
 
-        super().__init__("Sandwyrm" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Sandwyrm" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
         self._setup_npc_params()
 
@@ -200,7 +200,7 @@ class Sandwyrm(NPC):
         self._id = state.get("_id", str(uuid4()))
         self._name = "Sandwyrm"
         self._role = NPCRoles.DungeonEnemy
-        self._dueling_persona = NPCDuelingPersonas.Bruiser
+        self._dueling_persona = NPCDuelingPersonas.Mage
         self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")

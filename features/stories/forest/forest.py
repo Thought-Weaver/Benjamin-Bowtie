@@ -366,6 +366,7 @@ class StartButton(discord.ui.Button):
 
         for player in view.get_players():
             player.get_dungeon_run().in_dungeon_run = True
+            player.get_dungeon_run().corruption = 0
 
         starting_section: ForestSection | None = view.get_starting_section()
         if starting_section is None or starting_section == ForestSection.QuietGrove:

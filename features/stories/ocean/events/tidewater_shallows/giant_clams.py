@@ -108,7 +108,7 @@ class GiantClamsView(discord.ui.View):
                 else:
                     result_str += f"\n{name} received nothing"
 
-            return Embed(title="Shimmering Pearls", description=f"You open the pearls to find:\n")
+            return Embed(title="Shimmering Pearls", description=f"You open the pearls to find:\n\n{result_str}")
         else:
             return self.get_initial_embed()
 

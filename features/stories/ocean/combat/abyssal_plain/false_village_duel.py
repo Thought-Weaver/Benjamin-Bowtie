@@ -66,7 +66,7 @@ class OceanFinalWordsView(discord.ui.View):
 
         self._update_player_stats()
 
-        return Embed(title="The Journey Home", description=f"With the forest freed of the terrifying power that grasped it, you all begin the long journey back to the village. Your party is victorious!\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{post_run_info_str}")
+        return Embed(title="Homeward Bound", description=f"The thing that sustained the village begins to wane, losing its grip on the real world. The monstrous entity disintegrates into smaller and smaller pieces, eventually dissolving into spectral fragments that become nothingness. But something lingers here, a presence that hasn't yet abated -- and will, with time, begin anew.\n\nThe source of what waited for you in the abyss, just as with what created the Wilderdragon, lurks elsewhere still -- not here in this world. But, as you leave the remnants of the false village, relief and a sense of triumph comes over you. You've faced the unimaginable, defied the darkness, and emerged victorious.\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n{post_run_info_str}")
 
     def get_bot(self):
         return self._bot
@@ -181,7 +181,7 @@ class FalseVillageTreasureRoomView(discord.ui.View):
             total_luck = player.get_combined_attributes().luck
 
             get_additional_reward = random.random() < total_luck * self._EXTRA_REWARD_LUCK_PROB
-            rewards = random.choices(self._possible_rewards, k=3 if get_additional_reward else 2, weights=self._weights)
+            rewards = random.choices(self._possible_rewards, k=4 if get_additional_reward else 3, weights=self._weights)
             
             for reward_key in rewards:
                 item = LOADED_ITEMS.get_new_item(reward_key)
@@ -261,7 +261,7 @@ class VictoryView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="JOIN US JOIN US", description="COME HITHER TO US FISHER KING. YOUR THRONE IS WAITING. Why shouldn't you? After all, they've prepared all this for your arrival; they're only trying to understand you, to understand what humans are. Just let go. Just give in. Just give in. Just give in.\n\nBut there, as the false village grows and forms a cage from which you'll never escape, a glimmer of hope pierces the encroaching darkness: A crack in the barrier before you, a sliver of an opportunity beckoning you towards freedom.\n\nYou rush towards the opening, defying the twisting realm that would bind you here forever. There's an unearthly sound, like the tearing of flesh meets the shattering of glass -- and you burst free into open waters with their own horrors, but away from the eldritch power.\n\nBehind you, it begins to grow new tendrils, reaching out towards you as you flee; the entire mass seems to shudder in fury and pain from the damage you dealt, slowly collapsing as you swim further and further away.\n\nThe thing that sustained the village begins to wane, losing its grip on the real world. The monstrous entity disintegrates into smaller and smaller pieces, eventually dissolving into spectral fragments that become nothingness. But something lingers here, a presence that hasn't yet abated -- and will, with time, begin anew.")
+        return Embed(title="JOIN US JOIN US", description="COME HITHER TO US FISHER KING. YOUR THRONE IS WAITING. Why shouldn't you? After all, they've prepared all this for your arrival; they're only trying to understand you, to understand what humans are. Just let go. Just give in. Just give in. Just give in.\n\nBut there, as the false village grows and forms a cage from which you'll never escape, a glimmer of hope pierces the encroaching darkness: A crack in the barrier before you, a sliver of an opportunity beckoning you towards freedom.\n\nYou rush towards the opening, defying the twisting realm that would bind you here forever. There's an unearthly sound, like the tearing of flesh meets the shattering of glass -- and you burst free into open waters with their own horrors, but away from the eldritch power.\n\nBehind you, it begins to grow new tendrils, reaching out towards you as you flee; the entire mass seems to shudder in fury and pain from the damage you dealt, slowly collapsing as you swim further and further away.")
 
     def _display_initial_buttons(self):
         self.clear_items()
