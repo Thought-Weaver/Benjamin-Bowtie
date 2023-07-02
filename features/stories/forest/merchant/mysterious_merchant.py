@@ -6,7 +6,7 @@ import random
 from discord import Embed
 from enum import StrEnum
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
-from features.stories.dungeon_run import RoomSelectionView
+from features.stories.forest_room_selection import ForestRoomSelectionView
 from features.stories.story import Story
 
 from typing import TYPE_CHECKING, List
@@ -71,7 +71,7 @@ class ContinueButton(discord.ui.Button):
         for player in view.get_players():
             player.get_dungeon_run().in_rest_area = False
 
-        room_selection_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        room_selection_view = ForestRoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_selection_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)

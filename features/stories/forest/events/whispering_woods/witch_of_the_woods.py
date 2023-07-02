@@ -9,7 +9,8 @@ from features.house.recipe import LOADED_RECIPES, RecipeKey
 from features.player import Player
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS
-from features.stories.dungeon_run import DungeonRun, RoomSelectionView
+from features.stories.dungeon_run import DungeonRun
+from features.stories.forest_room_selection import ForestRoomSelectionView
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -29,7 +30,7 @@ class ContinueButton(discord.ui.Button):
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
             return
 
-        room_selection_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        room_selection_view: ForestRoomSelectionView = ForestRoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_selection_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)

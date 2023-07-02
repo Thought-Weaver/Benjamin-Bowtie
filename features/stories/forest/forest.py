@@ -7,11 +7,10 @@ import features.companions.companion
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
-from features.npcs.mysterious_merchant import MysteriousMerchantView
 from features.player import Player
 from features.shared.constants import FOREST_ROOMS
 from features.shared.enums import CompanionKey, ForestSection
-from features.stories.dungeon_run import DungeonRun, RoomSelectionView
+from features.stories.dungeon_run import DungeonRun
 from features.stories.forest.combat.quiet_grove.bridge_golem_duel import BridgeGolemDuelView, WhisperingWoodsIntroView
 from features.stories.forest.combat.quiet_grove.brigand_mystic_duel import BrigandMysticDuelView
 from features.stories.forest.combat.quiet_grove.deepwood_bear_duel import BearDuelView
@@ -67,9 +66,11 @@ from features.stories.forest.events.whispering_woods.the_sound import TheSoundVi
 from features.stories.forest.events.whispering_woods.unnamed_grave import UnnamedGraveView
 from features.stories.forest.events.whispering_woods.wild_herbs import WhisperingWoodsWildHerbsView
 from features.stories.forest.events.whispering_woods.witch_of_the_woods import WitchOfTheWoodsView
+from features.stories.forest.merchant.mysterious_merchant import MysteriousMerchantView
 from features.stories.forest.treasure.quiet_grove_treasure import QuietGroveTreasureRoomView
 from features.stories.forest.treasure.screaming_copse_treasure import ScreamingCopseTreasureRoomView
 from features.stories.forest.treasure.whispering_woods_treasure import WhisperingWoodsTreasureRoomView
+from features.stories.forest_room_selection import ForestRoomSelectionView
 from features.stories.story import Story
 
 from typing import List, Set
@@ -167,7 +168,7 @@ class RestContinueButton(discord.ui.Button):
         for player in view.get_players():
             player.get_dungeon_run().in_rest_area = False
 
-        room_selection_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        room_selection_view = ForestRoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_selection_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
@@ -287,7 +288,7 @@ class ContinueButton(discord.ui.Button):
             await interaction.response.edit_message(embed=view.get_initial_embed(), content="Error: You aren't the group leader and can't continue to the next room!", view=view)
             return
         
-        room_select_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        room_select_view = ForestRoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_select_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=room_select_view, content=None)

@@ -6,11 +6,10 @@ import features.companions.companion
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
-from features.npcs.mysterious_merchant import MysteriousMerchantView
 from features.player import Player
 from features.shared.constants import OCEAN_ROOMS
 from features.shared.enums import CompanionKey, OceanSection
-from features.stories.dungeon_run import DungeonRun, RoomSelectionView
+from features.stories.dungeon_run import DungeonRun
 
 from typing import List, Set
 from features.stories.ocean.combat.abyssal_plain.ancient_kraken_duel import AncientKrakenDuelView
@@ -55,9 +54,11 @@ from features.stories.ocean.events.tidewater_shallows.dangerous_current import D
 from features.stories.ocean.events.tidewater_shallows.giant_clams import GiantClamsView
 from features.stories.ocean.events.tidewater_shallows.school_of_fish import TidewaterShallowsSchoolOfFishView
 from features.stories.ocean.events.tidewater_shallows.wayward_conch import WaywardConchView
+from features.stories.ocean.merchant.mysterious_merchant import MysteriousMerchantView
 from features.stories.ocean.treasure.abyssal_plain_treasure import AbyssalPlainTreasureRoomView
 from features.stories.ocean.treasure.coral_forest_treasure import CoralForestTreasureRoomView
 from features.stories.ocean.treasure.tidewater_shallows_treasure import TidewaterShallowsTreasureRoomView
+from features.stories.ocean_room_selection import OceanRoomSelectionView
 from features.stories.story import Story
 
 # -----------------------------------------------------------------------------
@@ -153,7 +154,7 @@ class RestContinueButton(discord.ui.Button):
         for player in view.get_players():
             player.get_dungeon_run().in_rest_area = False
 
-        room_selection_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        room_selection_view = OceanRoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_selection_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
@@ -273,7 +274,7 @@ class ContinueButton(discord.ui.Button):
             await interaction.response.edit_message(embed=view.get_initial_embed(), content="Error: You aren't the group leader and can't continue to the next room!", view=view)
             return
         
-        room_select_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        room_select_view = OceanRoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_select_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=room_select_view, content=None)

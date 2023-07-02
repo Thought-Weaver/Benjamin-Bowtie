@@ -8,7 +8,8 @@ from discord.embeds import Embed
 from features.player import Player
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
-from features.stories.dungeon_run import DungeonRun, RoomSelectionView
+from features.stories.dungeon_run import DungeonRun
+from features.stories.ocean_room_selection import OceanRoomSelectionView
 
 from typing import List
 
@@ -27,7 +28,7 @@ class ContinueButton(discord.ui.Button):
             await interaction.response.edit_message(embed=view.get_initial_embed(), content="Error: You aren't the group leader and can't continue to the next room!", view=view)
             return
         
-        room_select_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        room_select_view: OceanRoomSelectionView = OceanRoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_select_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=room_select_view, content=None)

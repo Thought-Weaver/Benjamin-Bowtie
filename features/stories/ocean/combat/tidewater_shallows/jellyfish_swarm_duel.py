@@ -10,7 +10,7 @@ from features.stories.ocean.combat.npcs.jellyfish import Jellyfish
 from features.views.dueling_view import DuelView
 from features.shared.constants import OCEAN_ROOMS
 from features.shared.enums import ClassTag, OceanSection
-from features.stories.dungeon_run import RoomSelectionView
+from features.stories.ocean_room_selection import OceanRoomSelectionView
 from features.shared.item import LOADED_ITEMS, ItemKey, Rarity
 
 from typing import TYPE_CHECKING, List
@@ -47,7 +47,7 @@ class CoralForestContinueButton(discord.ui.Button):
         view.get_dungeon_run().previous_combat = -1
         view.get_dungeon_run().previous_event = -1
 
-        room_select_view: RoomSelectionView = RoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        room_select_view: OceanRoomSelectionView = OceanRoomSelectionView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         initial_info: Embed = room_select_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=room_select_view, content=None)
