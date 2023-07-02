@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import discord
-from features.stories.ocean.combat.npcs.crab_king import CrabKing
-from features.stories.ocean.combat.npcs.crab_servant import CrabServant
 import features.stories.ocean.ocean as ocean
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
-from features.stories.ocean.combat.npcs.shallows_shark import ShallowsShark
+from features.stories.ocean.combat.npcs.crab_king import CrabKing
+from features.stories.ocean.combat.npcs.crab_servant import CrabServant
 from features.views.dueling_view import DuelView
 from features.stories.dungeon_run import RoomSelectionView
 

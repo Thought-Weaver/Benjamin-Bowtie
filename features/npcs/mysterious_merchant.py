@@ -7,10 +7,9 @@ from discord import Embed
 from enum import StrEnum
 from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.stories.dungeon_run import RoomSelectionView
+from features.stories.story import Story
 
 from typing import TYPE_CHECKING, List
-
-from features.stories.story import Story
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
