@@ -86,7 +86,7 @@ class UnderwaterWhirlpoolView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Underwater Whirlpool", description=f"As you continue through the stygian depths, you come across an enormous, collapsed region of stone. The entire area looks as though it’s been shattered and sunk into itself. In place of the endless field of sand that occupies the rest of the abyss, this has become a terrifying underwater whirlpool.\n\nIf you stay at the edge, you might be able to power through to the other side and avoid being dragged in, but it’ll be quite a feat of strength. The only alternative would be to take a long, safe route around. In any case, you'll all have to go to together and need to vote what approach is best.\n\n{len(self.users_swimming)}/{len(self._users)} have decided on their course of action.")
+        return Embed(title="Underwater Whirlpool", description=f"As you continue through the stygian depths, you come across an enormous, collapsed region of stone. The entire area looks as though it's been shattered and sunk into itself. In place of the endless field of sand that occupies the rest of the abyss, this has become a terrifying underwater whirlpool.\n\nIf you stay at the edge, you might be able to power through to the other side and avoid being dragged in, but it'll be quite a feat of strength. The only alternative would be to take a long, safe route around. In any case, you'll all have to go to together and need to vote what approach is best.\n\n{len(self.users_swimming)}/{len(self._users)} have decided on their course of action.")
 
     def _display_initial_buttons(self):
         self.clear_items()

@@ -77,7 +77,7 @@ class StrangeEffigyView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Strange Effigy", description="At first, you thought the object before you was just an oddly shaped rock, but as you approach closer, you realize it’s something constructed: A curious homunculus with tendrils rests nestled in the sand, formed of kelp, conches, bone, and sand.\n\nYou get a sense of power from it, perhaps something that would be a boon for all of you in the trials ahead.")
+        return Embed(title="Strange Effigy", description="At first, you thought the object before you was just an oddly shaped rock, but as you approach closer, you realize it's something constructed: A curious homunculus with tendrils rests nestled in the sand, formed of kelp, conches, bone, and sand.\n\nYou get a sense of power from it, perhaps something that would be a boon for all of you in the trials ahead.")
 
     def _display_initial_buttons(self):
         self.clear_items()

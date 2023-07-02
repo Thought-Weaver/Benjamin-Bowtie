@@ -89,7 +89,7 @@ class VoiceOfTheSeaView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Voice of the Sea", description=f"Walking through the coral forest, along the golden sands of this region of the ocean, there’s a sound suddenly echoing through the water. At first, it doesn’t make sense -- it sounds like the common tongue, but the words are nonsense. Still, you feel an allure to listen more closely. What is it trying to say?\n\n{len(self.players_decided)}/{len(self._users)} have made a choice")
+        return Embed(title="Voice of the Sea", description=f"Walking through the coral forest, along the golden sands of this region of the ocean, there's a sound suddenly echoing through the water. At first, it doesn't make sense -- it sounds like the common tongue, but the words are nonsense. Still, you feel an allure to listen more closely. What is it trying to say?\n\n{len(self.players_decided)}/{len(self._users)} have made a choice")
 
     def _display_initial_buttons(self):
         self.clear_items()

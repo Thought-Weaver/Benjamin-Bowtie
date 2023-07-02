@@ -9,6 +9,8 @@ from features.shared.item import LOADED_ITEMS, Item, ItemKey
 from features.stories.dungeon_run import RoomSelectionView
 
 from typing import TYPE_CHECKING, List
+
+from features.stories.story import Story
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.inventory import Inventory
@@ -258,13 +260,22 @@ class MysteriousMerchantView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(
-            title="Mysterious Merchant",
-            description=(
-                "Covered in a bundle of robes and cloth, two familiar eyes peer out from a gap in the odd attire. The merchant pulls forward a sack from behind them and shakes out various objects.\n\n"
-                "\"You touch it, you BUY! (no refunds)\""
+        if self._dungeon_run.dungeon_type == Story.Ocean:
+            return Embed(
+                title="Mysterious Merchant",
+                description=(
+                    "Wearing a large diving suit and helmet, someone far more spry than they should be underwater with a giant sack bounds towards you. The merchant pulls forward their sack from behind them and shakes out various objects into the seawater.\n\n"
+                    "\"You touch it, you BUY! (no refunds)\""
+                )
             )
-        )
+        else:
+            return Embed(
+                title="Mysterious Merchant",
+                description=(
+                    "Covered in a bundle of robes and cloth, two familiar eyes peer out from a gap in the odd attire. The merchant pulls forward a sack from behind them and shakes out various objects.\n\n"
+                    "\"You touch it, you BUY! (no refunds)\""
+                )
+            )
 
     def show_initial_buttons(self):
         self.clear_items()

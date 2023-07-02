@@ -86,7 +86,7 @@ class SandstormView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Sandstorm", description=f"Trudging your way across a barren stretch of ocean floor, the dark begins to form into a fog of sand as powerful currents toss it around chaotically. All around you, it’s as though an endless gale has arisen and it becomes incredibly difficult to see.\n\nYou could try to weather the storm hiding against some rocks, which would mean a long time without rest, or push through and be weakened afterwards.\n\n{len(self.users_taking_cover)}/{len(self._users)} have decided on their course of action.")
+        return Embed(title="Sandstorm", description=f"Trudging your way across a barren stretch of ocean floor, the dark begins to form into a fog of sand as powerful currents toss it around chaotically. All around you, it's as though an endless gale has arisen and it becomes incredibly difficult to see.\n\nYou could try to weather the storm hiding against some rocks, which would mean a long time without rest, or push through and be weakened afterwards.\n\n{len(self.users_taking_cover)}/{len(self._users)} have decided on their course of action.")
 
     def _display_initial_buttons(self):
         self.clear_items()

@@ -61,7 +61,7 @@ class DangerousCurrentView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Dangerous Current", description="Though most of the ocean in this region has been calm, something catches your attention: It’s almost as though a wind is rushing through the water, dragging bits of kelp and fish unlucky enough to be caught in it further across the ocean floor.\n\nBut, dangerous though it seems, this could be to your advantage: Were you to take this current, you’d almost certainly suffer some damage, but you’d be much closer to your goal.")
+        return Embed(title="Dangerous Current", description="Though most of the ocean in this region has been calm, something catches your attention: It's almost as though a wind is rushing through the water, dragging bits of kelp and fish unlucky enough to be caught in it further across the ocean floor.\n\nBut, dangerous though it seems, this could be to your advantage: Were you to take this current, you'd almost certainly suffer some damage, but you'd be much closer to your goal.")
 
     def _display_initial_buttons(self):
         self.clear_items()

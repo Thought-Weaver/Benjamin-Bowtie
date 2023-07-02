@@ -69,7 +69,7 @@ class HydrothermalVentsView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self, additional_info: str=""):
-        return Embed(title="Hydrothermal Vents", description=f"In the cold and the dark, suddenly a flash of warmth flows in your direction. As your party looks ahead, you see a cluster of bubbles streaming from crag pillars on the ocean floor. There’s a foul taste on your tongue and you get the sense these vents aren’t pushing out breathable air.\n\nThose who wish to could stay close and try to rest for a while, but the poisonous gas would almost certainly be detrimental.\n\n{len(self.rested_users)}/{len(self._users)} players have rested.{additional_info}")
+        return Embed(title="Hydrothermal Vents", description=f"In the cold and the dark, suddenly a flash of warmth flows in your direction. As your party looks ahead, you see a cluster of bubbles streaming from crag pillars on the ocean floor. There's a foul taste on your tongue and you get the sense these vents aren't pushing out breathable air.\n\nThose who wish to could stay close and try to rest for a while, but the poisonous gas would almost certainly be detrimental.\n\n{len(self.rested_users)}/{len(self._users)} players have rested.{additional_info}")
 
     def _display_initial_buttons(self):
         self.clear_items()

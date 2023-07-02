@@ -130,7 +130,7 @@ class FishMaybeDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Ordinary Fish", description="Swimming past in the void of this place are a couple small creatures: fish! At least you think they are. Something’s familiar about them, but it’s hard to tell at this distance given the gloom. They begin to swim towards you, however, and suddenly you recognize them: The very same creatures you gave to Yenna.")
+        return Embed(title="Ordinary Fish", description="Swimming past in the void of this place are a couple small creatures: fish! At least you think they are. Something's familiar about them, but it's hard to tell at this distance given the gloom. They begin to swim towards you, however, and suddenly you recognize them: The very same creatures you gave to Yenna.")
 
     def _display_initial_buttons(self):
         self.clear_items()

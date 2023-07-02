@@ -62,7 +62,7 @@ class TheHookView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Hook", description="A shadow suddenly comes over your party and as you look upwards, you see a shifting, dark shape and something descending closer and closer towards you all. As it approaches the ocean floor, you instantly recognize the shape -- even if the size comes as a surprise:\n\nIt’s an enormous iron hook, as though it should be attached to the fishing rod of a colossus. After a few moments, hovering about 50 feet above the sand and coral, it stops. You feel oddly compelled to reach out and touch it.")
+        return Embed(title="The Hook", description="A shadow suddenly comes over your party and as you look upwards, you see a shifting, dark shape and something descending closer and closer towards you all. As it approaches the ocean floor, you instantly recognize the shape -- even if the size comes as a surprise:\n\nIt's an enormous iron hook, as though it should be attached to the fishing rod of a colossus. After a few moments, hovering about 50 feet above the sand and coral, it stops. You feel oddly compelled to reach out and touch it.")
 
     def _display_initial_buttons(self):
         self.clear_items()

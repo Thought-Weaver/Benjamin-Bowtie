@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import discord
+from features.stories.ocean.combat.npcs.crab_king import CrabKing
+from features.stories.ocean.combat.npcs.crab_servant import CrabServant
 import features.stories.ocean.ocean as ocean
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
-from features.stories.ocean.combat.npcs.sea_dragon import SeaDragon
+from features.stories.ocean.combat.npcs.shallows_shark import ShallowsShark
 from features.views.dueling_view import DuelView
 from features.stories.dungeon_run import RoomSelectionView
 
@@ -55,7 +57,7 @@ class VictoryView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Quest Complete", description=f"With the sea dragons vanquished, the rest of the ocean awaits.")
+        return Embed(title="Do You Hear the People Sing?", description=f"With the sharks vanquished, the rest of the ocean awaits.")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -94,7 +96,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: SandLurkerDuelView = self.view
+        view: CrabKingDuelView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the duel.")
@@ -107,13 +109,13 @@ class ContinueButton(discord.ui.Button):
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         defeat_view: ocean.OceanDefeatView = ocean.OceanDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
 
-        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [SeaDragon(), SeaDragon()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
+        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [CrabServant(), CrabKing(), CrabServant()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
         initial_info: Embed = duel_view.get_initial_embed()
 
         await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)
 
 
-class SeaDragonsDuelView(discord.ui.View):
+class CrabKingDuelView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -130,7 +132,7 @@ class SeaDragonsDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Leafy Forms", description="Wrapped around some of the larger coral in this region are what appear to be leafy plants, almost like vines with a yellowish-green color to them. It's only when they begin to unwind and move that you realize these aren't plants at all, but fearsome sea dragons!")
+        return Embed(title="BEHOLD!", description="As you begin to get closer to the little crab, it dances more and more excitedly and the ground beneath your feet begins to quake. From the sand erupts an enormous red form, its hard shell gleaming in the underwater light -- atop its head is a tiny crown that marks what this creature is: The Crab King!")
 
     def _display_initial_buttons(self):
         self.clear_items()
