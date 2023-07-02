@@ -28,7 +28,7 @@ class Fission(Ability):
             icon="\u2622\uFE0F",
             name="Fission",
             class_key=ExpertiseClass.Guardian,
-            description="Decrease your Con by 5 but increase your Dex by 10 for the rest of the duel.",
+            description="Decrease your Con by 4 but increase your Dex by 15 for the rest of the duel.",
             flavor_text="",
             mana_cost=0,
             cooldown=1,
@@ -42,13 +42,13 @@ class Fission(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_buff = DexBuff(
             turns_remaining=-1,
-            value=10,
+            value=15,
             source_str=self.get_icon_and_name()
         )
 
         con_debuff = ConDebuff(
             turns_remaining=-1,
-            value=-5,
+            value=-4,
             source_str=self.get_icon_and_name()
         )
 
@@ -73,7 +73,7 @@ class Regenerate(Ability):
             icon="\u267B\uFE0F",
             name="Regenerate",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 50 health.",
+            description="Restore 100 health.",
             flavor_text="",
             mana_cost=10,
             cooldown=3,
@@ -86,7 +86,7 @@ class Regenerate(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_heal_ability(caster, targets, range(50, 50))
+        results: List[str] = self._use_heal_ability(caster, targets, range(100, 100))
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -106,7 +106,7 @@ class Starpierce(Ability):
             icon="\u2B50",
             name="Starpierce",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 25-30 damage to all enemies.",
+            description="Deal 45-50 damage to all enemies.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -119,7 +119,7 @@ class Starpierce(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(25, 30))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(45, 50))
 
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -140,8 +140,8 @@ class Starpierce(Ability):
 class BrittleStar(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 32% chance of 4 player party (Lvl. 30-40) victory against 1
-        # Avg Number of Turns (per entity): 19
+        # 48% chance of 4 player party (Lvl. 30-40) victory against 1
+        # Avg Number of Turns (per entity): 11
 
         super().__init__("Brittle Star" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {})
 
