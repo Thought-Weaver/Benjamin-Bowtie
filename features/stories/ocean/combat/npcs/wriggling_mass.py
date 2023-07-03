@@ -147,7 +147,10 @@ class WrigglingMass(NPC):
         # 51% and 12 turns for new item adjustments
         # Avg Number of Turns (per entity): 13
 
-        super().__init__("Wriggling Mass" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Wriggling Mass" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.VoidbornTentacle: 0.2,
+            ItemKey.UnblinkingEye: 0.1
+        })
 
         self._setup_npc_params()
 
@@ -199,7 +202,10 @@ class WrigglingMass(NPC):
         self._name = "Wriggling Mass"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.VoidbornTentacle: 0.2,
+            ItemKey.UnblinkingEye: 0.1
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

@@ -159,7 +159,11 @@ class StranglekelpHoldfast(NPC):
         # 46% chance of 4 player party (Lvl. 30-40) victory against 2
         # Avg Number of Turns (per entity): 15
 
-        super().__init__("Stranglekelp Holdfast" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Stranglekelp Holdfast" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.Stranglekelp: 0.8,
+            ItemKey.Stranglekelp: 0.5,
+            ItemKey.Stranglekelp: 0.2
+        })
 
         self._setup_npc_params()
 
@@ -211,7 +215,11 @@ class StranglekelpHoldfast(NPC):
         self._name = "Stranglekelp Holdfast"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Stranglekelp: 0.8,
+            ItemKey.Stranglekelp: 0.5,
+            ItemKey.Stranglekelp: 0.2
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

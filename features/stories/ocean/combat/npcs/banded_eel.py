@@ -166,7 +166,9 @@ class BandedEel(NPC):
         # 66% chance of 4 player party (Lvl. 40-50) victory against 1
         # Avg Number of Turns (per entity): 11
 
-        super().__init__("Banded Eel" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Banded Eel" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.BandedEelScales: 0.8
+        })
 
         self._setup_npc_params()
 
@@ -219,7 +221,9 @@ class BandedEel(NPC):
         self._name = "Banded Eel"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.BandedEelScales: 0.8
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

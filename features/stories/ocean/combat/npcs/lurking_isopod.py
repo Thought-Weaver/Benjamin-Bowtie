@@ -146,7 +146,9 @@ class LurkingIsopod(NPC):
         # 19% and 13 turns for new item adjustments
         # Avg Number of Turns (per entity): 16
 
-        super().__init__("Lurking Isopod" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {})
+        super().__init__("Lurking Isopod" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {
+            ItemKey.IsopodCarapaceDrop: 0.5
+        })
 
         self._setup_npc_params()
 
@@ -199,7 +201,9 @@ class LurkingIsopod(NPC):
         self._name = "Lurking Isopod"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Rogue
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.IsopodCarapaceDrop: 0.5
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

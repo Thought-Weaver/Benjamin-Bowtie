@@ -106,7 +106,10 @@ class WanderingBloodcoral(NPC):
         # Balance Simulation Results:
         # 47% chance of 4 player party (Lvl. 40-50) victory against 1
 
-        super().__init__("Wandering Bloodcoral" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Wandering Bloodcoral" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.Bloodcoral: 0.6,
+            ItemKey.Bloodcoral: 0.2
+        })
 
         self._setup_npc_params()
 
@@ -159,7 +162,10 @@ class WanderingBloodcoral(NPC):
         self._name = "Wandering Bloodcoral"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Bloodcoral: 0.6,
+            ItemKey.Bloodcoral: 0.2
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

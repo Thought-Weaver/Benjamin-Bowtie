@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/rockfish",
+    "icon": "\uD83D\uDC1F",
+    "name": "Rockfish",
+    "value": 150,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

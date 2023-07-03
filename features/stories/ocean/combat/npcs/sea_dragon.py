@@ -145,7 +145,9 @@ class SeaDragon(NPC):
         # Balance Simulation Results:
         # 28% chance of 4 player party (Lvl. 40-50) victory against 2
 
-        super().__init__("Sea Dragon" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Sea Dragon" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.SeaDragonLeaves: 0.2
+        })
 
         self._setup_npc_params()
 

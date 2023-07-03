@@ -142,7 +142,9 @@ class Distraction(Ability):
 
 class Jellyfish(NPC):
     def __init__(self, name_suffix: str=""):
-        super().__init__("Jellyfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {})
+        super().__init__("Jellyfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {
+            ItemKey.Poison: 0.1
+        })
 
         self._setup_npc_params()
 
@@ -196,7 +198,9 @@ class Jellyfish(NPC):
         self._name = "Jellyfish"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Healer
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Poison: 0.1
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

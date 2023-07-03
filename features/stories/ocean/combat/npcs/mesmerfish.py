@@ -152,7 +152,10 @@ class Mesmerfish(NPC):
         # 35% chance of 4 player party (Lvl. 30-40) victory against 3
         # Avg Number of Turns (per entity): 14
 
-        super().__init__("Mesmerfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Mesmerfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.MesmerfishEye: 0.05,
+            ItemKey.ShimmeringScales: 0.2
+        })
 
         self._setup_npc_params()
 
@@ -205,7 +208,10 @@ class Mesmerfish(NPC):
         self._name = "Mesmerfish"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.MesmerfishEye: 0.05,
+            ItemKey.ShimmeringScales: 0.2
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

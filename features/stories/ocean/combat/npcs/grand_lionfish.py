@@ -142,7 +142,9 @@ class GrandLionfish(NPC):
         # Balance Simulation Results:
         # 69% chance of 4 player party (Lvl. 40-50) victory against 1
 
-        super().__init__("Grand Lionfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Grand Lionfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.LionfishSpinesDrop: 0.4
+        })
 
         self._setup_npc_params()
 
@@ -194,7 +196,9 @@ class GrandLionfish(NPC):
         self._name = "Grand Lionfish"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.LionfishSpinesDrop: 0.4
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

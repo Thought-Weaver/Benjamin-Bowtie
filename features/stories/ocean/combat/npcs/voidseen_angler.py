@@ -162,7 +162,10 @@ class VoidseenAngler(NPC):
         # 44% and 14 turns for new item adjustments
         # Avg Number of Turns (per entity): 15
 
-        super().__init__("Voidseen Angler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Voidseen Angler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.AnglerTeeth: 0.6,
+            ItemKey.AnglerBulb: 0.1
+        })
 
         self._setup_npc_params()
 
@@ -214,7 +217,10 @@ class VoidseenAngler(NPC):
         self._name = "Voidseen Angler"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.AnglerTeeth: 0.6,
+            ItemKey.AnglerBulb: 0.1
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

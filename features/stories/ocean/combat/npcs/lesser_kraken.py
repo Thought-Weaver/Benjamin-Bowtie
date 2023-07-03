@@ -109,7 +109,8 @@ class LesserKraken(NPC):
         # 37% chance of 4 player party (Lvl. 30-40) victory against 1
 
         super().__init__("Lesser Kraken" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
-            ItemKey.Squid: 0.85
+            ItemKey.Squid: 0.8,
+            ItemKey.KrakenEye: 0.1,
         })
 
         self._setup_npc_params()
@@ -164,7 +165,8 @@ class LesserKraken(NPC):
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
         self._dueling_rewards = {
-            ItemKey.Squid: 0.85
+            ItemKey.Squid: 0.8,
+            ItemKey.KrakenEye: 0.1,
         }
         
         self._inventory: Inventory | None = state.get("_inventory")

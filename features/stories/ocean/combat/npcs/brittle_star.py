@@ -143,7 +143,10 @@ class BrittleStar(NPC):
         # 48% chance of 4 player party (Lvl. 30-40) victory against 1
         # Avg Number of Turns (per entity): 11
 
-        super().__init__("Brittle Star" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {})
+        super().__init__("Brittle Star" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Rogue, {
+            ItemKey.BrittleCore: 0.1,
+            ItemKey.BrittleSpines: 0.3
+        })
 
         self._setup_npc_params()
 
@@ -196,7 +199,10 @@ class BrittleStar(NPC):
         self._name = "Brittle Star"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Rogue
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.BrittleCore: 0.1,
+            ItemKey.BrittleSpines: 0.3
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/isopod_carapace",
+    "icon": "\uD83D\uDEE1\uFE0F",
+    "name": "Isopod Carapace",
+    "value": 200,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

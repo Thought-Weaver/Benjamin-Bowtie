@@ -148,7 +148,12 @@ class BloodcoralBehemoth(NPC):
         # 15% chance of 4 player party (Lvl. 50-60) victory against 1
         # Avg Number of Turns (per entity): 13
 
-        super().__init__("Bloodcoral Behemoth" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Bloodcoral Behemoth" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.Bloodcoral: 0.7,
+            ItemKey.Bloodcoral: 0.5,
+            ItemKey.Bloodcoral: 0.3,
+            ItemKey.Bloodcoral: 0.1
+        })
 
         self._setup_npc_params()
 
@@ -202,7 +207,12 @@ class BloodcoralBehemoth(NPC):
         self._name = "Bloodcoral Behemoth"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Bloodcoral: 0.7,
+            ItemKey.Bloodcoral: 0.5,
+            ItemKey.Bloodcoral: 0.3,
+            ItemKey.Bloodcoral: 0.1
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

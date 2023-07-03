@@ -156,7 +156,7 @@ class GiantConeSnail(NPC):
         # 76% chance of 4 player party (Lvl. 30-40) victory against 1
 
         super().__init__("Giant Cone Snail" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
-            ItemKey.Conch: 0.85
+            ItemKey.PatternedShellPieces: 0.65
         })
 
         self._setup_npc_params()
@@ -211,7 +211,7 @@ class GiantConeSnail(NPC):
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
         self._dueling_rewards = {
-            ItemKey.Conch: 0.85
+            ItemKey.PatternedShellPieces: 0.65
         }
         
         self._inventory: Inventory | None = state.get("_inventory")

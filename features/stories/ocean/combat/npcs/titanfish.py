@@ -155,7 +155,9 @@ class Titanfish(NPC):
         # 28% chance of 4 player party (Lvl. 30-40) victory against 1
         # Avg Number of Turns (per entity): 9
 
-        super().__init__("Titanfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Titanfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.Titanfish: 0.7
+        })
 
         self._setup_npc_params()
 
@@ -208,7 +210,9 @@ class Titanfish(NPC):
         self._name = "Titanfish"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Titanfish: 0.7
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/angler_teeth",
+    "icon": "\uD83E\uDDB7",
+    "name": "Angler Teeth",
+    "value": 120,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

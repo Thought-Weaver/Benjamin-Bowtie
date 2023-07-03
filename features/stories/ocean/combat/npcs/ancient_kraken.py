@@ -156,18 +156,12 @@ class AncientKraken(NPC):
         # Avg Number of Turns (per entity): 12
 
         super().__init__("Ancient Kraken" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85
+            ItemKey.Squid: 0.9,
+            ItemKey.Squid: 0.7,
+            ItemKey.Squid: 0.5,
+            ItemKey.Squid: 0.3,
+            ItemKey.Squid: 0.1,
+            ItemKey.KrakenEye: 0.1
         })
 
         self._setup_npc_params()
@@ -222,18 +216,12 @@ class AncientKraken(NPC):
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Mage
         self._dueling_rewards = {
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85,
-            ItemKey.Squid: 0.85
+            ItemKey.Squid: 0.9,
+            ItemKey.Squid: 0.7,
+            ItemKey.Squid: 0.5,
+            ItemKey.Squid: 0.3,
+            ItemKey.Squid: 0.1,
+            ItemKey.KrakenEye: 0.1
         }
         
         self._inventory: Inventory | None = state.get("_inventory")

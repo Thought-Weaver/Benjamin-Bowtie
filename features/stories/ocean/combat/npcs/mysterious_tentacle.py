@@ -150,7 +150,9 @@ class MysteriousTentacle(NPC):
         # 18% and 11 turns for new item adjustments
         # Avg Number of Turns (per entity): 11
 
-        super().__init__("Mysterious Tentacle" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Mysterious Tentacle" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.VoidbornTentacle: 0.3,
+        })
 
         self._setup_npc_params()
 
@@ -203,7 +205,9 @@ class MysteriousTentacle(NPC):
         self._name = "Mysterious Tentacle"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.VoidbornTentacle: 0.3,
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

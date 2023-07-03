@@ -140,7 +140,10 @@ class SandLurker(NPC):
         # Balance Simulation Results:
         # 57% chance of 4 player party (Lvl. 40-50) victory against 1
 
-        super().__init__("Sand Lurker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Sand Lurker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.SandLurkerTeeth: 0.8,
+            ItemKey.SandLurker: 0.4
+        })
 
         self._setup_npc_params()
 
@@ -193,7 +196,10 @@ class SandLurker(NPC):
         self._name = "Sand Lurker"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.SandLurkerTeeth: 0.8,
+            ItemKey.SandLurker: 0.4
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

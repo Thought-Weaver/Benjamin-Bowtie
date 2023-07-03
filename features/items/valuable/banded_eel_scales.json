@@ -1,0 +1,12 @@
+{
+    "key": "items/valuable/banded_eel_scales",
+    "icon": "\uD83D\uDC0D",
+    "name": "Banded Eel Scales",
+    "value": 50,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable"],
+    "state_tags": [],
+    "count": 1
+}

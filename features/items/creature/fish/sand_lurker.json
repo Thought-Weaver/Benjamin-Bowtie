@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/sand_lurker",
+    "icon": "\uD83E\uDD88",
+    "name": "Sand Lurker",
+    "value": 100,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

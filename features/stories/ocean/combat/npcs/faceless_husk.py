@@ -184,7 +184,11 @@ class FacelessHusk(NPC):
         # 35% and 18 turns for new item adjustments
         # Avg Number of Turns (per entity): 21
 
-        super().__init__("Faceless Husk" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Faceless Husk" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.Stranglekelp: 0.9,
+            ItemKey.Conch: 0.8,
+            ItemKey.CorruptedSand: 0.05
+        })
 
         self._setup_npc_params()
 
@@ -237,7 +241,11 @@ class FacelessHusk(NPC):
         self._name = "Faceless Husk"
         self._role = NPCRoles.DungeonEnemy
         self._dueling_persona = NPCDuelingPersonas.Bruiser
-        self._dueling_rewards = {}
+        self._dueling_rewards = {
+            ItemKey.Stranglekelp: 0.9,
+            ItemKey.Conch: 0.8,
+            ItemKey.CorruptedSand: 0.05
+        }
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

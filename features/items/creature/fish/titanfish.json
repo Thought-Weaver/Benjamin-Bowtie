@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/titanfish",
+    "icon": "\uD83D\uDC1F",
+    "name": "Titanfish",
+    "value": 80,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}
