@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/greater_constitution_potion_with_brittle_core",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Constitution Potion",
+    "value": 800,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/grave_moss": 5,
+        "items/ingredient/mob_drops/brittle_core": 3
+    },
+    "outputs": {
+        "items/consumable/potions/greater_constitution_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

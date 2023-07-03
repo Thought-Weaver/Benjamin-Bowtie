@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/superior_critical_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Critical Potion",
+    "value": 2790,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/razorgrass": 20,
+        "items/ingredient/mob_drops/kraken_eye": 5,
+        "items/valuable/gemstone/flawless_emerald": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_critical_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

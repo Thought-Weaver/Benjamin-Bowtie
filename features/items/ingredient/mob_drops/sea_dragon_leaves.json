@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/mob_drops/sea_dragon_leaves",
+    "icon": "\uD83C\uDF3F",
+    "name": "Sea Dragon Leaves",
+    "value": 200,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Ingredient", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

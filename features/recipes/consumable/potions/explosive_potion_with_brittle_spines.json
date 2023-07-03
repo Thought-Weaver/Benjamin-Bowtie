@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/explosive_potion_with_brittle_spines",
+    "icon": "\u2697\uFE0F",
+    "name": "Explosive Potion",
+    "value": 440,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/fissureleaf": 2,
+        "items/ingredient/mob_drops/brittle_spines": 3
+    },
+    "outputs": {
+        "items/consumable/potions/explosive_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

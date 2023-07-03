@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/potion_of_death_resist_with_voidseen_bone",
+    "icon": "\u2697\uFE0F",
+    "name": "Potion of Death Resist",
+    "value": 4550,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/lichbloom": 1,
+        "items/valuable/voidseen_bone": 1
+    },
+    "outputs": {
+        "items/consumable/potions/potion_of_death_resist": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

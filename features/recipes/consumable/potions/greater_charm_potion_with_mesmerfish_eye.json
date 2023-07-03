@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/greater_charm_potion_with_mesmerfish_eye",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Charm Potion",
+    "value": 3300,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/witherheart": 3,
+        "items/ingredient/mob_drops/mesmerfish_eye": 12
+    },
+    "outputs": {
+        "items/consumable/potions/greater_charm_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

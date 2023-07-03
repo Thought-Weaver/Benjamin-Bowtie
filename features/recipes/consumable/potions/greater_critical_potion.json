@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/greater_critical_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Critical Potion",
+    "value": 1350,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/razorgrass": 15,
+        "items/ingredient/mob_drops/kraken_eye": 3
+    },
+    "outputs": {
+        "items/consumable/potions/greater_critical_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/potions/lesser_explosive_potion_with_brittle_spines",
+    "icon": "\u2697\uFE0F",
+    "name": "Lesser Explosive Potion",
+    "value": 255,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/mob_drops/brittle_spines": 2
+    },
+    "outputs": {
+        "items/consumable/potions/lesser_explosive_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 8
+    }
+}

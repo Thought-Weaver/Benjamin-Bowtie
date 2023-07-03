@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/diminishing_potion",
+    "icon": "\u2697\uFE0F",
+    "name": "Diminishing Potion",
+    "value": 3960,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/lichbloom": 1,
+        "items/ingredient/mob_drops/voidborn_tentacle": 4
+    },
+    "outputs": {
+        "items/consumable/potions/diminishing_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

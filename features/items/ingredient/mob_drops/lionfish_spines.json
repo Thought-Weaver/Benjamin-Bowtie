@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/mob_drops/lionfish_spines",
+    "icon": "\uD83C\uDF86",
+    "name": "Lionfish Spines",
+    "value": 80,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Ingredient", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

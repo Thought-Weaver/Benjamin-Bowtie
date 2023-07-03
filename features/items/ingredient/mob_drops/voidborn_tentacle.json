@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/mob_drops/voidborn_tentacle",
+    "icon": "\uD83E\uDEB1",
+    "name": "Voidborn Tentacle",
+    "value": 150,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Ingredient", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

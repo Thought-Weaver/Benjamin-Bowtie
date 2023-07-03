@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/superior_explosive_potion_with_charred_undead_wood",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Explosive Potion",
+    "value": 7500,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/valuable/charred_undead_wood": 2,
+        "items/valuable/gemstone/flawless_sunstone": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_explosive_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

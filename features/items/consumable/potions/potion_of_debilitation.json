@@ -1,0 +1,36 @@
+{
+    "key": "items/consumable/potions/potion_of_debilitation",
+    "icon": "\u2697\uFE0F",
+    "name": "Potion of Debilitation",
+    "value": 700,
+    "rarity": "Rare",
+    "description": "Can be used while dueling.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 1,
+        "target_own_group": false
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotAttack"
+            },
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 1,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotUseAbilities"
+            }
+        ]
+    }
+}

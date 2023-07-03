@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/superior_poison_with_lionfish_spines",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Poison",
+    "value": 1380,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/asptongue": 4,
+        "items/ingredient/mob_drops/lionfish_spines": 4,
+        "items/valuable/gemstone/flawless_malachite": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_poison": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

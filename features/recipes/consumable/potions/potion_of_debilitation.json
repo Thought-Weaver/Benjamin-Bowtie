@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/potion_of_debilitation",
+    "icon": "\u2697\uFE0F",
+    "name": "Potion of Debilitation",
+    "value": 2100,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/shiverroot": 5,
+        "items/ingredient/mob_drops/corrupted_sand": 3
+    },
+    "outputs": {
+        "items/consumable/potions/potion_of_debilitation": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

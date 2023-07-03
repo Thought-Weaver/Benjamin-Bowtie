@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/mob_drops/unblinking_eye",
+    "icon": "\uD83D\uDC41\uFE0F",
+    "name": "Unblinking Eye",
+    "value": 150,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Ingredient", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

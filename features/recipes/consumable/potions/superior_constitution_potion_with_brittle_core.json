@@ -1,0 +1,19 @@
+{
+    "key": "recipes/consumable/potions/superior_constitution_potion_with_brittle_core",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Constitution Potion",
+    "value": 2400,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/grave_moss": 2,
+        "items/ingredient/herbs/hushvine": 1,
+        "items/ingredient/mob_drops/brittle_core": 5,
+        "items/valuable/gemstone/flawless_diamond": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_constitution_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

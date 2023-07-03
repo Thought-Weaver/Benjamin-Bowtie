@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/greater_poison_with_lionfish_spines",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Poison",
+    "value": 550,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/asptongue": 2,
+        "items/ingredient/mob_drops/lionfish_spines": 2
+    },
+    "outputs": {
+        "items/consumable/potions/greater_poison": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 13
+    }
+}

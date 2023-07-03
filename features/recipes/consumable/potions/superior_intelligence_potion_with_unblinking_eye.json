@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/superior_intelligence_potion_with_unblinking_eye",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Intelligence Potion",
+    "value": 3450,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/mob_drops/unblinking_eye": 1,
+        "items/ingredient/herbs/manabloom": 1,
+        "items/valuable/gemstone/flawless_lapis": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_intelligence_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

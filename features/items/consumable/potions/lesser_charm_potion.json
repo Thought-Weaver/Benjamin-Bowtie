@@ -4,7 +4,7 @@
     "name": "Lesser Charm Potion",
     "value": 210,
     "rarity": "Rare",
-    "description": "Can be used while dueling or outside duels.",
+    "description": "Can be used while dueling.",
     "flavor_text": "",
     "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
     "state_tags": [],

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/mob_drops/corrupted_sand",
+    "icon": "\uD83C\uDF2B\uFE0F",
+    "name": "Corrupted Sand",
+    "value": 200,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Ingredient", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

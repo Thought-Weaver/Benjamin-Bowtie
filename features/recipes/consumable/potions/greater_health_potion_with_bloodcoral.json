@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/greater_health_potion_with_bloodcoral",
+    "icon": "\u2697\uFE0F",
+    "name": "Greater Health Potion",
+    "value": 6500,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/shelterfoil": 10,
+        "items/ingredient/mob_drops/bloodcoral": 8,
+        "items/ingredient/herbs/dragons_teeth": 1
+    },
+    "outputs": {
+        "items/consumable/potions/greater_health_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "key": "recipes/consumable/potions/superior_health_potion_with_bloodcoral",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Health Potion",
+    "value": 19350,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/shelterfoil": 12,
+        "items/ingredient/mob_drops/bloodcoral": 10,
+        "items/ingredient/herbs/dragons_teeth": 1,
+        "items/valuable/gemstone/flawless_ruby": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_health_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

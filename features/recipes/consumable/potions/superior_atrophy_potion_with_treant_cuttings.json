@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/superior_atrophy_potion_with_treant_cuttings",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Atrophy Potion",
+    "value": 1050,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/valuable/treant_cuttings": 1,
+        "items/valuable/gemstone/flawless_amethyst": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_atrophy_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

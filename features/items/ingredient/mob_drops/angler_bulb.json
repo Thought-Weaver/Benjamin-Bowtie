@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/mob_drops/angler_bulb",
+    "icon": "\uD83D\uDCA1",
+    "name": "Angler Bulb",
+    "value": 300,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Ingredient", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}
