@@ -38,7 +38,7 @@ class ContinueButton(discord.ui.Button):
 
 class FishButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Fish")
+        super().__init__(style=discord.ButtonStyle.secondary, label="Grab!")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:

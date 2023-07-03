@@ -34,7 +34,7 @@ class ContinueButton(discord.ui.Button):
 
 class ListenButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Red")
+        super().__init__(style=discord.ButtonStyle.secondary, label="Listen")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -67,6 +67,15 @@ class ResistButton(discord.ui.Button):
         if interaction.user.id not in view.players_decided:
             response = view.resist(interaction.user.id, interaction.user.display_name)
             await interaction.response.edit_message(content=None, embed=response, view=view)
+
+            if interaction.user.id in view.players_listened:
+                message = random.choice([
+                    "The dream is the sky and the sky is the dream. It wasn't here before. Come deeper and let us understand.",
+                    "Do you fear the chthonic thing? The flames were meant to free the world. They are gone now, until the next time.",
+                    "The houses are new. The last one seeks the answers. Where did you come from? Green and blue and black and purple.",
+                    "Blank. Awaken. They can go if they wish. The throne is meant for all. The entrance will be built."
+                ])
+                await interaction.user.send(message)
 
 
 class VoiceOfTheSeaView(discord.ui.View):
