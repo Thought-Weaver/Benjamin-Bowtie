@@ -1,0 +1,12 @@
+{
+    "key": "recipes/consumable/food/boar_steak",
+    "icon": "\uD83C\uDF56",
+    "name": "Boar Steak",
+    "value": 24,
+    "inputs": {
+        "items/consumable/food/raw_boar_meat": 1
+    },
+    "outputs": {
+        "items/consumable/food/boar_steak": 1
+    }
+}

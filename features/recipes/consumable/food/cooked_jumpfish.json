@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_jumpfish",
+    "icon": "\uD83D\uDC20",
+    "name": "Cooked Jumpfish",
+    "value": 75,
+    "inputs": {
+        "items/creature/fish/jumpfish": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_jumpfish": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 3
+    }
+}

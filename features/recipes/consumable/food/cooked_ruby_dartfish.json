@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_ruby_dartfish",
+    "icon": "\uD83D\uDC1F",
+    "name": "Cooked Ruby Dartfish",
+    "value": 315,
+    "inputs": {
+        "items/creature/fish/ruby_dartfish": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_ruby_dartfish": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 5
+    }
+}

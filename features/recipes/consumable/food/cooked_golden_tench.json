@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_golden_tench",
+    "icon": "\uD83D\uDC20",
+    "name": "Cooked Golden Tench",
+    "value": 155,
+    "inputs": {
+        "items/creature/fish/golden_tench": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_golden_tench": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 5
+    }
+}

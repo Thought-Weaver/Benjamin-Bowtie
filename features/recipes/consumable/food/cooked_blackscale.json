@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_blackscale",
+    "icon": "\uD83E\uDD88",
+    "name": "Cooked Blackscale",
+    "value": 225,
+    "inputs": {
+        "items/creature/fish/blackscale": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_blackscale": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 5
+    }
+}

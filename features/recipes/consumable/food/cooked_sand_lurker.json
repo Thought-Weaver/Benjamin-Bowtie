@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_sand_lurker",
+    "icon": "\uD83E\uDD88",
+    "name": "Cooked Sand Lurker",
+    "value": 315,
+    "inputs": {
+        "items/creature/fish/sand_lurker": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_sand_lurker": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 5
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_wyvernfish",
+    "icon": "\uD83D\uDC1F",
+    "name": "Cooked Wyvernfish",
+    "value": 1230,
+    "inputs": {
+        "items/creature/fish/wyvernfish": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_wyvernfish": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 8
+    }
+}

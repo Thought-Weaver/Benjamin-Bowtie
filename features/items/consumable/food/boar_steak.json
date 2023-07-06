@@ -1,9 +1,9 @@
 {
-    "key": "items/consumable/food/flaming_curry",
-    "icon": "\uD83C\uDF5B",
-    "name": "Flaming Curry",
-    "value": 250,
-    "rarity": "Rare",
+    "key": "items/consumable/food/boar_steak",
+    "icon": "\uD83C\uDF56",
+    "name": "Boar Steak",
+    "value": 8,
+    "rarity": "Common",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",
     "class_tags": ["Ingredient", "Consumable", "Food", "Usable_Outside_Duels", "Usable_Within_Duels"],
@@ -17,18 +17,10 @@
         "permanent": [
             {
                 "effect_type": "RestorePercentHealth",
-                "effect_value": 0.15,
+                "effect_value": 0.03,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
-            },
-            {
-                "effect_type": "ResistStatusEffect",
-                "effect_value": 0.25,
-                "effect_time": 4,
-                "conditions": [],
-                "condition_values": [],
-                "associated_status_effect": "CannotUseAbilities"
             }
         ]
     }

@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_beefish",
+    "icon": "\uD83D\uDC1D",
+    "name": "Cooked Beefish",
+    "value": 765,
+    "inputs": {
+        "items/creature/fish/beefish": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_beefish": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 5
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "key": "recipes/consumable/food/forest_fish_feast",
+    "icon": "\uD83E\uDD58",
+    "name": "Forest Fish Feast",
+    "value": 2400,
+    "inputs": {
+        "items/creature/fish/algaefish": 5,
+        "items/creature/fish/brown_tench": 5,
+        "items/creature/fish/blackscale": 3,
+        "items/creature/fish/jumpfish": 3,
+        "items/creature/fish/wyvernfish": 1
+    },
+    "outputs": {
+        "items/consumable/food/forest_fish_feast": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 55
+    }
+}

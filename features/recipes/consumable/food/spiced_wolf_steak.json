@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/spiced_wolf_steak",
+    "icon": "\uD83C\uDF56",
+    "name": "Spiced Wolf Steak",
+    "value": 136,
+    "inputs": {
+        "items/consumable/food/raw_wolf_meat": 1,
+        "items/consumable/food/allum": 3,
+        "items/ingredient/herbs/fissureleaf": 4
+    },
+    "outputs": {
+        "items/consumable/food/spiced_wolf_steak": 1
+    }
+}

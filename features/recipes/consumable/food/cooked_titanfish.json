@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_titanfish",
+    "icon": "\uD83D\uDC1F",
+    "name": "Cooked Titanfish",
+    "value": 315,
+    "inputs": {
+        "items/creature/fish/titanfish": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_titanfish": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 5
+    }
+}

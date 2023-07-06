@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_algaefish",
+    "icon": "\uD83D\uDC1F",
+    "name": "Cooked Algaefish",
+    "value": 60,
+    "inputs": {
+        "items/creature/fish/algaefish": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_algaefish": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 5
+    }
+}

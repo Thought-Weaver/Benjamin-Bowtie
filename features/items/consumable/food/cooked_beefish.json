@@ -1,12 +1,12 @@
 {
-    "key": "items/consumable/food/flaming_curry",
-    "icon": "\uD83C\uDF5B",
-    "name": "Flaming Curry",
-    "value": 250,
-    "rarity": "Rare",
+    "key": "items/consumable/food/cooked_beefish",
+    "icon": "\uD83D\uDC1D",
+    "name": "Cooked Beefish",
+    "value": 255,
+    "rarity": "Legendary",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",
-    "class_tags": ["Ingredient", "Consumable", "Food", "Usable_Outside_Duels", "Usable_Within_Duels"],
+    "class_tags": ["Ingredient", "Consumable", "Food", "Creature", "Fish", "Usable_Outside_Duels", "Usable_Within_Duels"],
     "state_tags": [],
     "count": 1,
     "consumable_stats": {
@@ -17,7 +17,7 @@
         "permanent": [
             {
                 "effect_type": "RestorePercentHealth",
-                "effect_value": 0.15,
+                "effect_value": 0.12,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
@@ -28,7 +28,7 @@
                 "effect_time": 4,
                 "conditions": [],
                 "condition_values": [],
-                "associated_status_effect": "CannotUseAbilities"
+                "associated_status_effect": "Poisoned"
             }
         ]
     }

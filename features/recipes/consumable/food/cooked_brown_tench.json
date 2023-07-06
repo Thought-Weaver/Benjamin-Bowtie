@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_brown_tench",
+    "icon": "\uD83D\uDC21",
+    "name": "Cooked Brown Tench",
+    "value": 30,
+    "inputs": {
+        "items/creature/fish/brown_tench": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_brown_tench": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 3
+    }
+}

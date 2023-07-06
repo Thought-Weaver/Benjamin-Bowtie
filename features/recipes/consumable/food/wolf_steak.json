@@ -1,0 +1,12 @@
+{
+    "key": "recipes/consumable/food/wolf_steak",
+    "icon": "\uD83C\uDF56",
+    "name": "Wolf Steak",
+    "value": 24,
+    "inputs": {
+        "items/consumable/food/raw_wolf_meat": 1
+    },
+    "outputs": {
+        "items/consumable/food/wolf_steak": 1
+    }
+}

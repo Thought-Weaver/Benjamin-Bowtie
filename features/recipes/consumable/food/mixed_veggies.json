@@ -1,0 +1,16 @@
+{
+    "key": "recipes/consumable/food/mixed_veggies",
+    "icon": "\uD83E\uDD57",
+    "name": "Mixed Veggies",
+    "value": 240,
+    "inputs": {
+        "items/consumable/food/allum": 5,
+        "items/consumable/food/dragon_pepper": 5,
+        "items/consumable/food/plumpin": 5,
+        "items/consumable/food/potato": 5,
+        "items/consumable/food/spear_leek": 5
+    },
+    "outputs": {
+        "items/consumable/food/mixed_veggies": 1
+    }
+}

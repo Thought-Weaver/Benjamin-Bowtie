@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_pond_guppy",
+    "icon": "\uD83D\uDC1F",
+    "name": "Cooked Pond Guppy",
+    "value": 24,
+    "inputs": {
+        "items/creature/fish/pond_guppy": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_pond_guppy": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 3
+    }
+}

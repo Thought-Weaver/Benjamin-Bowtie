@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/spiced_boar_steak",
+    "icon": "\uD83C\uDF56",
+    "name": "Spiced Boar Steak",
+    "value": 72,
+    "inputs": {
+        "items/consumable/food/raw_boar_meat": 1,
+        "items/consumable/food/spear_leek": 4,
+        "items/consumable/food/sweetroot": 4
+    },
+    "outputs": {
+        "items/consumable/food/spiced_boar_steak": 1
+    }
+}

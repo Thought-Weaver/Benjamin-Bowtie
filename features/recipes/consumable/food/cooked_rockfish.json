@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_rockfish",
+    "icon": "\uD83D\uDC1F",
+    "name": "Cooked Rockfish",
+    "value": 465,
+    "inputs": {
+        "items/creature/fish/rockfish": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_rockfish": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 5
+    }
+}

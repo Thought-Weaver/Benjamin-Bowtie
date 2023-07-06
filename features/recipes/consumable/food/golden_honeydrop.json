@@ -6,7 +6,7 @@
     "inputs": {
         "items/consumable/food/honeyfruit": 5,
         "items/consumable/food/crownberry": 5,
-        "items/ingredient/herbs/golden_clover": 1
+        "items/consumable/food/goldberries": 1
     },
     "outputs": {
         "items/consumable/food/golden_honeydrop": 1

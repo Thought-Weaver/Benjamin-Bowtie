@@ -1,0 +1,14 @@
+{
+    "key": "recipes/consumable/food/stewed_fruit",
+    "icon": "\uD83C\uDF72",
+    "name": "Stewed Fruit",
+    "value": 150,
+    "inputs": {
+        "items/consumable/food/apple": 3,
+        "items/consumable/food/sunfruit": 3,
+        "items/consumable/food/mild_ale": 1
+    },
+    "outputs": {
+        "items/consumable/food/stewed_fruit": 1
+    }
+}

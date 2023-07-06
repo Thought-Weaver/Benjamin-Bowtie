@@ -1,0 +1,15 @@
+{
+    "key": "recipes/consumable/food/cooked_pond_eel",
+    "icon": "\uD83D\uDC0D",
+    "name": "Cooked Pond Eel",
+    "value": 375,
+    "inputs": {
+        "items/creature/fish/pond_eel": 1
+    },
+    "outputs": {
+        "items/consumable/food/cooked_pond_eel": 1
+    },
+    "xp_reward_for_use": {
+        "Fisher": 5
+    }
+}

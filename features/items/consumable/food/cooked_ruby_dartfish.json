@@ -1,12 +1,12 @@
 {
-    "key": "items/consumable/food/golden_honeydrop",
-    "icon": "\uD83C\uDF79",
-    "name": "Golden Honeydrop",
-    "value": 120,
+    "key": "items/consumable/food/cooked_ruby_dartfish",
+    "icon": "\uD83D\uDC20",
+    "name": "Cooked Ruby Dartfish",
+    "value": 105,
     "rarity": "Epic",
     "description": "Can be consumed while dueling or outside duels.",
     "flavor_text": "",
-    "class_tags": ["Ingredient", "Consumable", "Food", "Usable_Outside_Duels", "Usable_Within_Duels"],
+    "class_tags": ["Ingredient", "Consumable", "Food", "Creature", "Fish", "Usable_Outside_Duels", "Usable_Within_Duels"],
     "state_tags": [],
     "count": 1,
     "consumable_stats": {
@@ -16,8 +16,8 @@
     "item_effects": {
         "permanent": [
             {
-                "effect_type": "RestorePercentMana",
-                "effect_value": 0.24,
+                "effect_type": "RestorePercentHealth",
+                "effect_value": 0.09,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
