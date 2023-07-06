@@ -121,19 +121,19 @@ class DontLook(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         str_debuff = StrDebuff(
             turns_remaining=-1,
-            value=10,
+            value=-10,
             source_str=self.get_icon_and_name()
         )
 
         dex_debuff = DexDebuff(
             turns_remaining=-1,
-            value=10,
+            value=-10,
             source_str=self.get_icon_and_name()
         )
 
         int_debuff = IntDebuff(
             turns_remaining=-1,
-            value=10,
+            value=-10,
             source_str=self.get_icon_and_name()
         )
 
@@ -158,9 +158,8 @@ class DontLook(Ability):
 class VoidseenAngler(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 55% chance of 4 player party (Lvl. 50-60) victory against 1
-        # 44% and 14 turns for new item adjustments
-        # Avg Number of Turns (per entity): 15
+        # 25% chance of 4 player party (Lvl. 50-60) victory against 1
+        # Avg Number of Turns (per entity): 13
 
         super().__init__("Voidseen Angler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.AnglerTeeth: 0.6,

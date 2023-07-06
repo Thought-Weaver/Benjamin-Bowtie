@@ -67,7 +67,7 @@ class LurkerStrike(Ability):
             icon="\uD83E\uDD88",
             name="Lurker Strike",
             class_key=ExpertiseClass.Guardian,
-            description="Deal damage equal to your total Dexterity to an enemy.",
+            description="Deal damage equal to 2x your total Dexterity to an enemy.",
             flavor_text="",
             mana_cost=0,
             cooldown=0,
@@ -80,7 +80,7 @@ class LurkerStrike(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        damage = caster.get_combined_attributes().dexterity
+        damage = int(2 * caster.get_combined_attributes().dexterity)
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -138,9 +138,10 @@ class SurpriseAttack(Ability):
 class SandLurker(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 57% chance of 4 player party (Lvl. 40-50) victory against 1
+        # 42% chance of 4 player party (Lvl. 40-50) victory against 1
+        # Avg Number of Turns (per entity): 13
 
-        super().__init__("Sand Lurker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+        super().__init__("Sand Lurker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.SandLurkerTeeth: 0.8,
             ItemKey.SandLurker: 0.4
         })

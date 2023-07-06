@@ -799,8 +799,8 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [[BrittleStar]]
-ALLY_CLASS_RANGE: range = range(30, 40)
+ENEMY_CLASSES: List[List[type]] = [[VoidseenAngler]]
+ALLY_CLASS_RANGE: range = range(50, 60)
 
 SIMULATION_ITERATIONS = 256
 NUM_ALLIES = 4
