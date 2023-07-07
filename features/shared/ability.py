@@ -4394,7 +4394,7 @@ class PressTheAdvantageI(Ability):
 
         se_results: Set[str] = set()
         for se in caster.get_dueling().status_effects:
-            if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF:
+            if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF and se.turns_remaining > 0:
                 se.turns_remaining += 1
                 se_results.add(se.name)
         se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn.\n"
@@ -4441,7 +4441,7 @@ class PressTheAdvantageII(Ability):
 
         se_results: Set[str] = set()
         for se in caster.get_dueling().status_effects:
-            if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF:
+            if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF and se.turns_remaining > 0:
                 se.turns_remaining += 1
                 se_results.add(se.name)
         se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn.\n"
@@ -4489,7 +4489,7 @@ class PressTheAdvantageIII(Ability):
 
         se_results: Set[str] = set()
         for se in caster.get_dueling().status_effects:
-            if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF:
+            if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF and se.turns_remaining > 0:
                 se.turns_remaining += 1
                 se_results.add(se.name)
         se_result_str: str = "\n{0}'s " + ", ".join(se_results) + " status effects have been increased by 1 turn.\n"
