@@ -42,7 +42,7 @@ class ConsumingGrasp(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = range(9, 11) if any(se.key == StatusEffectKey.Charmed or se.key == StatusEffectKey.CannotTarget for se in targets[0].get_dueling().status_effects) else range(27, 33)
+        damage = range(9, 11) if not any(se.key == StatusEffectKey.Charmed or se.key == StatusEffectKey.CannotTarget for se in targets[0].get_dueling().status_effects) else range(27, 33)
 
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
 
