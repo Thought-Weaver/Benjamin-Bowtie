@@ -7318,7 +7318,7 @@ class LesserMimicry(Ability):
             class_key=ExpertiseClass.Fisher,
             description="Copy 10% of an enemy's Str, Dex, Int, and Lck for 3 turns.",
             flavor_text="",
-            mana_cost=0,
+            mana_cost=25,
             cooldown=5,
             num_targets=1,
             level_requirement=20,
