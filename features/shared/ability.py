@@ -3533,7 +3533,7 @@ class SecondWindI(Ability):
             icon="\uD83E\uDE78",
             name="Second Wind I",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 25% of your missing health.",
+            description="Restore 20% of your missing health.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -3545,7 +3545,7 @@ class SecondWindI(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.25)
+        heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.2)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -3568,7 +3568,7 @@ class SecondWindII(Ability):
             icon="\uD83E\uDE78",
             name="Second Wind II",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 45% of your missing health.",
+            description="Restore 35% of your missing health.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -3580,7 +3580,7 @@ class SecondWindII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.45)
+        heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.35)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))
@@ -3603,7 +3603,7 @@ class SecondWindIII(Ability):
             icon="\uD83E\uDE78",
             name="Second Wind III",
             class_key=ExpertiseClass.Guardian,
-            description="Restore 65% of your missing health.",
+            description="Restore 50% of your missing health.",
             flavor_text="",
             mana_cost=0,
             cooldown=-1,
@@ -3615,7 +3615,7 @@ class SecondWindIII(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.65)
+        heal_amount = ceil((caster.get_expertise().max_hp - caster.get_expertise().hp) * 0.5)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[str] = self._use_heal_ability(caster, targets, range(heal_amount, heal_amount))

@@ -130,7 +130,7 @@ class RockfishDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Wall of Boulders", description="The sandy path of the ocean floor is a long one to the continental shelf's edge and the abyss below, and unfortunately you find yourselves now blocked by a series of large rocks and coral.\n\nAs you begin the process of trying to climb over one of the large boulders, however, there's a quaking of the ground. The boulder begins to shift and shake, tossing you back into the sand -- as arising from its resting place is an enormous camouflaged fish!")
+        return Embed(title="Wall of Boulders", description="The sandy path of the ocean floor is a long one to the continental shelf's edge and the abyss below, and unfortunately you find yourselves now blocked by a series of large rocks and coral.\n\nAs you begin the process of trying to climb over one of the large boulders, however, the ground begins to quake. The boulder begins to shift and shake, tossing you back into the sand -- as arising from its resting place is an enormous camouflaged fish!")
 
     def _display_initial_buttons(self):
         self.clear_items()
