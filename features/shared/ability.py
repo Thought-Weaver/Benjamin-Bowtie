@@ -7033,10 +7033,10 @@ class PoisonousSkinI(Ability):
             icon="\uD83E\uDD8E",
             name="Poisonous Skin I",
             class_key=ExpertiseClass.Alchemist,
-            description="Poison damage instead heals you until the end of the fight.",
+            description="Poison damage instead heals you for 3 turns.",
             flavor_text="",
             mana_cost=25,
-            cooldown=-1,
+            cooldown=8,
             num_targets=0,
             level_requirement=17,
             target_own_group=True,
@@ -7046,7 +7046,7 @@ class PoisonousSkinI(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         poison_heals_buff = PoisonHeals(
-            turns_remaining=-1,
+            turns_remaining=3,
             value=1,
             source_str=self.get_icon_and_name()
         )
