@@ -29,7 +29,7 @@ class RazorLeaves(Ability):
             icon="\uD83C\uDF3F",
             name="Razor Leaves",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 15-20 damage to all enemies and cause Bleeding for 2 turns.",
+            description="Deal 30-35 damage to all enemies and cause Bleeding for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,

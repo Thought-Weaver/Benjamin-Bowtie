@@ -694,6 +694,7 @@ class ItemKey(StrEnum):
     CoiledSword = "items/weapon/sword/coiled_sword"
     ConchMaybe = "items/equipment/offhand/conch_maybe"
     CorruptedSand = "items/ingredient/mob_drops/corrupted_sand"
+    CrabKingsCrown = "items/equipment/helmet/crab_kings_crown"
     DoomCharm = "items/equipment/offhand/doom_charm"
     GolemicAssembly = "items/equipment/chest_armor/golemic_assembly"
     GolemsEye = "items/weapon/staff/golems_eye"

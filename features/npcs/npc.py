@@ -94,6 +94,8 @@ class NPC():
         fitness_score += self.get_combined_attributes().intelligence / 10
         # The Healer should score the average of allies' health strongly since it wants to heal
         fitness_score += 4 * sum((ally.get_expertise().hp / ally.get_expertise().max_hp) for ally in allies) / len(allies)
+        # The Healer should also look at the average number of status effects on allies
+        fitness_score += 2 * sum([len(ally.get_dueling().status_effects) for ally in allies]) / len(allies)
         # Any action that gives an NPC additional actions should be weighted very heavily
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
 

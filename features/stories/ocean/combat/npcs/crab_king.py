@@ -111,7 +111,8 @@ class CrabKing(NPC):
         # Avg Number of Turns (per entity): 16
 
         super().__init__("Crab King" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
-            ItemKey.Crab: 0.85
+            ItemKey.Crab: 0.85,
+            ItemKey.CrabKingsCrown: 0.3
         })
 
         self._setup_npc_params()
