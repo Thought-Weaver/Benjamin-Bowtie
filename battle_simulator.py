@@ -799,10 +799,10 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [[VoidseenAngler]]
-ALLY_CLASS_RANGE: range = range(50, 60)
+ENEMY_CLASSES: List[List[type]] = [[Mesmerfish, Mesmerfish, Mesmerfish]]
+ALLY_CLASS_RANGE: range = range(30, 40)
 
-SIMULATION_ITERATIONS = 256
+SIMULATION_ITERATIONS = 128
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 

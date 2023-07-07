@@ -11,7 +11,7 @@ from features.player import Player
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import CannotTarget, Charmed, StatusEffectKey
+from features.shared.statuseffect import CannotTarget, Charmed
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -42,7 +42,7 @@ class ConsumingGrasp(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = range(9, 11) if not any(se.key == StatusEffectKey.Charmed or se.key == StatusEffectKey.CannotTarget for se in targets[0].get_dueling().status_effects) else range(27, 33)
+        damage = range(14, 15) if not any(isinstance(se, Charmed) or isinstance(se, CannotTarget) for se in targets[0].get_dueling().status_effects) else range(42, 45)
 
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
 
@@ -149,7 +149,7 @@ class Whisper(Ability):
 class Mesmerfish(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 35% chance of 4 player party (Lvl. 30-40) victory against 3
+        # 38% chance of 4 player party (Lvl. 30-40) victory against 3
         # Avg Number of Turns (per entity): 14
 
         super().__init__("Mesmerfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
