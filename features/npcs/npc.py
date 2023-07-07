@@ -30,6 +30,7 @@ class NPCRoles(StrEnum):
     Companion = "Companion"
     CompanionMerchant = "CompanionMerchant"
     DungeonEnemy = "DungeonEnemy"
+    Summon = "Summon"
 
 
 class NPCDuelingPersonas(StrEnum):

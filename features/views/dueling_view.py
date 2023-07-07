@@ -13,11 +13,12 @@ from discord.ext import commands
 from enum import StrEnum
 from features.expertise import ExpertiseClass    
 from features.npcs.npc import NPC
+from features.npcs.summons.waveform import Waveform
 from features.player import Player
 from features.shared.ability import Ability
 from features.shared.constants import COMPANION_BATTLE_POINTS, DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE
 from features.shared.effect import Effect, EffectType, ItemEffectCategory
-from features.shared.enums import ClassTag
+from features.shared.enums import ClassTag, Summons
 from features.shared.item import LOADED_ITEMS, WeaponStats
 from features.shared.statuseffect import *
 
@@ -333,15 +334,13 @@ class DuelView(discord.ui.View):
 
         self._allies: List[Player | NPC] = allies
         for ally in self._allies:
-            for summon in ally.get_equipment().get_summons(ally):
-                self._allies.append(summon)
+            self.add_summons(ally.get_equipment().get_summons_enums(ally), self._allies)
 
         self._enemies: List[Player | NPC] = enemies
         for enemy in self._enemies:
-            for summon in enemy.get_equipment().get_summons(enemy):
-                self._enemies.append(summon)
+            self.add_summons(enemy.get_equipment().get_summons_enums(enemy), self._enemies)
 
-        self._turn_order: List[Player | NPC] = sorted(allies + enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
+        self._turn_order: List[Player | NPC] = sorted(self._allies + self._enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
         self._turn_index: int = 0
         self._last_player_turn_user: discord.User | None = next(self.get_user_from_player(entity) for entity in self._turn_order if isinstance(entity, Player)) if not companion_battle else None
 
@@ -442,6 +441,11 @@ class DuelView(discord.ui.View):
                 if entity.get_id() == entity_id:
                     entities.append(entity)
         return entities
+
+    def add_summons(self, summons: List[Summons], entity_list: List[Player | NPC]):
+        for summon in summons:
+            if summon == Summons.Waveform:
+                entity_list.append(Waveform())
 
     def get_initial_embed(self):
         if self._npc_initial_embed is not None:

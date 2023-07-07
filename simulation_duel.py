@@ -8,10 +8,11 @@ from math import ceil
 from random import choice, random
 
 from dataclasses import dataclass
+from features.npcs.summons.waveform import Waveform
 from features.shared.ability import Ability
 from features.shared.constants import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE
 from features.shared.effect import EffectType, ItemEffectCategory
-from features.shared.enums import ClassTag
+from features.shared.enums import ClassTag, Summons
 from features.shared.item import WeaponStats
 from features.shared.statuseffect import *
 
@@ -37,15 +38,13 @@ class SimulationDuel():
     def __init__(self, allies: List[NPC], enemies: List[NPC], logger: logging.Logger | None, max_turns: int, skip_init_updates: bool=False):
         self._allies: List[NPC] = allies
         for ally in self._allies:
-            for summon in ally.get_equipment().get_summons(ally):
-                self._allies.append(summon)
-        
+            self.add_summons(ally.get_equipment().get_summons_enums(ally), self._allies)
+
         self._enemies: List[NPC] = enemies
         for enemy in self._enemies:
-            for summon in enemy.get_equipment().get_summons(enemy):
-                self._enemies.append(summon)
-        
-        self._turn_order: List[NPC] = sorted(allies + enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
+            self.add_summons(enemy.get_equipment().get_summons_enums(enemy), self._enemies)
+
+        self._turn_order: List[NPC] = sorted(self._allies + self._enemies, key=lambda x: x.get_combined_attributes().dexterity, reverse=True)
         self._turn_index: int = 0
 
         self._selected_targets: List[NPC] = []
@@ -93,6 +92,11 @@ class SimulationDuel():
                 if entity.get_id() == entity_id:
                     entities.append(entity)
         return entities
+
+    def add_summons(self, summons: List[Summons], entity_list: List[Player | NPC]):
+        for summon in summons:
+            if summon == Summons.Waveform:
+                entity_list.append(Waveform())
 
     def check_for_win(self) -> DuelResult:
         allies_alive: List[NPC] = list(filter(lambda x: x.get_expertise().hp != 0, self._allies))

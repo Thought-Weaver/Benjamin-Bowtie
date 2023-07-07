@@ -715,6 +715,9 @@ class ItemKey(StrEnum):
     VoidbornTentacle = "items/ingredient/mob_drops/voidborn_tentacle"
     VoidseenBone = "items/valuable/voidseen_bone"
 
+    # Summon Weapons and Equipment
+    TendrilsOfWater = "items/weapon/summons/tendrils_of_water"
+
     # Misc
     CursedStone = "items/equipment/offhand/cursed_stone"
     GoldenKnucklebone = "items/equipment/offhand/golden_knucklebone"

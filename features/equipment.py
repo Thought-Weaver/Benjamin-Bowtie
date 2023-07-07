@@ -272,8 +272,8 @@ class Equipment():
                                 abilities.append(ability)
         return abilities
     
-    def get_summons(self, entity: Player | NPC):
-        summons: List[NPC] = []
+    def get_summons_enums(self, entity: Player | NPC):
+        summons: List[Summons] = []
         for item in self.get_all_equipped_items():
             item_effects = item.get_item_effects()
             if item_effects is not None:
@@ -281,10 +281,8 @@ class Equipment():
                     if not item_effect.meets_conditions(entity, item):
                         continue
 
-                    if item_effect.effect_type == EffectType.Summon:
-                        if item_effect.summon == Summons.Waveform:
-                            # TODO: Implement summons NPCs
-                            pass
+                    if item_effect.effect_type == EffectType.Summon and item_effect.summon is not None:
+                        summons.append(item_effect.summon)
         return summons
 
     def __getstate__(self):
