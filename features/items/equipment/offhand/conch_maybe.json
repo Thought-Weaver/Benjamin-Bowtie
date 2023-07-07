@@ -2,7 +2,7 @@
     "key": "items/equipment/offhand/conch_maybe",
     "icon": "\uD83D\uDC1A",
     "name": "Conch?",
-    "value": 1000,
+    "value": 500,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "",
