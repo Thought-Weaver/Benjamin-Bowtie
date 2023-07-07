@@ -426,7 +426,7 @@ class AttrBuffOnDamage(StatusEffect):
 
     def __str__(self):
         buffs_str = self.get_buffs_str()
-        display_str = f"{self.name}: Gain {buffs_str} whenever you're damaged for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Gain {buffs_str} whenever you're damaged for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -440,7 +440,7 @@ class Taunted(StatusEffect):
         self.forced_to_attack = forced_to_attack
 
     def __str__(self):
-        display_str = f"{self.name}: Forced to attack the caster for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Forced to attack the caster for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -454,7 +454,7 @@ class CannotTarget(StatusEffect):
         self.cant_target = cant_target
 
     def __str__(self):
-        display_str = f"{self.name}: Can't target the caster for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Can't target the caster for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -468,7 +468,7 @@ class Generating(StatusEffect):
 
     def __str__(self):
         coin_str = "coins" if self.value != 1 else "coin"
-        display_str = f"{self.name}: Whenever you successfully attack a target, {self.value} {coin_str} are generated for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Whenever you successfully attack a target, {self.value} {coin_str} are generated for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -481,7 +481,7 @@ class Tarnished(StatusEffect):
         super().__init__(turns_remaining, value, "Tarnished", StatusEffectKey.Tarnished, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Whenever you gain coins, deal damage relative to the amount gained for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Whenever you gain coins, deal damage relative to the amount gained for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -494,7 +494,7 @@ class ManaToHP(StatusEffect):
         super().__init__(turns_remaining, value, "Sanguinated", StatusEffectKey.ManaToHP, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: All your abilities that use Mana instead use HP for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: All your abilities that use Mana instead use HP for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -507,7 +507,7 @@ class PotionBuff(StatusEffect):
         super().__init__(turns_remaining, value, "Eureka", StatusEffectKey.PotionBuff, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Potions you use are {self.value * 100}% more powerful for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Potions you use are {self.value * 100}% more powerful for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -520,7 +520,7 @@ class PoisonHeals(StatusEffect):
         super().__init__(turns_remaining, value, "Absorbing", StatusEffectKey.PoisonHeals, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: Poison damage heals you for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: Poison damage heals you for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -533,7 +533,7 @@ class RestrictedToItems(StatusEffect):
         super().__init__(turns_remaining, value, "Acervophilic", StatusEffectKey.RestrictedToItems, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: You can only use items for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: You can only use items for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -546,7 +546,7 @@ class RegenerateHP(StatusEffect):
         super().__init__(turns_remaining, value, "Regenerating", StatusEffectKey.RegenerateHP, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: You regain {self.value * 100}% of your health for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: You regain {self.value * 100}% of your health for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
@@ -731,7 +731,7 @@ class RegenerateArmor(StatusEffect):
         super().__init__(turns_remaining, value, "Restoring", StatusEffectKey.RegenerateArmor, source_str, trigger_first_turn)
 
     def __str__(self):
-        display_str = f"{self.name}: You regain {self.value * 100}% of your armor for the next {self.get_turns_remaining_str()}"
+        display_str = f"{self.name}: You regain {self.value * 100}% of your armor for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"
