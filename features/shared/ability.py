@@ -7036,7 +7036,7 @@ class PoisonousSkinI(Ability):
             description="Poison damage instead heals you for 3 turns.",
             flavor_text="",
             mana_cost=25,
-            cooldown=8,
+            cooldown=6,
             num_targets=0,
             level_requirement=17,
             target_own_group=True,
