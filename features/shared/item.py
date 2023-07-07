@@ -709,11 +709,13 @@ class ItemKey(StrEnum):
     SharkTeethDrop = "items/valuable/shark_teeth"
     ShimmeringScales = "items/valuable/shimmering_scales"
     SnapdragonHead = "items/equipment/offhand/snapdragon_head"
+    TomeOfForbiddenKnowledge = "items/equipment/offhand/tome_of_forbidden_knowledge"
     TreantCuttings = "items/valuable/treant_cuttings"
     TreantSap = "items/consumable/potions/treant_sap"
     UnblinkingEye = "items/ingredient/mob_drops/unblinking_eye"
     VoidbornTentacle = "items/ingredient/mob_drops/voidborn_tentacle"
     VoidseenBone = "items/valuable/voidseen_bone"
+    WavecallersConch = "items/equipment/offhand/wavecallers_conch"
 
     # Summon Weapons and Equipment
     TendrilsOfWater = "items/weapon/summons/tendrils_of_water"

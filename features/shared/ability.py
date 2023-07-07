@@ -7307,6 +7307,69 @@ class QuickAccessI(Ability):
         self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
+# OTHER GRANTED ABILITIES
+# -----------------------------------------------------------------------------
+
+class LesserMimicry(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDFAD",
+            name="Lesser Mimicry",
+            class_key=ExpertiseClass.Fisher,
+            description="Copy 10% of an enemy's Str, Dex, Int, and Lck for 3 turns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=5,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and copied part of " + "{1}'s" " stats!\n\n"
+        
+        target_expertise = targets[0].get_expertise()
+
+        str_buff = StrBuff(
+            turns_remaining=3,
+            value=ceil(0.1 * target_expertise.strength),
+            source_str=self.get_icon_and_name()
+        )
+
+        dex_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(0.1 * target_expertise.dexterity),
+            source_str=self.get_icon_and_name()
+        )
+
+        int_buff = DexBuff(
+            turns_remaining=3,
+            value=ceil(0.1 * target_expertise.intelligence),
+            source_str=self.get_icon_and_name()
+        )
+
+        lck_buff = LckBuff(
+            turns_remaining=3,
+            value=ceil(0.1 * target_expertise.luck),
+            source_str=self.get_icon_and_name()
+        )
+        
+        results: List[str] = self._use_positive_status_effect_ability(caster, [caster], [str_buff, dex_buff, int_buff, lck_buff])
+        result_str += "\n".join([s.replace("{1}", "{0}") for s in results])
+
+        caster.get_stats().dueling.fisher_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
 # CONSTANTS
 # -----------------------------------------------------------------------------
 
@@ -7355,5 +7418,7 @@ ALL_ABILITIES: List[type] = [
     PoisonousSkinI,
     RegenerationI, RegenerationII, RegenerationIII,
     ParalyzingFumesI, ParalyzingFumesII,
-    QuickAccessI
+    QuickAccessI,
+
+    LesserMimicry
 ]

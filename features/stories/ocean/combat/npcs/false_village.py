@@ -257,7 +257,10 @@ class FalseVillage(NPC):
         # 4% chance of 4 player party (Lvl. 60-70) victory against 1
         # Avg Number of Turns (per entity): 9
 
-        super().__init__("False Village" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("False Village" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.WavecallersConch: 0.01,
+            ItemKey.TomeOfForbiddenKnowledge: 0.01,
+        })
 
         self._setup_npc_params()
 

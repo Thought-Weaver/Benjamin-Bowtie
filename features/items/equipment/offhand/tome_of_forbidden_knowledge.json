@@ -1,0 +1,38 @@
+{
+    "key": "items/equipment/offhand/tome_of_forbidden_knowledge",
+    "icon": "\uD83D\uDCD6",
+    "name": "Tome of Forbidden Knowledge",
+    "value": 4000,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Off_Hand"
+    ],
+    "state_tags": [
+        "Needs_Identification"
+    ],
+    "count": 1,
+    "level_requirement": 60,
+    "altering_item_keys": [],
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "GrantAbility",
+                "effect_value": -1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "granted_ability": "Lesser Mimicry"
+            }
+        ],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [],
+        "on_successful_ability_used": [],
+        "on_successful_attack": [],
+        "on_attacked": [],
+        "on_ability_used_against": []
+    }
+}
