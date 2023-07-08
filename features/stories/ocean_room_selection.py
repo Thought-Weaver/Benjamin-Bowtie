@@ -18,11 +18,12 @@ if TYPE_CHECKING:
 # -----------------------------------------------------------------------------
 
 class RoomButton(discord.ui.Button):
-    def __init__(self, icon: str, next_view: discord.ui.View, room_type: RoomType):
+    def __init__(self, icon: str, next_view: discord.ui.View, room_type: RoomType, index: int):
         super().__init__(style=discord.ButtonStyle.secondary, emoji=icon)
 
         self._next_view = next_view
         self._room_type = room_type
+        self._index = index
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -35,6 +36,7 @@ class RoomButton(discord.ui.Button):
             return
     
         if self._room_type == RoomType.Combat:
+            view.get_dungeon_run().previous_combat = self._index
             view.get_dungeon_run().combat_encounters += 1
         elif self._room_type == RoomType.Shopkeep:
             view.get_dungeon_run().shopkeeps_encountered += 1
@@ -44,6 +46,7 @@ class RoomButton(discord.ui.Button):
         elif self._room_type == RoomType.Treasure:
             view.get_dungeon_run().treasure_rooms_encountered += 1
         elif self._room_type == RoomType.Event:
+            view.get_dungeon_run().previous_event = self._index
             view.get_dungeon_run().events_encountered += 1
         elif self._room_type == RoomType.Rest:
             view.get_dungeon_run().rests_taken += 1
@@ -78,12 +81,12 @@ class OceanRoomSelectionView(discord.ui.View):
     def setup_ocean_rooms(self):
         if self._dungeon_run.rooms_until_boss == -1:
             room = ocean.OceanStory.generate_boss_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
-            self.add_item(RoomButton("\u2620\uFE0F", room, RoomType.Boss))
+            self.add_item(RoomButton("\u2620\uFE0F", room, RoomType.Boss, -1))
             return
 
         if self._dungeon_run.rooms_until_boss == 0:
             room = ocean.OceanStory.generate_rest_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
-            self.add_item(RoomButton("\uD83D\uDD25", room, RoomType.Rest))
+            self.add_item(RoomButton("\uD83D\uDD25", room, RoomType.Rest, -1))
             return
         
         num_rooms: int = random.randint(2, 3)
@@ -95,14 +98,14 @@ class OceanRoomSelectionView(discord.ui.View):
 
                 if self._dungeon_run.dungeon_type == Story.Ocean:
                     room = ocean.OceanStory.generate_shopkeep_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
-                    self.add_item(RoomButton(icon, room, RoomType.Shopkeep))
+                    self.add_item(RoomButton(icon, room, RoomType.Shopkeep, -1))
 
             elif room_rand_gen < REST_ROOM_PROB:
                 icon = "\uD83D\uDD25"
 
                 if self._dungeon_run.dungeon_type == Story.Ocean:
                     room = ocean.OceanStory.generate_rest_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
-                    self.add_item(RoomButton(icon, room, RoomType.Rest))
+                    self.add_item(RoomButton(icon, room, RoomType.Rest, -1))
 
             elif room_rand_gen < MYSTERY_ROOM_PROB:
                 icon = "\u2753"
@@ -116,7 +119,7 @@ class OceanRoomSelectionView(discord.ui.View):
 
                     if self._dungeon_run.dungeon_type == Story.Ocean:
                         room = ocean.OceanStory.generate_treasure_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
-                        self.add_item(RoomButton(icon, room, RoomType.Treasure))
+                        self.add_item(RoomButton(icon, room, RoomType.Treasure, -1))
                 elif mystery_room_rand_gen < MYSTERY_SHOPKEEP_BASE_PROB + MYSTERY_SHOPKEEP_PROB_INCREASE * self._dungeon_run.num_mystery_without_shopkeep:
                     self._dungeon_run.num_mystery_without_shopkeep = 0
                     self._dungeon_run.num_mystery_without_combat += 1
@@ -124,29 +127,29 @@ class OceanRoomSelectionView(discord.ui.View):
 
                     if self._dungeon_run.dungeon_type == Story.Ocean:
                         room = ocean.OceanStory.generate_shopkeep_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
-                        self.add_item(RoomButton(icon, room, RoomType.Shopkeep))
+                        self.add_item(RoomButton(icon, room, RoomType.Shopkeep, -1))
                 elif mystery_room_rand_gen < MYSTERY_COMBAT_BASE_PROB + MYSTERY_COMBAT_PROB_INCREASE * self._dungeon_run.num_mystery_without_combat:
                     self._dungeon_run.num_mystery_without_combat = 0
                     self._dungeon_run.num_mystery_without_treasure += 1
                     self._dungeon_run.num_mystery_without_shopkeep += 1
 
                     if self._dungeon_run.dungeon_type == Story.Ocean:
-                        room = ocean.OceanStory.generate_combat_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
-                        self.add_item(RoomButton(icon, room, RoomType.Combat))
+                        room, index = ocean.OceanStory.generate_combat_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
+                        self.add_item(RoomButton(icon, room, RoomType.Combat, index))
                 else:
                     self._dungeon_run.num_mystery_without_combat += 1
                     self._dungeon_run.num_mystery_without_treasure += 1
                     self._dungeon_run.num_mystery_without_shopkeep += 1
 
                     if self._dungeon_run.dungeon_type == Story.Ocean:
-                        room = ocean.OceanStory.generate_event_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
-                        self.add_item(RoomButton(icon, room, RoomType.Event))
+                        room, index = ocean.OceanStory.generate_event_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
+                        self.add_item(RoomButton(icon, room, RoomType.Event, index))
             else:
                 icon = "\u2694\uFE0F"
 
                 if self._dungeon_run.dungeon_type == Story.Ocean:
-                    room = ocean.OceanStory.generate_combat_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
-                    self.add_item(RoomButton(icon, room, RoomType.Combat))
+                    room, index = ocean.OceanStory.generate_combat_room(self._bot, self._database, self._guild_id, self._users, self._dungeon_run)
+                    self.add_item(RoomButton(icon, room, RoomType.Combat, index))
 
     def get_initial_embed(self):
         return discord.Embed(title="The Path", description=f"The path before you splits into multiple. Which will you take?")

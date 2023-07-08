@@ -11,7 +11,7 @@ from features.shared.constants import OCEAN_ROOMS
 from features.shared.enums import CompanionKey, OceanSection
 from features.stories.dungeon_run import DungeonRun
 
-from typing import List, Set
+from typing import List, Set, Tuple
 from features.stories.ocean.combat.abyssal_plain.ancient_kraken_duel import AncientKrakenDuelView
 from features.stories.ocean.combat.abyssal_plain.faceless_husks_duel import FacelessHusksDuelView
 from features.stories.ocean.combat.abyssal_plain.fish_maybe_duel import FishMaybeDuelView
@@ -170,7 +170,7 @@ class OceanRestButton(discord.ui.Button):
         
         view: OceanRestView = self.view
         if interaction.user not in view.rested_users:
-            response = view.rest(interaction.user)
+            response = view.rest(interaction.user) # type: ignore
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -476,104 +476,98 @@ class OceanStory():
             return TidewaterShallowsTreasureRoomView(bot, database, guild_id, users, dungeon_run)
 
     @staticmethod
-    def generate_combat_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
+    def generate_combat_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun) -> Tuple[discord.ui.View, int]:
         if dungeon_run.section == OceanSection.TidewaterShallows:
             rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_combat])
-            dungeon_run.previous_combat = rand_val
             if rand_val == 0:
-                return BrittleStarDuelView(bot, database, guild_id, users, dungeon_run)
+                return BrittleStarDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
-                return GiantConeSnailDuelView(bot, database, guild_id, users, dungeon_run)
+                return GiantConeSnailDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 2:
-                return LesserKrakenDuelView(bot, database, guild_id, users, dungeon_run)
+                return LesserKrakenDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 3:
-                return MesmerfishSwarmDuelView(bot, database, guild_id, users, dungeon_run)
+                return MesmerfishSwarmDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 4:
-                return ShallowsSharkDuelView(bot, database, guild_id, users, dungeon_run)
+                return ShallowsSharkDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 5:
-                return StranglekelpForestDuelView(bot, database, guild_id, users, dungeon_run)
+                return StranglekelpForestDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 6:
-                return StranglekelpHostDuelView(bot, database, guild_id, users, dungeon_run)
+                return StranglekelpHostDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             else:
-                return TitanfishDuelView(bot, database, guild_id, users, dungeon_run)
+                return TitanfishDuelView(bot, database, guild_id, users, dungeon_run), rand_val
         elif dungeon_run.section == OceanSection.CoralForest:
             rand_val: int = random.choice([i for i in range(0, 6) if i != dungeon_run.previous_combat])
-            dungeon_run.previous_combat = rand_val
             if rand_val == 0:
-                return BandedEelDuelView(bot, database, guild_id, users, dungeon_run)
+                return BandedEelDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
-                return GrandLionfishDuelView(bot, database, guild_id, users, dungeon_run)
+                return GrandLionfishDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 2:
-                return RockfishDuelView(bot, database, guild_id, users, dungeon_run)
+                return RockfishDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 3:
-                return SandLurkerDuelView(bot, database, guild_id, users, dungeon_run)
+                return SandLurkerDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 4:
-                return SeaDragonsDuelView(bot, database, guild_id, users, dungeon_run)
+                return SeaDragonsDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             else:
-                return WanderingBloodcoralDuelView(bot, database, guild_id, users, dungeon_run)
-        elif dungeon_run.section == OceanSection.AbyssalPlain:
+                return WanderingBloodcoralDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+        else:
             rand_val: int = random.choice([i for i in range(0, 7) if i != dungeon_run.previous_combat])
-            dungeon_run.previous_combat = rand_val
             if rand_val == 0:
-                return AncientKrakenDuelView(bot, database, guild_id, users, dungeon_run)
+                return AncientKrakenDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
-                return FacelessHusksDuelView(bot, database, guild_id, users, dungeon_run)
+                return FacelessHusksDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 2:
-                return FishMaybeDuelView(bot, database, guild_id, users, dungeon_run)
+                return FishMaybeDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 3:
-                return LurkingIsopodDuelView(bot, database, guild_id, users, dungeon_run)
+                return LurkingIsopodDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 4:
-                return MysteriousTentacleDuelView(bot, database, guild_id, users, dungeon_run)
+                return MysteriousTentacleDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 5:
-                return VoidseenAnglerDuelView(bot, database, guild_id, users, dungeon_run)
+                return VoidseenAnglerDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             else:
-                return WrigglingMassDuelView(bot, database, guild_id, users, dungeon_run)
+                return WrigglingMassDuelView(bot, database, guild_id, users, dungeon_run), rand_val
 
     @staticmethod
-    def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
+    def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun) -> Tuple[discord.ui.View, int]:
         if dungeon_run.section == OceanSection.TidewaterShallows:
             rand_val: int = random.choice([i for i in range(0, 7) if i != dungeon_run.previous_event])
-            dungeon_run.previous_event = rand_val
             if rand_val == 0:
-                return AncientShipwreckView(bot, database, guild_id, users, dungeon_run)
+                return AncientShipwreckView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
-                return TidewaterShallowsCoralGroveView(bot, database, guild_id, users, dungeon_run)
+                return TidewaterShallowsCoralGroveView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 2:
-                return DangerousCurrentView(bot, database, guild_id, users, dungeon_run)
+                return DangerousCurrentView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 3:
-                return GiantClamsView(bot, database, guild_id, users, dungeon_run)
+                return GiantClamsView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 4:
-                return TidewaterShallowsSchoolOfFishView(bot, database, guild_id, users, dungeon_run)
+                return TidewaterShallowsSchoolOfFishView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 5:
-                return WaywardConchView(bot, database, guild_id, users, dungeon_run)
+                return WaywardConchView(bot, database, guild_id, users, dungeon_run), rand_val
             else:
-                return ACuriousCrabView(bot, database, guild_id, users, dungeon_run)
+                return ACuriousCrabView(bot, database, guild_id, users, dungeon_run), rand_val
         elif dungeon_run.section == OceanSection.CoralForest:
             rand_val: int = random.choice([i for i in range(0, 6) if i != dungeon_run.previous_event])
-            dungeon_run.previous_event = rand_val
             if rand_val == 0:
-                return BloodcoralPolypsView(bot, database, guild_id, users, dungeon_run)
+                return BloodcoralPolypsView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
-                return CoralForestCoralGroveView(bot, database, guild_id, users, dungeon_run)
+                return CoralForestCoralGroveView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 2:
-                return GlowingCoralView(bot, database, guild_id, users, dungeon_run)
+                return GlowingCoralView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 3:
-                return CoralForestSchoolOfFishView(bot, database, guild_id, users, dungeon_run)
+                return CoralForestSchoolOfFishView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 4:
-                return TheHookView(bot, database, guild_id, users, dungeon_run)
+                return TheHookView(bot, database, guild_id, users, dungeon_run), rand_val
             else:
-                return VoiceOfTheSeaView(bot, database, guild_id, users, dungeon_run)
-        elif dungeon_run.section == OceanSection.AbyssalPlain:
+                return VoiceOfTheSeaView(bot, database, guild_id, users, dungeon_run), rand_val
+        else:
             rand_val: int = random.choice([i for i in range(0, 4) if i != dungeon_run.previous_event])
-            dungeon_run.previous_event = rand_val
             if rand_val == 0:
-                return HydrothermalVentsView(bot, database, guild_id, users, dungeon_run)
+                return HydrothermalVentsView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
-                return SandstormView(bot, database, guild_id, users, dungeon_run)
+                return SandstormView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 2:
-                return StrangeEffigyView(bot, database, guild_id, users, dungeon_run)
+                return StrangeEffigyView(bot, database, guild_id, users, dungeon_run), rand_val
             else:
-                return UnderwaterWhirlpoolView(bot, database, guild_id, users, dungeon_run)
+                return UnderwaterWhirlpoolView(bot, database, guild_id, users, dungeon_run), rand_val
 
     @staticmethod
     def generate_boss_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
@@ -581,7 +575,7 @@ class OceanStory():
             return JellyfishSwarmDuelView(bot, database, guild_id, users, dungeon_run)
         elif dungeon_run.section == OceanSection.CoralForest:
             return BloodcoralBehemothDuelView(bot, database, guild_id, users, dungeon_run)
-        elif dungeon_run.section == OceanSection.AbyssalPlain:
+        else:
             return SandwyrmDuelView(bot, database, guild_id, users, dungeon_run)
 
     def __getstate__(self):
