@@ -7232,7 +7232,7 @@ class ParalyzingFumesII(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83D\uDCAB",
-            name="Paralyzing Fumes I",
+            name="Paralyzing Fumes II",
             class_key=ExpertiseClass.Alchemist,
             description="Release a dangerous gas that has a 75% chance to Falter all enemies at the start of their next 2 turns.",
             flavor_text="",

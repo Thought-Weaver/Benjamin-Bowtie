@@ -1769,6 +1769,7 @@ class DuelView(discord.ui.View):
 
     def continue_turn(self, skip_turn=False):
         self._page = 0
+        self._scroll_index = 0
         cur_entity: Player | NPC = self._turn_order[self._turn_index]
 
         # Check here before setting next turn, just in case

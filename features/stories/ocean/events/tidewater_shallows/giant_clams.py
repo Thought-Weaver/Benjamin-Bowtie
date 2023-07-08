@@ -77,7 +77,7 @@ class GiantClamsView(discord.ui.View):
 
     def get_initial_embed(self):
         clams_selected_str = self._get_selected_clams_str()
-        return Embed(title="Giant Clams", description=f"Continuing along the continental shelf to the abyss below, your foot suddenly strikes something in the sand -- hard and elliptical in shape. Reaching down, you find a giant clam! You look around for a moment and realize this place is a clam field and a perfect place for harvesting rare pearls.\n{clams_selected_str}")
+        return Embed(title="Giant Clams", description=f"Continuing along the continental shelf to the abyss below, your foot suddenly strikes something in the sand -- hard and elliptical in shape. Reaching down, you find a giant clam! You look around for a moment and realize this place is a clam field and a perfect place for harvesting rare pearls.\n\nYou each get to choose a clam:\n{clams_selected_str}")
 
     def _display_initial_buttons(self):
         self.clear_items()
@@ -85,7 +85,7 @@ class GiantClamsView(discord.ui.View):
         for i in range(4):
             for j in range(4):
                 item_key = random.choices([None, ItemKey.CrackedPearl, ItemKey.Pearl, ItemKey.FlawlessPearl], [0.2, 0.4, 0.3, 0.1])[0]
-                self.add_item(ClamButton(i * j, i, item_key))
+                self.add_item(ClamButton((i + 1) * (j + 1), i, item_key))
         self.add_item(ContinueButton(4))
 
     def select_clam(self, user_id: int, index: int, item_key: ItemKey | None):
@@ -108,7 +108,7 @@ class GiantClamsView(discord.ui.View):
                 else:
                     result_str += f"\n{name} received nothing"
 
-            return Embed(title="Shimmering Pearls", description=f"You open the pearls to find:\n\n{result_str}")
+            return Embed(title="Shimmering Pearls", description=f"You open the clams to find:\n{result_str}")
         else:
             return self.get_initial_embed()
 
