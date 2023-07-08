@@ -66,9 +66,9 @@ class CRABKINGCRABKING(Ability):
             icon="\uD83D\uDC51",
             name="CRAB KING! CRAB KING!",
             class_key=ExpertiseClass.Fisher,
-            description="Restore 15-20 health to all allies.",
+            description="Restore 10-12 health to all allies.",
             flavor_text="",
-            mana_cost=10,
+            mana_cost=5,
             cooldown=3,
             num_targets=-1,
             level_requirement=20,
@@ -79,7 +79,7 @@ class CRABKINGCRABKING(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_heal_ability(caster, targets, range(15, 20))
+        results: List[str] = self._use_heal_ability(caster, targets, range(10, 12))
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -98,13 +98,7 @@ class CRABKINGCRABKING(Ability):
 
 class CrabServant(NPC):
     def __init__(self, name_suffix: str=""):
-        # Balance Simulation Results:
-        # 18% chance of 4 player party (Lvl. 30-40) victory against 1
-        # Avg Number of Turns (per entity): 16
-        
-        super().__init__("Crab Servant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {
-            ItemKey.Crab: 0.85
-        })
+        super().__init__("Crab Servant" + name_suffix, NPCRoles.Summon, NPCDuelingPersonas.Healer, {})
 
         self._setup_npc_params()
 
@@ -118,11 +112,11 @@ class CrabServant(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(75, ExpertiseClass.Fisher)
-        self._expertise.constitution = 30
+        self._expertise.add_xp_to_class_until_level(40, ExpertiseClass.Fisher)
+        self._expertise.constitution = 20
         self._expertise.strength = 0
-        self._expertise.dexterity = 12
-        self._expertise.intelligence = 30
+        self._expertise.dexterity = 0
+        self._expertise.intelligence = 17
         self._expertise.luck = 0
         self._expertise.memory = 3
 
@@ -154,11 +148,9 @@ class CrabServant(NPC):
     def __setstate__(self, state: dict):
         self._id = state.get("_id", str(uuid4()))
         self._name = "Crab Servant"
-        self._role = NPCRoles.DungeonEnemy
+        self._role = NPCRoles.Summon
         self._dueling_persona = NPCDuelingPersonas.Healer
-        self._dueling_rewards = {
-            ItemKey.Crab: 0.85
-        }
+        self._dueling_rewards = {}
         
         self._inventory: Inventory | None = state.get("_inventory")
         if self._inventory is None:

@@ -9,6 +9,7 @@ from random import choice, random
 
 from dataclasses import dataclass
 from features.npcs.summons.waveform import Waveform
+from features.npcs.summons.crab_servant import CrabServant
 from features.shared.ability import Ability
 from features.shared.constants import DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE
 from features.shared.effect import EffectType, ItemEffectCategory
@@ -97,7 +98,9 @@ class SimulationDuel():
         for summon in summons:
             if summon == Summons.Waveform:
                 entity_list.append(Waveform())
-
+            elif summon == Summons.CrabServant:
+                entity_list.append(CrabServant())
+    
     def check_for_win(self) -> DuelResult:
         allies_alive: List[NPC] = list(filter(lambda x: x.get_expertise().hp != 0, self._allies))
         enemies_alive: List[NPC] = list(filter(lambda x: x.get_expertise().hp != 0, self._enemies))

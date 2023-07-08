@@ -234,3 +234,4 @@ class RoomType(StrEnum):
 
 class Summons(StrEnum):
     Waveform = "Waveform"
+    CrabServant = "CrabServant"

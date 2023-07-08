@@ -14,6 +14,7 @@ from enum import StrEnum
 from features.expertise import ExpertiseClass    
 from features.npcs.npc import NPC
 from features.npcs.summons.waveform import Waveform
+from features.npcs.summons.crab_servant import CrabServant
 from features.player import Player
 from features.shared.ability import Ability
 from features.shared.constants import COMPANION_BATTLE_POINTS, DEX_DODGE_SCALE, LUCK_CRIT_DMG_BOOST, LUCK_CRIT_SCALE
@@ -446,6 +447,8 @@ class DuelView(discord.ui.View):
         for summon in summons:
             if summon == Summons.Waveform:
                 entity_list.append(Waveform())
+            elif summon == Summons.CrabServant:
+                entity_list.append(CrabServant())
 
     def get_initial_embed(self):
         if self._npc_initial_embed is not None:
