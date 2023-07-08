@@ -1,13 +1,14 @@
 from __future__ import annotations
 
+import re
+
 from features.shared.attributes import Attributes
 from features.shared.enums import ClassTag, Summons
+from features.shared.statuseffect import StatusEffectKey
 from types import MappingProxyType
 from enum import StrEnum
 
 from typing import List, TYPE_CHECKING
-
-from features.shared.statuseffect import StatusEffectKey
 if TYPE_CHECKING:
     from features.shared.item import Item
     from features.npcs.npc import NPC
@@ -199,8 +200,8 @@ class Effect():
             effect_data.get("conditions", []),
             effect_data.get("condition_values", []),
             effect_data.get("associated_status_effect", None),
-            effect_data.get("granted_ability", None),
-            effect_data.get("summon", None)
+            effect_data.get("summon", None),
+            effect_data.get("granted_ability", None)
         )
 
     def meets_conditions(self, entity: Player | NPC, item: Item):
@@ -382,6 +383,10 @@ class Effect():
             case EffectType.GrantAbility:
                 return "Grant Ability"
         return "Unknown"
+
+    def camel_case_split(self, string: str):
+        matches = re.finditer(".+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)", string)
+        return [m.group(0) for m in matches]
 
     def __str__(self, filter_condition: ConditionType | None=None):
         display_string = ""
@@ -657,7 +662,8 @@ class Effect():
         if self.effect_type == EffectType.Damage:
             display_string += f"Deals {int(self.effect_value)} Damage"
         elif self.effect_type == EffectType.Summon:
-            display_string += f"Summons {int(self.effect_value)} {self.summon} at the start of the duel"
+            summon_str: str = " ".join(self.camel_case_split(str(self.summon)))
+            display_string += f"Summons {int(self.effect_value)} {summon_str} at the start of the duel"
         elif self.effect_type == EffectType.GrantAbility:
             display_string += f"Grants Ability: {self.granted_ability}"
 
@@ -701,6 +707,8 @@ class Effect():
         self.conditions = state.get("conditions", [])
         self.condition_values = state.get("condition_values", [])
         self.associated_status_effect = state.get("associated_status_effect", None)
+        self.summon = state.get("summon", None)
+        self.granted_ability = state.get("granted_ability", None)
 
 # -----------------------------------------------------------------------------
 # ITEM EFFECTS CLASS

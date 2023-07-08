@@ -282,7 +282,7 @@ class Equipment():
                         continue
 
                     if item_effect.effect_type == EffectType.Summon and item_effect.summon is not None:
-                        summons.append(item_effect.summon)
+                        summons += [item_effect.summon for _ in range(int(item_effect.effect_value))]
         return summons
 
     def __getstate__(self):
