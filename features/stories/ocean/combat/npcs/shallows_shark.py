@@ -134,7 +134,7 @@ class ScentForBlood(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dex_debuff = DexDebuff(
             turns_remaining=3,
-            value=15,
+            value=-15,
             source_str=self.get_icon_and_name()
         )
 

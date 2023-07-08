@@ -73,13 +73,13 @@ class SappingTouch(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         str_debuff = StrDebuff(
             turns_remaining=5,
-            value=25,
+            value=-25,
             source_str=self.get_icon_and_name()
         )
 
         int_debuff = IntDebuff(
             turns_remaining=5,
-            value=25,
+            value=-25,
             source_str=self.get_icon_and_name()
         )
 

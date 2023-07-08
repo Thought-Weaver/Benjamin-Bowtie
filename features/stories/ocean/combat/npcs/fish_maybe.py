@@ -144,7 +144,7 @@ class ShadowsGrowingLonger(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = ConDebuff(
             turns_remaining=-1,
-            value=10,
+            value=-10,
             source_str=self.get_icon_and_name()
         )
 

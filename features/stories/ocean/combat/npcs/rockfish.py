@@ -96,7 +96,7 @@ class RockSlam(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = DexDebuff(
             turns_remaining=4,
-            value=25,
+            value=-25,
             source_str=self.get_icon_and_name()
         )
 

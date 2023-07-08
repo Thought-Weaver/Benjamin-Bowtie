@@ -83,7 +83,7 @@ class TailWhip(Ability):
 
         debuff = ConDebuff(
             turns_remaining=5,
-            value=5,
+            value=-5,
             source_str=self.get_icon_and_name()
         )
 

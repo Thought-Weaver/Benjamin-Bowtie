@@ -45,13 +45,13 @@ class Stranglehook(Ability):
 
         dex_debuff = DexDebuff(
             turns_remaining=3,
-            value=30,
+            value=-30,
             source_str=self.get_icon_and_name()
         )
 
         str_debuff = StrDebuff(
             turns_remaining=3,
-            value=30,
+            value=-30,
             source_str=self.get_icon_and_name()
         )
 
