@@ -1,7 +1,7 @@
 {
-    "key": "items/consumable/food/cooked_golden_tench",
+    "key": "items/consumable/food/cooked_jumpfish",
     "icon": "\uD83D\uDC20",
-    "name": "Cooked Golden Tench",
+    "name": "Cooked Jumpfish",
     "value": 25,
     "rarity": "Uncommon",
     "description": "Can be consumed while dueling or outside duels.",
