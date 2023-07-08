@@ -325,6 +325,8 @@ class Effect():
                     return "Reverberating Chance"
                 elif se_key == StatusEffectKey.Marked:
                     return "Marked Chance"
+                elif se_key == StatusEffectKey.FixedDmgTick:
+                    return "Echoing Chance"
             case EffectType.ResistStatusEffect:
                 se_key: StatusEffectKey | None = self.associated_status_effect
                 if se_key == StatusEffectKey.Poisoned:
@@ -353,6 +355,8 @@ class Effect():
                     return "Resist Reverberating Chance"
                 elif se_key == StatusEffectKey.Marked:
                     return "Resist Marked Chance"
+                elif se_key == StatusEffectKey.FixedDmgTick:
+                    return "Resist Echoing Chance"
             case EffectType.RestoreHealth:
                 return "Restore Health"
             case EffectType.RestorePercentHealth:
@@ -536,7 +540,7 @@ class Effect():
                 display_string += f"{round(self.effect_value * 100, 2)}% Vulnerable"
             elif se_key == StatusEffectKey.FixedDmgTick:
                 # Guaranteed to happen
-                display_string += f"{int(self.effect_value)} Damage Tick"
+                display_string += f"{int(self.effect_value)} Echoing"
             elif se_key == StatusEffectKey.Generating:
                 # Guaranteed to happen
                 display_string += f"{int(self.effect_value)} Coins Generated per Attack"
@@ -621,6 +625,8 @@ class Effect():
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Unlucky Chance"
             elif se_key == StatusEffectKey.MemDebuff:
                 display_string += f"{round(self.effect_value * 100, 2)}% Resist Forgetful Chance"
+            elif se_key == StatusEffectKey.FixedDmgTick:
+                display_string += f"{round(self.effect_value * 100, 2)}% Resist Echoing Chance"
 
         if self.effect_type == EffectType.RestoreHealth:
             display_string += f"Restore {int(self.effect_value)} Health"
