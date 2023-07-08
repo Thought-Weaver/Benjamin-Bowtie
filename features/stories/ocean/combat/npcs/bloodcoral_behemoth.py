@@ -69,10 +69,10 @@ class Pulverize(Ability):
             icon="\uD83D\uDCA5",
             name="Pulverize",
             class_key=ExpertiseClass.Guardian,
-            description="Deal damage to an enemy equal to 50% of its max health.",
+            description="Deal damage to an enemy equal to 75% of its max health.",
             flavor_text="",
             mana_cost=0,
-            cooldown=3,
+            cooldown=2,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -83,7 +83,7 @@ class Pulverize(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage: int = ceil(0.5 * targets[0].get_expertise().max_hp)
+        damage: int = ceil(0.75 * targets[0].get_expertise().max_hp)
 
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
@@ -169,10 +169,10 @@ class BloodcoralBehemoth(NPC):
         
         self._expertise.add_xp_to_class_until_level(550, ExpertiseClass.Guardian)
         self._expertise.constitution = 250
-        self._expertise.strength = 160
+        self._expertise.strength = 150
         self._expertise.dexterity = 0
         self._expertise.intelligence = 100
-        self._expertise.luck = 37
+        self._expertise.luck = 47
         self._expertise.memory = 3
 
     def _setup_equipment(self):
