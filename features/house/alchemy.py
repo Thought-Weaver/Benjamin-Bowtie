@@ -872,7 +872,9 @@ class AlchemyChamberView(discord.ui.View):
                 alchemizing_failed_info = f"\n\nYou learned:\n{alchemizing_failed_info}"
 
             return Embed(title="Alchemize", description=f"You attempt to mix these ingredients together, but nothing happens.{alchemizing_failed_info}\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nMix together ingredients from your inventory and attempt to create a potion.\n\nNavigate through your recipes using the Prev and Next buttons.")
-            
+        else:
+            self._current_cooking = {}
+
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} recipe!*\n" if new_recipe else ""
 
         xp_strs = []

@@ -934,7 +934,9 @@ class WorkshopView(discord.ui.View):
                 failed_info = f"\n\nYou learned:\n{failed_info}"
 
             return Embed(title="Craft", description=f"You attempt to combine these materials together, but nothing happens.{failed_info}\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nUse materials from your inventory and attempt to craft something.\n\nNavigate through your patterns using the Prev and Next buttons.")
-
+        else:
+            self._current_cooking = {}
+        
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} pattern!*\n" if new_recipe else ""
 
         xp_strs = []

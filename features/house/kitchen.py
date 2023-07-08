@@ -817,7 +817,6 @@ class KitchenView(discord.ui.View):
 
         for input_key, quantity in self._current_cooking.items():
             index = inventory.search_by_key(input_key)
-            # Make experimenting a risk-and-reward situation rather than always consuming the items
             for _ in range(quantity):
                 inventory.remove_item(index, 1)
 
@@ -855,7 +854,9 @@ class KitchenView(discord.ui.View):
                 failed_info = f"\n\nYou learned:\n{failed_info}"
 
             return Embed(title="Cook", description=f"You attempt to mix these ingredients together, but nothing happens.{failed_info}\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\nMix together ingredients from your inventory and attempt to cook something.\n\nNavigate through your recipes using the Prev and Next buttons.")
-            
+        else:
+            self._current_cooking = {}
+
         new_recipe_str = f"\n*You acquired the {found_recipe.get_name_and_icon()} recipe!*\n" if new_recipe else ""
 
         xp_strs = []
