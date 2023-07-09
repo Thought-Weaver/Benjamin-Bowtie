@@ -142,6 +142,10 @@ class Distraction(Ability):
 
 class Jellyfish(NPC):
     def __init__(self, name_suffix: str=""):
+        # Balance Simulation Results:
+        # 7% chance of 4 player party (Lvl. 30-40) victory against 1
+        # Avg Number of Turns (per entity): 21
+
         super().__init__("Jellyfish" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {
             ItemKey.Poison: 0.1
         })

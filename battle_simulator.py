@@ -799,7 +799,7 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [[Mesmerfish, Mesmerfish, Mesmerfish]]
+ENEMY_CLASSES: List[List[type]] = [[Jellyfish, Jellyfish, Jellyfish]]
 ALLY_CLASS_RANGE: range = range(30, 40)
 
 SIMULATION_ITERATIONS = 128
