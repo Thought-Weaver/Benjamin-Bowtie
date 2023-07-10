@@ -480,8 +480,11 @@ class Ability():
             if Attribute.Luck in self._scaling:
                 heal_amount += min(ceil(base_heal * LCK_DMG_SCALE * max(caster_attrs.luck, 0)), base_heal)
 
-            heal_amount = ceil(heal_amount * critical_hit_final)
-            heal_amount += ceil(heal_amount * healing_adjustment)
+            if max_heal_amount is None or heal_amount < max_heal_amount:
+                heal_amount = ceil(heal_amount * critical_hit_final)
+                heal_amount += ceil(heal_amount * healing_adjustment)
+            else:
+                critical_hit_final = 1 # Reset to not display the crit string
 
             if decaying_adjustment != 0:
                 heal_amount *= -decaying_adjustment
