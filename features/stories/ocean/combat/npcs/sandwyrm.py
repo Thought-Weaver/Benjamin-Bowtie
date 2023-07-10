@@ -11,7 +11,7 @@ from features.player import Player
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import Marked, TurnSkipChance
+from features.shared.statuseffect import DmgDebuff, DmgVulnerability, Marked, TurnSkipChance
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -28,7 +28,7 @@ class Emergence(Ability):
             icon="\uD83E\uDEB1",
             name="Emergence",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 100 damage to an enemy, doubled against Marked targets.",
+            description="Deal 150 damage to an enemy, doubled against Marked targets.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -42,7 +42,7 @@ class Emergence(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
-        damage = range(100, 100) if any(isinstance(se, Marked) and se.caster == caster for se in targets[0].get_dueling().status_effects) else range(200, 200)
+        damage = range(150, 150) if any(isinstance(se, Marked) and se.caster == caster for se in targets[0].get_dueling().status_effects) else range(300, 300)
 
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, damage)
 
@@ -65,7 +65,7 @@ class TremorsInTheSand(Ability):
             icon="\uD83C\uDFDD\uFE0F",
             name="Tremors in the Sand",
             class_key=ExpertiseClass.Guardian,
-            description="Mark an enemy for 2 turns.",
+            description="Mark an enemy, decrease their damage dealt by 30%, and increase the damage they take by 30% for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=2,
@@ -84,8 +84,20 @@ class TremorsInTheSand(Ability):
             caster=caster
         )
 
+        dmg_debuff = DmgDebuff(
+            turns_remaining=2,
+            value=0.3,
+            source_str=self.get_icon_and_name()
+        )
+
+        dmg_vuln = DmgVulnerability(
+            turns_remaining=2,
+            value=0.3,
+            source_str=self.get_icon_and_name()
+        )
+
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff, dmg_debuff, dmg_vuln])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -144,7 +156,7 @@ class Seaquake(Ability):
 class Sandwyrm(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 6% chance of 4 player party (Lvl. 60-70) victory against 1
+        # 22% chance of 4 player party (Lvl. 60-70) victory against 1
         # Avg Number of Turns (per entity): 13
 
         super().__init__("Sandwyrm" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
@@ -163,10 +175,10 @@ class Sandwyrm(NPC):
         
         self._expertise.add_xp_to_class_until_level(600, ExpertiseClass.Guardian)
         self._expertise.constitution = 275
-        self._expertise.strength = 150
+        self._expertise.strength = 120
         self._expertise.dexterity = 25
         self._expertise.intelligence = 100
-        self._expertise.luck = 47
+        self._expertise.luck = 77
         self._expertise.memory = 3
 
     def _setup_equipment(self):
