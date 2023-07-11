@@ -156,7 +156,7 @@ class Seaquake(Ability):
 class Sandwyrm(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 22% chance of 4 player party (Lvl. 60-70) victory against 1
+        # 13% chance of 4 player party (Lvl. 60-70) victory against 1
         # Avg Number of Turns (per entity): 13
 
         super().__init__("Sandwyrm" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
