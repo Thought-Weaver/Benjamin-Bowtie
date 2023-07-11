@@ -799,10 +799,10 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [[Jellyfish, Jellyfish, Jellyfish]]
-ALLY_CLASS_RANGE: range = range(30, 40)
+ENEMY_CLASSES: List[List[type]] = [[Sandwyrm]]
+ALLY_CLASS_RANGE: range = range(60, 70)
 
-SIMULATION_ITERATIONS = 128
+SIMULATION_ITERATIONS = 1024
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 

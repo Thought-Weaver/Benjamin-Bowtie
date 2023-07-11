@@ -94,7 +94,7 @@ class SimulationDuel():
                     entities.append(entity)
         return entities
 
-    def add_summons(self, summons: List[Summons], entity_list: List[Player | NPC]):
+    def add_summons(self, summons: List[Summons], entity_list: List[NPC]):
         for summon in summons:
             if summon == Summons.Waveform:
                 entity_list.append(Waveform())
@@ -604,14 +604,24 @@ class SimulationDuel():
         applicator_dueling = applicator.get_dueling()
         applicator_name = self.get_name(applicator)
 
+        potion_effect_mod: float = 1.0
+        if ClassTag.Consumable.Potion in self._selected_item.get_class_tags():
+            for se in applicator.get_dueling().status_effects:
+                if se.key == StatusEffectKey.PotionBuff:
+                    potion_effect_mod += se.value
+            for item in applicator.get_equipment().get_all_equipped_items():
+                for item_effect in item.get_item_effects().permanent:
+                    if item_effect.effect_type == EffectType.PotionMod:
+                        potion_effect_mod += item_effect.effect_value
+
         result_strs = []
         for target in self._selected_targets:
             target_name = self.get_name(target)
-            result_strs += [s.format(target_name, applicator_name) for s in target.get_dueling().apply_chance_status_effect_from_item(ItemEffectCategory.Permanent, self._selected_item, target, applicator, 0, 1, self._is_ally(target))]
+            result_strs += [s.format(target_name, applicator_name) for s in target.get_dueling().apply_chance_status_effect_from_item(ItemEffectCategory.Permanent, self._selected_item, target, applicator, 0, 1, self._is_ally(target), potion_effect_mod)]
             item_effects = self._selected_item.get_item_effects()
             if item_effects is not None:
                 for effect in item_effects.permanent:
-                    result_str = applicator_dueling.apply_consumable_item_effect(self._selected_item, effect, applicator, target)
+                    result_str = applicator_dueling.apply_consumable_item_effect(self._selected_item, effect, applicator, target, potion_effect_mod)
                     result_strs.append(result_str.format(applicator_name, self.get_name(target)))
 
         applicator.get_inventory().remove_item(self._selected_item_index, 1)

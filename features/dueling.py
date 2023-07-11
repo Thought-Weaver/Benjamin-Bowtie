@@ -749,7 +749,7 @@ class Dueling():
 
         return self._apply_status_effect_results([], chance_status_effect, target, self_entity, target_index, self_index, target_is_ally, None)
 
-    def apply_chance_status_effect_from_item(self, item_effect_cat: ItemEffectCategory, item: Item, target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool):
+    def apply_chance_status_effect_from_item(self, item_effect_cat: ItemEffectCategory, item: Item, target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool, potion_effect_mod: float):
         # The first element in the tuple is the percent chance of receiving the effect and the
         # second element is the time it'll last.
         chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]] = {}
@@ -768,14 +768,14 @@ class Dueling():
                         current_effect_info = chance_status_effect.get(se_key, (0, 0))
                         chance_status_effect[se_key] = (item_effect.effect_value + current_effect_info[0], max(item_effect.effect_time, current_effect_info[1]))
 
-        return self._apply_status_effect_results([], chance_status_effect, target, self_entity, target_index, self_index, target_is_ally, item.get_full_name())
+        return self._apply_status_effect_results([], chance_status_effect, target, self_entity, target_index, self_index, target_is_ally, item.get_full_name(), potion_effect_mod)
 
-    def _apply_status_effect_results(self, result_strs: List[str], chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]], target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool, source_str: str | None):
+    def _apply_status_effect_results(self, result_strs: List[str], chance_status_effect: Dict[StatusEffectKey, Tuple[float, int]], target: Player | NPC, self_entity: Player | NPC, target_index: int, self_index: int, target_is_ally: bool, source_str: str | None, potion_effect_mod: float=1.0):
         chance_poisoned, turns_poisoned = chance_status_effect.get(StatusEffectKey.Poisoned, (0, 0))
         if random() < chance_poisoned:
             status_effect = Poisoned(
                 turns_remaining=turns_poisoned,
-                value=POISONED_PERCENT_HP,
+                value=POISONED_PERCENT_HP * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -786,7 +786,7 @@ class Dueling():
         if random() < chance_bleeding:
             status_effect = Bleeding(
                 turns_remaining=turns_bleeding,
-                value=BLEED_PERCENT_HP,
+                value=BLEED_PERCENT_HP * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -797,7 +797,7 @@ class Dueling():
         if random() < chance_faltering:
             status_effect = TurnSkipChance(
                 turns_remaining=turns_faltering,
-                value=1,
+                value=1 * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -830,7 +830,7 @@ class Dueling():
         if random() < chance_charmed:
             status_effect = Charmed(
                 turns_remaining=turns_charmed,
-                value=1,
+                value=1 * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -841,7 +841,7 @@ class Dueling():
         if random() < chance_atrophied:
             status_effect = CannotAttack(
                 turns_remaining=turns_atrophied,
-                value=1,
+                value=1 * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -852,7 +852,7 @@ class Dueling():
         if random() < chance_sleeping:
             status_effect = Sleeping(
                 turns_remaining=turns_sleeping,
-                value=1,
+                value=1 * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -865,7 +865,7 @@ class Dueling():
         if percent_decaying != 0:
             status_effect = Decaying(
                 turns_remaining=turns_decaying,
-                value=percent_decaying,
+                value=percent_decaying * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -876,7 +876,7 @@ class Dueling():
         if random() < chance_undying:
             status_effect = Undying(
                 turns_remaining=turns_undying,
-                value=1,
+                value=1 * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -889,7 +889,7 @@ class Dueling():
         if random() < chance_enfeebled:
             status_effect = CannotUseAbilities(
                 turns_remaining=turns_enfeebled,
-                value=1,
+                value=1 * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -901,7 +901,7 @@ class Dueling():
         if percent_protected != 0:
             status_effect = DmgReduction(
                 turns_remaining=turns_protected,
-                value=percent_protected,
+                value=percent_protected * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -915,7 +915,7 @@ class Dueling():
         if percent_vulnerable != 0:
             status_effect = DmgVulnerability(
                 turns_remaining=turns_vulnerable,
-                value=percent_vulnerable,
+                value=percent_vulnerable * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -927,7 +927,7 @@ class Dueling():
         if damage_per_turn != 0:
             status_effect = FixedDmgTick(
                 turns_remaining=turns_echoing,
-                value=int(damage_per_turn),
+                value=int(damage_per_turn * potion_effect_mod),
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -939,7 +939,7 @@ class Dueling():
         if coins_generated != 0:
             status_effect = Generating(
                 turns_remaining=turns_generating,
-                value=int(coins_generated),
+                value=int(coins_generated * potion_effect_mod),
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -953,7 +953,7 @@ class Dueling():
         if percent_tarnished != 0:
             status_effect = Tarnished(
                 turns_remaining=turns_tarnished,
-                value=percent_tarnished,
+                value=percent_tarnished * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -966,7 +966,7 @@ class Dueling():
         if random() < chance_sanguinated:
             status_effect = ManaToHP(
                 turns_remaining=turns_sanguinated,
-                value=1,
+                value=1 * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -979,7 +979,7 @@ class Dueling():
         if random() < chance_absorbing:
             status_effect = PoisonHeals(
                 turns_remaining=turns_absorbing,
-                value=1,
+                value=int(1 * potion_effect_mod),
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -993,7 +993,7 @@ class Dueling():
         if percent_empowered != 0:
             status_effect = DmgBuff(
                 turns_remaining=turns_empowered,
-                value=percent_empowered,
+                value=percent_empowered * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1007,7 +1007,7 @@ class Dueling():
         if percent_diminished != 0:
             status_effect = DmgDebuff(
                 turns_remaining=turns_diminished,
-                value=percent_diminished,
+                value=percent_diminished * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1015,12 +1015,11 @@ class Dueling():
                 result_strs.append(target.get_dueling().add_status_effect_with_resist(status_effect, target, target_index))
 
         # Special case, similar to Decaying.
-        # TODO: Need to pass the source str into this function and then to the StackingDamage instance.
         percent_reverberating, turns_reverberating = chance_status_effect.get(StatusEffectKey.StackingDamage, (0, 0))
         if percent_reverberating != 0:
             status_effect = StackingDamage(
                 turns_remaining=turns_reverberating,
-                value=percent_reverberating,
+                value=percent_reverberating * potion_effect_mod,
                 caster=self_entity,
                 trigger_first_turn=False,
                 source_str=source_str
@@ -1032,7 +1031,7 @@ class Dueling():
         if con_buff != 0:
             status_effect = ConBuff(
                 turns_remaining=turns_con_buff,
-                value=con_buff,
+                value=con_buff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1045,7 +1044,7 @@ class Dueling():
         if con_debuff != 0:
             status_effect = ConDebuff(
                 turns_remaining=turns_con_debuff,
-                value=con_debuff,
+                value=con_debuff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1056,7 +1055,7 @@ class Dueling():
         if str_buff != 0:
             status_effect = StrBuff(
                 turns_remaining=turns_str_buff,
-                value=str_buff,
+                value=str_buff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1069,7 +1068,7 @@ class Dueling():
         if str_debuff != 0:
             status_effect = StrDebuff(
                 turns_remaining=turns_str_debuff,
-                value=str_debuff,
+                value=str_debuff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1080,7 +1079,7 @@ class Dueling():
         if dex_buff != 0:
             status_effect = DexBuff(
                 turns_remaining=turns_dex_buff,
-                value=dex_buff,
+                value=dex_buff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1093,7 +1092,7 @@ class Dueling():
         if dex_debuff != 0:
             status_effect = DexDebuff(
                 turns_remaining=turns_dex_debuff,
-                value=dex_debuff,
+                value=dex_debuff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1104,7 +1103,7 @@ class Dueling():
         if int_buff != 0:
             status_effect = IntBuff(
                 turns_remaining=turns_int_buff,
-                value=int_buff,
+                value=int_buff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1117,7 +1116,7 @@ class Dueling():
         if int_debuff != 0:
             status_effect = IntDebuff(
                 turns_remaining=turns_int_debuff,
-                value=int_debuff,
+                value=int_debuff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1128,7 +1127,7 @@ class Dueling():
         if lck_buff != 0:
             status_effect = LckBuff(
                 turns_remaining=turns_lck_buff,
-                value=lck_buff,
+                value=lck_buff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1141,7 +1140,7 @@ class Dueling():
         if lck_debuff != 0:
             status_effect = LckDebuff(
                 turns_remaining=turns_lck_debuff,
-                value=lck_debuff,
+                value=lck_debuff * potion_effect_mod,
                 trigger_first_turn=False,
                 source_str=source_str
             )
@@ -1365,15 +1364,9 @@ class Dueling():
 
         return ""
 
-    def apply_consumable_item_effect(self, item: Item, item_effect: Effect, self_entity: Player | NPC, target_entity: Player | NPC):
+    def apply_consumable_item_effect(self, item: Item, item_effect: Effect, self_entity: Player | NPC, target_entity: Player | NPC, potion_effect_mod: float):
         if not item_effect.meets_conditions(self_entity, item):
             return ""
-
-        potion_effect_mod: float = 1.0
-        if ClassTag.Consumable.Potion in item.get_class_tags():
-            for se in self_entity.get_dueling().status_effects:
-                if se.key == StatusEffectKey.PotionBuff:
-                    potion_effect_mod += se.value
 
         if item_effect.effect_type == EffectType.CleanseStatusEffects:
             target_entity.get_dueling().status_effects = []
@@ -1597,7 +1590,7 @@ class Dueling():
         if item_effect.effect_type == EffectType.Damage:
             result_strs: List[str] = []
 
-            damage: int = int(item_effect.effect_value)
+            damage: int = int(item_effect.effect_value * potion_effect_mod)
             target_dueling: Dueling = target_entity.get_dueling()
 
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct(target_entity.get_combined_req_met_effects())
