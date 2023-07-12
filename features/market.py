@@ -38,11 +38,20 @@ class SellModal(discord.ui.Modal):
         self._view = view
         self._message_id = message_id
 
+        self._item_info_input: discord.ui.TextInput = discord.ui.TextInput(
+            label="Item Info",
+            default=str(item),
+            style=discord.enums.TextStyle.long,
+            required=False
+        )
+
         self._count_input: discord.ui.TextInput = discord.ui.TextInput(
             label="Quantity",
             default="1",
             required=True
         )
+        
+        self.add_item(self._item_info_input)
         self.add_item(self._count_input)
 
     def _get_player(self, user_id: int) -> Player:
