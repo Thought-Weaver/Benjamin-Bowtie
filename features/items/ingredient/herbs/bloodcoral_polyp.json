@@ -6,7 +6,7 @@
     "rarity": "Epic",
     "description": "",
     "flavor_text": "Just don't get attached to it. Or, better said, don't let it attach to you.",
-    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
+    "class_tags": ["Ingredient", "Potion_Ingredient"],
     "state_tags": [],
     "count": 1
 }
