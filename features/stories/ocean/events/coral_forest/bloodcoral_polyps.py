@@ -84,6 +84,7 @@ class BloodcoralPolypsView(discord.ui.View):
             else:
                 item = LOADED_ITEMS.get_new_item(ItemKey.BloodcoralPolyp)
                 item.add_amount(random.randint(1, 3))
+                player.get_inventory().add_item(item)
                 result_str += f"{user.display_name} successfully got {item.get_count()} bloodcoral polyps\n"
 
         return Embed(title="Into the Swarm", description=f"You all attempt to grab some bloodcoral polyps:\n\n{result_str}")
