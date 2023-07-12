@@ -12,7 +12,7 @@ from discord.embeds import Embed
 from discord.ext import commands
 from enum import StrEnum
 from features.expertise import ExpertiseClass    
-from features.npcs.npc import NPC
+from features.npcs.npc import NPC, NPCRoles
 from features.npcs.summons.waveform import Waveform
 from features.npcs.summons.crab_servant import CrabServant
 from features.player import Player
@@ -837,7 +837,7 @@ class DuelView(discord.ui.View):
             return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\nPractice for the journeys yet to come.")
         elif all(isinstance(entity, NPC) for entity in self._enemies):
 
-            if all(isinstance(entity, Player) for entity in duel_result.winners):
+            if duel_result.winners == self._allies:
                 if self._player_victory_post_view is not None:
                     self.add_item(ContinueButton(self._player_victory_post_view, False))
             else:
@@ -936,11 +936,13 @@ class DuelView(discord.ui.View):
                 return Embed(title="Duel Finished", description=f"You have been vanquished!")
         else: # In a completely mixed duel
 
-            if self._player_victory_post_view is not None:
-                self.add_item(ContinueButton(self._player_victory_post_view, False))
-            if self._player_loss_post_view is not None:
-                self.add_item(ContinueButton(self._player_loss_post_view, True))
-
+            if duel_result.winners == self._allies:
+                if self._player_victory_post_view is not None:
+                    self.add_item(ContinueButton(self._player_victory_post_view, False))
+            else:
+                if self._player_loss_post_view is not None:
+                    self.add_item(ContinueButton(self._player_loss_post_view, True))
+            
             winner_str = ""
             winner_xp = ceil(0.15 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
@@ -1069,14 +1071,14 @@ class DuelView(discord.ui.View):
         self._reset_turn_variables()
 
         duel_info_str = self.get_duel_info_str()
-        if len(duel_info_str) > 4096:
+        if len(duel_info_str) > 1000:
             self.add_item(ScrollButton())
 
         return Embed(title="Choose an Action", description=duel_info_str[self._scroll_index:])
 
     def scroll(self):
         duel_info_str = self.get_duel_info_str()
-        self._scroll_index += 4096
+        self._scroll_index += 1000
         if self._scroll_index > len(duel_info_str):
             self._scroll_index = 0
 

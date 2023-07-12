@@ -412,7 +412,7 @@ class OceanDungeonEntranceView(discord.ui.View):
         return Embed(title="The Ocean", description=(
             f"Looking at the horizon of the ocean, your party begins the final preparations to find the source of the mysterious scrolls and oddities that have been turning up in the village.\n\nBefore you can set out, however, Yenna meets you on the beach, offering some cautionary words, \"There are powers beyond this world whose true nature we only barely understand. Know your own mind, beware those who would control you.\"\n\nShe reaches into her satchel and retrieves a few potions for you all. \"Drink these, they'll let you breathe underwater and help keep you alive against the dangers of the deep. Stranglekelp won't permanently infest you and bloodcoral won't do lasting damage, though more than that they can't save you from,\" she says. With a nod farewell and a sign of good fortune, she turns away and back to her tent.\n\nThe ocean awaits.\n\n"
             "**Recommendations:**\n\n_Tidewater Shallows: 4+ Players (Lvl. 30-40)_\n_Coral Forest: 4+ Players (Lvl. 40-50)_\n_Abyssal Plain: 4+ Players (Lvl. 50-60)_\n_Final Boss: 4+ Players (Lvl. 60-70)_\n\n"
-            f"Your group leader is {self._group_leader.display_name}. When your party is ready, you may enter the forest.\n\n"
+            f"Your group leader is {self._group_leader.display_name}. When your party is ready, you may enter the ocean.\n\n"
             f"{len(self.accepted_users)}/{len(self._users)} are ready to begin the journey.")
         )
 

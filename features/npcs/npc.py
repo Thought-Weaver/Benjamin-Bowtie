@@ -283,6 +283,9 @@ class NPC():
 
     def get_dueling_rewards(self):
         return self._dueling_rewards
+    
+    def get_role(self):
+        return self._role
 
     def __getstate__(self):
         return self.__dict__
