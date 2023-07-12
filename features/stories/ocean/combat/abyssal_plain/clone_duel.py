@@ -307,7 +307,7 @@ class CloneDuelView(discord.ui.View):
         for user in self._users:
             corruption = self._get_player(user.id).get_dungeon_run().corruption
             chance_resist = int(100 * (1 - corruption * 0.02))
-            resist_chance_strs.append(f"{user.display_name} has {corruption} stacks of Corruption and a {chance_resist}% to resist")
+            resist_chance_strs.append(f"{user.display_name} has {corruption} stacks of Corruption and a {chance_resist}% chance to resist")
         resistance_str = "\n".join(resist_chance_strs)
 
         return Embed(title="Decide", description=f"It's time to make your choice:\n\n{resistance_str}\n\n{len(self.players_joined_willingly + self.players_joined_with_fail)}/{len(self._users)} wish to take the throne\n{len(self.players_resisted)}/{len(self._users)} resisted the call of the sea")
