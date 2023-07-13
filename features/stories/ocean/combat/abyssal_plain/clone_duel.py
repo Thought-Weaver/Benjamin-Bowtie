@@ -180,6 +180,29 @@ class CloneDefeatView(discord.ui.View):
 # DUEL INTRO
 # -----------------------------------------------------------------------------
 
+class ContinueToDuelButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Continue")
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        await interaction.response.defer()
+        assert(interaction.message is not None)
+
+        view: CloneDuelView = self.view
+
+        enemies = view.generate_enemies()
+
+        victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        defeat_view: CloneDefeatView = CloneDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run(), view.players_joined_willingly)
+        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.players_resisted, enemies, player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
+        initial_info: Embed = duel_view.get_initial_embed()
+
+        await interaction.followup.edit_message(message_id=interaction.message.id, embed=initial_info, view=duel_view, content=None)
+
+
 class JoinButton(discord.ui.Button):
     def __init__(self):
         super().__init__(style=discord.ButtonStyle.blurple, label="Join")
@@ -188,27 +211,24 @@ class JoinButton(discord.ui.Button):
         if self.view is None:
             return
         
+        await interaction.response.defer()
+        assert(interaction.message is not None)
+        
         view: CloneDuelView = self.view
 
         result_embed: Embed = view.join(interaction.user)
         if len(view.get_users()) != len(view.players_joined_with_fail) + len(view.players_resisted) + len(view.players_joined_willingly):
-            await interaction.response.edit_message(embed=result_embed, view=view, content=None)
+            await interaction.followup.edit_message(message_id=interaction.message.id, embed=result_embed, view=view, content=None)
             return
 
         defeat_view: CloneDefeatView = CloneDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run(), view.players_joined_willingly)
 
         if len(view.get_users()) == len(view.players_joined_with_fail) + len(view.players_joined_willingly):
             # In the case where all the players joined the false village
-            await interaction.response.edit_message(embed=defeat_view.get_initial_embed(), view=defeat_view, content=None)
+            await interaction.followup.edit_message(message_id=interaction.message.id, embed=defeat_view.get_initial_embed(), view=defeat_view, content=None)
             return
 
-        enemies = view.generate_enemies()
-
-        victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.players_resisted, enemies, player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
-        initial_info: Embed = duel_view.get_initial_embed()
-
-        await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)
+        await interaction.followup.edit_message(message_id=interaction.message.id, embed=result_embed, view=view, content=None)
 
 
 class ResistButton(discord.ui.Button):
@@ -219,27 +239,24 @@ class ResistButton(discord.ui.Button):
         if self.view is None:
             return
         
+        await interaction.response.defer()
+        assert(interaction.message is not None)
+
         view: CloneDuelView = self.view
 
         result_embed: Embed = view.resist(interaction.user)
         if len(view.get_users()) != len(view.players_joined_with_fail) + len(view.players_resisted) + len(view.players_joined_willingly):
-            await interaction.response.edit_message(embed=result_embed, view=view, content=None)
+            await interaction.followup.edit_message(message_id=interaction.message.id, embed=result_embed, view=view, content=None)
             return
 
         defeat_view: CloneDefeatView = CloneDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run(), view.players_joined_willingly)
 
         if len(view.get_users()) == len(view.players_joined_with_fail) + len(view.players_joined_willingly):
             # In the case where all the players joined the false village
-            await interaction.response.edit_message(embed=defeat_view.get_initial_embed(), view=defeat_view, content=None)
+            await interaction.followup.edit_message(message_id=interaction.message.id, embed=defeat_view.get_initial_embed(), view=defeat_view, content=None)
             return
 
-        enemies = view.generate_enemies()
-
-        victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-        duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.players_resisted, enemies, player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
-        initial_info: Embed = duel_view.get_initial_embed()
-
-        await interaction.response.edit_message(embed=initial_info, view=duel_view, content=None)
+        await interaction.followup.edit_message(message_id=interaction.message.id, embed=result_embed, view=view, content=None)
 
 
 class ContinueButton(discord.ui.Button):
@@ -300,6 +317,11 @@ class CloneDuelView(discord.ui.View):
 
     def get_resist_or_join_page(self):
         self.clear_items()
+
+        if len(self.get_users()) == len(self.players_joined_with_fail) + len(self.players_resisted) + len(self.players_joined_willingly):
+            self.add_item(ContinueToDuelButton())
+            return Embed(title="All Will Be Us", description="With an otherworldly noise, the creature before you screams in fury and dismay at those who resisted the call of this place and the throne they have prepared. From the building facsimiles, globs of sand, seaweed, and exoskeleton begin to form into multiple new beings that rush at you with mostly blank expressions.\n\nThose faces which aren't empty seem familiar -- far too familiar.")
+        
         self.add_item(JoinButton())
         self.add_item(ResistButton())
 

@@ -11,7 +11,7 @@ from features.player import Player
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import BonusDamageOnAttack, ConDebuff, Decaying, DexDebuff, FixedDmgTick, IntDebuff, LckDebuff, StrDebuff, TurnSkipChance
+from features.shared.statuseffect import BonusDamageOnAttack, ConDebuff, Decaying, DexDebuff, DmgReduction, FixedDmgTick, IntDebuff, LckDebuff, StrDebuff, TurnSkipChance
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -215,7 +215,7 @@ class MeltingSmithy(Ability):
             icon="\u2692\uFE0F",
             name="Melting Smithy",
             class_key=ExpertiseClass.Fisher,
-            description="Your next attack deals 150 additional damage.",
+            description="Your next attack deals 150 additional damage and gain 40% Protected for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -233,8 +233,14 @@ class MeltingSmithy(Ability):
             source_str=self.get_icon_and_name()
         )
 
+        protect_buff = DmgReduction(
+            turns_remaining=2,
+            value=0.4,
+            source_str=self.get_icon_and_name()
+        )
+
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff, protect_buff])
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -288,8 +294,8 @@ class FalseVillage(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
 
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.SandwyrmMaw))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.SandwyrmForm))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.VillageDebris))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.FalseVillageForm))
 
         self._expertise.update_stats(self.get_combined_attributes())
 

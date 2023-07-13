@@ -799,7 +799,7 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [[Sandwyrm]]
+ENEMY_CLASSES: List[List[type]] = [[FalseVillage]]
 ALLY_CLASS_RANGE: range = range(60, 70)
 
 SIMULATION_ITERATIONS = 256
