@@ -32,7 +32,7 @@ class VenomSpit(Ability):
             icon="\uD83C\uDF2B",
             name="Venom Spit",
             class_key=ExpertiseClass.Alchemist,
-            description="Spit toxungen that deals 4-6 damage to all enemies with a 90% chance to Poison them for 5% of their max health taken as damage every turn for the next 2 turns.",
+            description="Spit toxungen that deals 4-6 damage to all enemies with a 90% chance to Poison them for the next 2 turns.",
             flavor_text="",
             mana_cost=5,
             cooldown=2,
