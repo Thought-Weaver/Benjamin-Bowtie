@@ -132,8 +132,8 @@ class FalseVillageTreasureRoomView(discord.ui.View):
 
         self._prob_map = {
             Rarity.Epic: 0.35,
-            Rarity.Legendary: 0.5,
-            Rarity.Artifact: 0.15,
+            Rarity.Legendary: 0.45,
+            Rarity.Artifact: 0.2,
         }
         
         self._min_level = 50
@@ -161,7 +161,7 @@ class FalseVillageTreasureRoomView(discord.ui.View):
                             self._possible_rewards.append(item_key)
                     else:
                         # Add additional gemstone keys to increase probability
-                        self._possible_rewards += [item_key for _ in range(15)]
+                        self._possible_rewards += [item_key for _ in range(10)]
         self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
 
         self._EXTRA_REWARD_LUCK_PROB = 0.01

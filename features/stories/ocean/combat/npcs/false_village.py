@@ -28,7 +28,7 @@ class PathsUpended(Ability):
             icon="\uD83C\uDFDE",
             name="Paths Upended",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 80-90 damage to all enemies and cause Faltering for 1 turn.",
+            description="Deal 80-85 damage to all enemies and cause Faltering for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=5,
@@ -48,7 +48,7 @@ class PathsUpended(Ability):
             source_str=self.get_icon_and_name()
         )
         
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(80, 90), [debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(80, 85), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -170,7 +170,7 @@ class TentOfEyes(Ability):
             icon="\u26FA",
             name="Tent of Eyes",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 25 damage to an enemy for each stack of Corruption on them (min. 25 damage). Cause 50% Decaying on them for 5 turns.",
+            description="Deal 25 damage to an enemy for each stack of Corruption on them (min. 25 damage). Cause 50% Decaying on them for 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=5,
@@ -185,7 +185,7 @@ class TentOfEyes(Ability):
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
 
         debuff = Decaying(
-            turns_remaining=5,
+            turns_remaining=3,
             value=0.5,
             source_str=self.get_icon_and_name()
         )
@@ -215,7 +215,7 @@ class MeltingSmithy(Ability):
             icon="\u2692\uFE0F",
             name="Melting Smithy",
             class_key=ExpertiseClass.Fisher,
-            description="Your next attack deals 150 additional damage and gain 40% Protected for 2 turns.",
+            description="Your next attack deals 150 additional damage and gain 20% Protected for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -235,7 +235,7 @@ class MeltingSmithy(Ability):
 
         protect_buff = DmgReduction(
             turns_remaining=2,
-            value=0.4,
+            value=0.2,
             source_str=self.get_icon_and_name()
         )
 

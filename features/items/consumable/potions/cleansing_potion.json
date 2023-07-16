@@ -10,7 +10,7 @@
     "state_tags": [],
     "count": 1,
     "consumable_stats": {
-        "num_targets": 1,
+        "num_targets": 0,
         "target_own_group": true
     },
     "item_effects": {
