@@ -206,11 +206,23 @@ class SimulationDuel():
                 self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)} took {start_damage} damage! "
 
+        decaying_adjustment: float = 0
+        for se in entity.get_dueling().status_effects:
+            if se.key == StatusEffectKey.Decaying:
+                decaying_adjustment += se.value
+
+        if decaying_adjustment != 0:
+            start_heals += ceil(start_heals * -decaying_adjustment)
+
         entity.get_expertise().heal(start_heals)
         if start_heals > 0:
             if self._additional_info_string_data != "":
                 self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)} had {start_heals} health restored! "
+        elif start_heals < 0:
+            if self._additional_info_string_data != "":
+                self._additional_info_string_data += "\n"
+            self._additional_info_string_data += f"{self.get_name(entity)} took {start_heals} damage due to Decaying! "
 
         if start_armor_restore != 0:
             pre_armor: int = entity.get_dueling().armor
