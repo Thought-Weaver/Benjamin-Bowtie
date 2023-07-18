@@ -1607,7 +1607,7 @@ class VoidformedMimicCompanion(Companion):
         if self._level >= 40 - great_bond_modifier:
             return Effect(
                 EffectType.RestoreHealth,
-                effect_value=1,
+                effect_value=5,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[],
@@ -1616,7 +1616,7 @@ class VoidformedMimicCompanion(Companion):
         elif self._level >= 30 - great_bond_modifier:
             return Effect(
                 EffectType.RestoreHealth,
-                effect_value=2,
+                effect_value=4,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[],
@@ -1634,7 +1634,7 @@ class VoidformedMimicCompanion(Companion):
         elif self._level >= 10 - great_bond_modifier:
             return Effect(
                 EffectType.RestoreHealth,
-                effect_value=4,
+                effect_value=2,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[],
@@ -1643,7 +1643,7 @@ class VoidformedMimicCompanion(Companion):
         else:
             return Effect(
                 EffectType.RestoreHealth,
-                effect_value=5,
+                effect_value=1,
                 effect_time=-1,
                 conditions=[],
                 condition_values=[],
