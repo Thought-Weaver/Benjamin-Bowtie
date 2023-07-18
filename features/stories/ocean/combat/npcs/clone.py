@@ -96,7 +96,9 @@ class Clone(NPC):
             self._dueling = Dueling()
         
         for ability in self._org_abilities:
-            self._dueling.abilities.append(ability.__class__()) # type: ignore
+            # Clones don't have items, so this strictly hinders them
+            if ability.get_name() != "Quick Access I":
+                self._dueling.abilities.append(ability.__class__()) # type: ignore
 
     def _setup_npc_params(self):
         self._setup_inventory()
