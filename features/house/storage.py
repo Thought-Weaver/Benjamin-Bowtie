@@ -598,6 +598,7 @@ class StorageView(discord.ui.View):
 
         if self._intent is None:
             self._selected_bin_key = ""
+            self._get_storage_buttons()
         if self._intent == Intent.Store:
             self._get_store_storage_bin_buttons()
         if self._intent == Intent.Retrieve:
@@ -612,6 +613,7 @@ class StorageView(discord.ui.View):
 
         if self._intent is None:
             self._selected_bin_key = ""
+            self._get_storage_buttons()
         if self._intent == Intent.Store:
             self._get_store_storage_bin_buttons()
         if self._intent == Intent.Retrieve:
