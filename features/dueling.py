@@ -123,7 +123,12 @@ class Dueling():
 
         chance_resist, resist_item_strs = resist_status_effect.get(status_effect.key, (0, []))
         if random() >= chance_resist:
-            self.status_effects.append(status_effect)
+            if status_effect.value_stackable and any(se.key == status_effect.key for se in self.status_effects):
+                extra_value = sum(se.value for se in self.status_effects if se.key == status_effect.key)
+                status_effect.value += extra_value
+                self.status_effects = [se for se in self.status_effects if se.key != status_effect.key] + [status_effect]
+            else:
+                self.status_effects.append(status_effect)
             se_turns_str = f"{status_effect.turns_remaining} turns" if status_effect.turns_remaining >= 0 else "the rest of the duel"
             return "{" + f"{target_index}" + "}" + f" is now {status_effect.name} for {se_turns_str}"
         else:

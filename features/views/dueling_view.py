@@ -1718,12 +1718,15 @@ class DuelView(discord.ui.View):
                         self._selected_targets = self._enemies
                     else:
                         self._selected_targets = self._allies
+
+                    return self.do_action_on_selected_targets()
                 elif (entity in self._enemies and not target_own_group) or (entity in self._allies and target_own_group):
                     if not charmed:
                         self._selected_targets = self._allies
                     else:
                         self._selected_targets = self._enemies
-                return self.do_action_on_selected_targets()
+
+                    return self.do_action_on_selected_targets()
 
             if self._targets_remaining == -2:
                 self._selected_targets = self._turn_order

@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-VERSION_NUMBER = "20230707" # Just for tracking releases
+VERSION_NUMBER = "20230807" # Just for tracking releases
 
 class BenjaminBowtieBot(commands.Bot):
     def __init__(self):

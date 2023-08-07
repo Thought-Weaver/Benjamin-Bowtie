@@ -3,8 +3,10 @@ from __future__ import annotations
 import discord
 
 from discord import Embed
+from enum import StrEnum
 from features.expertise import Expertise, ExpertiseClass
-from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, BoundToGetLuckyIV, BoundToGetLuckyV, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CrabnadoI, CrabnadoII, CrabnadoIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CurseOfTheSeaIV, CursedCoinsI, CursedCoinsII, CursedCoinsIII, CursedCoinsIV, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EmpowermentII, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HighTideIV, HookI, HookII, HookIII, HookIV, IncenseI, IncenseII, IncenseIII, IncenseIV, IncenseV, ParalyzingFumesI, ParalyzingFumesII, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, PressTheAdvantageII, PressTheAdvantageIII, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, TauntII, TauntIII, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV, ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV, UnbreakingI, UnbreakingII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlpoolIV, WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
+from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, BoundToGetLuckyIV, BoundToGetLuckyV, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, ControlI, ControlII, ControlIII, ConversionI, CorruptionI, CorruptionII, CorruptionIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CrabnadoI, CrabnadoII, CrabnadoIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CurseOfTheSeaIV, CursedCoinsI, CursedCoinsII, CursedCoinsIII, CursedCoinsIV, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EmpowermentII, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HighTideIV, HookI, HookII, HookIII, HookIV, IncenseI, IncenseII, IncenseIII, IncenseIV, IncenseV, MindSpikeI, MindSpikeII, MindSpikeIII, ParalyzingFumesI, ParalyzingFumesII, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, PressTheAdvantageII, PressTheAdvantageIII, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, TauntII, TauntIII, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV, ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV, UnbreakingI, UnbreakingII, UncannyWhispersI, UncannyWhispersII, UncannyWhispersIII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, VoidformI, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlpoolIV, WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
+from features.shared.item import LOADED_ITEMS
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
 
@@ -12,6 +14,13 @@ from typing import TYPE_CHECKING, List
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.player import Player
+
+# -----------------------------------------------------------------------------
+# ENUMS
+# -----------------------------------------------------------------------------
+
+class SpecialAbilityClasses(StrEnum):
+    Void = "Void"
 
 # -----------------------------------------------------------------------------
 # TRAINER VIEW GUI
@@ -70,6 +79,20 @@ class AlchemistTrainerButton(discord.ui.Button):
         view: TrainerView = self.view
         if interaction.user == view.get_user():
             response = view.visit_madame_yennas_tent()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class VoidTrainerButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"Seaside Cavern", row=row)
+        
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: TrainerView = self.view
+        if interaction.user == view.get_user():
+            response = view.visit_seaside_cavern()
             await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
@@ -143,7 +166,7 @@ class TrainerView(discord.ui.View):
 
         self._page: int = 0
         self._current_ability: Ability | None = None
-        self._current_class: ExpertiseClass = ExpertiseClass.Unknown
+        self._current_class: ExpertiseClass | SpecialAbilityClasses = ExpertiseClass.Unknown
 
         self._NUM_PER_PAGE = 4
 
@@ -201,6 +224,15 @@ class TrainerView(discord.ui.View):
             [QuickAccessI]
         ]
 
+        self._void_abilities: List[List[type]] = [
+            [CorruptionI, CorruptionII, CorruptionIII],
+            [ConversionI],
+            [UncannyWhispersI, UncannyWhispersII, UncannyWhispersIII],
+            [VoidformI],
+            [ControlI, ControlII, ControlIII],
+            [MindSpikeI, MindSpikeII, MindSpikeIII]
+        ]
+
         self._display_initial_buttons()
 
     def _get_player(self) -> Player:
@@ -236,6 +268,13 @@ class TrainerView(discord.ui.View):
                 "The table has white wax candles on either side, illuminating tarot cards, potions, herbs, and various occult implements that belong to the figure hidden in the shadows beyond the table's edge.\n\n"
                 "\"Alchemy? I can teach you, but the road is not an easy one.\""
             ))
+        if self._current_class == SpecialAbilityClasses.Void:
+            return Embed(title="Seaside Cavern", description=(
+                "As you begin to approach the sea shrine at the bluff, the timeworn symbol engraved at the top seems almost to draw in the light around it. "\
+                "There's a whisper in your ear in a language you don't know and an instinct to climb down the bluff to the rocky shore below.\n\n"
+                "Descending the sheer cliffside, the whispers don't subside -- in fact they only seem to grow louder. The waves themselves echo the voice encouraging you to keep going, to find what waits below. "
+                "There, amid the jagged rocks, is a small entrance to a cavern leading ever further into darkness. You get the sense a different kind of offering is needed here, to be given in exchange for power."
+            ))
         return Embed(title="Where are you?", description="In the midst of knowing where you were, suddenly now there is a bleak unknown, a pale that sparks fear and awe.")
 
     def get_available_abilities(self, player: Player, all_abilities: List[List[type]]):
@@ -259,6 +298,7 @@ class TrainerView(discord.ui.View):
 
         if not self._change_abilities_only:
             self.add_item(FisherTrainerButton(0))
+            self.add_item(VoidTrainerButton(0))
             self.add_item(GuardianTrainerButton(1))
             self.add_item(MerchantTrainerButton(2))
             self.add_item(AlchemistTrainerButton(3))
@@ -276,6 +316,8 @@ class TrainerView(discord.ui.View):
             abilities_to_search = self._merchant_abilities
         if self._current_class == ExpertiseClass.Alchemist:
             abilities_to_search = self._alchemist_abilities
+        if self._current_class == SpecialAbilityClasses.Void:
+            abilities_to_search = self._void_abilities
 
         for ability_group in abilities_to_search:
             try:
@@ -294,7 +336,12 @@ class TrainerView(discord.ui.View):
             description = f"Acquired {purchased_ability.get_icon_and_name()}! You can equip it from the main menu."
         else:
             if self._current_ability is not None:
-                description = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._current_ability}\n\n**Price: {self._current_ability.get_purchase_cost()}**{self._get_next_level()}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
+                alt_currency_key = self._current_ability.get_alt_currency()
+                alt_currency_str = ""
+                if alt_currency_key is not None:
+                    item = LOADED_ITEMS.get_new_item(alt_currency_key)
+                    alt_currency_str = f" {item.get_name()}"
+                description = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._current_ability}\n\n**Price: {self._current_ability.get_purchase_cost()}{alt_currency_str}**{self._get_next_level()}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n"
             description += f"You have {player.get_inventory().get_coins_str()}.\n\nChoose an ability to learn more."
 
         if self._current_class == ExpertiseClass.Fisher:
@@ -305,6 +352,8 @@ class TrainerView(discord.ui.View):
             return Embed(title="The Crown & Anchor Tavern", description=description)
         if self._current_class == ExpertiseClass.Alchemist:
             return Embed(title="Madame Yenna's Tent", description=description)
+        if self._current_class == SpecialAbilityClasses.Void:
+            return Embed(title="Seaside Cavern", description=description)
         return Embed(title="Where are you?", description="In the midst of knowing where you were, suddenly now there is a bleak unknown, a pale that sparks fear and awe.")
 
     def _get_current_page_buttons(self):
@@ -322,6 +371,8 @@ class TrainerView(discord.ui.View):
             available_abilities = self._merchant_abilities
         if self._current_class == ExpertiseClass.Alchemist:
             available_abilities = self._alchemist_abilities
+        if self._current_class == SpecialAbilityClasses.Void:
+            available_abilities = self._void_abilities
         all_slots = self.get_available_abilities(player, available_abilities)
 
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
@@ -334,7 +385,15 @@ class TrainerView(discord.ui.View):
             self.add_item(NextButton(min(4, len(page_slots))))
         
         if self._current_ability is not None:
-            if available_coins >= self._current_ability.get_purchase_cost():
+            num_items = -1
+            alt_currency_key = self._current_ability.get_alt_currency()
+            if alt_currency_key is not None:
+                index = player.get_inventory().search_by_key(alt_currency_key)
+                num_items = player.get_inventory().get_inventory_slots()[index].get_count()
+            
+            can_purchase_with_coins = alt_currency_key is None and available_coins >= self._current_ability.get_purchase_cost()
+            can_purchase_with_items = alt_currency_key is not None and num_items >= self._current_ability.get_purchase_cost()
+            if can_purchase_with_coins or can_purchase_with_items:
                 current_class_level: int = player_expertise.get_level_for_class(self._current_ability.get_class_key())
                 if current_class_level >= self._current_ability.get_level_requirement():
                     self.add_item(ConfirmPurchaseButton(min(4, len(page_slots))))
@@ -381,6 +440,13 @@ class TrainerView(discord.ui.View):
         self._get_current_page_buttons()
         return self.get_initial_embed_for_class()
 
+    def visit_seaside_cavern(self):
+        self._current_ability = None
+        self._current_class = SpecialAbilityClasses.Void
+        self._page = 0
+        self._get_current_page_buttons()
+        return self.get_initial_embed_for_class()
+
     def select_ability(self, ability: Ability):
         self._current_ability = ability
         self._get_current_page_buttons()
@@ -417,8 +483,13 @@ class TrainerView(discord.ui.View):
             player: Player = self._get_player()
             ability: Ability = self._current_ability
 
-            player.get_inventory().remove_coins(ability.get_purchase_cost())
-            
+            alt_currency_key = self._current_ability.get_alt_currency()
+            if alt_currency_key is None:
+                player.get_inventory().remove_coins(ability.get_purchase_cost())
+            else:
+                index = player.get_inventory().search_by_key(alt_currency_key)
+                player.get_inventory().get_inventory_slots()[index].remove_amount(ability.get_purchase_cost())
+
             available_abilities = []
             if self._current_class == ExpertiseClass.Fisher:
                 available_abilities = self._fisher_abilities
@@ -428,6 +499,8 @@ class TrainerView(discord.ui.View):
                 available_abilities = self._merchant_abilities
             if self._current_class == ExpertiseClass.Alchemist:
                 available_abilities = self._alchemist_abilities
+            if self._current_class == SpecialAbilityClasses.Void:
+                available_abilities = self._void_abilities
             found_equipped = self.remove_lower_level_abilities(player, ability, available_abilities)
 
             if found_equipped: # Replace the removed version with the new one

@@ -135,7 +135,7 @@ NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
 # -----------------------------------------------------------------------------
 
 class StatusEffect():
-    def __init__(self, turns_remaining: int, value: (float | int), name: str, key: StatusEffectKey, source_str: str | None=None, trigger_first_turn: bool=True):
+    def __init__(self, turns_remaining: int, value: (float | int), name: str, key: StatusEffectKey, source_str: str | None=None, trigger_first_turn: bool=True, value_stackable: bool=False):
         # If this is -1, then the buff applies for the rest of the duel
         self.turns_remaining: int = turns_remaining
         self.value: float | int = value
@@ -143,6 +143,7 @@ class StatusEffect():
         self.key: StatusEffectKey = key
         self.source_str: str | None = source_str
         self.trigger_first_turn: bool = trigger_first_turn
+        self.value_stackable: bool = value_stackable
         
     def decrement_turns_remaining(self):
         if not self.trigger_first_turn:
@@ -741,7 +742,9 @@ class RegenerateArmor(StatusEffect):
 
 class Corrupted(StatusEffect):
     def __init__(self, turns_remaining: int, value: int, source_str: str | None=None, trigger_first_turn: bool=True):
-        super().__init__(turns_remaining, value, "Corrupted", StatusEffectKey.Corrupted, source_str, trigger_first_turn)
+        # Corrupted is a special case where turns_remaining should always be -1, so we can trivially get value
+        # stacking.
+        super().__init__(turns_remaining, value, "Corrupted", StatusEffectKey.Corrupted, source_str, trigger_first_turn, value_stackable=True)
 
     def __str__(self):
         display_str = f"{self.name}: You have {self.value} stacks of corruption, making it easier for certain enemies to influence you"
