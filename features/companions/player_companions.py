@@ -99,6 +99,7 @@ class PlayerCompanions():
     def __init__(self):
         self.companions: Dict[CompanionKey, Companion] = {}
         self.current_companion: CompanionKey | None = None
+        self.favorites: List[CompanionKey] = []
 
     def tick(self):
         for key in self.companions.keys():
@@ -110,6 +111,7 @@ class PlayerCompanions():
     def __setstate__(self, state: dict):
         self.companions = state.get("companions", {})
         self.current_companion = state.get("current_companion", None)
+        self.favorites = state.get("favorites", [])
 
 # -----------------------------------------------------------------------------
 # COMPANIONS VIEW
@@ -121,8 +123,8 @@ class Intent(StrEnum):
 
 
 class CompanionButton(discord.ui.Button):
-    def __init__(self, companion: Companion, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label=f"{companion.get_name()}", row=row, emoji=companion.get_icon())
+    def __init__(self, companion: Companion, row: int, is_favorite: bool):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"{companion.get_name()}" + ("*" if is_favorite else ""), row=row, emoji=companion.get_icon())
         
         self._companion = companion
 
@@ -217,6 +219,36 @@ class NameCompanionButton(discord.ui.Button):
             )
 
 
+class FavoriteCompanionButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label=f"Favorite", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: PlayerCompanionsView = self.view
+        if interaction.user == view.get_user():
+            response = view.favorite_companion()
+
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class UnfavoriteCompanionButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label=f"Unfavorite", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: PlayerCompanionsView = self.view
+        if interaction.user == view.get_user():
+            response = view.unfavorite_companion()
+
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
 class ExitButton(discord.ui.Button):
     def __init__(self, row: int):
         super().__init__(style=discord.ButtonStyle.red, label=f"Exit", row=row)
@@ -264,10 +296,11 @@ class PlayerCompanionsView(discord.ui.View):
         player: Player = self._get_player()
         companions: PlayerCompanions = player.get_companions()
         all_slots = list(companions.companions.values())
+        all_slots = sorted(all_slots, key=lambda x: (x.get_key() not in companions.favorites, companions.favorites.index(x.get_key()) if x in companions.favorites else 0))
 
         page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, companion in enumerate(page_slots):
-            self.add_item(CompanionButton(companion, i))
+            self.add_item(CompanionButton(companion, i, companion.get_key() in companions.favorites))
 
         if self._page != 0:
             self.add_item(PrevButton(min(self._NUM_PER_PAGE, len(page_slots))))
@@ -277,6 +310,11 @@ class PlayerCompanionsView(discord.ui.View):
         if self._selected_companion is not None:
             if companions.current_companion != self._selected_companion.get_key():
                 self.add_item(ChooseButton(min(self._NUM_PER_PAGE, len(page_slots))))
+            else:
+                if self._selected_companion.get_key() not in companions.favorites:
+                    self.add_item(FavoriteCompanionButton(min(self._NUM_PER_PAGE, len(page_slots))))
+                else:
+                    self.add_item(UnfavoriteCompanionButton(min(self._NUM_PER_PAGE, len(page_slots))))
             self.add_item(FeedButton(min(self._NUM_PER_PAGE, len(page_slots))))
             self.add_item(NameCompanionButton(min(self._NUM_PER_PAGE, len(page_slots))))
 
@@ -319,6 +357,26 @@ class PlayerCompanionsView(discord.ui.View):
 
     def select_companion(self, companion: Companion):
         self._selected_companion = companion
+
+        self._get_companions_page_buttons()
+        return self._display_companion_info()
+
+    def favorite_companion(self):
+        player: Player = self._get_player()
+        companions: PlayerCompanions = player.get_companions()
+
+        if self._selected_companion is not None and self._selected_companion.get_key() not in companions.favorites:
+            companions.favorites.append(self._selected_companion.get_key())
+
+        self._get_companions_page_buttons()
+        return self._display_companion_info()
+
+    def unfavorite_companion(self):
+        player: Player = self._get_player()
+        companions: PlayerCompanions = player.get_companions()
+
+        if self._selected_companion is not None and self._selected_companion.get_key() in companions.favorites:
+            companions.favorites.remove(self._selected_companion.get_key())
 
         self._get_companions_page_buttons()
         return self._display_companion_info()
