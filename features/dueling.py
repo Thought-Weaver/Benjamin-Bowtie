@@ -710,6 +710,7 @@ class Dueling():
         # TODO: This could be a condition in the effect itself.
         if item is not None and item_effect.effect_type == EffectType.ResurrectOnce and self_entity.get_expertise().hp <= 0:
             self_entity.get_expertise().heal(self_entity.get_expertise().max_hp)
+            self_entity.get_dueling().armor = self_entity.get_equipment().get_total_reduced_armor(self_entity.get_expertise().level, self_entity.get_non_status_combined_attributes())
 
             equipment_dict = self_entity.get_equipment().get_all_equipment_dict()
             for slot, equipped_item in equipment_dict.items():
@@ -719,7 +720,7 @@ class Dueling():
             item_index = self_entity.get_inventory().search_by_key(item.get_key())
             self_entity.get_inventory().remove_item(item_index, 1)
 
-            return (damage_dealt, f"{item.get_full_name()} prevented " + "{" + f"{self_entity_index}" + "}" + " from dying, restored you to full health, and shattered")
+            return (damage_dealt, f"{item.get_full_name()} prevented " + "{" + f"{self_entity_index}" + "}" + " from dying, restored you to full health and armor, then shattered")
 
         return (damage_dealt, "")
 

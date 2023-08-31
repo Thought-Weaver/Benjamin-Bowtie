@@ -57,9 +57,8 @@ class StargazeButton(discord.ui.Button):
             return
         
         view: DarkBetweenTheStarsView = self.view
-        if interaction.user not in view.rested_users:
-            response = view.stargaze()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
+        response = view.stargaze()
+        await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 class DarkBetweenTheStarsView(discord.ui.View):

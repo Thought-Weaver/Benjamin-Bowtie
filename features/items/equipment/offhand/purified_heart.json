@@ -13,7 +13,7 @@
     "state_tags": [],
     "count": 1,
     "item_effects": {
-        "permanent": [
+        "on_damaged": [
             {
                 "effect_type": "ResurrectOnce",
                 "effect_value": 0,

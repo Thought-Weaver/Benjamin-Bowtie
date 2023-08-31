@@ -17,7 +17,10 @@
     "level_requirement": 24,
     "altering_item_keys": [],
     "item_effects": {
-        "permanent": [
+        "permanent": [],
+        "on_turn_start": [],
+        "on_turn_end": [],
+        "on_damaged": [
             {
                 "effect_type": "ResurrectOnce",
                 "effect_value": -1,
@@ -27,9 +30,6 @@
                 "associated_status_effect": null
             }
         ],
-        "on_turn_start": [],
-        "on_turn_end": [],
-        "on_damaged": [],
         "on_successful_ability_used": [],
         "on_successful_attack": [
             {
