@@ -1,0 +1,93 @@
+{
+    "key": "items/weapon/dungeon_npcs/buffeting_winds",
+    "icon": "\uD83D\uDCA8",
+    "name": "Buffeting Winds",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 0,
+        "max_damage": 0,
+        "num_targets": 4
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "TurnSkipChance"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Charmed"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Sleeping"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotAttack"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotUseAbilities"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Bleeding"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Poisoned"
+            }
+        ],
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 50,
+                "effect_time": 4,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "FixedDmgTick"
+            }
+        ],
+        "on_successful_ability_used": []
+    }
+}

@@ -1,0 +1,60 @@
+{
+    "key": "items/weapon/dungeon_npcs/misty_form",
+    "icon": "\uD83C\uDF2B\uFE0F",
+    "name": "Misty Form",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 45,
+        "max_damage": 50,
+        "num_targets": 2
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromInt",
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Bleeding"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Poisoned"
+            }
+        ],
+        "on_ability_used_against": [
+            {
+                "effect_type": "DexMod",
+                "effect_value": -15,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ]
+    }
+}

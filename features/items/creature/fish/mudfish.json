@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/mudfish",
+    "icon": "\uD83D\uDC21",
+    "name": "Mudfish",
+    "value": 12,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

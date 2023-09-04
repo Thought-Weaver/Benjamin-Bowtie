@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/pale_tetra",
+    "icon": "\uD83D\uDC20",
+    "name": "Pale Tetra",
+    "value": 50,
+    "rarity": "Rare",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

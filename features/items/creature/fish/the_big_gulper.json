@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/the_big_gulper",
+    "icon": "\uD83E\uDD88",
+    "name": "The Big Gulper",
+    "value": 500,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

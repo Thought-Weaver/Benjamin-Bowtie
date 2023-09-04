@@ -1,0 +1,44 @@
+{
+    "key": "items/weapon/dungeon_npcs/morel_tendrils",
+    "icon": "\uD83C\uDF44",
+    "name": "Morel Tendrils",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 70,
+        "max_damage": 75,
+        "num_targets": 1
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromStr",
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ],
+        "on_damaged": [
+            {
+                "effect_type": "DmgBuff",
+                "effect_value": 0.2,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            }
+        ]
+    }
+}

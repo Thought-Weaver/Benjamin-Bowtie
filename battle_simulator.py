@@ -66,6 +66,19 @@ from features.stories.ocean.combat.npcs.titanfish import Titanfish
 from features.stories.ocean.combat.npcs.voidseen_angler import VoidseenAngler
 from features.stories.ocean.combat.npcs.wandering_bloodcoral import WanderingBloodcoral
 from features.stories.ocean.combat.npcs.wriggling_mass import WrigglingMass
+from features.stories.underworld.combat.npcs.agaric_alchemist import AgaricAlchemist
+from features.stories.underworld.combat.npcs.blind_salamander import BlindSalamander
+from features.stories.underworld.combat.npcs.breath_of_darkness import BreathOfDarkness
+from features.stories.underworld.combat.npcs.chanterspell import Chanterspell
+from features.stories.underworld.combat.npcs.choking_fog import ChokingFog
+from features.stories.underworld.combat.npcs.deathless_cap import DeathlessCap
+from features.stories.underworld.combat.npcs.glowing_moss import GlowingMoss
+from features.stories.underworld.combat.npcs.hen_of_the_caverns import HenOfTheCaverns
+from features.stories.underworld.combat.npcs.malevolent_morel import MalevolentMorel
+from features.stories.underworld.combat.npcs.mycelium_tree import MyceliumTree
+from features.stories.underworld.combat.npcs.pale_widow import PaleWidow
+from features.stories.underworld.combat.npcs.volatile_illusion import VolatileIllusion
+from features.stories.underworld.combat.npcs.winding_tunnels import WindingTunnels
 from simulation_duel import SimulationDuel
 
 from typing import Dict, List, Type
@@ -799,10 +812,10 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [[FalseVillage]]
-ALLY_CLASS_RANGE: range = range(60, 70)
+ENEMY_CLASSES: List[List[type]] = [[BlindSalamander], [MyceliumTree], [Chanterspell, VolatileIllusion, VolatileIllusion], [AgaricAlchemist, AgaricAlchemist], [HenOfTheCaverns], [DeathlessCap, DeathlessCap], [GlowingMoss], [MalevolentMorel]]
+ALLY_CLASS_RANGE: range = range(70, 80)
 
-SIMULATION_ITERATIONS = 256
+SIMULATION_ITERATIONS = 512
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 
@@ -959,7 +972,7 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
     ally_npcs: List[List[NPC]] = generate_ally_npcs()
     enemy_npcs: List[List[NPC]] = [[enemy(name_suffix=f" {j}") for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
 
-    pool = Pool(processes=8)
+    pool = Pool(processes=4)
     results: List[SimulationResult] = pool.starmap(run_simulation, zip(ally_npcs, enemy_npcs, [dir_name for _ in range(SIMULATION_ITERATIONS)], [i for i in range(SIMULATION_ITERATIONS)]))
     pool.close()
     pool.join()

@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/stalagmite_fish",
+    "icon": "\uD83D\uDC21",
+    "name": "Stalagmite Fish",
+    "value": 350,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/deep_eel",
+    "icon": "\uD83D\uDC0D",
+    "name": "Deep Eel",
+    "value": 15,
+    "rarity": "Uncommon",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

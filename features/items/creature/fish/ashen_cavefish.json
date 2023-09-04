@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/ashen_cavefish",
+    "icon": "\uD83D\uDC21",
+    "name": "Ashen Cavefish",
+    "value": 120,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/creature/fish/snakehead",
+    "icon": "\uD83D\uDC0D",
+    "name": "Snakehead",
+    "value": 6,
+    "rarity": "Common",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Ingredient", "Raw_Fish", "Creature", "Fish"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,74 @@
+{
+    "key": "items/weapon/dungeon_npcs/hen_fungus",
+    "icon": "\uD83C\uDF44",
+    "name": "Hen Fungus",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 100,
+        "max_damage": 110,
+        "num_targets": 1
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromInt",
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "ConDebuff"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "StrDebuff"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "DexDebuff"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "IntDebuff"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "LckDebuff"
+            }
+        ]
+    }
+}
