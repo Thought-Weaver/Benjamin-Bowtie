@@ -12,7 +12,7 @@ from discord.embeds import Embed
 from discord.ext import commands
 from enum import StrEnum
 from features.expertise import ExpertiseClass    
-from features.npcs.npc import NPC, NPCRoles
+from features.npcs.npc import NPC
 from features.npcs.summons.waveform import Waveform
 from features.npcs.summons.crab_servant import CrabServant
 from features.player import Player
@@ -23,7 +23,7 @@ from features.shared.enums import ClassTag, Summons
 from features.shared.item import LOADED_ITEMS, WeaponStats
 from features.shared.statuseffect import *
 
-from typing import Dict, List, TYPE_CHECKING
+from typing import Dict, List, TYPE_CHECKING, Tuple
 if TYPE_CHECKING:
     from features.dueling import Dueling
     from features.expertise import Expertise
@@ -1174,6 +1174,7 @@ class DuelView(discord.ui.View):
         tarnished_value = 0
         bonus_damage: int = 0
         bonus_percent_damage: float = 1 + dmg_buff_effect_totals[EffectType.DmgBuff]
+        chance_status_effect: List[Tuple[StatusEffect, float]] = []
         for se in attacker.get_dueling().status_effects:
             if se.key == StatusEffectKey.Generating:
                 generating_value = se.value
@@ -1185,6 +1186,8 @@ class DuelView(discord.ui.View):
                 bonus_percent_damage += se.value
             elif se.key == StatusEffectKey.DmgDebuff:
                 bonus_percent_damage -= se.value
+            elif isinstance(se, AttackingChanceToApplyStatus):
+                chance_status_effect.append((se.status_effect, se.value))
         cursed_coins_damage = 0
 
         main_hand_item = attacker_equipment.get_item_in_slot(ClassTag.Equipment.MainHand)
@@ -1268,6 +1271,9 @@ class DuelView(discord.ui.View):
             # until the Continue screen, so it feels slightly more natural to have them not affect damage dealt. I
             # may reverse this decision later.
             result_strs += [s.format(target_name, attacker_name) for s in attacker.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnSuccessfulAttack, target, attacker, 0, 1, self._is_ally(target))]
+            for se, chance in chance_status_effect:
+                if random() < chance:
+                    result_strs += target.get_dueling().add_status_effect_with_resist(se, target, 0).format(target_name)
 
             for item in attacker_equipment.get_all_equipped_items():
                 other_item_effects = item.get_item_effects()

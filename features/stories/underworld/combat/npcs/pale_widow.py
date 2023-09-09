@@ -138,8 +138,8 @@ class GhostlyMovement(Ability):
 class PaleWidow(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 60-70) victory against 2
-        # Avg Number of Turns (per entity): ?
+        # 31% chance of 4 player party (Lvl. 60-70) victory against 2
+        # Avg Number of Turns (per entity): 9
 
         super().__init__("Pale Widow" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 

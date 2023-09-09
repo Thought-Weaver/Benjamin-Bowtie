@@ -33,7 +33,7 @@ class SlumberSap(Ability):
             description="Steal 90% of an enemy's max health if they're Sleeping.",
             flavor_text="",
             mana_cost=20,
-            cooldown=2,
+            cooldown=0,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -74,7 +74,7 @@ class Luminesce(Ability):
             description="Give all enemies a status effect for 5 turns that reduces their Str, Dex, and Int by 25 for 5 turns whenever they attack.",
             flavor_text="",
             mana_cost=10,
-            cooldown=2,
+            cooldown=3,
             num_targets=-1,
             level_requirement=20,
             target_own_group=False,
@@ -176,8 +176,8 @@ class ConfusingPattern(Ability):
 class GlowingMoss(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 1
-        # Avg Number of Turns (per entity): ?
+        # 47% chance of 4 player party (Lvl. 70-80) victory against 1
+        # Avg Number of Turns (per entity): 13
 
         super().__init__("Glowing Moss" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
@@ -194,10 +194,10 @@ class GlowingMoss(NPC):
             self._equipment = Equipment()
         
         self._expertise.add_xp_to_class_until_level(320, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 50
+        self._expertise.constitution = 60
         self._expertise.strength = 0
-        self._expertise.dexterity = 50
-        self._expertise.intelligence = 150
+        self._expertise.dexterity = 70
+        self._expertise.intelligence = 120
         self._expertise.luck = 67
         self._expertise.memory = 3
 

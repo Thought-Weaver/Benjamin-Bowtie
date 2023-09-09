@@ -10,7 +10,7 @@ from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import DmgBuff, IntBuff, TurnSkipChance, Undying
+from features.shared.statuseffect import DmgBuff, TurnSkipChance, Undying
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -28,7 +28,7 @@ class FungalResistance(Ability):
             icon="\uD83D\uDD30",
             name="Fungal Resistance",
             class_key=ExpertiseClass.Guardian,
-            description="Become Undying for 3 turns.",
+            description="Become Undying for 4 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=8,
@@ -41,7 +41,7 @@ class FungalResistance(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = Undying(
-            turns_remaining=3,
+            turns_remaining=4,
             value=1,
             source_str=self.get_icon_and_name()
         )
@@ -106,7 +106,7 @@ class MushroomSlam(Ability):
             icon="\uD83C\uDF44",
             name="Mushroom Slam",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 80-85 damage to all enemies and cause Faltering on them for 2 turns.",
+            description="Deal 100-110 damage to all enemies and cause Faltering on them for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=6,
@@ -125,7 +125,7 @@ class MushroomSlam(Ability):
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(80, 85), [debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(100, 110), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -145,8 +145,8 @@ class MushroomSlam(Ability):
 class DeathlessCap(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 2
-        # Avg Number of Turns (per entity): ?
+        # 55% chance of 4 player party (Lvl. 70-80) victory against 2
+        # Avg Number of Turns (per entity): 14
 
         super().__init__("Deathless Cap" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
@@ -164,10 +164,10 @@ class DeathlessCap(NPC):
         
         self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Guardian)
         self._expertise.constitution = 100
-        self._expertise.strength = 60
+        self._expertise.strength = 50
         self._expertise.dexterity = 20
         self._expertise.intelligence = 0
-        self._expertise.luck = 17
+        self._expertise.luck = 27
         self._expertise.memory = 3
 
     def _setup_equipment(self):

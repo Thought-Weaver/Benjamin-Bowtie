@@ -10,7 +10,7 @@ from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import ConDebuff, DexDebuff, IntDebuff, StrDebuff
+from features.shared.statuseffect import ConDebuff, DexDebuff, IntDebuff, MemDebuff, StrDebuff
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -30,7 +30,7 @@ class CurseOfFrailty(Ability):
             description="Unavoidably reduce an enemy's Con to 0 for 3 turns.",
             flavor_text="",
             mana_cost=25,
-            cooldown=5,
+            cooldown=1,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -66,10 +66,10 @@ class CurseOfWeakness(Ability):
             icon="\uD83E\uDD40",
             name="Curse of Weakness",
             class_key=ExpertiseClass.Alchemist,
-            description="Unavoidably reduce an enemy's Int and Str to 0 for 3 turns.",
+            description="Unavoidably reduce an enemy's Int and Str to 0 for 5 turns.",
             flavor_text="",
             mana_cost=25,
-            cooldown=5,
+            cooldown=2,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -80,13 +80,13 @@ class CurseOfWeakness(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         for target in targets:
             int_debuff = IntDebuff(
-                turns_remaining=3,
+                turns_remaining=2,
                 value=-targets[0].get_combined_attributes().intelligence,
                 source_str=self.get_icon_and_name()
             )
 
             str_debuff = StrDebuff(
-                turns_remaining=3,
+                turns_remaining=2,
                 value=-targets[0].get_combined_attributes().strength,
                 source_str=self.get_icon_and_name()
             )
@@ -112,10 +112,10 @@ class CurseOfLethargy(Ability):
             icon="\uD83D\uDCA4",
             name="Curse of Lethargy",
             class_key=ExpertiseClass.Alchemist,
-            description="Unavoidably reduce an enemy's Dex to 0 for 3 turns.",
+            description="Unavoidably reduce an enemy's Dex and Mem to 0 for 5 turns.",
             flavor_text="",
             mana_cost=25,
-            cooldown=5,
+            cooldown=2,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -125,14 +125,19 @@ class CurseOfLethargy(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         for target in targets:
-            debuff = DexDebuff(
-                turns_remaining=3,
+            dex_debuff = DexDebuff(
+                turns_remaining=5,
                 value=-targets[0].get_combined_attributes().dexterity,
                 source_str=self.get_icon_and_name()
             )
-            target.get_dueling().status_effects.append(debuff)
+            mem_debuff = MemDebuff(
+                turns_remaining=5,
+                value=-targets[0].get_combined_attributes().memory,
+                source_str=self.get_icon_and_name()
+            )
+            target.get_dueling().status_effects += [dex_debuff, mem_debuff]
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Dex was reduced to 0!"
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Dex and Mem were reduced to 0!"
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
@@ -151,8 +156,8 @@ class CurseOfLethargy(Ability):
 class HenOfTheCaverns(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 1
-        # Avg Number of Turns (per entity): ?
+        # 50% chance of 4 player party (Lvl. 70-80) victory against 1
+        # Avg Number of Turns (per entity): 11
 
         super().__init__("Hen of the Caverns" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
@@ -169,11 +174,11 @@ class HenOfTheCaverns(NPC):
             self._equipment = Equipment()
         
         self._expertise.add_xp_to_class_until_level(320, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 120
+        self._expertise.constitution = 150
         self._expertise.strength = 0
         self._expertise.dexterity = 20
-        self._expertise.intelligence = 100
-        self._expertise.luck = 77
+        self._expertise.intelligence = 60
+        self._expertise.luck = 87
         self._expertise.memory = 3
 
     def _setup_equipment(self):

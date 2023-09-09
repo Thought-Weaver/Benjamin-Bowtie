@@ -28,7 +28,7 @@ class PoppingPustules(Ability):
             icon="\uD83D\uDCA5",
             name="Popping Pustules",
             class_key=ExpertiseClass.Alchemist,
-            description="Cause an enemy to erupt with sickness, dealing 50% of their missing health as damage.",
+            description="Cause an enemy to erupt with sickness, dealing 100% of their missing health as damage.",
             flavor_text="",
             mana_cost=30,
             cooldown=3,
@@ -63,7 +63,7 @@ class EmpoweringVapor(Ability):
             icon="\uD83C\uDF2B\uFE0F",
             name="Empowering Vapor",
             class_key=ExpertiseClass.Alchemist,
-            description="Increase all allies' damage by 25% and Int by 20 for 3 turns.",
+            description="Increase all allies' damage by 40% and Int by 20 for 3 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=4,
@@ -77,7 +77,7 @@ class EmpoweringVapor(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         dmg_buff = DmgBuff(
             turns_remaining=3,
-            value=0.25,
+            value=0.4,
             source_str=self.get_icon_and_name()
         )
 
@@ -127,7 +127,7 @@ class StunningFumes(Ability):
         )
         
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, [debuff])
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
@@ -147,8 +147,8 @@ class StunningFumes(Ability):
 class AgaricAlchemist(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 2
-        # Avg Number of Turns (per entity): ?
+        # 51% chance of 4 player party (Lvl. 70-80) victory against 2
+        # Avg Number of Turns (per entity): 11
 
         super().__init__("Agaric Alchemist" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
@@ -165,11 +165,11 @@ class AgaricAlchemist(NPC):
             self._equipment = Equipment()
         
         self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 60
+        self._expertise.constitution = 70
         self._expertise.strength = 0
-        self._expertise.dexterity = 37
-        self._expertise.intelligence = 60
-        self._expertise.luck = 40
+        self._expertise.dexterity = 40
+        self._expertise.intelligence = 50
+        self._expertise.luck = 37
         self._expertise.memory = 3
 
     def _setup_equipment(self):

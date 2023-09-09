@@ -15,8 +15,8 @@
     "count": 1,
     "level_requirement": 0,
     "weapon_stats": {
-        "min_damage": 20,
-        "max_damage": 25,
+        "min_damage": 40,
+        "max_damage": 45,
         "num_targets": 4
     },
     "item_effects": {
@@ -40,7 +40,7 @@
             },
             {
                 "effect_type": "ConMod",
-                "effect_value": -5,
+                "effect_value": -10,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []

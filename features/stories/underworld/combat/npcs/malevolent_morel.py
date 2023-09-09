@@ -231,17 +231,6 @@ class FrenzyStrike(Ability):
                     if result_str != "":
                         result_strs.append(result_str.format(attacker_name, target_name))
 
-            if isinstance(attacker, Player):
-                companions = attacker.get_companions()
-                companion_key = companions.current_companion
-                if companion_key is not None:
-                    current_companion = companions.companions[companion_key]
-                    companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnSuccessfulAttack)
-                    if isinstance(companion_effect, Effect):
-                        damage, result_str = attacker.get_dueling().apply_on_successful_attack_or_ability_effects(None, companion_effect, attacker, target, 1, damage, current_companion.get_icon_and_name())
-                        if result_str != "":
-                            result_strs.append(result_str.format(attacker_name, target_name))
-
             result_strs += [s.format(attacker_name, target_name) for s in target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAttacked, attacker, target, 0, 1, False)]
 
             for item in target_equipment.get_all_equipped_items():
@@ -252,17 +241,6 @@ class FrenzyStrike(Ability):
                     damage, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, 1, damage, item.get_full_name())
                     if result_str != "":
                         result_strs.append(result_str.format(attacker_name, target_name))
-
-            if isinstance(attacker, Player):
-                companions = attacker.get_companions()
-                companion_key = companions.current_companion
-                if companion_key is not None:
-                    current_companion = companions.companions[companion_key]
-                    companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnAttacked)
-                    if isinstance(companion_effect, Effect):
-                        damage, result_str = attacker.get_dueling().apply_on_attacked_or_damaged_effects(None, companion_effect, target, attacker, 1, damage, current_companion.get_icon_and_name())
-                        if result_str != "":
-                            result_strs.append(result_str.format(attacker_name, target_name))
 
             percent_dmg_reduct = target_dueling.get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
 
@@ -280,17 +258,6 @@ class FrenzyStrike(Ability):
                         _, result_str = target.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, target, attacker, 1, actual_damage_dealt, item.get_full_name())
                         if result_str != "":
                             result_strs.append(result_str.format(attacker_name, target_name))
-
-                if isinstance(attacker, Player):
-                    companions = attacker.get_companions()
-                    companion_key = companions.current_companion
-                    if companion_key is not None:
-                        current_companion = companions.companions[companion_key]
-                        companion_effect = current_companion.get_dueling_ability(effect_category=ItemEffectCategory.OnDamaged)
-                        if isinstance(companion_effect, Effect):
-                            damage, result_str = attacker.get_dueling().apply_on_attacked_or_damaged_effects(None, companion_effect, target, attacker, 1, damage, current_companion.get_icon_and_name())
-                            if result_str != "":
-                                result_strs.append(result_str.format(attacker_name, target_name))
 
             attacker.get_stats().dueling.damage_dealt += actual_damage_dealt + piercing_damage_dealt
             target.get_stats().dueling.damage_taken += actual_damage_dealt + piercing_damage_dealt
@@ -348,8 +315,8 @@ class FrenzyStrike(Ability):
 class MalevolentMorel(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 1
-        # Avg Number of Turns (per entity): ?
+        # 22% chance of 4 player party (Lvl. 70-80) victory against 1
+        # Avg Number of Turns (per entity): 7
 
         super().__init__("Malevolent Morel" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 

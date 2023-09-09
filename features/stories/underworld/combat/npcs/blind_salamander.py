@@ -11,13 +11,14 @@ from features.shared.ability import Ability
 from features.shared.constants import POISONED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import AttackingChanceToApplyStatus, DmgReduction, Poisoned, StatusEffectKey
+from features.shared.statuseffect import AttackingChanceToApplyStatus, Poisoned, StatusEffectKey
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.player import Player
     from features.shared.ability import NegativeAbilityResult
+    from features.shared.statuseffect import StatusEffect
 
 # -----------------------------------------------------------------------------
 # ABILITIES
@@ -29,10 +30,10 @@ class BlackBile(Ability):
             icon="\uD83D\uDDA4",
             name="Black Bile",
             class_key=ExpertiseClass.Alchemist,
-            description="Spew a corrosive bile on everyone, causing Poisoned for 10 turns.",
+            description="Spew a corrosive bile on everyone, causing 10 stacks of Poisoned for 8 turns.",
             flavor_text="",
             mana_cost=25,
-            cooldown=2,
+            cooldown=0,
             num_targets=-2,
             level_requirement=20,
             target_own_group=False,
@@ -41,14 +42,14 @@ class BlackBile(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        debuff = Poisoned(
-            turns_remaining=10,
+        debuffs: List[StatusEffect] = [Poisoned(
+            turns_remaining=8,
             value=POISONED_PERCENT_HP,
             source_str=self.get_icon_and_name()
-        )
+        ) for _ in range(10)]
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [debuff])
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, debuffs)
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
@@ -68,7 +69,7 @@ class ToxinBurst(Ability):
             icon="\u2620\uFE0F",
             name="Toxin Burst",
             class_key=ExpertiseClass.Alchemist,
-            description="Consume all Poisoned stacks on an enemy, dealing 25x the amount of time remaining as damage.",
+            description="Consume all Poisoned stacks on an enemy, dealing 50x the amount of time remaining as damage.",
             flavor_text="",
             mana_cost=20,
             cooldown=0,
@@ -80,7 +81,7 @@ class ToxinBurst(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        damage: int = 25 * sum(se.turns_remaining for se in targets[0].get_dueling().status_effects if se.key == StatusEffectKey.Poisoned)
+        damage: int = 50 * sum(se.turns_remaining for se in targets[0].get_dueling().status_effects if se.key == StatusEffectKey.Poisoned)
         targets[0].get_dueling().status_effects = [se for se in targets[0].get_dueling().status_effects if se.key != StatusEffectKey.Poisoned]
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}, exploding all stacks of Poisoned on " + "{1}!\n\n"
@@ -104,10 +105,10 @@ class VenomousClaws(Ability):
             icon="\uD83E\uDD8E",
             name="Venomous Claws",
             class_key=ExpertiseClass.Alchemist,
-            description="Envenom your claws, allowing them to cause Poisoned for 8 turns when attacking. Lasts 4 turns.",
+            description="Envenom your claws, allowing them to cause Poisoned 6 times for 10 turns each when attacking. Lasts 5 turns.",
             flavor_text="",
             mana_cost=10,
-            cooldown=1,
+            cooldown=0,
             num_targets=0,
             level_requirement=20,
             target_own_group=True,
@@ -116,19 +117,19 @@ class VenomousClaws(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        buff = AttackingChanceToApplyStatus(
-            turns_remaining=4,
+        buffs: List[StatusEffect] = [AttackingChanceToApplyStatus(
+            turns_remaining=5,
             value=1,
             status_effect=Poisoned(
-                turns_remaining=8,
+                turns_remaining=10,
                 value=POISONED_PERCENT_HP,
                 source_str=self.get_icon_and_name()
             ),
             source_str=self.get_icon_and_name()
-        )
+        ) for _ in range(6)]
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_positive_status_effect_ability(caster, targets, [buff])
+        results: List[str] = self._use_positive_status_effect_ability(caster, targets, buffs)
         result_str += "\n".join(results)
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
@@ -148,8 +149,8 @@ class VenomousClaws(Ability):
 class BlindSalamander(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 1
-        # Avg Number of Turns (per entity): ?
+        # 42% chance of 4 player party (Lvl. 70-80) victory against 1
+        # Avg Number of Turns (per entity): 15
 
         super().__init__("Blind Salamander" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
@@ -165,12 +166,12 @@ class BlindSalamander(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(280, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 80
+        self._expertise.add_xp_to_class_until_level(300, ExpertiseClass.Alchemist)
+        self._expertise.constitution = 150
         self._expertise.strength = 0
-        self._expertise.dexterity = 40
-        self._expertise.intelligence = 100
-        self._expertise.luck = 57
+        self._expertise.dexterity = 67
+        self._expertise.intelligence = 80
+        self._expertise.luck = 0
         self._expertise.memory = 3
 
     def _setup_equipment(self):

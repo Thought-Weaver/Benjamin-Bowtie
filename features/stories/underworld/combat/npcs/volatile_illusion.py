@@ -7,9 +7,57 @@ from features.equipment import Equipment
 from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
+from features.shared.ability import Ability, NegativeAbilityResult
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
+from features.shared.statuseffect import Taunted
 from features.stats import Stats
+
+from typing import List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from features.player import Player
+
+# -----------------------------------------------------------------------------
+# ABILITIES
+# -----------------------------------------------------------------------------
+
+class Taunt(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDCCF",
+            name="Taunt",
+            class_key=ExpertiseClass.Guardian,
+            description="Force an enemy to attack you on their next turn.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=1,
+            num_targets=1,
+            level_requirement=15,
+            target_own_group=False,
+            purchase_cost=0,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        taunt = Taunted(
+            turns_remaining=1,
+            forced_to_attack=caster,
+            source_str=self.get_icon_and_name()
+        )
+
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [taunt])
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.guardian_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
 # NPC CLASS
@@ -18,8 +66,8 @@ from features.stats import Stats
 class VolatileIllusion(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 2 + Chanterspell
-        # Avg Number of Turns (per entity): ?
+        # 21% chance of 4 player party (Lvl. 70-80) victory against 2 + Chanterspell
+        # Avg Number of Turns (per entity): 11
 
         super().__init__("Volatile Illusion" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 
@@ -35,13 +83,13 @@ class VolatileIllusion(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(10, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 10
+        self._expertise.add_xp_to_class_until_level(50, ExpertiseClass.Guardian)
+        self._expertise.constitution = 49
         self._expertise.strength = 0
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0
         self._expertise.luck = 0
-        self._expertise.memory = 0
+        self._expertise.memory = 1
 
     def _setup_equipment(self):
         if self._expertise is None:
@@ -57,7 +105,7 @@ class VolatileIllusion(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = []
+        self._dueling.abilities = [Taunt()]
 
     def _setup_npc_params(self):
         self._setup_inventory()

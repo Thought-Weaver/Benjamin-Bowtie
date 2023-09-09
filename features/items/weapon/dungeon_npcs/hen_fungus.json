@@ -15,8 +15,8 @@
     "count": 1,
     "level_requirement": 0,
     "weapon_stats": {
-        "min_damage": 100,
-        "max_damage": 110,
+        "min_damage": 250,
+        "max_damage": 300,
         "num_targets": 1
     },
     "item_effects": {
@@ -68,6 +68,16 @@
                 "conditions": [],
                 "condition_values": [],
                 "associated_status_effect": "LckDebuff"
+            }
+        ],
+        "on_successful_attack": [
+            {
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 25,
+                "effect_time": 2,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "FixedDmgTick"
             }
         ]
     }

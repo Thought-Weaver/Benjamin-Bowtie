@@ -77,6 +77,7 @@ from features.stories.underworld.combat.npcs.hen_of_the_caverns import HenOfTheC
 from features.stories.underworld.combat.npcs.malevolent_morel import MalevolentMorel
 from features.stories.underworld.combat.npcs.mycelium_tree import MyceliumTree
 from features.stories.underworld.combat.npcs.pale_widow import PaleWidow
+from features.stories.underworld.combat.npcs.tunneldigger import Tunneldigger
 from features.stories.underworld.combat.npcs.volatile_illusion import VolatileIllusion
 from features.stories.underworld.combat.npcs.winding_tunnels import WindingTunnels
 from simulation_duel import SimulationDuel
@@ -812,10 +813,10 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [[BlindSalamander], [MyceliumTree], [Chanterspell, VolatileIllusion, VolatileIllusion], [AgaricAlchemist, AgaricAlchemist], [HenOfTheCaverns], [DeathlessCap, DeathlessCap], [GlowingMoss], [MalevolentMorel]]
+ENEMY_CLASSES: List[List[type]] = [[BlindSalamander]]
 ALLY_CLASS_RANGE: range = range(70, 80)
 
-SIMULATION_ITERATIONS = 512
+SIMULATION_ITERATIONS = 100
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 

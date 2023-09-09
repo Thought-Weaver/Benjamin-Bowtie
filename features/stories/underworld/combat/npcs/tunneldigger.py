@@ -8,10 +8,10 @@ from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
-from features.shared.constants import BLEED_PERCENT_HP, POISONED_PERCENT_HP
+from features.shared.constants import BLEED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import Bleeding, DmgReduction, Poisoned, StackingDamage, StatusEffectKey, TurnSkipChance
+from features.shared.statuseffect import Bleeding, DmgReduction, StackingDamage
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -29,7 +29,7 @@ class RazorCharge(Ability):
             icon="\uD83E\uDE78",
             name="Razor Charge",
             class_key=ExpertiseClass.Guardian,
-            description="Charge with your claws ahead of you, dealing 100-105 damage and causing Bleeding for 3 turns.",
+            description="Charge with your claws ahead of you, dealing 125-135 damage and causing Bleeding for 4 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=5,
@@ -42,13 +42,13 @@ class RazorCharge(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = Bleeding(
-            turns_remaining=3,
+            turns_remaining=4,
             value=BLEED_PERCENT_HP,
             source_str=self.get_icon_and_name()
         )
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(100, 105), [debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(125, 135), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.guardian_abilities_used += 1
@@ -111,7 +111,7 @@ class ArmoredHide(Ability):
             icon="\uD83D\uDEE1\uFE0F",
             name="Armored Hide",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 100% Protected for 2 turns.",
+            description="Gain 100% Protected for 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=7,
@@ -124,7 +124,7 @@ class ArmoredHide(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = DmgReduction(
-            turns_remaining=2,
+            turns_remaining=3,
             value=1,
             source_str=self.get_icon_and_name()
         )
@@ -150,8 +150,8 @@ class ArmoredHide(Ability):
 class Tunneldigger(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 1
-        # Avg Number of Turns (per entity): ?
+        # 13% chance of 4 player party (Lvl. 70-80) victory against 1
+        # Avg Number of Turns (per entity): 22
 
         super().__init__("Tunneldigger" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
 

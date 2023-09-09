@@ -715,7 +715,7 @@ class Marked(StatusEffect):
 
 class AttackingChanceToApplyStatus(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), status_effect: StatusEffect, source_str: str | None=None, trigger_first_turn: bool=True):
-        super().__init__(turns_remaining, value, f"Applying ({status_effect.name})", StatusEffectKey.Marked, source_str, trigger_first_turn)
+        super().__init__(turns_remaining, value, f"Applying ({status_effect.name})", StatusEffectKey.AttackingChanceToApplyStatus, source_str, trigger_first_turn)
         self.status_effect = status_effect
 
     def __str__(self):

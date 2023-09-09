@@ -89,7 +89,7 @@ class SuddenWall(Ability):
             icon="\uD83E\uDEA8",
             name="Sudden Wall",
             class_key=ExpertiseClass.Guardian,
-            description="Deal 140-145 damage to an enemy, doubled if they're Sleeping.",
+            description="Deal 190-195 damage to an enemy, doubled if they're Sleeping.",
             flavor_text="",
             mana_cost=30,
             cooldown=0,
@@ -102,7 +102,7 @@ class SuddenWall(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         sleeping_bonus: int = 1 if any(se.key == StatusEffectKey.Sleeping for se in caster.get_dueling().status_effects) else 0
-        damage: int = int((sleeping_bonus + 1) * random.randint(140, 145))
+        damage: int = int((sleeping_bonus + 1) * random.randint(190, 195))
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -164,8 +164,8 @@ class DeeperFog(Ability):
 class ChokingFog(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 60-70) victory against 1
-        # Avg Number of Turns (per entity): ?
+        # 29% chance of 4 player party (Lvl. 60-70) victory against 1
+        # Avg Number of Turns (per entity): 8
 
         super().__init__("Choking Fog" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
@@ -184,8 +184,8 @@ class ChokingFog(NPC):
         self._expertise.add_xp_to_class_until_level(240, ExpertiseClass.Guardian)
         self._expertise.constitution = 70
         self._expertise.strength = 0
-        self._expertise.dexterity = 40
-        self._expertise.intelligence = 100
+        self._expertise.dexterity = 50
+        self._expertise.intelligence = 90
         self._expertise.luck = 27
         self._expertise.memory = 3
 

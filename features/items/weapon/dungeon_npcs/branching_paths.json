@@ -81,7 +81,7 @@
         "on_successful_attack": [
             {
                 "effect_type": "ConMod",
-                "effect_value": -5,
+                "effect_value": -8,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],

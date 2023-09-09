@@ -29,10 +29,10 @@ class ManaBurn(Ability):
             icon="\uD83D\uDD25",
             name="Mana Burn",
             class_key=ExpertiseClass.Alchemist,
-            description="Deal damage to an enemy equal to 80% of their current mana.",
+            description="Deal damage to an enemy equal to 125% of their current mana.",
             flavor_text="",
-            mana_cost=70,
-            cooldown=1,
+            mana_cost=100,
+            cooldown=0,
             num_targets=1,
             level_requirement=20,
             target_own_group=False,
@@ -41,7 +41,7 @@ class ManaBurn(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        damage: int = int(0.8 * targets[0].get_expertise().max_mana)
+        damage: int = int(1.25 * targets[0].get_expertise().mana)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}, dealing damage based on " + "{1}'s current mana!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -64,9 +64,9 @@ class Wildspell(Ability):
             icon="\u2728",
             name="Wildspell",
             class_key=ExpertiseClass.Alchemist,
-            description="Choose an enemy. Cast a random ability they have that costs mana.",
+            description="Choose an enemy. Cast three random abilities they have that cost mana.",
             flavor_text="",
-            mana_cost=40,
+            mana_cost=0,
             cooldown=0,
             num_targets=1,
             level_requirement=20,
@@ -76,17 +76,19 @@ class Wildspell(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}, casting a random ability that uses mana from " + "{1}'s abilities!\n\n"
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}, casting three random abilities that use mana from " + "{1}'s abilities!\n\n"
 
         mana_based_abilities = [ability for ability in targets[0].get_dueling().abilities if ability.get_mana_cost() > 0]
         if len(mana_based_abilities) > 0:
-            ability = random.choice(mana_based_abilities)
-            if ability.get_target_own_group() and isinstance(caster, NPC):
-                result_self_str = ability.use_ability(caster, [caster])
-                if ability.get_num_targets() != 0:
-                    result_self_str.format([caster.get_name(), caster.get_name()])
-            else:
-                result_str += ability.use_ability(caster, targets)
+            abilities = random.choices(mana_based_abilities, k=3)
+            for ability in abilities:
+                if ability.get_target_own_group():
+                    result_self_str = ability.use_ability(caster, [caster])
+                    if "{1}" in result_self_str:
+                        result_self_str = result_self_str.replace("{1}", "{0}")
+                        result_str += result_self_str + "\n\n"
+                else:
+                    result_str += ability.use_ability(caster, targets) + "\n\n"
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
@@ -105,24 +107,24 @@ class UnstableReplenishment(Ability):
             icon="\uD83C\uDF00",
             name="Unstable Replenishment",
             class_key=ExpertiseClass.Alchemist,
-            description="Restore 50% of your mana and deal the amount restored as damage to all enemies.",
+            description="Restore 90% of your mana and deal the amount restored as damage to all enemies.",
             flavor_text="",
             mana_cost=0,
-            cooldown=5,
-            num_targets=0,
+            cooldown=1,
+            num_targets=-1,
             level_requirement=20,
-            target_own_group=True,
+            target_own_group=False,
             purchase_cost=0,
             scaling=[]
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        mana_to_restore: int = int(0.5 * caster.get_expertise().max_mana)
+        mana_to_restore: int = int(0.9 * caster.get_expertise().max_mana)
         org_mana = caster.get_expertise().mana
         caster.get_expertise().restore_mana(mana_to_restore)
         damage = caster.get_expertise().mana - org_mana
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and restored {damage} mana!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -143,8 +145,8 @@ class UnstableReplenishment(Ability):
 class MyceliumTree(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 1
-        # Avg Number of Turns (per entity): ?
+        # 44% chance of 4 player party (Lvl. 70-80) victory against 1
+        # Avg Number of Turns (per entity): 10
 
         super().__init__("Mycelium Tree" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
@@ -160,12 +162,12 @@ class MyceliumTree(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(300, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 70
+        self._expertise.add_xp_to_class_until_level(350, ExpertiseClass.Alchemist)
+        self._expertise.constitution = 150
         self._expertise.strength = 0
-        self._expertise.dexterity = 10
-        self._expertise.intelligence = 200
-        self._expertise.luck = 17
+        self._expertise.dexterity = 0
+        self._expertise.intelligence = 140
+        self._expertise.luck = 57
         self._expertise.memory = 3
 
     def _setup_equipment(self):

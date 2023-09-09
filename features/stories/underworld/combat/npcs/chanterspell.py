@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import random
-
 from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Attribute, Expertise, ExpertiseClass
+from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
@@ -18,7 +16,6 @@ from features.stats import Stats
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.player import Player
-    from features.shared.ability import NegativeAbilityResult
 
 # -----------------------------------------------------------------------------
 # ABILITIES
@@ -43,8 +40,10 @@ class CastIllusions(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[str] = self._use_heal_ability(caster, targets, range(100, 100))
-        result_str += "\n".join(results)
+
+        if all(target.get_expertise().hp == 0 for target in targets):
+            results: List[str] = self._use_heal_ability(caster, targets, range(500, 500))
+            result_str += "\n".join(results)
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
@@ -63,7 +62,7 @@ class ArcaneShield(Ability):
             icon="\uD83D\uDEE1\uFE0F",
             name="Arcane Shield",
             class_key=ExpertiseClass.Alchemist,
-            description="Gain 75% Protected for 3 turns.",
+            description="Gain 80% Protected for 3 turns.",
             flavor_text="",
             mana_cost=30,
             cooldown=7,
@@ -77,7 +76,7 @@ class ArcaneShield(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = DmgReduction(
             turns_remaining=3,
-            value=0.75,
+            value=0.8,
             source_str=self.get_icon_and_name()
         )
         
@@ -96,15 +95,15 @@ class ArcaneShield(Ability):
         self.__init__() # type: ignore
 
 
-class Regeneration(Ability):
+class HummingRegeneration(Ability):
     def __init__(self):
         super().__init__(
             icon="\uD83C\uDF44",
-            name="Regeneration",
+            name="Humming Regeneration",
             class_key=ExpertiseClass.Alchemist,
-            description="Regenerate 10% of your max health every turn for 3 turns.",
+            description="Regenerate 25% of your max health every turn for 3 turns.",
             flavor_text="",
-            mana_cost=40,
+            mana_cost=10,
             cooldown=8,
             num_targets=0,
             level_requirement=20,
@@ -116,7 +115,7 @@ class Regeneration(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = RegenerateHP(
             turns_remaining=3,
-            value=0.1,
+            value=0.25,
             source_str=self.get_icon_and_name()
         )
         
@@ -141,8 +140,8 @@ class Regeneration(Ability):
 class Chanterspell(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 70-80) victory against 1 + 2 Volatile Illusions
-        # Avg Number of Turns (per entity): ?
+        # 21% chance of 4 player party (Lvl. 70-80) victory against 1 + 2 Volatile Illusions
+        # Avg Number of Turns (per entity): 11
 
         super().__init__("Chanterspell" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {})
 
@@ -158,12 +157,12 @@ class Chanterspell(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(250, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 70
+        self._expertise.add_xp_to_class_until_level(220, ExpertiseClass.Alchemist)
+        self._expertise.constitution = 100
         self._expertise.strength = 0
-        self._expertise.dexterity = 30
-        self._expertise.intelligence = 90
-        self._expertise.luck = 57
+        self._expertise.dexterity = 40
+        self._expertise.intelligence = 50
+        self._expertise.luck = 27
         self._expertise.memory = 3
 
     def _setup_equipment(self):
@@ -180,7 +179,7 @@ class Chanterspell(NPC):
         if self._dueling is None:
             self._dueling = Dueling()
         
-        self._dueling.abilities = [CastIllusions(), ArcaneShield(), Regeneration()]
+        self._dueling.abilities = [CastIllusions(), ArcaneShield(), HummingRegeneration()]
 
     def _setup_npc_params(self):
         self._setup_inventory()

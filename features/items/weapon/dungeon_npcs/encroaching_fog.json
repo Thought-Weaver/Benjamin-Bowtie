@@ -15,8 +15,8 @@
     "count": 1,
     "level_requirement": 0,
     "weapon_stats": {
-        "min_damage": 20,
-        "max_damage": 25,
+        "min_damage": 50,
+        "max_damage": 55,
         "num_targets": 4
     },
     "item_effects": {
@@ -90,7 +90,7 @@
             {
                 "effect_type": "ChanceStatusEffect",
                 "effect_value": 1,
-                "effect_time": 2,
+                "effect_time": 3,
                 "conditions": [],
                 "condition_values": [],
                 "associated_status_effect": "Sleeping"

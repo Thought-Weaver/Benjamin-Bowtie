@@ -223,7 +223,7 @@ class NowhereToTurn(Ability):
             icon="\u21AA\uFE0F",
             name="Nowhere to Turn",
             class_key=ExpertiseClass.Alchemist,
-            description="Deal damage to an enemy equal to 10x the number of status effects they have.",
+            description="Deal damage to an enemy equal to 50x the number of status effects they have.",
             flavor_text="",
             mana_cost=10,
             cooldown=0,
@@ -235,9 +235,9 @@ class NowhereToTurn(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        damage = int(10 * len(targets[0].get_dueling().status_effects))
+        damage = int(50 * len(targets[0].get_dueling().status_effects))
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}, dealing damage based on the number of status effects" + " {1} has!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -258,8 +258,8 @@ class NowhereToTurn(Ability):
 class WindingTunnels(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # ?% chance of 4 player party (Lvl. 60-70) victory against 1
-        # Avg Number of Turns (per entity): ?
+        # 61% chance of 4 player party (Lvl. 60-70) victory against 1
+        # Avg Number of Turns (per entity): 10
 
         super().__init__("Winding Tunnels" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
@@ -277,10 +277,10 @@ class WindingTunnels(NPC):
         
         self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Alchemist)
         self._expertise.constitution = 100
-        self._expertise.strength = 40
+        self._expertise.strength = 30
         self._expertise.dexterity = 0
-        self._expertise.intelligence = 50
-        self._expertise.luck = 7
+        self._expertise.intelligence = 40
+        self._expertise.luck = 27
         self._expertise.memory = 3
 
     def _setup_equipment(self):
