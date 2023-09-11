@@ -75,6 +75,7 @@ class StatusEffectKey(StrEnum):
     RegenerateArmor = "RegenerateArmor"
 
     Corrupted = "Corrupted"
+    StatsHidden = "StatsHidden"
 
     # TODO: For charging abilities, I should add a Charging status which
     # is a requirement to cast an associated ability (referenced by class perhaps?)
@@ -127,7 +128,8 @@ NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
     StatusEffectKey.Undying,
     StatusEffectKey.CannotUseAbilities,
     StatusEffectKey.StackingDamage,
-    StatusEffectKey.Corrupted
+    StatusEffectKey.Corrupted,
+    StatusEffectKey.StatsHidden
 ]
 
 # -----------------------------------------------------------------------------
@@ -748,6 +750,19 @@ class Corrupted(StatusEffect):
 
     def __str__(self):
         display_str = f"{self.name}: You have {self.value} stacks of corruption, making it easier for certain enemies to influence you"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+
+class StatsHidden(StatusEffect):
+    def __init__(self, turns_remaining: int, value: float, source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Confused", StatusEffectKey.StatsHidden, source_str, trigger_first_turn)
+
+    def __str__(self):
+        display_str = f"{self.name}: Your health, mana, and armor are hidden for {self.get_turns_remaining_str()}"
         
         if self.source_str is not None:
             display_str += f" (from {self.source_str})"

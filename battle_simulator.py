@@ -67,18 +67,27 @@ from features.stories.ocean.combat.npcs.voidseen_angler import VoidseenAngler
 from features.stories.ocean.combat.npcs.wandering_bloodcoral import WanderingBloodcoral
 from features.stories.ocean.combat.npcs.wriggling_mass import WrigglingMass
 from features.stories.underworld.combat.npcs.agaric_alchemist import AgaricAlchemist
+from features.stories.underworld.combat.npcs.assailing_tomb_guardian import AssailingTombGuardian
 from features.stories.underworld.combat.npcs.blind_salamander import BlindSalamander
 from features.stories.underworld.combat.npcs.breath_of_darkness import BreathOfDarkness
 from features.stories.underworld.combat.npcs.chanterspell import Chanterspell
 from features.stories.underworld.combat.npcs.choking_fog import ChokingFog
+from features.stories.underworld.combat.npcs.cultist_of_avarice import CultistOfAvarice
 from features.stories.underworld.combat.npcs.deathless_cap import DeathlessCap
+from features.stories.underworld.combat.npcs.defending_tomb_guardian import DefendingTombGuardian
 from features.stories.underworld.combat.npcs.glowing_moss import GlowingMoss
 from features.stories.underworld.combat.npcs.hen_of_the_caverns import HenOfTheCaverns
 from features.stories.underworld.combat.npcs.malevolent_morel import MalevolentMorel
+from features.stories.underworld.combat.npcs.mushroom_maze import MushroomMaze
 from features.stories.underworld.combat.npcs.mycelium_tree import MyceliumTree
 from features.stories.underworld.combat.npcs.pale_widow import PaleWidow
+from features.stories.underworld.combat.npcs.quaking_tunnels import QuakingTunnels
+from features.stories.underworld.combat.npcs.scratches_on_the_wall import ScratchesOnTheWall
+from features.stories.underworld.combat.npcs.timelost_echo import TimelostEcho
 from features.stories.underworld.combat.npcs.tunneldigger import Tunneldigger
 from features.stories.underworld.combat.npcs.volatile_illusion import VolatileIllusion
+from features.stories.underworld.combat.npcs.warping_anomaly import WarpingAnomaly
+from features.stories.underworld.combat.npcs.waylaid_chest import WaylaidChest
 from features.stories.underworld.combat.npcs.winding_tunnels import WindingTunnels
 from simulation_duel import SimulationDuel
 
@@ -813,8 +822,8 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = [[BlindSalamander]]
-ALLY_CLASS_RANGE: range = range(70, 80)
+ENEMY_CLASSES: List[List[type]] = []
+ALLY_CLASS_RANGE: range = range(80, 90)
 
 SIMULATION_ITERATIONS = 100
 NUM_ALLIES = 4

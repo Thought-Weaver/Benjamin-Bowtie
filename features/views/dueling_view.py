@@ -669,7 +669,9 @@ class DuelView(discord.ui.View):
             max_reduced_armor: int = entity.get_equipment().get_total_reduced_armor(entity.get_expertise().level, entity.get_expertise().get_all_attributes() + entity.get_equipment().get_total_attribute_mods())
             armor_str: str = f"\n{entity.get_dueling().get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 or entity.get_dueling().armor > 0 else ""
 
-            info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon} (Lvl. {entity.get_expertise().level})\n\n{entity.get_expertise().get_health_and_mana_string()}{armor_str}"
+            stats_hidden: bool = any(se.key == StatusEffectKey.StatsHidden for se in entity.get_dueling().status_effects)
+            all_stats_str: str = f"{entity.get_expertise().get_health_and_mana_string()}{armor_str}" if not stats_hidden else "HP: ???\nMana: ???\nArmor: ???"
+            info_str += f"({i + 1}) **{self.get_name(entity)}** {group_icon} (Lvl. {entity.get_expertise().level})\n\n{all_stats_str}"
             if len(entity.get_dueling().status_effects) > 0:
                 statuses_str = entity.get_dueling().get_statuses_string()
                 if statuses_str != "":
@@ -694,7 +696,9 @@ class DuelView(discord.ui.View):
         max_reduced_armor: int = equipment.get_total_reduced_armor(expertise.level, expertise.get_all_attributes() + equipment.get_total_attribute_mods())
         armor_str = f"\n{dueling.get_armor_string(max_reduced_armor)}" if max_reduced_armor > 0 or dueling.armor > 0 else ""
 
-        duel_string = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n({self._current_target_index + 1}) **{name}**\n\n{expertise.get_health_and_mana_string()}{armor_str}"
+        stats_hidden: bool = any(se.key == StatusEffectKey.StatsHidden for se in dueling.status_effects)
+        all_stats_str: str = f"{expertise.get_health_and_mana_string()}{armor_str}" if not stats_hidden else "HP: ???\nMana: ???\nArmor: ???"
+        duel_string = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n({self._current_target_index + 1}) **{name}**\n\n{all_stats_str}"
         if len(dueling.status_effects) > 0:
             duel_string += f"\n\n{dueling.get_statuses_string()}"
 
@@ -1643,7 +1647,9 @@ class DuelView(discord.ui.View):
             if self._selected_item is not None:
                 description = f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_item}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
         if self._intent == Intent.Ability:
-            description = f"{player.get_expertise().get_health_and_mana_string()}\nCoins: {player.get_inventory().get_coins_str()}\n\n"
+            stats_hidden: bool = any(se.key == StatusEffectKey.StatsHidden for se in player.get_dueling().status_effects)
+            stats_str: str = player.get_expertise().get_health_and_mana_string() if not stats_hidden else "HP: ???\nMana: ???"
+            description = f"{stats_str}\nCoins: {player.get_inventory().get_coins_str()}\n\n"
             if self._selected_ability is not None:
                 description += f"᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n{self._selected_ability}\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆"
             else:

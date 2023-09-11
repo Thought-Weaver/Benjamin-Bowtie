@@ -592,6 +592,11 @@ class Effect():
                 display_string += f"+{int(self.effect_value)} Memory"
             elif se_key == StatusEffectKey.MemDebuff:
                 display_string += f"{int(self.effect_value)} Memory"
+            elif se_key == StatusEffectKey.BonusDamageOnAttack:
+                if self.effect_value > 0:
+                    display_string += "+"
+                # Guaranteed to happen
+                display_string += f"{int(self.effect_value)} future damage after attacking"
         if self.effect_type == EffectType.ResistStatusEffect:
             se_key: StatusEffectKey | None = self.associated_status_effect
             if se_key == StatusEffectKey.Poisoned:

@@ -1,0 +1,90 @@
+{
+    "key": "items/weapon/dungeon_npcs/tremors",
+    "icon": "\u3030\uFE0F",
+    "name": "Tremors",
+    "value": 1,
+    "rarity": "Artifact",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": [
+        "Equipment",
+        "Weapon",
+        "Main_Hand"
+    ],
+    "state_tags": [],
+    "count": 1,
+    "level_requirement": 0,
+    "weapon_stats": {
+        "min_damage": 50,
+        "max_damage": 60,
+        "num_targets": 4
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromStr",
+                "effect_value": 0.025,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "TurnSkipChance"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Charmed"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotAttack"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "CannotUseAbilities"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Bleeding"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Poisoned"
+            },
+            {
+                "effect_type": "ResistStatusEffect",
+                "effect_value": 1,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": "Sleeping"
+            }
+        ]
+    }
+}
