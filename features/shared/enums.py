@@ -200,23 +200,23 @@ class OceanSection(StrEnum):
 
 class UnderworldSection(StrEnum):
     MistyTunnels = "MistyTunnels"
-    StygianCaverns = "StygianCaverns"
+    FungalCaverns = "FungalCaverns"
     TombsIngress = "TombsIngress"
 
     def __lt__(self, section: UnderworldSection) -> bool:
-        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.StygianCaverns, UnderworldSection.TombsIngress]
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress]
         return ordering.index(self) < ordering.index(section)
 
     def __gt__(self, section: UnderworldSection) -> bool:
-        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.StygianCaverns, UnderworldSection.TombsIngress]
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress]
         return ordering.index(self) > ordering.index(section)
 
     def __le__(self, section: UnderworldSection) -> bool:
-        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.StygianCaverns, UnderworldSection.TombsIngress]
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress]
         return ordering.index(self) <= ordering.index(section)
 
     def __ge__(self, section: UnderworldSection) -> bool:
-        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.StygianCaverns, UnderworldSection.TombsIngress]
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress]
         return ordering.index(self) >= ordering.index(section)
 
 

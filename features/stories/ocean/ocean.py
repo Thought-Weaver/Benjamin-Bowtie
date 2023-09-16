@@ -11,7 +11,6 @@ from features.shared.constants import OCEAN_ROOMS
 from features.shared.enums import CompanionKey, OceanSection
 from features.stories.dungeon_run import DungeonRun
 
-from typing import List, Set, Tuple
 from features.stories.ocean.combat.abyssal_plain.ancient_kraken_duel import AncientKrakenDuelView
 from features.stories.ocean.combat.abyssal_plain.faceless_husks_duel import FacelessHusksDuelView
 from features.stories.ocean.combat.abyssal_plain.fish_maybe_duel import FishMaybeDuelView
@@ -60,6 +59,8 @@ from features.stories.ocean.treasure.coral_forest_treasure import CoralForestTre
 from features.stories.ocean.treasure.tidewater_shallows_treasure import TidewaterShallowsTreasureRoomView
 from features.stories.ocean_room_selection import OceanRoomSelectionView
 from features.stories.story import Story
+
+from typing import List, Set, Tuple
 
 # -----------------------------------------------------------------------------
 # OCEAN DEFEAT VIEW
