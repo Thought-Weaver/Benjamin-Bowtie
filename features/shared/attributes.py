@@ -34,6 +34,9 @@ class Attributes():
             short_attr_strs.append(f"Mem {self.memory}")
         return ", ".join(short_attr_strs)
 
+    def to_lst(self):
+        return [self.constitution, self.strength, self.dexterity, self.intelligence, self.luck, self.memory]
+
     def __add__(self, other: Attributes):
         return Attributes(
             self.constitution + other.constitution,
