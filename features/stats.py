@@ -506,6 +506,16 @@ class Stats():
             self.ocean_adventures_won: int = 0
             self.ocean_adventures_played: int = 0
 
+            self.underworld_rooms_explored: int = 0
+            self.underworld_combat_encounters: int = 0
+            self.underworld_treasure_rooms_encountered: int = 0
+            self.underworld_shopkeeps_encountered: int = 0
+            self.underworld_events_encountered: int = 0
+            self.underworld_rests_taken: int = 0
+            self.underworld_bosses_defeated: int = 0
+            self.underworld_adventures_won: int = 0
+            self.underworld_adventures_played: int = 0
+
         def get_name(self):
             return "Adventure Stats"
 
@@ -523,6 +533,17 @@ class Stats():
                 f"Adventures Played: *{self.forest_adventures_played}*\n\n"
 
                 f"**Ocean:**\n\n"
+                f"Rooms Explored: *{self.ocean_rooms_explored}*\n"
+                f"Combat Encounters: *{self.ocean_combat_encounters}*\n"
+                f"Treasure Rooms Found: *{self.ocean_treasure_rooms_encountered}*\n"
+                f"Shopkeepers Met: *{self.ocean_shopkeeps_encountered}*\n"
+                f"Events Encountered: *{self.ocean_events_encountered}*\n"
+                f"Rests Taken: *{self.ocean_rests_taken}*\n"
+                f"Bosses Defeated: *{self.ocean_bosses_defeated}*\n"
+                f"Adventures Won: *{self.ocean_adventures_won}*\n"
+                f"Adventures Played: *{self.ocean_adventures_played}*\n\n"
+
+                f"**Underworld:**\n\n"
                 f"Rooms Explored: *{self.ocean_rooms_explored}*\n"
                 f"Combat Encounters: *{self.ocean_combat_encounters}*\n"
                 f"Treasure Rooms Found: *{self.ocean_treasure_rooms_encountered}*\n"
@@ -557,6 +578,16 @@ class Stats():
             self.ocean_bosses_defeated = state.get("ocean_bosses_defeated", 0)
             self.ocean_adventures_won = state.get("ocean_adventures_won", 0)
             self.ocean_adventures_played = state.get("ocean_adventures_played", 0)
+
+            self.underworld_rooms_explored = state.get("underworld_rooms_explored", 0)
+            self.underworld_combat_encounters = state.get("underworld_combat_encounters", 0)
+            self.underworld_treasure_rooms_encountered = state.get("underworld_treasure_rooms_encountered", 0)
+            self.underworld_shopkeeps_encountered = state.get("underworld_shopkeeps_encountered", 0)
+            self.underworld_events_encountered = state.get("underworld_events_encountered", 0)
+            self.underworld_rests_taken = state.get("underworld_rests_taken", 0)
+            self.underworld_bosses_defeated = state.get("underworld_bosses_defeated", 0)
+            self.underworld_adventures_won = state.get("underworld_adventures_won", 0)
+            self.underworld_adventures_played = state.get("underworld_adventures_played", 0)
 
     def __init__(self):
         self.fish = self.FishStats()
