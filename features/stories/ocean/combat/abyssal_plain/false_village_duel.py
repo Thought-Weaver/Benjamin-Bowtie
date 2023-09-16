@@ -293,7 +293,7 @@ class VictoryView(discord.ui.View):
 # -----------------------------------------------------------------------------
 
 class FalseVillageDefeatView(discord.ui.View):
-    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun, players_joined_willingly: List[Player]):
+    def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
         self._bot = bot
@@ -302,7 +302,6 @@ class FalseVillageDefeatView(discord.ui.View):
         self._users = users
         self._group_leader = users[0]
         self._dungeon_run = dungeon_run
-        self._players_joined_willingly = players_joined_willingly
 
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
@@ -384,7 +383,7 @@ class ContinueButton(discord.ui.Button):
             return
 
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-        defeat_view: ocean.OceanDefeatView = ocean.OceanDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+        defeat_view: FalseVillageDefeatView = FalseVillageDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
 
         duel_view: DuelView = DuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_players(), [FalseVillage()], player_victory_post_view=victory_view, player_loss_post_view=defeat_view)
         initial_info: Embed = duel_view.get_initial_embed()

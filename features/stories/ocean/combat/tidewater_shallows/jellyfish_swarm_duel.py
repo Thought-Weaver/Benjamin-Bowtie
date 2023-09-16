@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from features.stories.dungeon_run import DungeonRun
 
 # -----------------------------------------------------------------------------
-# WHISPERING WOODS INTRO ROOM
+# CORAL FOREST INTRO ROOM
 # -----------------------------------------------------------------------------
 
 class CoralForestContinueButton(discord.ui.Button):
