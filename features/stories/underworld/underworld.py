@@ -12,6 +12,33 @@ from features.shared.enums import CompanionKey, UnderworldSection
 from features.shared.item import LOADED_ITEMS, ItemKey
 from features.stories.dungeon_run import DungeonRun
 from features.stories.story import Story
+from features.stories.underworld.combat.fungal_caverns.agaric_alchemists_duel import AgaricAlchemistsDuelView
+from features.stories.underworld.combat.fungal_caverns.blind_salamander_duel import BlindSalamanderDuelView
+from features.stories.underworld.combat.fungal_caverns.chanterspell_duel import ChanterspellDuelView
+from features.stories.underworld.combat.fungal_caverns.deathless_caps_duel import DeathlessCapsDuelView
+from features.stories.underworld.combat.fungal_caverns.glowing_moss_duel import GlowingMossDuelView
+from features.stories.underworld.combat.fungal_caverns.hen_of_the_caverns_duel import HenOfTheCavernsDuelView
+from features.stories.underworld.combat.fungal_caverns.malevolent_morel_duel import MalevolentMorelDuelView
+from features.stories.underworld.combat.fungal_caverns.mushroom_maze import MushroomMazeDuelView, TombsIngressIntroView
+from features.stories.underworld.combat.fungal_caverns.mycelium_tree_duel import MyceliumTreeDuelView
+from features.stories.underworld.combat.misty_tunnels.breath_of_darkness_duel import BreathOfDarknessDuelView
+from features.stories.underworld.combat.misty_tunnels.choking_fog_duel import ChokingFogDuelView
+from features.stories.underworld.combat.misty_tunnels.ichordrink_bats_duel import IchordrinkBatsDuelView
+from features.stories.underworld.combat.misty_tunnels.misty_apparition_duel import MistyApparitionDuelView
+from features.stories.underworld.combat.misty_tunnels.pale_widows_duel import PaleWidowDuelView
+from features.stories.underworld.combat.misty_tunnels.scuttledark_scorpion_duel import ScuttledarkScorpionDuelView
+from features.stories.underworld.combat.misty_tunnels.stonewalker_duel import StonewalkerDuelView
+from features.stories.underworld.combat.misty_tunnels.tunneldigger_duel import FungalCavernsIntroView, TunneldiggerDuelView
+from features.stories.underworld.combat.misty_tunnels.winding_tunnels_duel import WindingTunnelsDuelView
+from features.stories.underworld.combat.tombs_ingress.cultists_of_avarice_duel import CultistsOfAvariceDuelView
+from features.stories.underworld.combat.tombs_ingress.eyeless_echoes_duel import EyelessEchoesDuelView
+from features.stories.underworld.combat.tombs_ingress.molten_gold_duel import MoltenGoldDuelView
+from features.stories.underworld.combat.tombs_ingress.quaking_tunnels import QuakingTunnelsDuelView
+from features.stories.underworld.combat.tombs_ingress.scratches_on_the_wall_duel import ScratchesOnTheWallDuelView
+from features.stories.underworld.combat.tombs_ingress.timelost_echo_duel import TimelostEchoDuelView
+from features.stories.underworld.combat.tombs_ingress.tomb_guardians_duel import TombGuardiansDuelView
+from features.stories.underworld.combat.tombs_ingress.warping_anomaly_duel import WarpingAnomalyDuelView
+from features.stories.underworld.combat.tombs_ingress.waylaid_chest_duel import WaylaidChestDuelView
 from features.stories.underworld_room_selection import UnderworldRoomSelectionView
 
 from typing import List, TYPE_CHECKING, Set, Tuple
@@ -314,20 +341,20 @@ class StartButton(discord.ui.Button):
 
         starting_section: UnderworldSection | None = view.get_starting_section()
         if starting_section is None or starting_section == UnderworldSection.MistyTunnels:
-            ts_entrance_view: MistyTunnelsEntranceView = MistyTunnelsEntranceView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-            initial_info: discord.Embed = ts_entrance_view.get_initial_embed()
+            mt_entrance_view: MistyTunnelsEntranceView = MistyTunnelsEntranceView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+            initial_info: discord.Embed = mt_entrance_view.get_initial_embed()
 
-            await interaction.response.edit_message(embed=initial_info, view=ts_entrance_view, content=None)
+            await interaction.response.edit_message(embed=initial_info, view=mt_entrance_view, content=None)
         elif starting_section == UnderworldSection.FungalCaverns:
-            cf_entrance_view: CoralForestIntroView = CoralForestIntroView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-            initial_info: discord.Embed = cf_entrance_view.get_initial_embed()
+            fc_entrance_view: FungalCavernsIntroView = FungalCavernsIntroView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+            initial_info: discord.Embed = fc_entrance_view.get_initial_embed()
 
-            await interaction.response.edit_message(embed=initial_info, view=cf_entrance_view, content=None)
+            await interaction.response.edit_message(embed=initial_info, view=fc_entrance_view, content=None)
         elif starting_section == UnderworldSection.TombsIngress:
-            ap_entrance_view: AbyssalPlainIntroView = AbyssalPlainIntroView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-            initial_info: discord.Embed = ap_entrance_view.get_initial_embed()
+            ti_entrance_view: TombsIngressIntroView = TombsIngressIntroView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+            initial_info: discord.Embed = ti_entrance_view.get_initial_embed()
 
-            await interaction.response.edit_message(embed=initial_info, view=ap_entrance_view, content=None)
+            await interaction.response.edit_message(embed=initial_info, view=ti_entrance_view, content=None)
 
 
 class AcceptButton(discord.ui.Button):
@@ -552,7 +579,7 @@ class UnderworldStory():
 
     @staticmethod
     def generate_rest_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
-        return
+        return UnderworldRestView(bot, database, guild_id, users, dungeon_run)
     
     @staticmethod
     def generate_treasure_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
@@ -566,14 +593,59 @@ class UnderworldStory():
     @staticmethod
     def generate_combat_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun) -> Tuple[discord.ui.View, int]:
         if dungeon_run.section == UnderworldSection.MistyTunnels:
-            rand_val: int = random.choice([i for i in range(0, 7) if i != dungeon_run.previous_event])
-            return
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
+            if rand_val == 0:
+                return BreathOfDarknessDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 1:
+                return ChokingFogDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 2:
+                return IchordrinkBatsDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 3:
+                return MistyApparitionDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 4:
+                return PaleWidowDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 5:
+                return ScuttledarkScorpionDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 6:
+                return StonewalkerDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            else:
+                return WindingTunnelsDuelView(bot, database, guild_id, users, dungeon_run), rand_val
         elif dungeon_run.section == UnderworldSection.FungalCaverns:
-            rand_val: int = random.choice([i for i in range(0, 6) if i != dungeon_run.previous_event])
-            return
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
+            if rand_val == 0:
+                return AgaricAlchemistsDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 1:
+                return BlindSalamanderDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 2:
+                return ChanterspellDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 3:
+                return DeathlessCapsDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 4:
+                return GlowingMossDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 5:
+                return HenOfTheCavernsDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 6:
+                return MalevolentMorelDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            else:
+                return MyceliumTreeDuelView(bot, database, guild_id, users, dungeon_run), rand_val
         else:
-            rand_val: int = random.choice([i for i in range(0, 4) if i != dungeon_run.previous_event])
-            return
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
+            if rand_val == 0:
+                return CultistsOfAvariceDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 1:
+                return MoltenGoldDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 2:
+                return QuakingTunnelsDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 3:
+                return ScratchesOnTheWallDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 4:
+                return TimelostEchoDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 5:
+                return TombGuardiansDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 6:
+                return WarpingAnomalyDuelView(bot, database, guild_id, users, dungeon_run), rand_val
+            else:
+                return WaylaidChestDuelView(bot, database, guild_id, users, dungeon_run), rand_val
 
     @staticmethod
     def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun) -> Tuple[discord.ui.View, int]:
@@ -589,7 +661,12 @@ class UnderworldStory():
 
     @staticmethod
     def generate_boss_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
-        return
+        if dungeon_run.section == UnderworldSection.MistyTunnels:
+            return TunneldiggerDuelView(bot, database, guild_id, users, dungeon_run)
+        elif dungeon_run.section == UnderworldSection.FungalCaverns:
+            return MushroomMazeDuelView(bot, database, guild_id, users, dungeon_run)
+        else:
+            return EyelessEchoesDuelView(bot, database, guild_id, users, dungeon_run)
 
     def __getstate__(self):
         return self.__dict__

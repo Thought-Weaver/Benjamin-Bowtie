@@ -5,7 +5,7 @@ import discord
 from discord import Embed
 from enum import StrEnum
 from features.expertise import Expertise, ExpertiseClass
-from features.shared.ability import ATidySumI, ATidySumII, ATidySumIII, Ability, BidedAttackI, BidedAttackII, BidedAttackIII, BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, BoundToGetLuckyIV, BoundToGetLuckyV, CleanseI, ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII, ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII, ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII, ControlI, ControlII, ControlIII, ConversionI, CorruptionI, CorruptionII, CorruptionIII, CounterstrikeI, CounterstrikeII, CounterstrikeIII, CrabnadoI, CrabnadoII, CrabnadoIII, CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CurseOfTheSeaIV, CursedCoinsI, CursedCoinsII, CursedCoinsIII, CursedCoinsIV, DeepPocketsI, DeepPocketsII, DeepPocketsIII, DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII, EmpowermentI, EmpowermentII, EvadeI, EvadeII, EvadeIII, FesteringVaporI, FesteringVaporII, FesteringVaporIII, HeavySlamI, HeavySlamII, HeavySlamIII, HighTideI, HighTideII, HighTideIII, HighTideIV, HookI, HookII, HookIII, HookIV, IncenseI, IncenseII, IncenseIII, IncenseIV, IncenseV, MindSpikeI, MindSpikeII, MindSpikeIII, ParalyzingFumesI, ParalyzingFumesII, PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII, PoisonousSkinI, PreparePotionsI, PreparePotionsII, PreparePotionsIII, PressTheAdvantageI, PressTheAdvantageII, PressTheAdvantageIII, QuickAccessI, RegenerationI, RegenerationII, RegenerationIII, ScarArmorI, ScarArmorII, SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV, SecondWindI, SecondWindII, SecondWindIII, ShatteringStormI, ShatteringStormII, ShatteringStormIII, SilkspeakingI, SmokescreenI, SmokescreenII, SmokescreenIII, TauntI, TauntII, TauntIII, ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV, ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV, UnbreakingI, UnbreakingII, UncannyWhispersI, UncannyWhispersII, UncannyWhispersIII, UnseenRichesI, UnseenRichesII, UnseenRichesIII, VitalityTransferI, VitalityTransferII, VitalityTransferIII, VoidformI, WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlpoolIV, WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV, WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII
+from features.shared.ability import ALCHEMIST_ABILITIES, FISHER_ABILITIES, GUARDIAN_ABILITIES, MERCHANT_ABILITIES, VOID_ABILITIES, Ability
 from features.shared.item import LOADED_ITEMS
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
@@ -170,68 +170,11 @@ class TrainerView(discord.ui.View):
 
         self._NUM_PER_PAGE = 4
 
-        self._fisher_abilities: List[List[type]] = [
-            [SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV],
-            [CrabnadoI, CrabnadoII, CrabnadoIII],
-            [CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CurseOfTheSeaIV],
-            [HookI, HookII, HookIII, HookIV],
-            [WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII],
-            [HighTideI, HighTideII, HighTideIII, HighTideIV],
-            [ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV],
-            [DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII],
-            [WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlpoolIV],
-            [ShatteringStormI, ShatteringStormII, ShatteringStormIII],
-        ]
-
-        self._guardian_abilities: List[List[type]] = [
-            [WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV],
-            [SecondWindI, SecondWindII, SecondWindIII],
-            [ScarArmorI, ScarArmorII],
-            [UnbreakingI, UnbreakingII],
-            [CounterstrikeI, CounterstrikeII, CounterstrikeIII],
-            [BidedAttackI, BidedAttackII, BidedAttackIII],
-            [TauntI, TauntII, TauntIII],
-            [PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII],
-            [PressTheAdvantageI, PressTheAdvantageII, PressTheAdvantageIII],
-            [EvadeI, EvadeII, EvadeIII],
-            [HeavySlamI, HeavySlamII, HeavySlamIII]
-        ]
-
-        self._merchant_abilities: List[List[type]] = [
-            [ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII],
-            [BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, BoundToGetLuckyIV, BoundToGetLuckyV],
-            [SilkspeakingI],
-            [ATidySumI, ATidySumII, ATidySumIII],
-            [CursedCoinsI, CursedCoinsII, CursedCoinsIII, CursedCoinsIV],
-            [UnseenRichesI, UnseenRichesII, UnseenRichesIII],
-            [ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII],
-            [ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII],
-            [DeepPocketsI, DeepPocketsII, DeepPocketsIII]
-        ]
-
-        self._alchemist_abilities: List[List[type]] = [
-            [IncenseI, IncenseII, IncenseIII, IncenseIV, IncenseV],
-            [PreparePotionsI, PreparePotionsII, PreparePotionsIII],
-            [VitalityTransferI, VitalityTransferII, VitalityTransferIII],
-            [CleanseI],
-            [ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV],
-            [SmokescreenI, SmokescreenII, SmokescreenIII],
-            [EmpowermentI, EmpowermentII],
-            [FesteringVaporI, FesteringVaporII, FesteringVaporIII],
-            [PoisonousSkinI],
-            [RegenerationI, RegenerationII, RegenerationIII],
-            [ParalyzingFumesI, ParalyzingFumesII],
-            [QuickAccessI]
-        ]
-
-        self._void_abilities: List[List[type]] = [
-            [CorruptionI, CorruptionII, CorruptionIII],
-            [ConversionI],
-            [UncannyWhispersI, UncannyWhispersII, UncannyWhispersIII],
-            [VoidformI],
-            [ControlI, ControlII, ControlIII],
-            [MindSpikeI, MindSpikeII, MindSpikeIII]
-        ]
+        self._fisher_abilities: List[List[type]] = FISHER_ABILITIES
+        self._guardian_abilities: List[List[type]] = GUARDIAN_ABILITIES
+        self._merchant_abilities: List[List[type]] = MERCHANT_ABILITIES
+        self._alchemist_abilities: List[List[type]] = ALCHEMIST_ABILITIES
+        self._void_abilities: List[List[type]] = VOID_ABILITIES
 
         self._display_initial_buttons()
 
