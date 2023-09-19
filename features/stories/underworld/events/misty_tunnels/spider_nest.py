@@ -45,10 +45,10 @@ class LootButton(discord.ui.Button):
         view: SpiderNestView = self.view
         if interaction.user.id == view.get_group_leader().id:
             if random.random() < 0.25:
-                shipwreck_duel_view: SpiderNestDuelView = SpiderNestDuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
-                initial_info: Embed = shipwreck_duel_view.get_initial_embed()
+                duel_view: SpiderNestDuelView = SpiderNestDuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+                initial_info: Embed = duel_view.get_initial_embed()
 
-                await interaction.response.edit_message(content=None, embed=initial_info, view=shipwreck_duel_view)
+                await interaction.response.edit_message(content=None, embed=initial_info, view=duel_view)
             else:
                 response = view.search()
                 await interaction.response.edit_message(content=None, embed=response, view=view)
