@@ -525,6 +525,17 @@ class Ability():
 
         return results
 
+    def _use_heal_and_effect_ability(self, caster: Player | NPC, targets: List[Player | NPC], heal_range: range, status_effects: List[StatusEffect]) -> List[str]:
+        results = self._use_heal_ability(caster, targets, heal_range)
+
+        for i in range(len(results) - 1):
+            status_effects_str: str = ", ".join(list(map(lambda x: x.name, status_effects)))
+            targets[i].get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(targets[i] != caster), status_effects))
+            results[i] += f" and is now {status_effects_str}"
+            targets[i].get_expertise().update_stats(targets[i].get_combined_attributes())
+        
+        return results
+
     def __str__(self):
         target_str: str = ""
         if self._num_targets == -2:
@@ -8516,4 +8527,67 @@ ALL_ABILITIES: List[type] = [
     VoidformI,
     ControlI, ControlII, ControlIII,
     MindSpikeI, MindSpikeII, MindSpikeIII
+]
+
+FISHER_ABILITIES: List[List[type]] = [
+    [SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV],
+    [CrabnadoI, CrabnadoII, CrabnadoIII],
+    [CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CurseOfTheSeaIV],
+    [HookI, HookII, HookIII, HookIV],
+    [WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII],
+    [HighTideI, HighTideII, HighTideIII, HighTideIV],
+    [ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV],
+    [DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII],
+    [WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlpoolIV],
+    [ShatteringStormI, ShatteringStormII, ShatteringStormIII],
+]
+
+GUARDIAN_ABILITIES: List[List[type]] = [
+    [WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV],
+    [SecondWindI, SecondWindII, SecondWindIII],
+    [ScarArmorI, ScarArmorII],
+    [UnbreakingI, UnbreakingII],
+    [CounterstrikeI, CounterstrikeII, CounterstrikeIII],
+    [BidedAttackI, BidedAttackII, BidedAttackIII],
+    [TauntI, TauntII, TauntIII],
+    [PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII],
+    [PressTheAdvantageI, PressTheAdvantageII, PressTheAdvantageIII],
+    [EvadeI, EvadeII, EvadeIII],
+    [HeavySlamI, HeavySlamII, HeavySlamIII]
+]
+
+MERCHANT_ABILITIES: List[List[type]] = [
+    [ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII],
+    [BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, BoundToGetLuckyIV, BoundToGetLuckyV],
+    [SilkspeakingI],
+    [ATidySumI, ATidySumII, ATidySumIII],
+    [CursedCoinsI, CursedCoinsII, CursedCoinsIII, CursedCoinsIV],
+    [UnseenRichesI, UnseenRichesII, UnseenRichesIII],
+    [ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII],
+    [ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII],
+    [DeepPocketsI, DeepPocketsII, DeepPocketsIII]
+]
+
+ALCHEMIST_ABILITIES: List[List[type]] = [
+    [IncenseI, IncenseII, IncenseIII, IncenseIV, IncenseV],
+    [PreparePotionsI, PreparePotionsII, PreparePotionsIII],
+    [VitalityTransferI, VitalityTransferII, VitalityTransferIII],
+    [CleanseI],
+    [ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV],
+    [SmokescreenI, SmokescreenII, SmokescreenIII],
+    [EmpowermentI, EmpowermentII],
+    [FesteringVaporI, FesteringVaporII, FesteringVaporIII],
+    [PoisonousSkinI],
+    [RegenerationI, RegenerationII, RegenerationIII],
+    [ParalyzingFumesI, ParalyzingFumesII],
+    [QuickAccessI]
+]
+
+VOID_ABILITIES: List[List[type]] = [
+    [CorruptionI, CorruptionII, CorruptionIII],
+    [ConversionI],
+    [UncannyWhispersI, UncannyWhispersII, UncannyWhispersIII],
+    [VoidformI],
+    [ControlI, ControlII, ControlIII],
+    [MindSpikeI, MindSpikeII, MindSpikeIII]
 ]

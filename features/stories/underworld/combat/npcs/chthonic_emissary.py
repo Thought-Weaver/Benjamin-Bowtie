@@ -80,9 +80,9 @@ class AnnihilationBeam(Ability):
             icon="\u2604\uFE0F",
             name="Annihilation Beam",
             class_key=ExpertiseClass.Merchant,
-            description="Deal 1000 damage to all enemies who are marked by Ruby Eyes Begin to Glow.",
+            description="Deal 2000 damage to all enemies who are marked by Ruby Eyes Begin to Glow.",
             flavor_text="",
-            mana_cost=300,
+            mana_cost=500,
             cooldown=8,
             num_targets=-1,
             level_requirement=20,
@@ -99,7 +99,7 @@ class AnnihilationBeam(Ability):
             return "{0}" + f" failed to use {self.get_icon_and_name()}!\n\n"
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
-        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, filtered_targets, range(1000, 1000))
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, filtered_targets, range(2000, 2000))
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.merchant_abilities_used += 1
@@ -352,6 +352,8 @@ class InvocationOfLapis(Ability):
         caster.get_expertise().restore_mana(caster.get_expertise().max_mana)
         caster.get_dueling().status_effects = [se for se in caster.get_dueling().status_effects if se.key not in NEGATIVE_STATUS_EFFECTS]
 
+        self.remove_mana_and_set_cd(caster)
+
         caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str
@@ -408,7 +410,7 @@ class InvocationOfOnyx(Ability):
             icon="\uD83E\uDE99",
             name="Invocation of Onyx",
             class_key=ExpertiseClass.Merchant,
-            description="Grant yourself 80% damage reflection for 4 turns.",
+            description="Grant yourself 75% damage reflection for 4 turns.",
             flavor_text="",
             mana_cost=100,
             cooldown=10,
@@ -422,7 +424,7 @@ class InvocationOfOnyx(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = DmgReflect(
             turns_remaining=4,
-            value=0.8,
+            value=0.75,
             source_str=self.get_icon_and_name()
         )
 
@@ -646,56 +648,56 @@ class ChthonicEmissary(NPC):
         # Balance Simulation Results:
         #
         # --- Number of Times Stirred: 0 ---
-        # 8% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 15
+        # 4% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 12
         #
         # --- Number of Times Stirred: 10 ---
-        # 6% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 15
+        # 4% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 12
         #
         # --- Number of Times Stirred: 20 ---
-        # 4% chance of 4 player party (Lvl. 90-100) victory against 1
+        # 3% chance of 4 player party (Lvl. 90-100) victory against 1
         # Avg Number of Turns (per entity): 10
         #
         # --- Number of Times Stirred: 30 ---
-        # 4% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 11
+        # 2% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 10
         #
         # --- Number of Times Stirred: 40 ---
-        # 6% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 13
+        # 3% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 12
         #
         # --- Number of Times Stirred: 50 ---
-        # 27% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 32
+        # 6% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 16
         #
         # --- Number of Times Stirred: 60 ---
-        # 17% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 22
+        # 7% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 15
         #
         # --- Number of Times Stirred: 70 ---
-        # 15% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 28
+        # 5% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 13
         #
         # --- Number of Times Stirred: 80 ---
-        # 16% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 28
+        # 7% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 14
         #
         # --- Number of Times Stirred: 90 ---
-        # 12% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 26
+        # 5% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 15
         #
         # --- Number of Times Stirred: 100 ---
-        # 15% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 24
+        # 5% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 14
         #
         # --- Number of Times Stirred: 110 ---
-        # 4% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 15
+        # 1% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 11
         #
         # --- Number of Times Stirred: 120 ---
-        # 3% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 15
+        # 1% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 11
 
         super().__init__("Chthonic Emissary" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
@@ -712,9 +714,9 @@ class ChthonicEmissary(NPC):
             self._equipment = Equipment()
         
         self._expertise.add_xp_to_class_until_level(1500, ExpertiseClass.Merchant)
-        self._expertise.constitution = 340
-        self._expertise.strength = 820
-        self._expertise.dexterity = 40
+        self._expertise.constitution = 350
+        self._expertise.strength = 800
+        self._expertise.dexterity = 50
         self._expertise.intelligence = 200
         self._expertise.luck = 97
         self._expertise.memory = 3

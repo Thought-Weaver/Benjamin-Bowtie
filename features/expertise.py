@@ -13,12 +13,13 @@ from features.shared.effect import EffectType
 
 from typing import TYPE_CHECKING, List
 
-from features.shared.statuseffect import StatusEffectKey
+from features.shared.statuseffect import DamageSplit, StatusEffectKey
 if TYPE_CHECKING:
     from bot import BenjaminBowtieBot
     from features.dueling import Dueling
     from features.equipment import Equipment
     from features.player import Player
+    from features.npcs.npc import NPC
 
 # -----------------------------------------------------------------------------
 # ENUMS
@@ -223,6 +224,20 @@ class Expertise():
 
     def damage(self, damage: int, dueling: Dueling, percent_reduct: float, ignore_armor: bool):
         damage_to_health = damage - int(damage * percent_reduct)
+
+        linked_targets: List[Player | NPC] = sum((se.linked_targets for se in dueling.status_effects if isinstance(se, DamageSplit) and not se.triggered_this_turn), [])
+        if len(linked_targets) > 0:
+            split_damage: int = int(damage / (len(linked_targets) + 1))
+            damage_to_health = split_damage
+            for target in linked_targets:
+                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
+                target.get_expertise().damage(split_damage, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
+                
+                for se in target.get_dueling().status_effects:
+                    if isinstance(se, DamageSplit):
+                        se.triggered_this_turn = True
+            # Return early since this has a recursive call to damage self
+            return damage_to_health
 
         if not ignore_armor:
             damage_to_health = dueling.damage_armor(damage_to_health)

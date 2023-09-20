@@ -72,9 +72,13 @@ from features.stories.underworld.combat.npcs.blind_salamander import BlindSalama
 from features.stories.underworld.combat.npcs.breath_of_darkness import BreathOfDarkness
 from features.stories.underworld.combat.npcs.chanterspell import Chanterspell
 from features.stories.underworld.combat.npcs.choking_fog import ChokingFog
+from features.stories.underworld.combat.npcs.chthonic_emissary import ChthonicEmissary
 from features.stories.underworld.combat.npcs.cultist_of_avarice import CultistOfAvarice
 from features.stories.underworld.combat.npcs.deathless_cap import DeathlessCap
 from features.stories.underworld.combat.npcs.defending_tomb_guardian import DefendingTombGuardian
+from features.stories.underworld.combat.npcs.echo_of_asterius import EchoOfAsterius
+from features.stories.underworld.combat.npcs.echo_of_passerhawk import EchoOfPasserhawk
+from features.stories.underworld.combat.npcs.echo_of_yenna import EchoOfYenna
 from features.stories.underworld.combat.npcs.glowing_moss import GlowingMoss
 from features.stories.underworld.combat.npcs.hen_of_the_caverns import HenOfTheCaverns
 from features.stories.underworld.combat.npcs.malevolent_morel import MalevolentMorel
@@ -823,9 +827,9 @@ def get_full_equipment_str(npc: NPC):
 # -----------------------------------------------------------------------------
 
 ENEMY_CLASSES: List[List[type]] = []
-ALLY_CLASS_RANGE: range = range(80, 90)
+ALLY_CLASS_RANGE: range = range(90, 100)
 
-SIMULATION_ITERATIONS = 100
+SIMULATION_ITERATIONS = 256
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 
@@ -866,7 +870,7 @@ def generate_ally_npcs(preset_persona: NPCDuelingPersonas | None=None, preset_cl
         allies_per_sim.append(allies)
     return allies_per_sim
 
-def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_index: int) -> SimulationResult:
+def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_index: int) -> SimulationResult | None:
     logger = setup_logger(f"simulation_logger_{sim_index}", f"{dir_name}/simulation_{sim_index}.log")
 
     result = SimulationResult()
@@ -885,7 +889,10 @@ def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_ind
             f"Items: {item_str}")
         )
 
-    duel: SimulationDuel = SimulationDuel(allies, enemies, logger, MAX_TURNS)
+    try:
+        duel: SimulationDuel = SimulationDuel(allies, enemies, logger, MAX_TURNS)
+    except:
+        return None
 
     allies_won: int = any(ally.get_stats().dueling.duels_won > 0 for ally in allies)
     if allies_won:
@@ -957,7 +964,7 @@ def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_ind
 
 def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
     # Setup files
-    base_enemy_name: str = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_"))).replace("?", "")
+    base_enemy_name: str = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_"))).replace("?", "") + "_" + str(num_stirred)
     dir_name: str = f"./simulation_results/{base_enemy_name}"
 
     Path(dir_name).mkdir(parents=True, exist_ok=True)
@@ -982,12 +989,13 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
     ally_npcs: List[List[NPC]] = generate_ally_npcs()
     enemy_npcs: List[List[NPC]] = [[enemy(name_suffix=f" {j}") for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
 
-    pool = Pool(processes=4)
-    results: List[SimulationResult] = pool.starmap(run_simulation, zip(ally_npcs, enemy_npcs, [dir_name for _ in range(SIMULATION_ITERATIONS)], [i for i in range(SIMULATION_ITERATIONS)]))
+    pool = Pool(processes=8)
+    results: List[SimulationResult | None] = pool.starmap(run_simulation, zip(ally_npcs, enemy_npcs, [dir_name for _ in range(SIMULATION_ITERATIONS)], [i for i in range(SIMULATION_ITERATIONS)]))
     pool.close()
     pool.join()
 
-    for result in results:
+    final_results: List[SimulationResult] = [result for result in results if result is not None]
+    for result in final_results:
         for j in range(2):
             total_attacks_done[j] += result.attacks_done[j]
             total_abilities_used[j] += result.abilities_used[j]
@@ -1004,34 +1012,36 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
         ally_victories += 1 if result.allies_won else 0
         total_turns_taken_per_entity += result.turns_taken_per_entity
 
+    num_valid_simulations: int = len(final_results)
     # Log average data
     with open(f"./simulation_results/{base_enemy_name}/average_data.txt", "w") as f:
         f.write(
             (
                 f"Ally Average Data:\n\n"
-                f"Attacks Done: {total_attacks_done[0] / SIMULATION_ITERATIONS}\n"
-                f"Abilities Used: {total_abilities_used[0] / SIMULATION_ITERATIONS}\n"
-                f"Items Used: {total_items_used[0] / SIMULATION_ITERATIONS}\n\n"
-                f"Damage Dealt: {total_dmg_dealt[0] / SIMULATION_ITERATIONS}\n"
-                f"Damage Taken: {total_dmg_taken[0] / SIMULATION_ITERATIONS}\n"
-                f"Damage Blocked/Reduced: {total_dmg_blocked[0] / SIMULATION_ITERATIONS}\n\n"
-                f"Attacks Dodged: {total_attacks_dodged[0] / SIMULATION_ITERATIONS}\n"
-                f"Abilities Dodged: {total_abilities_dodged[0] / SIMULATION_ITERATIONS}\n"
-                f"Crits: {total_crits[0] / SIMULATION_ITERATIONS}\n\n"
+                f"Attacks Done: {total_attacks_done[0] / num_valid_simulations}\n"
+                f"Abilities Used: {total_abilities_used[0] / num_valid_simulations}\n"
+                f"Items Used: {total_items_used[0] / num_valid_simulations}\n\n"
+                f"Damage Dealt: {total_dmg_dealt[0] / num_valid_simulations}\n"
+                f"Damage Taken: {total_dmg_taken[0] / num_valid_simulations}\n"
+                f"Damage Blocked/Reduced: {total_dmg_blocked[0] / num_valid_simulations}\n\n"
+                f"Attacks Dodged: {total_attacks_dodged[0] / num_valid_simulations}\n"
+                f"Abilities Dodged: {total_abilities_dodged[0] / num_valid_simulations}\n"
+                f"Crits: {total_crits[0] / num_valid_simulations}\n\n"
 
                 f"Enemy Average Data:\n\n"
-                f"Attacks Done: {total_attacks_done[1] / SIMULATION_ITERATIONS}\n"
-                f"Abilities Used: {total_abilities_used[1] / SIMULATION_ITERATIONS}\n"
-                f"Items Used: {total_items_used[1] / SIMULATION_ITERATIONS}\n\n"
-                f"Damage Dealt: {total_dmg_dealt[1] / SIMULATION_ITERATIONS}\n"
-                f"Damage Taken: {total_dmg_taken[1] / SIMULATION_ITERATIONS}\n"
-                f"Damage Blocked/Reduced: {total_dmg_blocked[1] / SIMULATION_ITERATIONS}\n\n"
-                f"Attacks Dodged: {total_attacks_dodged[1] / SIMULATION_ITERATIONS}\n"
-                f"Abilities Dodged: {total_abilities_dodged[1] / SIMULATION_ITERATIONS}\n"
-                f"Crits: {total_crits[1] / SIMULATION_ITERATIONS}\n\n"
+                f"Attacks Done: {total_attacks_done[1] / num_valid_simulations}\n"
+                f"Abilities Used: {total_abilities_used[1] / num_valid_simulations}\n"
+                f"Items Used: {total_items_used[1] / num_valid_simulations}\n\n"
+                f"Damage Dealt: {total_dmg_dealt[1] / num_valid_simulations}\n"
+                f"Damage Taken: {total_dmg_taken[1] / num_valid_simulations}\n"
+                f"Damage Blocked/Reduced: {total_dmg_blocked[1] / num_valid_simulations}\n\n"
+                f"Attacks Dodged: {total_attacks_dodged[1] / num_valid_simulations}\n"
+                f"Abilities Dodged: {total_abilities_dodged[1] / num_valid_simulations}\n"
+                f"Crits: {total_crits[1] / num_valid_simulations}\n\n"
                 
-                f"Percent Ally Victory: {ally_victories / SIMULATION_ITERATIONS}\n"
-                f"Average Turns Taken (per entity): {total_turns_taken_per_entity / SIMULATION_ITERATIONS}"
+                f"Percent Ally Victory: {ally_victories / num_valid_simulations}\n"
+                f"Average Turns Taken (per entity): {total_turns_taken_per_entity / num_valid_simulations}\n"
+                f"Valid Simulations: {len(final_results)}"
             )
         )
     

@@ -18,3 +18,4 @@ class Story(StrEnum):
     Underworld = "underworld"
     Ocean = "ocean"
     Forest = "forest"
+    Dream = "dream"

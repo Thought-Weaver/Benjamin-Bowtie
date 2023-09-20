@@ -76,10 +76,7 @@ class StatusEffectKey(StrEnum):
 
     Corrupted = "Corrupted"
     StatsHidden = "StatsHidden"
-
-    # TODO: For charging abilities, I should add a Charging status which
-    # is a requirement to cast an associated ability (referenced by class perhaps?)
-    # and is consumed in order to cast it. 
+    DamageSplit = "DamageSplit"
 
 # -----------------------------------------------------------------------------
 # CONSTANTS
@@ -106,7 +103,8 @@ POSITIVE_STATUS_EFFECTS_ON_SELF: List[StatusEffectKey] = [
     StatusEffectKey.BonusDamageOnAttack,
     StatusEffectKey.AttackingChanceToApplyStatus,
     StatusEffectKey.RegenerateArmor,
-    StatusEffectKey.DmgReduction
+    StatusEffectKey.DmgReduction,
+    StatusEffectKey.DamageSplit
 ]
 
 NEGATIVE_STATUS_EFFECTS: List[StatusEffectKey] = [
@@ -148,10 +146,13 @@ class StatusEffect():
         self.value_stackable: bool = value_stackable
         
     def decrement_turns_remaining(self):
+        if isinstance(self, DamageSplit):
+            self.triggered_this_turn = False
+
         if not self.trigger_first_turn:
             self.trigger_first_turn = True
             return
-        
+
         if self.turns_remaining != -1:
             self.turns_remaining = max(0, self.turns_remaining - 1)
 
@@ -184,6 +185,18 @@ class Bleeding(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Bleeding"
+        self.key = StatusEffectKey.Bleeding
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class Poisoned(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -196,6 +209,18 @@ class Poisoned(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Poisoned"
+        self.key = StatusEffectKey.Poisoned
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
     
 class ConBuff(StatusEffect):
@@ -210,6 +235,18 @@ class ConBuff(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Fortified"
+        self.key = StatusEffectKey.ConBuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class StrBuff(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -222,6 +259,18 @@ class StrBuff(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Bolstered"
+        self.key = StatusEffectKey.StrBuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class DexBuff(StatusEffect):
@@ -236,6 +285,18 @@ class DexBuff(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Hastened"
+        self.key = StatusEffectKey.DexBuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class IntBuff(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -248,6 +309,18 @@ class IntBuff(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Insightful"
+        self.key = StatusEffectKey.IntBuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class LckBuff(StatusEffect):
@@ -262,6 +335,18 @@ class LckBuff(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Lucky"
+        self.key = StatusEffectKey.LckBuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class MemBuff(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -274,6 +359,18 @@ class MemBuff(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Retentive"
+        self.key = StatusEffectKey.MemDebuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class ConDebuff(StatusEffect):
@@ -288,6 +385,18 @@ class ConDebuff(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Frail"
+        self.key = StatusEffectKey.ConDebuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class StrDebuff(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -300,6 +409,18 @@ class StrDebuff(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Weakened"
+        self.key = StatusEffectKey.StrDebuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class DexDebuff(StatusEffect):
@@ -327,6 +448,18 @@ class IntDebuff(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Drained"
+        self.key = StatusEffectKey.IntDebuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class LckDebuff(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -339,6 +472,18 @@ class LckDebuff(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Unlucky"
+        self.key = StatusEffectKey.LckDebuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class MemDebuff(StatusEffect):
@@ -353,6 +498,18 @@ class MemDebuff(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Forgetful"
+        self.key = StatusEffectKey.MemDebuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class DmgReduction(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -365,6 +522,18 @@ class DmgReduction(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Protected"
+        self.key = StatusEffectKey.DmgReduction
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class DmgVulnerability(StatusEffect):
@@ -379,6 +548,18 @@ class DmgVulnerability(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Vulnerable"
+        self.key = StatusEffectKey.DmgVulnerability
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class FixedDmgTick(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -392,6 +573,18 @@ class FixedDmgTick(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Echoing"
+        self.key = StatusEffectKey.FixedDmgTick
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class TurnSkipChance(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -404,6 +597,18 @@ class TurnSkipChance(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Faltering"
+        self.key = StatusEffectKey.TurnSkipChance
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class AttrBuffOnDamage(StatusEffect):
@@ -436,6 +641,19 @@ class AttrBuffOnDamage(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Enraged"
+        self.key = StatusEffectKey.AttrBuffOnDamage
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+        self.on_being_hit_buffs = state.get("on_being_hit_buffs", [])
+
 
 class Taunted(StatusEffect):
     def __init__(self, turns_remaining: int, forced_to_attack: Player | NPC, source_str: str | None=None, trigger_first_turn: bool=True):
@@ -449,6 +667,19 @@ class Taunted(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Taunted"
+        self.key = StatusEffectKey.Taunted
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+        self.forced_to_attack = state.get("forced_to_attack", None)
 
 
 class CannotTarget(StatusEffect):
@@ -464,6 +695,19 @@ class CannotTarget(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Convinced"
+        self.key = StatusEffectKey.CannotTarget
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+        self.cant_target = state.get("cant_target", None)
+
 
 class Generating(StatusEffect):
     def __init__(self, turns_remaining: int, value: int, source_str: str | None=None, trigger_first_turn: bool=True):
@@ -478,6 +722,18 @@ class Generating(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Generating"
+        self.key = StatusEffectKey.Generating
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class Tarnished(StatusEffect):
     def __init__(self, turns_remaining: int, value: float, source_str: str | None=None, trigger_first_turn: bool=True):
@@ -490,6 +746,18 @@ class Tarnished(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Tarnished"
+        self.key = StatusEffectKey.Tarnished
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class ManaToHP(StatusEffect):
@@ -504,6 +772,18 @@ class ManaToHP(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Sanguinated"
+        self.key = StatusEffectKey.ManaToHP
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class PotionBuff(StatusEffect):
     def __init__(self, turns_remaining: int, value: float, source_str: str | None=None, trigger_first_turn: bool=True):
@@ -516,6 +796,18 @@ class PotionBuff(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Eureka"
+        self.key = StatusEffectKey.PotionBuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class PoisonHeals(StatusEffect):
@@ -530,6 +822,18 @@ class PoisonHeals(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Absorbing"
+        self.key = StatusEffectKey.PoisonHeals
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class RestrictedToItems(StatusEffect):
     def __init__(self, turns_remaining: int, value: int, source_str: str | None=None, trigger_first_turn: bool=True):
@@ -542,6 +846,18 @@ class RestrictedToItems(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Acervophilic"
+        self.key = StatusEffectKey.RestrictedToItems
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class RegenerateHP(StatusEffect):
@@ -556,6 +872,18 @@ class RegenerateHP(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Regenerating"
+        self.key = StatusEffectKey.RegenerateHP
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class DmgBuff(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -568,6 +896,18 @@ class DmgBuff(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Empowered"
+        self.key = StatusEffectKey.DmgBuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class DmgDebuff(StatusEffect):
@@ -582,6 +922,18 @@ class DmgDebuff(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Diminished"
+        self.key = StatusEffectKey.DmgDebuff
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class Charmed(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -594,6 +946,18 @@ class Charmed(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Charmed"
+        self.key = StatusEffectKey.Charmed
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class CannotAttack(StatusEffect):
@@ -608,6 +972,18 @@ class CannotAttack(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Atrophied"
+        self.key = StatusEffectKey.CannotAttack
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class Sleeping(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -620,6 +996,18 @@ class Sleeping(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Sleeping"
+        self.key = StatusEffectKey.Sleeping
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class Decaying(StatusEffect):
@@ -634,6 +1022,18 @@ class Decaying(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Decaying"
+        self.key = StatusEffectKey.Decaying
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class Undying(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -646,6 +1046,18 @@ class Undying(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Undying"
+        self.key = StatusEffectKey.Undying
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class CannotUseAbilities(StatusEffect):
@@ -660,6 +1072,18 @@ class CannotUseAbilities(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Enfeebled"
+        self.key = StatusEffectKey.CannotUseAbilities
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class DmgReflect(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -673,6 +1097,18 @@ class DmgReflect(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Reflecting"
+        self.key = StatusEffectKey.DmgReflect
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+
 
 class BonusDamageOnAttack(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), source_str: str | None=None, trigger_first_turn: bool=True):
@@ -685,6 +1121,18 @@ class BonusDamageOnAttack(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Patient"
+        self.key = StatusEffectKey.BonusDamageOnAttack
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class StackingDamage(StatusEffect):
@@ -700,6 +1148,19 @@ class StackingDamage(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Reverberating"
+        self.key = StatusEffectKey.StackingDamage
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+        self.caster = state.get("caster", None)
+
 
 class Marked(StatusEffect):
     def __init__(self, turns_remaining: int, value: (float | int), caster: Player | NPC, source_str: str | None=None, trigger_first_turn: bool=True):
@@ -713,6 +1174,19 @@ class Marked(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Marked"
+        self.key = StatusEffectKey.Marked
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+        self.caster = state.get("caster", None)
 
 
 class AttackingChanceToApplyStatus(StatusEffect):
@@ -728,6 +1202,19 @@ class AttackingChanceToApplyStatus(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.key = StatusEffectKey.AttackingChanceToApplyStatus
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+        self.status_effect = state.get("status_effect", None)
+        self.name = f"Applying ({self.status_effect.name if self.status_effect is not None else ''})"
+
 
 class RegenerateArmor(StatusEffect):
     def __init__(self, turns_remaining: int, value: float, source_str: str | None=None, trigger_first_turn: bool=True):
@@ -740,6 +1227,18 @@ class RegenerateArmor(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Restoring"
+        self.key = StatusEffectKey.RegenerateArmor
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
 
 
 class Corrupted(StatusEffect):
@@ -756,6 +1255,18 @@ class Corrupted(StatusEffect):
         
         return display_str
 
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Corrupted"
+        self.key = StatusEffectKey.Corrupted
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", True)
+
 
 class StatsHidden(StatusEffect):
     def __init__(self, turns_remaining: int, value: float, source_str: str | None=None, trigger_first_turn: bool=True):
@@ -768,3 +1279,32 @@ class StatsHidden(StatusEffect):
             display_str += f" (from {self.source_str})"
         
         return display_str
+
+
+class DamageSplit(StatusEffect):
+    def __init__(self, turns_remaining: int, value: float, linked_targets: List[Player | NPC], source_str: str | None=None, trigger_first_turn: bool=True):
+        super().__init__(turns_remaining, value, "Fatebound", StatusEffectKey.DamageSplit, source_str, trigger_first_turn)
+        self.linked_targets = linked_targets
+        self.triggered_this_turn = False
+
+    def __str__(self):
+        display_str = f"{self.name}: You are linked to your allies, splitting all damage evenly between you for {self.get_turns_remaining_str()}"
+        
+        if self.source_str is not None:
+            display_str += f" (from {self.source_str})"
+        
+        return display_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.turns_remaining = state.get("turns_remaining", 0)
+        self.value = state.get("value", 0)
+        self.name = "Fatebound"
+        self.key = StatusEffectKey.DamageSplit
+        self.source_str = state.get("source_str", None)
+        self.trigger_first_turn = state.get("trigger_first_turn", True)
+        self.value_stackable = state.get("value_stackable", False)
+        self.linked_targets = state.get("linked_targets", [])
+        self.triggered_this_turn = state.get("triggered_this_turn", False)

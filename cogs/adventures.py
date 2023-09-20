@@ -15,6 +15,7 @@ from bot import BenjaminBowtieBot
 from features.companions.companion import BlueFlitterwingButterflyCompanion, ShadowfootRaccoonCompanion, TidewaterCrabCompanion
 from features.companions.player_companions import PlayerCompanionsView
 from features.settings import SettingsView
+from features.stories.dream.dream import DreamStory
 from features.views.dueling_view import CompanionBattleView, GroupPlayerVsPlayerDuelView, PlayerVsPlayerOrNPCDuelView
 from features.equipment import EquipmentView
 from features.expertise import ExpertiseClass, ExpertiseView
@@ -76,6 +77,8 @@ class Adventures(commands.Cog):
                 self._database[guild_id_str]["stories"][Story.Ocean] = OceanStory()
             if self._database[guild_id_str]["stories"].get(Story.Underworld) is None:
                 self._database[guild_id_str]["stories"][Story.Underworld] = UnderworldStory()
+            if self._database[guild_id_str]["stories"][Story.Dream] is None:
+                self._database[guild_id_str]["stories"][Story.Dream] = DreamStory()
 
             if self._database[guild_id_str].get("npcs") is None:
                 self._database[guild_id_str]["npcs"] = {}
