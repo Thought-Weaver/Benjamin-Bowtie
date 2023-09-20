@@ -427,7 +427,7 @@ class DeepHoleView(discord.ui.View):
             return Embed(
                 title="Choose an Item",
                 description=(
-                    "Choose an item from your inventory to feed it.\n\nNavigate through the items using the Prev and Next buttons."
+                    "Choose an item from your inventory.\n\nNavigate through the items using the Prev and Next buttons."
                     f"{error}"
                 )
             )
