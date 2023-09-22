@@ -17,5 +17,16 @@
     "weapon_stats": {
         "min_damage": 1,
         "max_damage": 2
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "DmgBuffFromStr",
+                "effect_value": 0.2,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
     }
 }

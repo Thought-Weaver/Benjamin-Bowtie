@@ -27,6 +27,13 @@
                 "conditions": [],
                 "condition_values": [],
                 "associated_status_effect": "Marked"
+            },
+            {
+                "effect_type": "DmgBuffFromInt",
+                "effect_value": 0.125,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
             }
         ]
     }
