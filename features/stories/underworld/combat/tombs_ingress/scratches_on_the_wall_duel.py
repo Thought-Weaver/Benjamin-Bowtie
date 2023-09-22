@@ -130,7 +130,7 @@ class ScratchesOnTheWallDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Words Etched in Stone", description="Though the hallways of this elaborate underground city have been covered in indecipherable writing, you glance at a particular section of the wall separated from the rest by cracked stone caused by what you can only guess was an explosion. The runic language here seems somehow… wrong. As you continue to stare at the scratching on the wall, you realize there's a color to it, dried from red to brown with flecks of gold.")
+        return Embed(title="Words Etched in Stone", description="Though the hallways of this elaborate underground city have been covered in indecipherable writing, you glance at a particular section of the wall separated from the rest by cracked stone caused by what you can only guess was an explosion. The runic language here seems somehow... wrong. As you continue to stare at the scratching on the wall, you realize there's a color to it, dried from red to brown with flecks of gold.")
 
     def _display_initial_buttons(self):
         self.clear_items()

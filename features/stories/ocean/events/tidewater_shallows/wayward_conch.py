@@ -78,7 +78,7 @@ class WaywardConchView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="A Wayward Conch", description="Poking out of the sand in an otherwise empty region of the shallows, you all suddenly come across a shimmering conch. But as you take a closer look, something -- perhaps the almost shifting pattern on its surface -- seems… wrong.\n\nYou could go closer and try to take the conch with you, or you could try to resist its allure and move past deeper into the shallows.")
+        return Embed(title="A Wayward Conch", description="Poking out of the sand in an otherwise empty region of the shallows, you all suddenly come across a shimmering conch. But as you take a closer look, something -- perhaps the almost shifting pattern on its surface -- seems... wrong.\n\nYou could go closer and try to take the conch with you, or you could try to resist its allure and move past deeper into the shallows.")
 
     def _display_initial_buttons(self):
         self.clear_items()

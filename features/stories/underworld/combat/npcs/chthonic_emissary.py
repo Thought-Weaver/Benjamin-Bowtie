@@ -11,7 +11,7 @@ from features.shared.ability import Ability, NegativeAbilityResult
 from features.shared.constants import BLEED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import NEGATIVE_STATUS_EFFECTS, POSITIVE_STATUS_EFFECTS_ON_SELF, Bleeding, ConBuff, DexBuff, DmgBuff, DmgDebuff, DmgReduction, DmgReflect, DmgVulnerability, FixedDmgTick, Generating, LckBuff, Marked, RegenerateHP, StatusEffectKey, StrBuff, Tarnished, TurnSkipChance, Undying
+from features.shared.statuseffect import NEGATIVE_STATUS_EFFECTS, Bleeding, DmgBuff, DmgDebuff, DmgReduction, DmgReflect, DmgVulnerability, FixedDmgTick, Generating, LckBuff, Marked, RegenerateHP, StatusEffectKey, Tarnished, TurnSkipChance, Undying
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING

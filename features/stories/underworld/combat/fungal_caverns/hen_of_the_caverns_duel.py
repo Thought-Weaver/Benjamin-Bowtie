@@ -130,7 +130,7 @@ class HenOfTheCavernsDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Food Perhaps?", description="What was that? A flash of movement just ahead that you couldn't make out. Then again, moving in between the light -- something large that you could swear looked like… a hen. From the shadows, however, emerges instead a terrifying fungal growth crawling on two bird-like feet.")
+        return Embed(title="Food Perhaps?", description="What was that? A flash of movement just ahead that you couldn't make out. Then again, moving in between the light -- something large that you could swear looked like... a hen. From the shadows, however, emerges instead a terrifying fungal growth crawling on two bird-like feet.")
 
     def _display_initial_buttons(self):
         self.clear_items()

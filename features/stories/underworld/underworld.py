@@ -337,7 +337,7 @@ class MistyTunnelsEntranceView(discord.ui.View):
         return self._dungeon_run
 
 # -----------------------------------------------------------------------------
-# OCEAN DUNGEON ENTRANCE VIEW
+# UNDERWORLD DUNGEON ENTRANCE VIEW
 # -----------------------------------------------------------------------------
 
 class StartButton(discord.ui.Button):
@@ -348,7 +348,7 @@ class StartButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: OceanDungeonEntranceView = self.view
+        view: UnderworldDungeonEntranceView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(embed=view.get_initial_embed(), content="Error: You aren't the group leader and can't start this adventure!", view=view)
@@ -365,6 +365,12 @@ class StartButton(discord.ui.Button):
         for player in view.get_players():
             player.get_dungeon_run().in_dungeon_run = True
             player.get_dungeon_run().corruption = 0
+
+        for user in view.get_users():
+            user.send((
+                "Earlier this same night, Quinan came over to your table and with a glassy look in her eyes whispered in your ear, \"Go to the back room.\" Curious, you ventured into the darkness where you could hear the sound of knucklebones being played. The door, further down the hall than you think the tavern is long, opened of its own accord.\n\n"
+                "Sitting there, enrobed in the shadows, was Mr. Bones. With a raspy voice like rusted metal on stone, it addressed you, \"She... will... tell... you... lies...\" And then straightening in its chair, with more vigor it continued, \"My master does not deserve the chains. Set free. Rewards uncountable will be yours.\" With that request, you found yourself outside the room and looking over your back saw the door was gone."
+            ))
 
         starting_section: UnderworldSection | None = view.get_starting_section()
         if starting_section is None or starting_section == UnderworldSection.MistyTunnels:
@@ -392,12 +398,12 @@ class AcceptButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: OceanDungeonEntranceView = self.view
+        view: UnderworldDungeonEntranceView = self.view
         view.accepted_users.add(interaction.user.id)
         await interaction.response.edit_message(embed=view.get_initial_embed(), view=view, content=None)
 
 
-class OceanDungeonEntranceView(discord.ui.View):
+class UnderworldDungeonEntranceView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, context: commands.Context, database: dict, guild_id: int, users: List[discord.User], starting_section: UnderworldSection | None):
         super().__init__(timeout=900)
 
@@ -444,7 +450,7 @@ class OceanDungeonEntranceView(discord.ui.View):
             self.add_item(StartButton())
 
         joined_at: datetime.datetime = self._context.guild.get_member(self._bot.user.id).joined_at # type: ignore
-        time_in_server = datetime.datetime.now() - joined_at
+        time_in_server = datetime.datetime.now() - joined_at.replace(tzinfo=None)
         village_existence_str = self._td_format(time_in_server)
 
         return discord.Embed(title="The Underworld", description=(

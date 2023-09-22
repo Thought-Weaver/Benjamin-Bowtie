@@ -39,12 +39,12 @@ from features.npcs.viktor import RandomItemMerchant
 from features.npcs.yenna import Yenna
 from features.player import Player
 from features.stats import StatCategory, StatView
-from features.shared.enums import ClassTag, CompanionKey, ForestSection, OceanSection
+from features.shared.enums import ClassTag, CompanionKey, ForestSection, OceanSection, UnderworldSection
 from features.shared.item import Item, LOADED_ITEMS, ItemKey, Rarity
 from features.stories.forest.forest import ForestDungeonEntranceView, ForestStory
 from features.stories.ocean.ocean import OceanDungeonEntranceView, OceanStory
 from features.stories.story import Story
-from features.stories.underworld.underworld import UnderworldStory
+from features.stories.underworld.underworld import UnderworldDungeonEntranceView, UnderworldStory
 from features.trainers import TrainerView
 from games.knucklebones import Knucklebones
 
@@ -77,7 +77,7 @@ class Adventures(commands.Cog):
                 self._database[guild_id_str]["stories"][Story.Ocean] = OceanStory()
             if self._database[guild_id_str]["stories"].get(Story.Underworld) is None:
                 self._database[guild_id_str]["stories"][Story.Underworld] = UnderworldStory()
-            if self._database[guild_id_str]["stories"][Story.Dream] is None:
+            if self._database[guild_id_str]["stories"].get(Story.Dream) is None:
                 self._database[guild_id_str]["stories"][Story.Dream] = DreamStory()
 
             if self._database[guild_id_str].get("npcs") is None:
@@ -1348,12 +1348,62 @@ class Adventures(commands.Cog):
         
         if section is not None:
             if any(player.get_dungeon_run().ocean_best_act < section for player in [author_player, *challenged_players]):
-                await context.send(f"At least one of those players has not reached that section of the forest before.")
+                await context.send(f"At least one of those players has not reached that section of the ocean before.")
                 return
 
         ocean = OceanDungeonEntranceView(self._bot, self._database, context.guild.id, [context.author, *users], section)
 
         await context.send(embed=ocean.get_initial_embed(), view=ocean)
+
+    @commands.command(name="underworld", help="Gather players to enter the sunless underworld")
+    async def underworld_handler(self, context: commands.Context, section: UnderworldSection | None, users: commands.Greedy[User]=None):
+        assert(context.guild is not None)
+
+        users = [] if users is None else users
+
+        if len(set(users)) != len(users):
+            await context.send("You can't @ another player multiple times for an adventure.")
+            return
+
+        if context.author in users:
+            await context.send("You're automatically the group leader for the adventure and don't need to include yourself.")
+            return
+            
+        if any(user.bot for user in users):
+            await context.send("You can't bring a bot on an adventure.")
+            return
+            
+        self._check_member_and_guild_existence(context.guild.id, context.author.id)
+        for user in users:
+            self._check_member_and_guild_existence(context.guild.id, user.id)
+
+        author_player: Player = self._get_player(context.guild.id, context.author.id)
+        author_dueling: Dueling = author_player.get_dueling()
+        if author_dueling.is_in_combat:
+            await context.send(f"You're in a duel and can't start an adventure.")
+            return
+
+        challenged_players: List[Player] = [self._get_player(context.guild.id, user.id) for user in users]
+        if any(player.get_dueling().is_in_combat for player in challenged_players):
+            await context.send(f"At least one of those players is in a duel.")
+            return
+        
+        if any(player.get_dungeon_run().in_dungeon_run for player in [author_player, *challenged_players]):
+            await context.send(f"At least one of those players is on an adventure.")
+            return
+
+        if any(player.get_expertise().hp != player.get_expertise().max_hp for player in challenged_players) or author_player.get_expertise().hp != author_player.get_expertise().max_hp:
+            await context.send("At least one of those players isn't at full health.")
+            return
+        
+        if section is not None:
+            if any(player.get_dungeon_run().underworld_best_act < section for player in [author_player, *challenged_players]):
+                await context.send(f"At least one of those players has not reached that section of the underworld before.")
+                return
+
+        underworld = UnderworldDungeonEntranceView(self._bot, context, self._database, context.guild.id, [context.author, *users], section)
+
+        await context.send(embed=underworld.get_initial_embed(), view=underworld)
 
     @commands.command(name="settings", help="Adjust your gameplay settings")
     async def settings_handler(self, context: commands.Context):
