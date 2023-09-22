@@ -5,7 +5,7 @@ import discord
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
 from features.player import Player
-from features.shared.statuseffect import TurnSkipChance
+from features.shared.statuseffect import ConDebuff, DexDebuff, IntDebuff, LckDebuff, StrDebuff
 from features.stories.dungeon_run import DungeonRun
 from features.stories.underworld_room_selection import UnderworldRoomSelectionView
 
@@ -20,7 +20,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: TorchesGoOutView = self.view
+        view: ArcaneTrapsView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(content="You aren't the group leader and can't continue to the next room.")
@@ -32,15 +32,15 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=room_selection_view, content=None)
 
 
-class FocusButton(discord.ui.Button):
+class DodgeButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Focus")
+        super().__init__(style=discord.ButtonStyle.secondary, label="Dodge")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
         
-        view: TorchesGoOutView = self.view
+        view: ArcaneTrapsView = self.view
         view.decisions[interaction.user.id] = 0
 
         if len(view.decisions) == len(view.get_users()):
@@ -50,15 +50,15 @@ class FocusButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=view.get_initial_embed(), view=view)
 
 
-class PushThroughButton(discord.ui.Button):
+class EndureButton(discord.ui.Button):
     def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Push Through")
+        super().__init__(style=discord.ButtonStyle.secondary, label="Endure")
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
         
-        view: TorchesGoOutView = self.view
+        view: ArcaneTrapsView = self.view
         view.decisions[interaction.user.id] = 1
 
         if len(view.decisions) == len(view.get_users()):
@@ -68,25 +68,7 @@ class PushThroughButton(discord.ui.Button):
             await interaction.response.edit_message(content=None, embed=view.get_initial_embed(), view=view)
 
 
-class HideButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Hide")
-
-    async def callback(self, interaction: discord.Interaction):
-        if self.view is None:
-            return
-        
-        view: TorchesGoOutView = self.view
-        view.decisions[interaction.user.id] = 2
-
-        if len(view.decisions) == len(view.get_users()):
-            response = view.resolve()
-            await interaction.response.edit_message(content=None, embed=response, view=view)
-        else:
-            await interaction.response.edit_message(content=None, embed=view.get_initial_embed(), view=view)
-
-
-class TorchesGoOutView(discord.ui.View):
+class ArcaneTrapsView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -105,13 +87,12 @@ class TorchesGoOutView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="The Torches Go Out", description=f"With a sudden gust of wind from further ahead, your torches flicker and die -- leaving you all alone in the darkness. Unable to relight them quickly, you find yourselves quickly gaining terror. You have a moment to try to steel yourselves and avoid succumbing to fear.\n\n{len(self.decisions)}/{len(self._users)} have decided on their course of action.")
+        return Embed(title="Arcane Traps", description=f"Continuing your journey to what waits within, a sudden burst of force erupts from a nearby wall -- a trap triggered by proximity, it occurs to you in a flash. You have a moment to react, either by dodging out of the way or steeling yourself against the blow.\n\n{len(self.decisions)}/{len(self._users)} have decided on their course of action.")
 
     def _display_initial_buttons(self):
         self.clear_items()
-        self.add_item(FocusButton())
-        self.add_item(PushThroughButton())
-        self.add_item(HideButton())
+        self.add_item(DodgeButton())
+        self.add_item(EndureButton())
 
     def resolve(self):
         self.clear_items()
@@ -121,33 +102,49 @@ class TorchesGoOutView(discord.ui.View):
         for user in self._users:
             player = self._get_player(user.id)
             
-            faltering = TurnSkipChance(
-                turns_remaining=4,
-                value=1,
-                source_str="Torches Go Out"
-            )
+            ses = [
+                ConDebuff(
+                    turns_remaining=30,
+                    value=-15,
+                    source_str="Arcane Traps"
+                ),
+                StrDebuff(
+                    turns_remaining=30,
+                    value=-15,
+                    source_str="Arcane Traps"
+                ),
+                DexDebuff(
+                    turns_remaining=30,
+                    value=-15,
+                    source_str="Arcane Traps"
+                ),
+                IntDebuff(
+                    turns_remaining=30,
+                    value=-15,
+                    source_str="Arcane Traps"
+                ),
+                LckDebuff(
+                    turns_remaining=30,
+                    value=-15,
+                    source_str="Arcane Traps"
+                )
+            ]
             
             if self.decisions[user.id] == 0:
-                if player.get_expertise().intelligence > 40:
-                    results.append(f"{user.display_name} successfully focused their mind and relit their torch.")
-                else:
-                    results.append(f"{user.display_name} tried to focus their mind, but became paralyzed by fear.")
-                    player.get_dueling().status_effects.append(faltering)
-            elif self.decisions[user.id] == 1:
-                if player.get_expertise().strength > 40:
-                    results.append(f"{user.display_name} successfully pushed through and relit their torch.")
-                else:
-                    results.append(f"{user.display_name} tried to maintain their strength, but became paralyzed by fear.")
-                    player.get_dueling().status_effects.append(faltering)
-            else:
                 if player.get_expertise().dexterity > 40:
-                    results.append(f"{user.display_name} successfully hid and relit their torch.")
+                    results.append(f"{user.display_name} successfully dodged out of the way of the effect of the traps.")
                 else:
-                    results.append(f"{user.display_name} tried to find somewhere safe to hide, but became paralyzed by fear.")
-                    player.get_dueling().status_effects.append(faltering)
+                    results.append(f"{user.display_name} tried to dodge out of the way, but was caught by the edge of the arcane explosion.")
+                    player.get_dueling().status_effects += ses
+            else:
+                if player.get_expertise().constitution > 40:
+                    results.append(f"{user.display_name} successfully endured the weakening effects of the traps.")
+                else:
+                    results.append(f"{user.display_name} tried to steel themselves, but became overwhelmed by the arcane explosion and succumbed to its effects.")
+                    player.get_dueling().status_effects += ses
 
         final_str: str = "\n\n".join(results)
-        return Embed(title="The Light Returns", description=f"{final_str}")
+        return Embed(title="Past the Traps", description=f"{final_str}")
 
     def any_in_duels_currently(self):
         return any(self._get_player(user.id).get_dueling().is_in_combat for user in self._users)

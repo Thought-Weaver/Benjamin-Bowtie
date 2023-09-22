@@ -22,7 +22,7 @@ class ContinueButton(discord.ui.Button):
         if self.view is None:
             return
         
-        view: StorageRoomTreasureRoomView = self.view
+        view: SupplyRoomView = self.view
 
         if interaction.user.id != view.get_group_leader().id:
             await interaction.response.edit_message(embed=view.get_initial_embed(), content="Error: You aren't the group leader and can't continue to the next room!", view=view)
@@ -34,7 +34,7 @@ class ContinueButton(discord.ui.Button):
         await interaction.response.edit_message(embed=initial_info, view=room_select_view, content=None)
 
 
-class StorageRoomTreasureRoomView(discord.ui.View):
+class SupplyRoomView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         super().__init__(timeout=None)
 
@@ -91,7 +91,7 @@ class StorageRoomTreasureRoomView(discord.ui.View):
         return result_str
 
     def get_initial_embed(self):
-        return Embed(title="Storage Room", description=f"The scent of something delicious suddenly catches your attention as you pass by various locked doors and rooms. With a bit of effort, you manage to break open one of the locks to a room filled with potions and food -- you can only assume preserved this long by spellcraft.\n\n{self._treasure_result_str}")
+        return Embed(title="Supply Room", description=f"The scent of something delicious suddenly catches your attention as you pass by various locked doors and rooms. With a bit of effort, you manage to break open one of the locks to a room filled with potions and food -- you can only assume preserved this long by spellcraft.\n\n{self._treasure_result_str}")
 
     def _display_initial_buttons(self):
         self.clear_items()

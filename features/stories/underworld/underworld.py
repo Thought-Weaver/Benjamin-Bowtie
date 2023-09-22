@@ -39,6 +39,33 @@ from features.stories.underworld.combat.tombs_ingress.timelost_echo_duel import 
 from features.stories.underworld.combat.tombs_ingress.tomb_guardians_duel import TombGuardiansDuelView
 from features.stories.underworld.combat.tombs_ingress.warping_anomaly_duel import WarpingAnomalyDuelView
 from features.stories.underworld.combat.tombs_ingress.waylaid_chest_duel import WaylaidChestDuelView
+from features.stories.underworld.events.fungal_caverns.crimson_rot import CrimsonRotView
+from features.stories.underworld.events.fungal_caverns.deep_hole import DeepHoleView
+from features.stories.underworld.events.fungal_caverns.dense_clusters import DenseClustersView
+from features.stories.underworld.events.fungal_caverns.grand_mushroom_staff import GrandMushroomStaffView
+from features.stories.underworld.events.fungal_caverns.mushroom_grove import MushroomGroveView
+from features.stories.underworld.events.fungal_caverns.ore_vein import FungalCavernsOreVeinView
+from features.stories.underworld.events.fungal_caverns.purple_cloud import PurpleCloudView
+from features.stories.underworld.events.fungal_caverns.underground_lake import FungalCavernsUndergroundLakeView
+from features.stories.underworld.events.misty_tunnels.crack_in_the_wall import CrackInTheWallView
+from features.stories.underworld.events.misty_tunnels.dead_spelunker import DeadSpelunkerView
+from features.stories.underworld.events.misty_tunnels.form_in_the_fog import FormInTheFogView
+from features.stories.underworld.events.misty_tunnels.ore_vein import MistyTunnelsOreVeinView
+from features.stories.underworld.events.misty_tunnels.spider_nest import SpiderNestView
+from features.stories.underworld.events.misty_tunnels.torches_go_out import TorchesGoOutView
+from features.stories.underworld.events.misty_tunnels.underground_lake import MistyTunnelsUndergroundLakeView
+from features.stories.underworld.events.tombs_ingress.arcane_traps import ArcaneTrapsView
+from features.stories.underworld.events.tombs_ingress.echo_of_knowledge import EchoOfKnowledgeView
+from features.stories.underworld.events.tombs_ingress.golden_idol import GoldenIdolView
+from features.stories.underworld.events.tombs_ingress.heavy_stone_door import HeavyStoneDoorView
+from features.stories.underworld.events.tombs_ingress.old_notes import OldNotesView
+from features.stories.underworld.events.tombs_ingress.ore_vein import TombsIngressOreVeinView
+from features.stories.underworld.events.tombs_ingress.supply_room import SupplyRoomView
+from features.stories.underworld.events.tombs_ingress.underground_lake import TombsIngressUndergroundLakeView
+from features.stories.underworld.merchant.mysterious_merchant import MysteriousMerchantView
+from features.stories.underworld.treasure.fungal_caverns_treasure import FungalCavernsTreasureRoomView
+from features.stories.underworld.treasure.misty_tunnels_treasure import MistyTunnelsTreasureRoomView
+from features.stories.underworld.treasure.tombs_ingress_treasure import TombsIngressTreasureRoomView
 from features.stories.underworld_room_selection import UnderworldRoomSelectionView
 
 from typing import List, TYPE_CHECKING, Set, Tuple
@@ -572,10 +599,9 @@ class UnderworldStory():
             )[0]
             return LOADED_ITEMS.get_new_item(rand_key)
 
-
     @staticmethod
     def generate_shopkeep_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
-        return
+        return MysteriousMerchantView(bot, database, guild_id, users, dungeon_run)
 
     @staticmethod
     def generate_rest_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
@@ -584,11 +610,11 @@ class UnderworldStory():
     @staticmethod
     def generate_treasure_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
         if dungeon_run.section == UnderworldSection.MistyTunnels:
-            return
+            return MistyTunnelsTreasureRoomView(bot, database, guild_id, users, dungeon_run)
         elif dungeon_run.section == UnderworldSection.FungalCaverns:
-            return
+            return FungalCavernsTreasureRoomView(bot, database, guild_id, users, dungeon_run)
         else:
-            return
+            return TombsIngressTreasureRoomView(bot, database, guild_id, users, dungeon_run)
 
     @staticmethod
     def generate_combat_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun) -> Tuple[discord.ui.View, int]:
@@ -651,13 +677,56 @@ class UnderworldStory():
     def generate_event_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun) -> Tuple[discord.ui.View, int]:
         if dungeon_run.section == UnderworldSection.MistyTunnels:
             rand_val: int = random.choice([i for i in range(0, 7) if i != dungeon_run.previous_event])
-            return
+            if rand_val == 0:
+                return CrackInTheWallView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 1:
+                return DeadSpelunkerView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 2:
+                return FormInTheFogView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 3:
+                return MistyTunnelsOreVeinView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 4:
+                return SpiderNestView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 5:
+                return TorchesGoOutView(bot, database, guild_id, users, dungeon_run), rand_val
+            else:
+                return MistyTunnelsUndergroundLakeView(bot, database, guild_id, users, dungeon_run), rand_val
         elif dungeon_run.section == UnderworldSection.FungalCaverns:
-            rand_val: int = random.choice([i for i in range(0, 6) if i != dungeon_run.previous_event])
-            return
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
+            if rand_val == 0:
+                return CrimsonRotView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 1:
+                return DeepHoleView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 2:
+                return DenseClustersView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 3:
+                return GrandMushroomStaffView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 4:
+                return MushroomGroveView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 5:
+                return FungalCavernsOreVeinView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 6:
+                return PurpleCloudView(bot, database, guild_id, users, dungeon_run), rand_val
+            else:
+                return FungalCavernsUndergroundLakeView(bot, database, guild_id, users, dungeon_run), rand_val
         else:
             rand_val: int = random.choice([i for i in range(0, 4) if i != dungeon_run.previous_event])
-            return
+            if rand_val == 0:
+                return ArcaneTrapsView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 1:
+                return EchoOfKnowledgeView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 2:
+                return GoldenIdolView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 3:
+                return HeavyStoneDoorView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 4:
+                return OldNotesView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 5:
+                return TombsIngressOreVeinView(bot, database, guild_id, users, dungeon_run), rand_val
+            elif rand_val == 6:
+                return SupplyRoomView(bot, database, guild_id, users, dungeon_run), rand_val
+            else:
+                return TombsIngressUndergroundLakeView(bot, database, guild_id, users, dungeon_run), rand_val
 
     @staticmethod
     def generate_boss_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun):
