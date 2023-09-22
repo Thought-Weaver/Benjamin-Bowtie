@@ -78,7 +78,7 @@ class DeadSpelunkerView(discord.ui.View):
         for item_key in ItemKey:
             item = LOADED_ITEMS.get_new_item(item_key)
             if any(tag in item.get_class_tags() for tag in self._valid_class_tags):
-                if Rarity.Common < item.get_rarity() < Rarity.Cursed:
+                if Rarity.Common < item.get_rarity() < Rarity.Legendary:
                     if ClassTag.Equipment.Equipment in item.get_class_tags():
                         if self._min_level <= item.get_level_requirement() <= self._max_level:
                             self._possible_rewards.append(item_key)

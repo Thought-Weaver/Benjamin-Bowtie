@@ -131,7 +131,7 @@ class CrackInTheWallView(discord.ui.View):
 
         player.get_dueling().status_effects += [str_buff, dex_buff, int_buff, con_debuff]
 
-        self.result_str += f"{name} peeked in and something they saw haunts them, granting +10 Str, Dex, and Int but taking -10 Con for the next duel\n"
+        self.result_str += f"{name} peeked in and something they saw haunts them, granting +10 Str, Dex, and Int, but -10 Con for the next duel\n"
         self.players_decided.add(user_id)
 
         if len(self.players_decided) == len(self._users):
