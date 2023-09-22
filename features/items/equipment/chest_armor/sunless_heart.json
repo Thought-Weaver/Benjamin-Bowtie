@@ -2,7 +2,7 @@
     "key": "items/equipment/chest_armor/sunless_heart",
     "icon": "\ud83d\udc55",
     "name": "Sunless Heart",
-    "value": 375,
+    "value": 0,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Do not break.",
@@ -14,7 +14,7 @@
         "Needs_Identification"
     ],
     "count": 1,
-    "level_requirement": 80,
+    "level_requirement": 90,
     "altering_item_keys": [
         "",
         "",
@@ -24,10 +24,18 @@
         "permanent": [
             {
                 "effect_type": "ConMod",
-                "effect_value": 2,
+                "effect_value": 5,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
+            },
+            {
+                "effect_type": "DmgBuffLegends",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
             }
         ]
     },

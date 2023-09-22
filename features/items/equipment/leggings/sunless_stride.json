@@ -2,7 +2,7 @@
     "key": "items/equipment/leggings/sunless_stride",
     "icon": "\ud83d\udc56",
     "name": "Sunless Stride",
-    "value": 150,
+    "value": 0,
     "rarity": "Artifact",
     "description": "",
     "flavor_text": "Do not succumb to madness.",
@@ -14,7 +14,7 @@
         "Needs_Identification"
     ],
     "count": 1,
-    "level_requirement": 80,
+    "level_requirement": 90,
     "altering_item_keys": [
         "",
         ""
@@ -23,10 +23,18 @@
         "permanent": [
             {
                 "effect_type": "IntMod",
-                "effect_value": 2,
+                "effect_value": 10,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
+            },
+            {
+                "effect_type": "DmgBuffLegends",
+                "effect_value": 0.05,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": [],
+                "associated_status_effect": null
             }
         ]
     },
