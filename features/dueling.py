@@ -74,13 +74,13 @@ class Dueling():
         
         for status_effect in self.status_effects:
             if status_effect.key == StatusEffectKey.DmgReduction:
-                total_percent_reduction = min(0.75, total_percent_reduction + status_effect.value)
+                total_percent_reduction = min(1, total_percent_reduction + status_effect.value)
             elif status_effect.key == StatusEffectKey.DmgVulnerability:
                 total_percent_reduction = max(-1, total_percent_reduction - status_effect.value)
 
         for effect in item_effects.permanent:
             if effect.effect_type == EffectType.DmgResist:
-                total_percent_reduction = min(0.75, total_percent_reduction + effect.effect_value)
+                total_percent_reduction = min(1, total_percent_reduction + effect.effect_value)
             elif effect.effect_type == EffectType.DmgVulnerability:
                 total_percent_reduction = max(-1, total_percent_reduction - effect.effect_value)
 

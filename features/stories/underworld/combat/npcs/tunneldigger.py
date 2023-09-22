@@ -111,7 +111,7 @@ class ArmoredHide(Ability):
             icon="\uD83D\uDEE1\uFE0F",
             name="Armored Hide",
             class_key=ExpertiseClass.Guardian,
-            description="Gain 100% Protected for 3 turns.",
+            description="Gain 100% Protected for 2 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=7,
@@ -124,7 +124,7 @@ class ArmoredHide(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = DmgReduction(
-            turns_remaining=3,
+            turns_remaining=2,
             value=1,
             source_str=self.get_icon_and_name()
         )
