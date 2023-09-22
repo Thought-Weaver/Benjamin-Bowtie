@@ -100,22 +100,22 @@ class FormInTheFogView(discord.ui.View):
         attr_str: str = ""
         if rand_val == 0:
             leader_player.get_expertise().constitution += 1
-            attr_str = "constitution"
+            attr_str = "Constitution"
         elif rand_val == 1:
             leader_player.get_expertise().strength += 1
-            attr_str = "strength"
+            attr_str = "Strength"
         elif rand_val == 2:
             leader_player.get_expertise().dexterity += 1
-            attr_str = "dexterity"
+            attr_str = "Dexterity"
         elif rand_val == 3:
             leader_player.get_expertise().intelligence += 1
-            attr_str = "intelligence"
+            attr_str = "Intelligence"
         elif rand_val == 4:
             leader_player.get_expertise().luck += 1
-            attr_str = "luck"
+            attr_str = "Luck"
         else:
             leader_player.get_expertise().memory += 1
-            attr_str = "memory"
+            attr_str = "Memory"
 
         damage: int = int(0.5 * leader_player.get_expertise().max_hp)
         leader_player.get_expertise().damage(damage, leader_player.get_dueling(), 0, True)
@@ -127,10 +127,9 @@ class FormInTheFogView(discord.ui.View):
         available_abilities: List[Ability] = []
         for ability_group in all_abilities:
             result: Ability | None = ability_group[0]()
-            for i, ability_class in enumerate(ability_group):
+            for ability_class in ability_group:
                 if any(isinstance(ability, ability_class) for ability in player_abilities):
-                    if i == len(ability_group) - 1:
-                        result = None
+                    result = None
                     break
             if result is not None:
                 available_abilities.append(result)
