@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from dataclasses import dataclass
 from math import ceil
-from random import randint, random
+from random import randint, random, choice
 
 from features.equipment import Equipment
 from features.expertise import Attribute, ExpertiseClass
@@ -8470,6 +8470,216 @@ class MindSpikeIII(Ability):
         self.__init__() # type: ignore
 
 # -----------------------------------------------------------------------------
+# TIMEWEAVING ABILITIES
+# -----------------------------------------------------------------------------
+# FAST FORWARD
+# -----------------------------------------------------------------------------
+
+class FastForward(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u23E9",
+            name="Fast Forward",
+            class_key=ExpertiseClass.Merchant,
+            description="Reduce the cooldowns on all your abilities by 1 turn.",
+            flavor_text="",
+            mana_cost=15,
+            cooldown=5,
+            num_targets=0,
+            level_requirement=20,
+            target_own_group=True,
+            purchase_cost=5000,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        for ability in caster.get_dueling().abilities:
+            ability.decrement_cd()
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()} and reduced all their cooldowns by 1 turn!"
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# RESET
+# -----------------------------------------------------------------------------
+
+class Reset(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDD03",
+            name="Reset",
+            class_key=ExpertiseClass.Merchant,
+            description="Choose an ally. Reset one of their active cooldowns at random.",
+            flavor_text="",
+            mana_cost=30,
+            cooldown=4,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=True,
+            purchase_cost=5000,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        ability = choice([ab for ab in targets[0].get_dueling().abilities if ab._cur_cooldown > 0])
+        ability._cur_cooldown = 0
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()} and reset {ability.get_icon_and_name()}'s cooldown for " + "{1}!"
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# SLOW
+# -----------------------------------------------------------------------------
+
+class Slow(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\u231B",
+            name="Slow",
+            class_key=ExpertiseClass.Merchant,
+            description="Choose an enemy. Set one of their abilities on cooldown for 3 turns at random.",
+            flavor_text="",
+            mana_cost=30,
+            cooldown=3,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=5000,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        ability = choice([ab for ab in targets[0].get_dueling().abilities if ab._cur_cooldown == 0])
+        ability._cur_cooldown = 3
+
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()} and put {ability.get_icon_and_name()} on cooldown for 3 turns for " + "{1}!"
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# REFRESH
+# -----------------------------------------------------------------------------
+
+class Refresh(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83D\uDD2E",
+            name="Refresh",
+            class_key=ExpertiseClass.Merchant,
+            description="Restore mana equal to 2x your current cooldowns.",
+            flavor_text="",
+            mana_cost=0,
+            cooldown=10,
+            num_targets=0,
+            level_requirement=20,
+            target_own_group=True,
+            purchase_cost=5000,
+            scaling=[]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+
+        results: List[str] = []
+
+        mana_to_restore: int = 2 * sum(ab._cur_cooldown for ab in caster.get_dueling().abilities)
+        caster.get_expertise().restore_mana(mana_to_restore)
+        results.append("{0}" + f" regained {mana_to_restore} mana")
+
+        result_str += "\n".join(results)
+
+        mana_and_cd_str = self.remove_mana_and_set_cd(caster)
+        if mana_and_cd_str is not None:
+            result_str += "\n" + mana_and_cd_str
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
+# TEMPORAL TEAR
+# -----------------------------------------------------------------------------
+
+class TemporalTear(Ability):
+    def __init__(self):
+        super().__init__(
+            icon="\uD83C\uDF0C",
+            name="Temporal Tear",
+            class_key=ExpertiseClass.Merchant,
+            description="Distort the weave of time and deal damage to an enemy equal to 5x the sum of your current cooldowns.",
+            flavor_text="",
+            mana_cost=50,
+            cooldown=2,
+            num_targets=1,
+            level_requirement=20,
+            target_own_group=False,
+            purchase_cost=5000,
+            scaling=[Attribute.Intelligence]
+        )
+
+    def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
+        result_str: str = "{0}" + f" cast {self.get_icon_and_name()}!\n\n"
+
+        damage: int = 5 * sum(ab._cur_cooldown for ab in caster.get_dueling().abilities)
+
+        results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
+        result_str += "\n".join(list(map(lambda x: x.target_str, results)))
+
+        caster.get_stats().dueling.merchant_abilities_used += 1
+
+        return result_str
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state: dict):
+        self.__init__() # type: ignore
+
+# -----------------------------------------------------------------------------
 # CONSTANTS
 # -----------------------------------------------------------------------------
 
@@ -8591,3 +8801,5 @@ VOID_ABILITIES: List[List[type]] = [
     [ControlI, ControlII, ControlIII],
     [MindSpikeI, MindSpikeII, MindSpikeIII]
 ]
+
+TIMEWEAVING_ABILITIES: List[type] = [FastForward, Reset, Slow, Refresh, TemporalTear]
