@@ -367,7 +367,7 @@ class StartButton(discord.ui.Button):
             player.get_dungeon_run().corruption = 0
 
         for user in view.get_users():
-            user.send((
+            await user.send((
                 "Earlier this same night, Quinan came over to your table and with a glassy look in her eyes whispered in your ear, \"Go to the back room.\" Curious, you ventured into the darkness where you could hear the sound of knucklebones being played. The door, further down the hall than you think the tavern is long, opened of its own accord.\n\n"
                 "Sitting there, enrobed in the shadows, was Mr. Bones. With a raspy voice like rusted metal on stone, it addressed you, \"She... will... tell... you... lies...\" And then straightening in its chair, with more vigor it continued, \"My master does not deserve the chains. Set free. Rewards uncountable will be yours.\" With that request, you found yourself outside the room and looking over your back saw the door was gone."
             ))
