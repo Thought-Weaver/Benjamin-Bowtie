@@ -59,7 +59,7 @@ class EchoOfKnowledgeView(discord.ui.View):
         self._group_leader = users[0]
         self._dungeon_run = dungeon_run
 
-        self.investigated_users: Set[discord.User] = []
+        self.investigated_users: Set[discord.User] = set()
         
         self._display_initial_buttons()
 
