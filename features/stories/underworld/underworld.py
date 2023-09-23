@@ -716,7 +716,7 @@ class UnderworldStory():
             else:
                 return FungalCavernsUndergroundLakeView(bot, database, guild_id, users, dungeon_run), rand_val
         else:
-            rand_val: int = random.choice([i for i in range(0, 4) if i != dungeon_run.previous_event])
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
             if rand_val == 0:
                 return ArcaneTrapsView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
