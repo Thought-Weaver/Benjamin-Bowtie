@@ -300,6 +300,8 @@ class FrenzyStrike(Ability):
         
             attacker.get_stats().dueling.attacks_done += 1
 
+        self.remove_mana_and_set_cd(caster)
+
         return "{0}" + f" used {self.get_icon_and_name()}!\n\n" + "\n".join(result_strs)
 
     def __getstate__(self):
