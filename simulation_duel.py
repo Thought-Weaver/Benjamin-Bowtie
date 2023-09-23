@@ -846,6 +846,12 @@ class SimulationDuel():
                     if cur_npc.get_expertise().mana < ability.get_mana_cost() or ability.get_cur_cooldown() != 0:
                         continue
 
+                    # Special casing for the Underworld final boss, so it doesn't waste its main ability
+                    if ability.get_name() == "Annihilation Beam":
+                        can_use = any(se.key == StatusEffectKey.Marked and se.source_str == "\uD83D\uDD3B Ruby Eyes Begin to Glow" for en in self._enemies for se in en.get_dueling().status_effects)
+                        if not can_use:
+                            continue
+
                     self._targets_remaining = ability.get_num_targets()
 
                     if self._targets_remaining < 0:
