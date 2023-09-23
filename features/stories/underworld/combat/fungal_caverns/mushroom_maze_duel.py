@@ -117,7 +117,7 @@ class TreasureRoomContinueButton(discord.ui.Button):
         
         dungeon_run: DungeonRun = view.get_dungeon_run()
         dungeon_run.rooms_until_boss = UNDERWORLD_ROOMS
-        dungeon_run.section = UnderworldSection.FungalCaverns
+        dungeon_run.section = UnderworldSection.TombsIngress
         dungeon_run.bosses_defeated += 1
         
         next_view: TombsIngressIntroView = TombsIngressIntroView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())

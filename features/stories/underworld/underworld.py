@@ -19,7 +19,7 @@ from features.stories.underworld.combat.fungal_caverns.deathless_caps_duel impor
 from features.stories.underworld.combat.fungal_caverns.glowing_moss_duel import GlowingMossDuelView
 from features.stories.underworld.combat.fungal_caverns.hen_of_the_caverns_duel import HenOfTheCavernsDuelView
 from features.stories.underworld.combat.fungal_caverns.malevolent_morel_duel import MalevolentMorelDuelView
-from features.stories.underworld.combat.fungal_caverns.mushroom_maze import MushroomMazeDuelView, TombsIngressIntroView
+from features.stories.underworld.combat.fungal_caverns.mushroom_maze_duel import MushroomMazeDuelView, TombsIngressIntroView
 from features.stories.underworld.combat.fungal_caverns.mycelium_tree_duel import MyceliumTreeDuelView
 from features.stories.underworld.combat.misty_tunnels.breath_of_darkness_duel import BreathOfDarknessDuelView
 from features.stories.underworld.combat.misty_tunnels.choking_fog_duel import ChokingFogDuelView
