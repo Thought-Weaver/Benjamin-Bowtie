@@ -402,22 +402,11 @@ class Ability():
                     if result_str != "":
                         on_attack_or_ability_effects_str += f"\n{result_str}"
 
-            se_ability_used_against_str = "\n".join(target.get_dueling().apply_chance_status_effect_from_total_item_effects(ItemEffectCategory.OnAbilityUsedAgainst, caster, target, 0, i + 1, self._target_own_group))
-            on_ability_used_against_str = ""
-            for item in caster_equipment.get_all_equipped_items():
-                item_effects = item.get_item_effects()
-                if item_effects is None:
-                    continue
-                for item_effect in item_effects.on_ability_used_against:
-                    _, result_str = caster.get_dueling().apply_on_attacked_or_damaged_effects(item, item_effect, caster, target, i + 1, 0, self.get_icon_and_name())
-                    if result_str != "":
-                        on_ability_used_against_str += f"\n{result_str}"
-
             target.get_dueling().status_effects += list(map(lambda se: se.set_trigger_first_turn(target != caster), status_effects))
             target.get_expertise().update_stats(target.get_combined_attributes())
 
             se_result_str = "{" + f"{i + 1}" + "}" + f" is now {status_effects_str}"
-            non_empty_strs = list(filter(lambda s: s != "", [se_result_str, se_on_ability_used_str, on_attack_or_ability_effects_str, se_ability_used_against_str, on_ability_used_against_str]))
+            non_empty_strs = list(filter(lambda s: s != "", [se_result_str, se_on_ability_used_str, on_attack_or_ability_effects_str]))
             results.append("\n".join(non_empty_strs))
         
         result_str = self.remove_mana_and_set_cd(caster)
