@@ -81,6 +81,8 @@ class NPC():
             fitness_score += sum([1 if se.key in POSITIVE_STATUS_EFFECTS_ON_SELF else 0 for se in self.get_dueling().status_effects]) / len(self.get_dueling().status_effects)
         # Any action that gives an NPC additional actions should be weighted very heavily
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
+        # Encourage the NPCs to use their abilities
+        fitness_score += sum(ab._cur_cooldown for ab in self.get_dueling().abilities) / len(self.get_dueling().abilities)
 
         return fitness_score
 
@@ -98,6 +100,8 @@ class NPC():
         fitness_score += 2 * sum([len(ally.get_dueling().status_effects) for ally in allies]) / len(allies)
         # Any action that gives an NPC additional actions should be weighted very heavily
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
+        # Encourage the NPCs to use their abilities
+        fitness_score += sum(ab._cur_cooldown for ab in self.get_dueling().abilities) / len(self.get_dueling().abilities)
 
         return fitness_score
 
@@ -130,6 +134,8 @@ class NPC():
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
         # Consider any cooldowns that may have been set on enemies
         fitness_score += 5 * sum(ab._cur_cooldown for enemy in enemies for ab in enemy.get_dueling().abilities) / sum(len(enemy.get_dueling().abilities) for enemy in enemies)
+        # Encourage the NPCs to use their abilities
+        fitness_score += sum(ab._cur_cooldown for ab in self.get_dueling().abilities) / len(self.get_dueling().abilities)
 
         return fitness_score
 
@@ -158,6 +164,8 @@ class NPC():
         ) / len(enemies)
         # Any action that gives an NPC additional actions should be weighted very heavily
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
+        # Encourage the NPCs to use their abilities
+        fitness_score += sum(ab._cur_cooldown for ab in self.get_dueling().abilities) / len(self.get_dueling().abilities)
 
         return fitness_score
 
@@ -201,6 +209,8 @@ class NPC():
         ) / len(enemies)
         # Any action that gives an NPC additional actions should be weighted very heavily
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
+        # Encourage the NPCs to use their abilities
+        fitness_score += sum(ab._cur_cooldown for ab in self.get_dueling().abilities) / len(self.get_dueling().abilities)
 
         return fitness_score
 
@@ -224,7 +234,9 @@ class NPC():
                         fitness_score += 1
         # Any action that gives an NPC additional actions should be weighted very heavily
         fitness_score += 4 * max(self.get_dueling().actions_remaining - org_self.get_dueling().actions_remaining, 0)
-        
+        # Encourage the NPCs to use their abilities
+        fitness_score += sum(ab._cur_cooldown for ab in self.get_dueling().abilities) / len(self.get_dueling().abilities)
+
         return fitness_score
 
     def get_fitness_for_persona(self, org_self: NPC, allies: List[Player | NPC], enemies: List[Player | NPC]):
