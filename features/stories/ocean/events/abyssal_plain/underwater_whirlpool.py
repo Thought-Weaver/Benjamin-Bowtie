@@ -101,7 +101,7 @@ class UnderwaterWhirlpoolView(discord.ui.View):
         num_swim_through = sum(choice == True for choice in self.users_swimming.values())
         results: List[str] = []
 
-        if num_swim_through >= len(self._users) // 2:
+        if num_swim_through > len(self._users) // 2:
             for user in self._users:
                 player = self._get_player(user.id)
                 if player.get_expertise().strength > 20:

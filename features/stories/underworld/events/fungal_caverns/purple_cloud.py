@@ -101,7 +101,7 @@ class PurpleCloudView(discord.ui.View):
         num_press_on = sum(choice == True for choice in self.users_pressing_on.values())
         result: str = ""
 
-        if num_press_on >= len(self._users) // 2:
+        if num_press_on > len(self._users) // 2:
             for user in self._users:
                 player = self._get_player(user.id)
                 player.get_dueling().status_effects.append(

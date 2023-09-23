@@ -116,7 +116,7 @@ class DenseClustersView(discord.ui.View):
         num_clear = sum(choice == True for choice in self.clear_the_way.values())
         result: str = ""
 
-        if num_clear >= len(self._users) // 2:
+        if num_clear > len(self._users) // 2:
             result = "The majority decided it would be best to clear the path forward, hacking through the mushrooms to reach the other side."
             self.add_item(DuelContinueButton())
         else:

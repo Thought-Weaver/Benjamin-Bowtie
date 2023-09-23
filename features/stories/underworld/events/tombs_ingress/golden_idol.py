@@ -101,7 +101,7 @@ class GoldenIdolView(discord.ui.View):
         num_take = sum(choice == True for choice in self.users_taking.values())
         result: str = ""
 
-        if num_take >= len(self._users) // 2:
+        if num_take > len(self._users) // 2:
             for user in self._users:
                 player = self._get_player(user.id)
                 player.get_dueling().status_effects.append(
