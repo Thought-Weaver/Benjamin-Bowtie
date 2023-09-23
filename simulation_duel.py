@@ -169,6 +169,7 @@ class SimulationDuel():
                 if result_str != "":
                     self._additional_info_string_data += result_str + "\n"
         
+        start_percent_damage: int = 0
         start_damage: int = 0
         start_heals: int = 0
         start_armor_restore: int = 0
@@ -183,12 +184,12 @@ class SimulationDuel():
                 if se.key == StatusEffectKey.FixedDmgTick:
                     start_damage += int(se.value)
                 if se.key == StatusEffectKey.Bleeding:
-                    start_damage += ceil(entity.get_expertise().max_hp * se.value)
+                    start_percent_damage += ceil(entity.get_expertise().max_hp * se.value)
                 if se.key == StatusEffectKey.Poisoned:
                     if heals_from_poison:
                         start_heals += ceil(entity.get_expertise().max_hp * se.value)
                     else:
-                        start_damage += ceil(entity.get_expertise().max_hp * se.value)
+                        start_percent_damage += ceil(entity.get_expertise().max_hp * se.value)
                 if se.key == StatusEffectKey.RegenerateHP:
                     start_heals += ceil(entity.get_expertise().max_hp * se.value)
                 if se.key == StatusEffectKey.RegenerateArmor:
@@ -199,12 +200,19 @@ class SimulationDuel():
                 if se.key == StatusEffectKey.Sleeping:
                     max_sleeping_chance = max(se.value, max_sleeping_chance)
             
-        # Fixed damage is taken directly, no reduction
-        entity.get_expertise().damage(start_damage, entity.get_dueling(), percent_reduct=0, ignore_armor=True)
+        # Fixed damage is taken directly, no reduction, but still goes through armor
         if start_damage > 0:
+            entity.get_expertise().damage(start_damage, entity.get_dueling(), percent_reduct=0, ignore_armor=False)
             if self._additional_info_string_data != "":
                 self._additional_info_string_data += "\n"
             self._additional_info_string_data += f"{self.get_name(entity)} took {start_damage} damage! "
+
+        # Percent damage is taken directly, no reduction and ignoring armor
+        if start_percent_damage > 0:
+            entity.get_expertise().damage(start_percent_damage, entity.get_dueling(), percent_reduct=0, ignore_armor=True)
+            if self._additional_info_string_data != "":
+                self._additional_info_string_data += "\n"
+            self._additional_info_string_data += f"{self.get_name(entity)} took {start_percent_damage} damage! "
 
         decaying_adjustment: float = 0
         for se in entity.get_dueling().status_effects:
