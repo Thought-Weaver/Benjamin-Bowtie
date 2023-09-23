@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/deep_agaric",
+    "icon": "\uD83C\uDF44",
+    "name": "Deep Agaric",
+    "value": 125,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "If you thought trying to put Fool's Delight into a stew was a bad idea, this mushroom makes that seem absolutely brilliant.",
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

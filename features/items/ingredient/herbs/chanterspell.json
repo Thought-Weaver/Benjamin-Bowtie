@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/chanterspell",
+    "icon": "\uD83C\uDF44",
+    "name": "Chanterspell",
+    "value": 200,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "Even now, you can faintly hear some musical humming coming from it.",
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/malevolent_morel",
+    "icon": "\uD83C\uDF44",
+    "name": "Malevolent Morel",
+    "value": 200,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "You suspect if you try to put this into a stew, it'll angrily hop back out and start attacking you.",
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

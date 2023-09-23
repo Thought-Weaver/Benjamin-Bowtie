@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/mob_drops/pale_venom",
+    "icon": "\uD83E\uDDEA",
+    "name": "Pale Venom",
+    "value": 60,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "",
+    "class_tags": ["Valuable", "Ingredient", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

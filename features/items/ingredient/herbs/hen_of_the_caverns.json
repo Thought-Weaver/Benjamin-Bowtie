@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/hen_of_the_caverns",
+    "icon": "\uD83C\uDF44",
+    "name": "Hen of the Caverns",
+    "value": 275,
+    "rarity": "Legendary",
+    "description": "",
+    "flavor_text": "Even removed from the larger creature, the resemblance to a hen is uncanny.",
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}

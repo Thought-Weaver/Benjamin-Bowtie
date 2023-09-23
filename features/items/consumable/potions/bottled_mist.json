@@ -1,0 +1,27 @@
+{
+    "key": "items/consumable/potions/bottled_mist",
+    "icon": "\uD83C\uDF2B\uFE0F",
+    "name": "Bottled Mist",
+    "value": 500,
+    "rarity": "Epic",
+    "description": "Can be used while dueling.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 0,
+        "target_own_group": true
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "RestorePercentMana",
+                "effect_value": 0.25,
+                "effect_time": -1,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

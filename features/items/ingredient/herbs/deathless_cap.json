@@ -1,0 +1,12 @@
+{
+    "key": "items/ingredient/herbs/deathless_cap",
+    "icon": "\uD83C\uDF44",
+    "name": "Deathless Cap",
+    "value": 150,
+    "rarity": "Epic",
+    "description": "",
+    "flavor_text": "At last, the final ingredient to create a potion of eternal life!",
+    "class_tags": ["Ingredient", "Herb", "Potion_Ingredient"],
+    "state_tags": [],
+    "count": 1
+}
