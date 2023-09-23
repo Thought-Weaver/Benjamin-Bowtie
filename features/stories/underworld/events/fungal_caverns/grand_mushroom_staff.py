@@ -88,7 +88,7 @@ class GrandMushroomStaffView(discord.ui.View):
                 worthy_player = player
                 name = user.display_name
         
-        result: str = "But none of you are. The staff remains stuck in place, waiting for the one who has demonstrated a true dedication to mushrooms."
+        result: str = "You realize that none of you are. The staff remains stuck in place, waiting for the one who has demonstrated a true dedication to mushrooms."
         if worthy_player is not None:
             item = LOADED_ITEMS.get_new_item(ItemKey.Fungisvol)
             worthy_player.get_inventory().add_item(item)

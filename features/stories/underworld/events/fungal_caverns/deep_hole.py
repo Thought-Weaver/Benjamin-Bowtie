@@ -7,8 +7,6 @@ from discord.embeds import Embed
 from features.stories.underworld_room_selection import UnderworldRoomSelectionView
 from features.player import Player
 from features.shared.item import Rarity
-from features.shared.nextbutton import NextButton
-from features.shared.prevbutton import PrevButton
 from features.shared.statuseffect import ConBuff, ConDebuff, DexBuff, DexDebuff, IntBuff, IntDebuff, LckBuff, LckDebuff, StatusEffect, StrBuff, StrDebuff
 from features.stories.dungeon_run import DungeonRun
 from enum import StrEnum
@@ -305,7 +303,7 @@ class SelectInventoryItemButton(discord.ui.Button):
 
 class ConfirmButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Feed", row=row)
+        super().__init__(style=discord.ButtonStyle.green, label="Confirm", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -338,6 +336,34 @@ class ExitButton(discord.ui.Button):
         if view.get_group_leader() == interaction.user:
             embed = view.exit_to_main_menu()
             await interaction.response.edit_message(content=None, embed=embed, view=view)
+
+
+class PrevButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: DeepHoleView = self.view
+        if interaction.user.id == view.get_group_leader().id:
+            response = view.prev_page()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class NextButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: DeepHoleView = self.view
+        if interaction.user.id == view.get_group_leader().id:
+            response = view.next_page()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 class DeepHoleView(discord.ui.View):

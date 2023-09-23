@@ -128,19 +128,19 @@ class TorchesGoOutView(discord.ui.View):
             )
             
             if self.decisions[user.id] == 0:
-                if player.get_expertise().intelligence > 40:
+                if player.get_expertise().intelligence > 35:
                     results.append(f"{user.display_name} successfully focused their mind and relit their torch.")
                 else:
                     results.append(f"{user.display_name} tried to focus their mind, but became paralyzed by fear.")
                     player.get_dueling().status_effects.append(faltering)
             elif self.decisions[user.id] == 1:
-                if player.get_expertise().strength > 40:
+                if player.get_expertise().strength > 35:
                     results.append(f"{user.display_name} successfully pushed through and relit their torch.")
                 else:
                     results.append(f"{user.display_name} tried to maintain their strength, but became paralyzed by fear.")
                     player.get_dueling().status_effects.append(faltering)
             else:
-                if player.get_expertise().dexterity > 40:
+                if player.get_expertise().dexterity > 35:
                     results.append(f"{user.display_name} successfully hid and relit their torch.")
                 else:
                     results.append(f"{user.display_name} tried to find somewhere safe to hide, but became paralyzed by fear.")
