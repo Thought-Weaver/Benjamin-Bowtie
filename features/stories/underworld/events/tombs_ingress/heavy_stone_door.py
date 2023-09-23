@@ -77,7 +77,7 @@ class SelectPlayerButton(discord.ui.Button):
 
 class ConfirmButton(discord.ui.Button):
     def __init__(self, row: int):
-        super().__init__(style=discord.ButtonStyle.secondary, label="Feed", row=row)
+        super().__init__(style=discord.ButtonStyle.green, label="Confirm", row=row)
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
