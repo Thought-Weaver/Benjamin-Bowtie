@@ -9,8 +9,6 @@ from features.stories.forest_room_selection import ForestRoomSelectionView
 from features.views.dueling_view import DuelView
 from features.player import Player
 from features.shared.enums import ClassTag
-from features.shared.nextbutton import NextButton
-from features.shared.prevbutton import PrevButton
 from features.stories.dungeon_run import DungeonRun
 from features.stories.forest.combat.npcs.jackalope import Jackalope
 from enum import StrEnum
@@ -260,6 +258,34 @@ class ExitButton(discord.ui.Button):
         if view.get_group_leader() == interaction.user:
             embed = view.exit_to_main_menu()
             await interaction.response.edit_message(content=None, embed=embed, view=view)
+
+
+class PrevButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: JackalopeView = self.view
+        if interaction.user.id == view.get_group_leader().id:
+            response = view.prev_page()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
+
+
+class NextButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.blurple, label="Next", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+        
+        view: JackalopeView = self.view
+        if interaction.user.id == view.get_group_leader().id:
+            response = view.next_page()
+            await interaction.response.edit_message(content=None, embed=response, view=view)
 
 
 class JackalopeView(discord.ui.View):
