@@ -49,6 +49,8 @@ class CurseOfFrailty(Ability):
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Con was reduced to 0!"
 
+        self.remove_mana_and_set_cd(caster)
+
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
         return result_str
@@ -95,6 +97,8 @@ class CurseOfWeakness(Ability):
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Int and Str were reduced to 0!"
 
+        self.remove_mana_and_set_cd(caster)
+
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
         return result_str
@@ -138,6 +142,8 @@ class CurseOfLethargy(Ability):
             target.get_dueling().status_effects += [dex_debuff, mem_debuff]
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Dex and Mem were reduced to 0!"
+
+        self.remove_mana_and_set_cd(caster)
 
         caster.get_stats().dueling.alchemist_abilities_used += 1
 

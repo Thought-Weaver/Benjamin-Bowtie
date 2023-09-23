@@ -161,6 +161,8 @@ class ConfusingPaths(Ability):
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n" + "{1} and {2} have had their stats swapped!"
 
+        self.remove_mana_and_set_cd(caster)
+
         caster.get_stats().dueling.alchemist_abilities_used += 1
 
         return result_str

@@ -92,6 +92,8 @@ class MustHaveMore(Ability):
             target.get_inventory().remove_coins(coins)
             result_str += "\n{" + f"{i + 1}" + "} had " + f"{coins} stolen!"
 
+        self.remove_mana_and_set_cd(caster)
+
         caster.get_stats().dueling.merchant_abilities_used += 1
 
         return result_str

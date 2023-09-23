@@ -120,6 +120,8 @@ class Hastening(Ability):
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}, reset its cooldowns, and restored its mana!\n\n"
 
+        self.remove_mana_and_set_cd(caster)
+
         caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str

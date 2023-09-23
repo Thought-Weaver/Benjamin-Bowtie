@@ -45,6 +45,8 @@ class Rewind(Ability):
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and removed all of " + "{1}'s positive status effects!\n\n"
 
+        self.remove_mana_and_set_cd(caster)
+
         caster.get_stats().dueling.fisher_abilities_used += 1
 
         return result_str
@@ -127,6 +129,8 @@ class TemporalSeal(Ability):
         caster.get_expertise().restore_mana(mana_to_restore)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}, setting all of " + "{1}'s cooldowns to 6 turns remaining.\n{0} restored " + f"{mana_to_restore} mana.\n\n"
+
+        self.remove_mana_and_set_cd(caster)
 
         caster.get_stats().dueling.fisher_abilities_used += 1
 

@@ -52,6 +52,8 @@ class ChillingTouch(Ability):
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Dex was reduced to 0!"
 
+        self.remove_mana_and_set_cd(caster)
+
         caster.get_stats().dueling.guardian_abilities_used += 1
 
         return result_str
