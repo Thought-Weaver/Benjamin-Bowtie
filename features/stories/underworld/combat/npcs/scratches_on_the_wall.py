@@ -140,7 +140,9 @@ class ScratchesOnTheWall(NPC):
         # 46% chance of 4 player party (Lvl. 80-90) victory against 1
         # Avg Number of Turns (per entity): 9
 
-        super().__init__("Scratches on the Wall" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Scratches on the Wall" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.MemoryOfTerror: 1,
+        })
 
         self._setup_npc_params()
 

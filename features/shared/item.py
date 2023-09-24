@@ -774,7 +774,7 @@ class ItemKey(StrEnum):
     MemoryOfTerror = "items/consumable/potions/memory_of_terror"
     MemoryOfVictory = "items/consumable/potions/memory_of_victory"
     MesmerfishEye = "items/ingredient/mob_drops/mesmerfish_eye"
-    PaleVenom = "items/ingredient/herbs/pale_venom"
+    PaleVenom = "items/ingredient/mob_drops/pale_venom"
     PatternedShellPieces = "items/valuable/patterned_shell_pieces"
     SalamanderVenom = "items/consumable/potions/salamander_venom"
     SandLurkerTeeth = "items/valuable/sand_lurker_teeth"

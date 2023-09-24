@@ -66,7 +66,7 @@ class CripplingToxin(Ability):
             icon="\uD83D\uDD77\uFE0F",
             name="Crippling Toxin",
             class_key=ExpertiseClass.Alchemist,
-            description="Strike with your fangs, dealing damage to an enemy equal to 10x the total time remaining on their Poisoned stacks.",
+            description="Strike with your fangs, dealing damage to an enemy equal to 15x the total time remaining on their Poisoned stacks.",
             flavor_text="",
             mana_cost=0,
             cooldown=0,
@@ -78,7 +78,7 @@ class CripplingToxin(Ability):
         )
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
-        damage: int = 10 * sum(se.turns_remaining for se in targets[0].get_dueling().status_effects if se.key == StatusEffectKey.Poisoned)
+        damage: int = 15 * sum(se.turns_remaining for se in targets[0].get_dueling().status_effects if se.key == StatusEffectKey.Poisoned)
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}, dealing damage proportional to the stacks of Poisoned on " + "{1}!\n\n"
         results: List[NegativeAbilityResult] = self._use_damage_ability(caster, targets, range(damage, damage))
@@ -101,7 +101,7 @@ class GhostlyMovement(Ability):
             icon="\uD83D\uDCA8",
             name="Ghostly Movement",
             class_key=ExpertiseClass.Alchemist,
-            description="Shift in and out of the shadows, increasing your damage resistance by 40% for 3 turns.",
+            description="Shift in and out of the shadows, increasing your damage resistance by 60% for 3 turns.",
             flavor_text="",
             mana_cost=15,
             cooldown=5,
@@ -115,7 +115,7 @@ class GhostlyMovement(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         buff = DmgReduction(
             turns_remaining=3,
-            value=0.4,
+            value=0.6,
             source_str=self.get_icon_and_name()
         )
 
@@ -140,10 +140,12 @@ class GhostlyMovement(Ability):
 class PaleWidow(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 31% chance of 4 player party (Lvl. 60-70) victory against 2
-        # Avg Number of Turns (per entity): 9
+        # 43% chance of 4 player party (Lvl. 60-70) victory against 2
+        # Avg Number of Turns (per entity): 12
 
-        super().__init__("Pale Widow" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Pale Widow" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.PaleVenom: 0.5
+        })
 
         self._setup_npc_params()
 

@@ -155,7 +155,10 @@ class IchordrinkBat(NPC):
         # 51% chance of 4 player party (Lvl. 60-70) victory against 2
         # Avg Number of Turns (per entity): 23
 
-        super().__init__("Ichordrink Bat" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Ichordrink Bat" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.BlendedIchor: 0.9,
+            ItemKey.BlendedIchor: 0.5
+        })
 
         self._setup_npc_params()
 

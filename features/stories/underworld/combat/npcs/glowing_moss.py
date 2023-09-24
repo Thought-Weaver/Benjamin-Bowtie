@@ -179,7 +179,10 @@ class GlowingMoss(NPC):
         # 47% chance of 4 player party (Lvl. 70-80) victory against 1
         # Avg Number of Turns (per entity): 13
 
-        super().__init__("Glowing Moss" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Glowing Moss" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.GlowingMoss: 0.7,
+            ItemKey.GlowingMoss: 0.2
+        })
 
         self._setup_npc_params()
 

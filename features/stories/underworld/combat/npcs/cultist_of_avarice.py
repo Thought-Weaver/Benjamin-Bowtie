@@ -176,7 +176,12 @@ class CultistOfAvarice(NPC):
         # 8% chance of 4 player party (Lvl. 80-90) victory against 3
         # Avg Number of Turns (per entity): 8
 
-        super().__init__("Cultist of Avarice" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Cultist of Avarice" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.AFewCoins: 0.8,
+            ItemKey.AFewCoins: 0.5,
+            ItemKey.PileOfCoins: 0.1,
+            ItemKey.RitualDagger: 0.005,
+        })
 
         self._setup_npc_params()
 

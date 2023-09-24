@@ -152,7 +152,9 @@ class BlindSalamander(NPC):
         # 42% chance of 4 player party (Lvl. 70-80) victory against 1
         # Avg Number of Turns (per entity): 15
 
-        super().__init__("Blind Salamander" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Blind Salamander" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.SalamanderVenom: 0.4,
+        })
 
         self._setup_npc_params()
 

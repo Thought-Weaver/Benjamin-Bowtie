@@ -150,7 +150,9 @@ class AgaricAlchemist(NPC):
         # 51% chance of 4 player party (Lvl. 70-80) victory against 2
         # Avg Number of Turns (per entity): 11
 
-        super().__init__("Agaric Alchemist" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Agaric Alchemist" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.DeepAgaric: 0.6
+        })
 
         self._setup_npc_params()
 

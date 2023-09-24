@@ -169,7 +169,9 @@ class TimelostEcho(NPC):
         # 18% chance of 4 player party (Lvl. 80-90) victory against 1
         # Avg Number of Turns (per entity): 15
 
-        super().__init__("Timelost Echo" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Timelost Echo" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.MemoryOfAWarrior: 0.9,
+        })
 
         self._setup_npc_params()
 

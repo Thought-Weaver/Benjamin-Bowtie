@@ -143,7 +143,10 @@ class Chanterspell(NPC):
         # 21% chance of 4 player party (Lvl. 70-80) victory against 1 + 2 Volatile Illusions
         # Avg Number of Turns (per entity): 11
 
-        super().__init__("Chanterspell" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {})
+        super().__init__("Chanterspell" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {
+            ItemKey.Chanterspell: 0.7,
+            ItemKey.Chanterspell: 0.3
+        })
 
         self._setup_npc_params()
 

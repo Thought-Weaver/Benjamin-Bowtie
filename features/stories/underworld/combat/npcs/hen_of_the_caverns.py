@@ -165,7 +165,9 @@ class HenOfTheCaverns(NPC):
         # 50% chance of 4 player party (Lvl. 70-80) victory against 1
         # Avg Number of Turns (per entity): 11
 
-        super().__init__("Hen of the Caverns" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Hen of the Caverns" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.HenOfTheCaverns: 0.2
+        })
 
         self._setup_npc_params()
 

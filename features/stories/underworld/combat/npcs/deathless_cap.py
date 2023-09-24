@@ -148,7 +148,9 @@ class DeathlessCap(NPC):
         # 55% chance of 4 player party (Lvl. 70-80) victory against 2
         # Avg Number of Turns (per entity): 14
 
-        super().__init__("Deathless Cap" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Deathless Cap" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.DeathlessCap: 0.4,
+        })
 
         self._setup_npc_params()
 

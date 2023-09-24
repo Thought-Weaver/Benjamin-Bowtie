@@ -142,7 +142,9 @@ class WarpingAnomaly(NPC):
         # 37% chance of 4 player party (Lvl. 80-90) victory against 1
         # Avg Number of Turns (per entity): 11
 
-        super().__init__("Warping Anomaly" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Warping Anomaly" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.AnomalousMaterial: 0.8,
+        })
 
         self._setup_npc_params()
 

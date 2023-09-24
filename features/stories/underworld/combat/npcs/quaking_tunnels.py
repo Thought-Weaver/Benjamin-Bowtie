@@ -142,7 +142,22 @@ class QuakingTunnels(NPC):
         # 19% chance of 4 player party (Lvl. 80-90) victory against 1
         # Avg Number of Turns (per entity): 11
 
-        super().__init__("Quaking Tunnels" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Quaking Tunnels" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.AFewCoins: 0.6,
+            ItemKey.AFewCoins: 0.4,
+            ItemKey.PileOfCoins: 0.05,
+            ItemKey.CopperOre: 1,
+            ItemKey.CopperOre: 0.6,
+            ItemKey.CopperOre: 0.3,
+            ItemKey.SilverOre: 1,
+            ItemKey.SilverOre: 0.6,
+            ItemKey.SilverOre: 0.3,
+            ItemKey.GoldOre: 0.6,
+            ItemKey.GoldOre: 0.3,
+            ItemKey.AmberiteOre: 0.5,
+            ItemKey.OrichalcumOre: 0.3,
+            ItemKey.MythrilOre: 0.1,
+        })
 
         self._setup_npc_params()
 

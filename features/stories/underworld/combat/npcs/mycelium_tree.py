@@ -148,7 +148,9 @@ class MyceliumTree(NPC):
         # 44% chance of 4 player party (Lvl. 70-80) victory against 1
         # Avg Number of Turns (per entity): 10
 
-        super().__init__("Mycelium Tree" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Mycelium Tree" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.ManaSaturatedRoot: 0.7,
+        })
 
         self._setup_npc_params()
 

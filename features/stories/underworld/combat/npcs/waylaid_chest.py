@@ -161,7 +161,17 @@ class WaylaidChest(NPC):
         # 46% chance of 4 player party (Lvl. 80-90) victory against 1
         # Avg Number of Turns (per entity): 12
 
-        super().__init__("Waylaid Chest" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Waylaid Chest" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.PileOfCoins: 0.5,
+            ItemKey.PileOfCoins: 0.2,
+            ItemKey.BagOfCoins: 0.05,
+            ItemKey.Emerald: 0.7,
+            ItemKey.FlawlessEmerald: 0.1,
+            ItemKey.CrackedTopaz: 0.02,
+            ItemKey.Sapphire: 0.01,
+            ItemKey.FlawlessOnyx: 0.02,
+            ItemKey.Ruby: 0.01,
+        })
 
         self._setup_npc_params()
 

@@ -1,8 +1,8 @@
 {
     "key": "items/ingredient/mob_drops/scorpion_stinger",
     "icon": "\ud83e\udd82",
-    "name": "Blended Ichor",
-    "value": 35,
+    "name": "Scorpion Stinger",
+    "value": 80,
     "rarity": "Rare",
     "description": "",
     "flavor_text": "",

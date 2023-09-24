@@ -164,10 +164,12 @@ class DeeperFog(Ability):
 class ChokingFog(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 29% chance of 4 player party (Lvl. 60-70) victory against 1
-        # Avg Number of Turns (per entity): 8
+        # 22% chance of 4 player party (Lvl. 60-70) victory against 1
+        # Avg Number of Turns (per entity): 10
 
-        super().__init__("Choking Fog" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Choking Fog" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.StopperedFog: 0.4,
+        })
 
         self._setup_npc_params()
 

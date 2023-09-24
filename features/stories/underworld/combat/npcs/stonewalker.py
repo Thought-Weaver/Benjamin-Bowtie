@@ -145,10 +145,22 @@ class Restructuring(Ability):
 class Stonewalker(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 45% chance of 4 player party (Lvl. 60-70) victory against 1
-        # Avg Number of Turns (per entity): 29
+        # 21% chance of 4 player party (Lvl. 60-70) victory against 1
+        # Avg Number of Turns (per entity): 43
 
-        super().__init__("Stonewalker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Stonewalker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.CopperOre: 1,
+            ItemKey.CopperOre: 0.6,
+            ItemKey.CopperOre: 0.3,
+            ItemKey.SilverOre: 1,
+            ItemKey.SilverOre: 0.6,
+            ItemKey.SilverOre: 0.3,
+            ItemKey.GoldOre: 0.6,
+            ItemKey.GoldOre: 0.3,
+            ItemKey.AmberiteOre: 0.5,
+            ItemKey.OrichalcumOre: 0.3,
+            ItemKey.MythrilOre: 0.1,
+        })
 
         self._setup_npc_params()
 

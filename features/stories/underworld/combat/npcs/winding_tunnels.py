@@ -263,7 +263,10 @@ class WindingTunnels(NPC):
         # 61% chance of 4 player party (Lvl. 60-70) victory against 1
         # Avg Number of Turns (per entity): 10
 
-        super().__init__("Winding Tunnels" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Winding Tunnels" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.PileOfCoins: 0.7,
+            ItemKey.BagOfCoins: 0.1,
+        })
 
         self._setup_npc_params()
 

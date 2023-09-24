@@ -320,7 +320,9 @@ class MalevolentMorel(NPC):
         # 22% chance of 4 player party (Lvl. 70-80) victory against 1
         # Avg Number of Turns (per entity): 7
 
-        super().__init__("Malevolent Morel" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Malevolent Morel" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.MalevolentMorel: 0.5
+        })
 
         self._setup_npc_params()
 

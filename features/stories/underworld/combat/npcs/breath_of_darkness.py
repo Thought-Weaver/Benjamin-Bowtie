@@ -141,10 +141,13 @@ class SensationOfWeakness(Ability):
 class BreathOfDarkness(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 11% chance of 4 player party (Lvl. 60-70) victory against 1
-        # Avg Number of Turns (per entity): 9
+        # 27% chance of 4 player party (Lvl. 60-70) victory against 1
+        # Avg Number of Turns (per entity): 13
 
-        super().__init__("Breath of Darkness" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Breath of Darkness" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.MemoryOfEndurance: 0.4,
+            ItemKey.MemoryOfFortitude: 0.6,
+        })
 
         self._setup_npc_params()
 

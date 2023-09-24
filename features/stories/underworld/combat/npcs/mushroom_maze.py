@@ -80,7 +80,13 @@ class MushroomMaze(NPC):
         # 7% chance of 4 player party (Lvl. 80-90) victory against 1
         # Avg Number of Turns (per entity): 31
 
-        super().__init__("Mushroom Maze" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Mushroom Maze" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.Chanterspell: 0.6,
+            ItemKey.MalevolentMorel: 0.3,
+            ItemKey.HenOfTheCaverns: 0.1,
+            ItemKey.DeathlessCap: 0.4,
+            ItemKey.DeepAgaric: 0.7,
+        })
 
         self._setup_npc_params()
 

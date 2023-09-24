@@ -2,7 +2,7 @@
     "key": "items/ingredient/herbs/glowing_moss",
     "icon": "\uD83C\uDF31",
     "name": "Glowing Moss",
-    "value": 125,
+    "value": 100,
     "rarity": "Epic",
     "description": "",
     "flavor_text": "Glows blue when darkness is nearby.",

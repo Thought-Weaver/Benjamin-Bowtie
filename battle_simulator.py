@@ -81,12 +81,16 @@ from features.stories.underworld.combat.npcs.echo_of_passerhawk import EchoOfPas
 from features.stories.underworld.combat.npcs.echo_of_yenna import EchoOfYenna
 from features.stories.underworld.combat.npcs.glowing_moss import GlowingMoss
 from features.stories.underworld.combat.npcs.hen_of_the_caverns import HenOfTheCaverns
+from features.stories.underworld.combat.npcs.ichordrink_bat import IchordrinkBat
 from features.stories.underworld.combat.npcs.malevolent_morel import MalevolentMorel
+from features.stories.underworld.combat.npcs.misty_apparition import MistyApparition
 from features.stories.underworld.combat.npcs.mushroom_maze import MushroomMaze
 from features.stories.underworld.combat.npcs.mycelium_tree import MyceliumTree
 from features.stories.underworld.combat.npcs.pale_widow import PaleWidow
 from features.stories.underworld.combat.npcs.quaking_tunnels import QuakingTunnels
 from features.stories.underworld.combat.npcs.scratches_on_the_wall import ScratchesOnTheWall
+from features.stories.underworld.combat.npcs.scuttledark_scorpion import ScuttledarkScorpion
+from features.stories.underworld.combat.npcs.stonewalker import Stonewalker
 from features.stories.underworld.combat.npcs.timelost_echo import TimelostEcho
 from features.stories.underworld.combat.npcs.tunneldigger import Tunneldigger
 from features.stories.underworld.combat.npcs.volatile_illusion import VolatileIllusion
@@ -826,10 +830,13 @@ def get_full_equipment_str(npc: NPC):
 # SIMULATION SETTINGS
 # -----------------------------------------------------------------------------
 
-ENEMY_CLASSES: List[List[type]] = []
-ALLY_CLASS_RANGE: range = range(90, 100)
+ENEMY_CLASSES: List[List[type]] = [
+    [PaleWidow, PaleWidow],
+    [BreathOfDarkness]
+]
+ALLY_CLASS_RANGE: range = range(60, 70)
 
-SIMULATION_ITERATIONS = 256
+SIMULATION_ITERATIONS = 100
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 
@@ -964,7 +971,7 @@ def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_ind
 
 def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
     # Setup files
-    base_enemy_name: str = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_"))).replace("?", "") + "_" + str(num_stirred)
+    base_enemy_name: str = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_"))).replace("?", "")
     dir_name: str = f"./simulation_results/{base_enemy_name}"
 
     Path(dir_name).mkdir(parents=True, exist_ok=True)
@@ -989,7 +996,7 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
     ally_npcs: List[List[NPC]] = generate_ally_npcs()
     enemy_npcs: List[List[NPC]] = [[enemy(name_suffix=f" {j}") for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
 
-    pool = Pool(processes=8)
+    pool = Pool(processes=4)
     results: List[SimulationResult | None] = pool.starmap(run_simulation, zip(ally_npcs, enemy_npcs, [dir_name for _ in range(SIMULATION_ITERATIONS)], [i for i in range(SIMULATION_ITERATIONS)]))
     pool.close()
     pool.join()

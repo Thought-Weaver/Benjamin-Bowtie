@@ -139,7 +139,9 @@ class DefendingTombGuardian(NPC):
         # 13% chance of 4 player party (Lvl. 80-90) victory against 1 + Assailing Tomb Guardian
         # Avg Number of Turns (per entity): 22
 
-        super().__init__("Defending Tomb Guardian" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Defending Tomb Guardian" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.StoneMace: 0.02,
+        })
 
         self._setup_npc_params()
 

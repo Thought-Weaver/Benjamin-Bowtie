@@ -171,7 +171,11 @@ class MoltenGold(NPC):
         # 18% chance of 4 player party (Lvl. 80-90) victory against 1
         # Avg Number of Turns (per entity): 11
 
-        super().__init__("Molten Gold" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Molten Gold" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.PileOfCoins: 0.7,
+            ItemKey.PileOfCoins: 0.4,
+            ItemKey.BagOfCoins: 0.1,
+        })
 
         self._setup_npc_params()
 

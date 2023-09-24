@@ -154,10 +154,12 @@ class ThickPlating(Ability):
 class ScuttledarkScorpion(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 28% chance of 4 player party (Lvl. 60-70) victory against 1
+        # 18% chance of 4 player party (Lvl. 60-70) victory against 1
         # Avg Number of Turns (per entity): 23
 
-        super().__init__("Scuttledark Scorpion" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Scuttledark Scorpion" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.ScorpionStinger: 0.7
+        })
 
         self._setup_npc_params()
 
