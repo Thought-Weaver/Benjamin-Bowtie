@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import discord
+import random
+import features.companions.companion
 import features.stories.underworld.underworld as underworld
 
 from bot import BenjaminBowtieBot
 from discord.embeds import Embed
+from features.shared.enums import CompanionKey
 from features.stories.underworld.combat.npcs.scuttledark_scorpion import ScuttledarkScorpion
 from features.views.dueling_view import DuelView
 from features.stories.underworld_room_selection import UnderworldRoomSelectionView
@@ -54,8 +57,24 @@ class VictoryView(discord.ui.View):
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
+    def _find_companion(self):
+        companion_result_str: str = ""
+        for user in self._users:
+            player = self._get_player(user.id)
+            if random.random() < 0.25 + (0.01 * player.get_combined_attributes().luck) / 10:
+                companions = player.get_companions()
+                if CompanionKey.ScuttledarkScorpion not in companions.companions.keys():
+                    companions.companions[CompanionKey.ScuttledarkScorpion] = features.companions.companion.ScuttledarkScorpionCompanion()
+                    companions.companions[CompanionKey.ScuttledarkScorpion].set_id(player.get_id())
+                    companion_result_str += f"\n\nFrom the darkness comes skittering another scorpion, though it seems more curious than aggressive. It's been added as a companion in b!companions."
+
+                    player.get_stats().companions.companions_found += 1
+        
+        return companion_result_str
+
     def get_initial_embed(self):
-        return Embed(title="A Great Score(pion)", description=f"With the scuttledark scorpion vanquished, the rest of the caves await.")
+        companion_result_str: str = self._find_companion()
+        return Embed(title="A Great Score(pion)", description=f"With the scuttledark scorpion vanquished, the rest of the caves await.{companion_result_str}")
 
     def _display_initial_buttons(self):
         self.clear_items()
