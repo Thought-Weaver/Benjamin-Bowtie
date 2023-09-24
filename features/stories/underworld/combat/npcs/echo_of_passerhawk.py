@@ -152,7 +152,10 @@ class EchoOfPasserhawk(NPC):
         # ?% chance of 4 player party (Lvl. 80-90) victory against 1 + Yenna + Asterius
         # Avg Number of Turns (per entity): ?
 
-        super().__init__("Echo of Passerhawk" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
+        super().__init__("Echo of Passerhawk" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
+            ItemKey.RelicOfTheEyelessWanderer: 0.01,
+            ItemKey.CloakOfTheEyelessWanderer: 0.01
+        })
 
         self._setup_npc_params()
 

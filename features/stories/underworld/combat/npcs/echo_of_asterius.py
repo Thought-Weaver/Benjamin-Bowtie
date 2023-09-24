@@ -156,7 +156,10 @@ class EchoOfAsterius(NPC):
         # ?% chance of 4 player party (Lvl. 80-90) victory against 1 + Yenna + Passerhawk
         # Avg Number of Turns (per entity): ?
 
-        super().__init__("Echo of Asterius" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {})
+        super().__init__("Echo of Asterius" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
+            ItemKey.CuirassOfTheEyelessGuardian: 0.01,
+            ItemKey.SwordOfTheEyelessGuardian: 0.01
+        })
 
         self._setup_npc_params()
 
