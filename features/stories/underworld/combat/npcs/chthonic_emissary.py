@@ -82,7 +82,7 @@ class AnnihilationBeam(Ability):
             class_key=ExpertiseClass.Merchant,
             description="Deal 2000 damage to all enemies who are marked by Ruby Eyes Begin to Glow.",
             flavor_text="",
-            mana_cost=500,
+            mana_cost=300,
             cooldown=8,
             num_targets=-1,
             level_requirement=20,

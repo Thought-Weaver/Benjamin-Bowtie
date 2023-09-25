@@ -322,7 +322,7 @@ class BreakTheChainsButton(discord.ui.Button):
 
         user_id: int = interaction.user.id
         if user_id not in view.break_the_chains and user_id not in view.leave_it_bound:
-            view.leave_it_bound.append(user_id)
+            view.break_the_chains.append(user_id)
 
         await interaction.response.edit_message(embed=view.get_initial_embed(), view=view, content=None)
 
@@ -339,7 +339,7 @@ class LeaveItBoundButton(discord.ui.Button):
 
         user_id: int = interaction.user.id
         if user_id not in view.break_the_chains and user_id not in view.leave_it_bound:
-            view.break_the_chains.append(user_id)
+            view.leave_it_bound.append(user_id)
 
         await interaction.response.edit_message(embed=view.get_initial_embed(), view=view, content=None)
 
@@ -398,6 +398,8 @@ class VictoryView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
+        self.update_buttons()
+
         warning_str: str = "\n\n_Your party disagrees about what action to take. A duel will have to decide the path to follow._" if len(self.break_the_chains) > 0 and len(self.leave_it_bound) > 0 else ""
 
         return Embed(title="Shackled and Broken", description=(

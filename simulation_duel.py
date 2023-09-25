@@ -848,7 +848,7 @@ class SimulationDuel():
 
                     # Special casing for the Underworld final boss, so it doesn't waste its main ability
                     if ability.get_name() == "Annihilation Beam":
-                        can_use = any(se.key == StatusEffectKey.Marked and se.source_str == "\uD83D\uDD3B Ruby Eyes Begin to Glow" for en in self._enemies for se in en.get_dueling().status_effects)
+                        can_use = any(se.key == StatusEffectKey.Marked and se.source_str == "\uD83D\uDD3B Ruby Eyes Begin to Glow" for en in enemies for se in en.get_dueling().status_effects if en.get_expertise().hp > 0)
                         if not can_use:
                             continue
 

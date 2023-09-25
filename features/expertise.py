@@ -230,12 +230,12 @@ class Expertise():
             split_damage: int = int(damage / (len(linked_targets) + 1))
             damage_to_health = split_damage
             for target in linked_targets:
-                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
-                target.get_expertise().damage(split_damage, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
-                
                 for se in target.get_dueling().status_effects:
                     if isinstance(se, DamageSplit):
                         se.triggered_this_turn = True
+                
+                percent_dmg_reduct = target.get_dueling().get_total_percent_dmg_reduct(target.get_combined_req_met_effects())
+                target.get_expertise().damage(split_damage, target.get_dueling(), percent_dmg_reduct, ignore_armor=False)
             # Return early since this has a recursive call to damage self
             return damage_to_health
 

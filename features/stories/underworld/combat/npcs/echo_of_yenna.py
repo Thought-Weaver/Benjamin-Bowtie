@@ -72,7 +72,7 @@ class Fatebinding(Ability):
             cooldown=9,
             num_targets=-1,
             level_requirement=20,
-            target_own_group=False,
+            target_own_group=True,
             purchase_cost=0,
             scaling=[]
         )

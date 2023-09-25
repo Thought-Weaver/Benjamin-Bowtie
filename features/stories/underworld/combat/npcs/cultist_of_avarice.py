@@ -90,7 +90,7 @@ class MustHaveMore(Ability):
         for i, target in enumerate(targets):
             coins: int = int(0.1 * target.get_inventory().get_coins())
             target.get_inventory().remove_coins(coins)
-            result_str += "\n{" + f"{i + 1}" + "} had " + f"{coins} stolen!"
+            result_str += "\n{" + f"{i + 1}" + "} had " + f"{coins} coins stolen!"
 
         self.remove_mana_and_set_cd(caster)
 

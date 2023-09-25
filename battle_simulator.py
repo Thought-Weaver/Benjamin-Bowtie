@@ -831,12 +831,11 @@ def get_full_equipment_str(npc: NPC):
 # -----------------------------------------------------------------------------
 
 ENEMY_CLASSES: List[List[type]] = [
-    [PaleWidow, PaleWidow],
-    [BreathOfDarkness]
+    [ChthonicEmissary]
 ]
-ALLY_CLASS_RANGE: range = range(60, 70)
+ALLY_CLASS_RANGE: range = range(90, 100)
 
-SIMULATION_ITERATIONS = 100
+SIMULATION_ITERATIONS = 256
 NUM_ALLIES = 4
 MAX_TURNS = 1000
 
@@ -969,9 +968,11 @@ def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_ind
     
     return result
 
-def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
+def run_simulations_for_enemy_class(enemy_class_list: List[Type], num_stirred: int = -1):
     # Setup files
     base_enemy_name: str = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_"))).replace("?", "")
+    if num_stirred >= 0:
+        base_enemy_name += "_" + str(num_stirred)
     dir_name: str = f"./simulation_results/{base_enemy_name}"
 
     Path(dir_name).mkdir(parents=True, exist_ok=True)
@@ -994,9 +995,9 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
     total_turns_taken_per_entity: float = 0
 
     ally_npcs: List[List[NPC]] = generate_ally_npcs()
-    enemy_npcs: List[List[NPC]] = [[enemy(name_suffix=f" {j}") for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
+    enemy_npcs: List[List[NPC]] = [[enemy(name_suffix=f" {j}", num_stirred=num_stirred) for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
 
-    pool = Pool(processes=4)
+    pool = Pool(processes=8)
     results: List[SimulationResult | None] = pool.starmap(run_simulation, zip(ally_npcs, enemy_npcs, [dir_name for _ in range(SIMULATION_ITERATIONS)], [i for i in range(SIMULATION_ITERATIONS)]))
     pool.close()
     pool.join()
@@ -1058,5 +1059,9 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type]):
 if __name__ == "__main__":
     freeze_support()
     
+    for i in range(0, 130, 10):
+        for enemy_class in ENEMY_CLASSES:
+            run_simulations_for_enemy_class(enemy_class, i)
+
     for enemy_class in ENEMY_CLASSES:
         run_simulations_for_enemy_class(enemy_class)

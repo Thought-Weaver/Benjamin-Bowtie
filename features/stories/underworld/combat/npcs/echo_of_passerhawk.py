@@ -128,7 +128,7 @@ class TemporalSeal(Ability):
         mana_to_restore: int = int(0.2 * caster.get_expertise().max_mana)
         caster.get_expertise().restore_mana(mana_to_restore)
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}, setting all of " + "{1}'s cooldowns to 6 turns remaining.\n{0} restored " + f"{mana_to_restore} mana.\n\n"
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()}, setting all of " + "{1}'s cooldowns to 6 turns remaining.\n\n{0} restored " + f"{mana_to_restore} mana.\n\n"
 
         self.remove_mana_and_set_cd(caster)
 
