@@ -67,7 +67,7 @@ class UnderworldFinalWordsView(discord.ui.View):
 
         self._update_player_stats()
 
-        return Embed(title="Return to Sunlight", description=f"{post_run_info_str}")
+        return Embed(title="Return to the Sunlight", description=f"{post_run_info_str}")
 
     def get_bot(self):
         return self._bot
