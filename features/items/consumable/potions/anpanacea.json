@@ -1,0 +1,55 @@
+{
+    "key": "items/consumable/potions/anpanacea",
+    "icon": "\u2697\uFE0F",
+    "name": "Anpanacea",
+    "value": 5000,
+    "rarity": "Artifact",
+    "description": "Can be used while dueling.",
+    "flavor_text": "",
+    "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
+    "state_tags": [],
+    "count": 1,
+    "consumable_stats": {
+        "num_targets": 1,
+        "target_own_group": false
+    },
+    "item_effects": {
+        "permanent": [
+            {
+                "effect_type": "ConMod",
+                "effect_value": -25,
+                "effect_time": 5,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "StrMod",
+                "effect_value": -25,
+                "effect_time": 5,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "DexMod",
+                "effect_value": -25,
+                "effect_time": 5,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "IntMod",
+                "effect_value": -25,
+                "effect_time": 5,
+                "conditions": [],
+                "condition_values": []
+            },
+            {
+                "effect_type": "LckMod",
+                "effect_value": -25,
+                "effect_time": 5,
+                "conditions": [],
+                "condition_values": []
+            }
+        ]
+    }
+}

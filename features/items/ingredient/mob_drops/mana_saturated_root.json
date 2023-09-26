@@ -2,7 +2,7 @@
     "key": "items/ingredient/mob_drops/mana_saturated_root",
     "icon": "\uD83C\uDF31",
     "name": "Mana Saturated Root",
-    "value": 100,
+    "value": 120,
     "rarity": "Epic",
     "description": "",
     "flavor_text": "",

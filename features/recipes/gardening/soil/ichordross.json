@@ -1,0 +1,13 @@
+{
+    "key": "recipes/gardening/soil/ichordross",
+    "icon": "\uD83E\uDE78",
+    "name": "Ichordross",
+    "value": 210,
+    "inputs": {
+        "items/misc/junk/clump_of_leaves": 2,
+        "items/ingredient/mob_drops/blended_ichor": 3
+    },
+    "outputs": {
+        "items/gardening/soil/compost": 1
+    }
+}

@@ -106,6 +106,9 @@ class House():
                         
                         self.garden_plots[i].may_mutate = True
                         adjusted_mutation_chance = possible_result[1] * mutation_adjustment
+                        if plot.soil is not None and plot.soil.get_key() == ItemKey.Ichordross:
+                            adjusted_mutation_chance = 0.2
+
                         if random.random() < adjusted_mutation_chance:
                             # Favor the result with the lowest probability if random chance has willed it.
                             if adjusted_mutation_chance <= min_prob:

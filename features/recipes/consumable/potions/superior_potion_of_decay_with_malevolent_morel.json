@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/superior_potion_of_decay_with_malevolent_morel",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Potion of Decay",
+    "value": 3600,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/mages_bane": 3,
+        "items/ingredient/herbs/malevolent_morel": 3,
+        "items/valuable/gemstone/flawless_turquoise": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_potion_of_decay": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

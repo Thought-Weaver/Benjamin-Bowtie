@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/anpanacea",
+    "icon": "\u2697\uFE0F",
+    "name": "Anpanacea",
+    "value": 15000,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/hen_of_the_caverns": 8,
+        "items/ingredient/herbs/crimson_rot": 6,
+        "items/ingredient/herbs/lichbloom": 2
+    },
+    "outputs": {
+        "items/consumable/potions/anpanacea": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 55
+    }
+}

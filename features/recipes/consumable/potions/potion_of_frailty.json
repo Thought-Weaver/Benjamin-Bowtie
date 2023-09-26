@@ -1,0 +1,17 @@
+{
+    "key": "recipes/consumable/potions/potion_of_frailty",
+    "icon": "\u2697\uFE0F",
+    "name": "Potion of Frailty",
+    "value": 1800,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/deep_agaric": 2,
+        "items/ingredient/herbs/crimson_rot": 1
+    },
+    "outputs": {
+        "items/consumable/potions/potion_of_frailty": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

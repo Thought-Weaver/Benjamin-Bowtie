@@ -169,6 +169,7 @@ class ItemKey(StrEnum):
     WolfSteak = "items/consumable/food/wolf_steak"
 
     # Potions
+    Anpanacea = "items/consumable/potions/anpanacea"
     AtrophyPotion = "items/consumable/potions/atrophy_potion"
     CharmPotion = "items/consumable/potions/charm_potion"
     CleansingPotion = "items/consumable/potions/cleansing_potion"
@@ -223,6 +224,8 @@ class ItemKey(StrEnum):
     PotionOfDeathResist = "items/consumable/potions/potion_of_death_resist"
     PotionOfDebilitation = "items/consumable/potions/potion_of_debilitation"
     PotionOfDecay = "items/consumable/potions/potion_of_decay"
+    PotionOfEternalLife = "items/consumable/potions/potion_of_eternal_life"
+    PotionOfFrailty = "items/consumable/potions/potion_of_frailty"
     PotionOfVulnerability = "items/consumable/potions/potion_of_vulnerability"
     SappingPotion = "items/consumable/potions/sapping_potion"
     SleepingDraught = "items/consumable/potions/sleeping_draught"
@@ -504,6 +507,7 @@ class ItemKey(StrEnum):
     Clay = "items/gardening/soil/clay"
     Compost = "items/gardening/soil/compost"
     Dirt = "items/gardening/soil/dirt"
+    Ichordross = "items/gardening/soil/ichordross"
     Loam = "items/gardening/soil/loam"
     Pebbles = "items/gardening/soil/pebbles"
     WoodChips = "items/gardening/soil/wood_chips"

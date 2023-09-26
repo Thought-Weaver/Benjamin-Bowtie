@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/superior_dexterity_potion_with_anomalous_material",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Dexterity Potion",
+    "value": 2600,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/fissureleaf": 3,
+        "items/ingredient/mob_drops/anomalous_material": 2,
+        "items/valuable/gemstone/flawless_moonstone": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_dexterity_potion": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 21
+    }
+}

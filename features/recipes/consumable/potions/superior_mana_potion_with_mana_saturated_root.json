@@ -1,13 +1,12 @@
 {
-    "key": "recipes/consumable/potions/superior_mana_potion_with_sea_dragon_leaves",
+    "key": "recipes/consumable/potions/superior_mana_potion_with_mana_saturated_root",
     "icon": "\u2697\uFE0F",
     "name": "Superior Mana Potion",
     "value": 12600,
     "inputs": {
         "items/ingredient/alchemy_supplies/crystal_vial": 1,
-        "items/ingredient/herbs/singing_coral": 5,
-        "items/ingredient/herbs/lichbloom": 1,
-        "items/ingredient/mob_drops/sea_dragon_leaves": 6,
+        "items/ingredient/mob_drops/mana_saturated_root": 3,
+        "items/ingredient/herbs/lichbloom": 2,
         "items/valuable/gemstone/flawless_topaz": 1
     },
     "outputs": {

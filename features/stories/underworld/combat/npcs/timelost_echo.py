@@ -171,6 +171,7 @@ class TimelostEcho(NPC):
 
         super().__init__("Timelost Echo" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.MemoryOfAWarrior: 0.9,
+            ItemKey.SpectralSword: 0.01
         })
 
         self._setup_npc_params()

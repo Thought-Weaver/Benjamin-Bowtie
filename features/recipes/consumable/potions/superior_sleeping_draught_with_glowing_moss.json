@@ -1,0 +1,18 @@
+{
+    "key": "recipes/consumable/potions/superior_sleeping_draught_with_glowing_moss",
+    "icon": "\u2697\uFE0F",
+    "name": "Superior Sleeping Draught",
+    "value": 13050,
+    "inputs": {
+        "items/ingredient/alchemy_supplies/crystal_vial": 1,
+        "items/ingredient/herbs/dream_maker": 2,
+        "items/ingredient/herbs/glowing_moss": 8,
+        "items/valuable/gemstone/flawless_sapphire": 1
+    },
+    "outputs": {
+        "items/consumable/potions/superior_sleeping_draught": 1
+    },
+    "xp_reward_for_use": {
+        "Alchemist": 34
+    }
+}

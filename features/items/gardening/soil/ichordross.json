@@ -1,0 +1,12 @@
+{
+    "key": "items/gardening/soil/ichordross",
+    "icon": "\uD83E\uDE78",
+    "name": "Ichordross",
+    "value": 70,
+    "rarity": "Epic",
+    "description": "When set as the soil for a garden plot, the mutation chance per tick becomes 20%.",
+    "flavor_text": "",
+    "class_tags": ["Gardening", "Soil"],
+    "state_tags": [],
+    "count": 1
+}

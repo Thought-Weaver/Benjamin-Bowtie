@@ -67,6 +67,7 @@ class RecipeKey(StrEnum):
     WolfSteak = "recipes/consumable/food/wolf_steak"
 
     # Potions
+    Anpanacea = "recipes/consumable/potions/anpanacea"
     AtrophyPotion = "recipes/consumable/potions/atrophy_potion"
     CharmPotionWithMesmerfishEye = "recipes/consumable/potions/charm_potion_with_mesmerfish_eye"
     CharmPotion = "recipes/consumable/potions/charm_potion"
@@ -81,6 +82,7 @@ class RecipeKey(StrEnum):
     ExplosivePotionWithBrittleSpines = "recipes/consumable/potions/explosive_potion_with_brittle_spines"
     ExplosivePotion = "recipes/consumable/potions/explosive_potion"
     FearPotion = "recipes/consumable/potions/fear_potion"
+    FortitudePotionWithScorpionStinger = "recipes/consumable/potions/fortitude_potion_with_scorpion_stinger"
     FortitudePotion = "recipes/consumable/potions/fortitude_potion"
     GreaterAtrophyPotion = "recipes/consumable/potions/greater_atrophy_potion"
     GreaterCharmPotionWithMesmerfishEye = "recipes/consumable/potions/greater_charm_potion_with_mesmerfish_eye"
@@ -89,6 +91,7 @@ class RecipeKey(StrEnum):
     GreaterConstitutionPotion = "recipes/consumable/potions/greater_constitution_potion"
     GreaterCriticalPotion = "recipes/consumable/potions/greater_critical_potion"
     GreaterDexterityPotion = "recipes/consumable/potions/greater_dexterity_potion"
+    GreaterEnfeeblingPotionWithChanterspell = "recipes/consumable/potions/greater_enfeebling_potion_with_chanterspell"
     GreaterEnfeeblingPotion = "recipes/consumable/potions/greater_enfeebling_potion"
     GreaterExplosivePotionWithCharredUndeadWood = "recipes/consumable/potions/greater_explosive_potion_with_charred_undead_wood"
     GreaterExplosivePotion = "recipes/consumable/potions/greater_explosive_potion"
@@ -136,6 +139,8 @@ class RecipeKey(StrEnum):
     PotionOfDeathResist = "recipes/consumable/potions/potion_of_death_resist"
     PotionOfDebilitation = "recipes/consumable/potions/potion_of_debilitation"
     PotionOfDecay = "recipes/consumable/potions/potion_of_decay"
+    PotionOfEternalLife = "recipes/consumable/potions/potion_of_eternal_life"
+    PotionOfFrailty = "recipes/consumable/potions/potion_of_frailty"
     PotionOfVulnerability = "recipes/consumable/potions/potion_of_vulnerability"
     SappingPotion = "recipes/consumable/potions/sapping_potion"
     SleepingDraughtWithSlumbershroom = "recipes/consumable/potions/sleeping_draught_with_slumbershroom"
@@ -147,6 +152,7 @@ class RecipeKey(StrEnum):
     SuperiorConstitutionPotionWithBrittleCore = "recipes/consumable/potions/superior_constitution_potion_with_brittle_core"
     SuperiorConstitutionPotion = "recipes/consumable/potions/superior_constitution_potion"
     SuperiorCriticalPotion = "recipes/consumable/potions/superior_critical_potion"
+    SuperiorDexterityPotionWithAnomalousMaterial = "recipes/consumable/potions/superior_dexterity_potion_with_anomalous_material"
     SuperiorDexterityPotion = "recipes/consumable/potions/superior_dexterity_potion"
     SuperiorExplosivePotionWithCharredUndeadWood = "recipes/consumable/potions/superior_explosive_potion_with_charred_undead_wood"
     SuperiorExplosivePotion = "recipes/consumable/potions/superior_explosive_potion"
@@ -154,11 +160,14 @@ class RecipeKey(StrEnum):
     SuperiorHealthPotion = "recipes/consumable/potions/superior_health_potion"
     SuperiorIntelligencePotionWithUnblinkingEye = "recipes/consumable/potions/superior_intelligence_potion_with_unblinking_eye"
     SuperiorIntelligencePotion = "recipes/consumable/potions/superior_intelligence_potion"
-    SuperiorManaPotionWithSeaDragonLeaves = "recipes/consumable/potions/superior_mana_potion_with_sea_dragon_leaves"
+    SuperiorManaPotionWithManaSaturatedRoot = "recipes/consumable/potions/superior_mana_potion_with_mana_saturated_root"
     SuperiorManaPotion = "recipes/consumable/potions/superior_mana_potion"
     SuperiorPoisonWithLionfishSpines = "recipes/consumable/potions/superior_poison_with_lionfish_spines"
+    SuperiorPoisonWithPaleVenom = "recipes/consumable/potions/superior_poison_with_pale_venom"
     SuperiorPoison = "recipes/consumable/potions/superior_poison"
+    SuperiorPotionOfDecayWithMalevolentMorel = "recipes/consumable/potions/superior_potion_of_decay_with_malevolent_morel"
     SuperiorPotionOfDecay = "recipes/consumable/potions/superior_potion_of_decay"
+    SuperiorSleepingDraughtWithGlowingMoss = "recipes/consumable/potions/superior_sleeping_draught_with_glowing_moss"
     SuperiorSleepingDraught = "recipes/consumable/potions/superior_sleeping_draught"
     SuperiorSmokebomb = "recipes/consumable/potions/superior_smokebomb"
     SuperiorStrengthPotion = "recipes/consumable/potions/superior_strength_potion"
@@ -257,6 +266,7 @@ class RecipeKey(StrEnum):
 
     # Gardening
     Compost = "recipes/gardening/soil/compost"
+    Ichordross = "recipes/gardening/soil/ichordross"
 
     # Materials
     AmberiteIngot = "recipes/ingredient/materials/amberite_ingot"
