@@ -515,6 +515,7 @@ class Stats():
             self.underworld_bosses_defeated: int = 0
             self.underworld_adventures_won: int = 0
             self.underworld_adventures_played: int = 0
+            self.best_chthonic_emissary_win: int = 0
 
         def get_name(self):
             return "Adventure Stats"
@@ -552,7 +553,8 @@ class Stats():
                 f"Rests Taken: *{self.ocean_rests_taken}*\n"
                 f"Bosses Defeated: *{self.ocean_bosses_defeated}*\n"
                 f"Adventures Won: *{self.ocean_adventures_won}*\n"
-                f"Adventures Played: *{self.ocean_adventures_played}*"
+                f"Adventures Played: *{self.ocean_adventures_played}*\n"
+                f"||Best Emissary Tier Defeated (max. 12)||: *{self.best_chthonic_emissary_win}*"
             )
 
         def __getstate__(self):
@@ -588,6 +590,7 @@ class Stats():
             self.underworld_bosses_defeated = state.get("underworld_bosses_defeated", 0)
             self.underworld_adventures_won = state.get("underworld_adventures_won", 0)
             self.underworld_adventures_played = state.get("underworld_adventures_played", 0)
+            self.best_chthonic_emissary_win = state.get("best_chthonic_emissary_win", 0)
 
     def __init__(self):
         self.fish = self.FishStats()

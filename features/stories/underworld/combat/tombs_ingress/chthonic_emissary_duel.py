@@ -48,6 +48,8 @@ class UnderworldFinalWordsView(discord.ui.View):
         return info_str
 
     def _update_player_stats(self):
+        num_stirred: int = sum(self._get_player(user.id).get_stats().wishingwell.something_stirs for user in self._users)
+
         for user in self._users:
             player = self._get_player(user.id)
             ps = player.get_stats().dungeon_runs
@@ -61,6 +63,7 @@ class UnderworldFinalWordsView(discord.ui.View):
             ps.underworld_bosses_defeated += self._dungeon_run.bosses_defeated
             ps.underworld_adventures_won += 1
             ps.underworld_adventures_played += 1
+            ps.best_chthonic_emissary_win = min(12, max(ps.best_chthonic_emissary_win, int(num_stirred / 10)))
 
     def get_initial_embed(self):
         post_run_info_str: str = self._generate_run_info()
