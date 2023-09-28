@@ -86,6 +86,7 @@ class ClassTag(Enum):
     @skip
     class Misc(StrEnum):
         IsUnique = "Is_Unique"
+        Bound = "Bound"
         Junk = "Junk"
 
 class StateTag(StrEnum):

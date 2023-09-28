@@ -131,6 +131,15 @@ class Inventory():
                 item_indices.append(i)
         return item_indices
 
+    def get_non_bound_items(self):
+        item_indices: List[int] = []
+        for i, item in enumerate(self._inventory_slots):
+            item_class_tags: List[ClassTag] = item.get_class_tags()
+            if ClassTag.Misc.Bound in item_class_tags:
+                continue
+            item_indices.append(i)
+        return item_indices
+
     def get_coins(self):
         return self._coins
 

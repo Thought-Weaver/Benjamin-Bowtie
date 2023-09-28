@@ -3505,7 +3505,6 @@ class ItemKey(StrEnum):
     WeavebondedToken = "items/weapon/token/weavebonded_token"
     WitheringSymbol = "items/weapon/token/withering_symbol"
 
-
 # -----------------------------------------------------------------------------
 # CLASSES
 # -----------------------------------------------------------------------------
