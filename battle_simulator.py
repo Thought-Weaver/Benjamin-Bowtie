@@ -207,60 +207,6 @@ CONSUMABLE_KEYS = [
     if ClassTag.Consumable.Consumable in LOADED_ITEMS.get_item_state(item_key)["class_tags"]
 ]
 
-ALCHEMIST_ABILITIES: List[List[Type[Ability]]] = [
-    [IncenseI, IncenseII, IncenseIII, IncenseIV, IncenseV],
-    [PreparePotionsI, PreparePotionsII, PreparePotionsIII],
-    [VitalityTransferI, VitalityTransferII, VitalityTransferIII],
-    [CleanseI],
-    [ToxicCloudI, ToxicCloudII, ToxicCloudIII, ToxicCloudIV],
-    [SmokescreenI, SmokescreenII, SmokescreenIII],
-    [EmpowermentI, EmpowermentII],
-    [FesteringVaporI, FesteringVaporII, FesteringVaporIII],
-    [PoisonousSkinI],
-    [RegenerationI, RegenerationII, RegenerationIII],
-    [ParalyzingFumesI, ParalyzingFumesII],
-    [QuickAccessI]
-]
-
-FISHER_ABILITIES: List[List[Type[Ability]]] = [
-    [SeaSprayI, SeaSprayII, SeaSprayIII, SeaSprayIV, SeaSprayV],
-    [CrabnadoI, CrabnadoII, CrabnadoIII],
-    [CurseOfTheSeaI, CurseOfTheSeaII, CurseOfTheSeaIII, CurseOfTheSeaIV],
-    [HookI, HookII, HookIII, HookIV],
-    [WrathOfTheWavesI, WrathOfTheWavesII, WrathOfTheWavesIII],
-    [HighTideI, HighTideII, HighTideIII, HighTideIV],
-    [ThunderingTorrentI, ThunderingTorrentII, ThunderingTorrentIII, ThunderingTorrentIV],
-    [DrownInTheDeepI, DrownInTheDeepII, DrownInTheDeepIII],
-    [WhirlpoolI, WhirlpoolII, WhirlpoolIII, WhirlpoolIV],
-    [ShatteringStormI, ShatteringStormII, ShatteringStormIII],
-]
-
-GUARDIAN_ABILITIES: List[List[Type[Ability]]] = [
-    [WhirlwindI, WhirlwindII, WhirlwindIII, WhirlwindIV],
-    [SecondWindI, SecondWindII, SecondWindIII],
-    [ScarArmorI, ScarArmorII],
-    [UnbreakingI, UnbreakingII],
-    [CounterstrikeI, CounterstrikeII, CounterstrikeIII],
-    [BidedAttackI, BidedAttackII, BidedAttackIII],
-    [TauntI, TauntII, TauntIII],
-    [PiercingStrikeI, PiercingStrikeII, PiercingStrikeIII],
-    [PressTheAdvantageI, PressTheAdvantageII, PressTheAdvantageIII],
-    [EvadeI, EvadeII, EvadeIII],
-    [HeavySlamI, HeavySlamII, HeavySlamIII]
-]
-
-MERCHANT_ABILITIES: List[List[Type[Ability]]] = [
-    [ContractWealthForPowerI, ContractWealthForPowerII, ContractWealthForPowerIII],
-    [BoundToGetLuckyI, BoundToGetLuckyII, BoundToGetLuckyIII, BoundToGetLuckyIV, BoundToGetLuckyV],
-    [SilkspeakingI],
-    [ATidySumI, ATidySumII, ATidySumIII],
-    [CursedCoinsI, CursedCoinsII, CursedCoinsIII, CursedCoinsIV],
-    [UnseenRichesI, UnseenRichesII, UnseenRichesIII],
-    [ContractManaToBloodI, ContractManaToBloodII, ContractManaToBloodIII],
-    [ContractBloodForBloodI, ContractBloodForBloodII, ContractBloodForBloodIII],
-    [DeepPocketsI, DeepPocketsII, DeepPocketsIII]
-]
-
 EQUIPMENT_KEYS = [
     item_key for item_key in ItemKey \
     if ClassTag.Equipment.Equipment in LOADED_ITEMS.get_item_state(item_key)["class_tags"]
@@ -831,9 +777,10 @@ def get_full_equipment_str(npc: NPC):
 # -----------------------------------------------------------------------------
 
 ENEMY_CLASSES: List[List[type]] = [
-    [ChthonicEmissary]
+    [MistyApparition],
+    [WindingTunnels]
 ]
-ALLY_CLASS_RANGE: range = range(90, 100)
+ALLY_CLASS_RANGE: range = range(60, 70)
 
 SIMULATION_ITERATIONS = 256
 NUM_ALLIES = 4
@@ -968,7 +915,7 @@ def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_ind
     
     return result
 
-def run_simulations_for_enemy_class(enemy_class_list: List[Type], num_stirred: int = -1):
+def run_simulations_for_enemy_class(enemy_class_list: List[Type], num_stirred: int=-1):
     # Setup files
     base_enemy_name: str = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_"))).replace("?", "")
     if num_stirred >= 0:
@@ -995,9 +942,13 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type], num_stirred: i
     total_turns_taken_per_entity: float = 0
 
     ally_npcs: List[List[NPC]] = generate_ally_npcs()
-    enemy_npcs: List[List[NPC]] = [[enemy(name_suffix=f" {j}", num_stirred=num_stirred) for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
+    enemy_npcs: List[List[NPC]] = []
+    if num_stirred >= 0:
+        enemy_npcs = [[enemy(name_suffix=f" {j}", num_stirred=num_stirred) for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
+    else:
+        enemy_npcs = [[enemy(name_suffix=f" {j}") for j, enemy in enumerate(enemy_class_list)] for _ in range(SIMULATION_ITERATIONS)]
 
-    pool = Pool(processes=8)
+    pool = Pool(processes=4)
     results: List[SimulationResult | None] = pool.starmap(run_simulation, zip(ally_npcs, enemy_npcs, [dir_name for _ in range(SIMULATION_ITERATIONS)], [i for i in range(SIMULATION_ITERATIONS)]))
     pool.close()
     pool.join()
@@ -1059,9 +1010,9 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type], num_stirred: i
 if __name__ == "__main__":
     freeze_support()
     
-    for i in range(0, 130, 10):
-        for enemy_class in ENEMY_CLASSES:
-            run_simulations_for_enemy_class(enemy_class, i)
+    # for i in range(0, 130, 10):
+    #     for enemy_class in ENEMY_CLASSES:
+    #         run_simulations_for_enemy_class(enemy_class, i)
 
     for enemy_class in ENEMY_CLASSES:
         run_simulations_for_enemy_class(enemy_class)
