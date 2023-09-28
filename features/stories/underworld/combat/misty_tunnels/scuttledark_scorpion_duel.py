@@ -66,7 +66,7 @@ class VictoryView(discord.ui.View):
                 if CompanionKey.ScuttledarkScorpion not in companions.companions.keys():
                     companions.companions[CompanionKey.ScuttledarkScorpion] = features.companions.companion.ScuttledarkScorpionCompanion()
                     companions.companions[CompanionKey.ScuttledarkScorpion].set_id(player.get_id())
-                    companion_result_str += f"\n\nFrom the darkness comes skittering another scorpion, though it seems more curious than aggressive. It's been added as a companion in b!companions."
+                    companion_result_str += f"\n\nFrom the darkness comes skittering another scorpion, though it seems more curious than aggressive. It's been added as a companion for {user.display_name} in b!companions."
 
                     player.get_stats().companions.companions_found += 1
         

@@ -11,7 +11,7 @@ from features.shared.ability import Ability
 from features.shared.constants import BLEED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import Bleeding, DmgReduction, StackingDamage
+from features.shared.statuseffect import Bleeding, DmgReduction, StackingDamage, StatusEffectKey
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -83,7 +83,7 @@ class RepeatedStrikes(Ability):
         for se in targets[0].get_dueling().status_effects:
             main_hand_item = caster.get_equipment().get_item_in_slot(ClassTag.Equipment.MainHand)
             source_str = main_hand_item.get_full_name() if main_hand_item is not None else "None Equipped"
-            if isinstance(se, StackingDamage) and se.source_str == source_str and se.caster == caster:
+            if se.key == StatusEffectKey.StackingDamage and se.source_str == source_str:
                 new_se = StackingDamage(
                     turns_remaining=se.turns_remaining,
                     value=se.value,

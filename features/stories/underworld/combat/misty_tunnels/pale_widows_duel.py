@@ -66,7 +66,7 @@ class VictoryView(discord.ui.View):
                 if CompanionKey.PaleWalkerSpider not in companions.companions.keys():
                     companions.companions[CompanionKey.PaleWalkerSpider] = features.companions.companion.PaleWalkerSpiderCompanion()
                     companions.companions[CompanionKey.PaleWalkerSpider].set_id(player.get_id())
-                    companion_result_str += f"\n\nThough not much smaller than the other spiders, from behind the two you defeated appears another that wants to follow you! It's been added as a companion in b!companions."
+                    companion_result_str += f"\n\nThough not much smaller than the other spiders, from behind the two you defeated appears another that wants to follow you! It's been added as a companion for {user.display_name} in b!companions."
 
                     player.get_stats().companions.companions_found += 1
         

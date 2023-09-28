@@ -66,7 +66,7 @@ class VictoryView(discord.ui.View):
                 if CompanionKey.MiniatureBoneGolem not in companions.companions.keys():
                     companions.companions[CompanionKey.MiniatureBoneGolem] = features.companions.companion.MiniatureBoneGolemCompanion()
                     companions.companions[CompanionKey.MiniatureBoneGolem].set_id(player.get_id())
-                    companion_result_str += f"\n\nA spike a fear runs through your system as the bones begin to move again, but instead a smaller creature is formed from the remaining pile: a miniature bone golem! Unlike the one you just faced, it seems rather interested in joining your adventure. It's been added as a companion in b!companions."
+                    companion_result_str += f"\n\nA spike a fear runs through your system as the bones begin to move again, but instead a smaller creature is formed from the remaining pile: a miniature bone golem! Unlike the one you just faced, it seems rather interested in joining your adventure. It's been added as a companion for {user.display_name} in b!companions."
 
                     player.get_stats().companions.companions_found += 1
         

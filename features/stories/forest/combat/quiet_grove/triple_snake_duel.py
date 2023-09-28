@@ -66,7 +66,7 @@ class VictoryView(discord.ui.View):
                 if CompanionKey.VerdantSlitherer not in companions.companions.keys():
                     companions.companions[CompanionKey.VerdantSlitherer] = features.companions.companion.VerdantSlithererCompanion()
                     companions.companions[CompanionKey.VerdantSlitherer].set_id(player.get_id())
-                    companion_result_str += f"\n\nIn the nest, {user.display_name}, you find a much smaller snake which wraps around you finger lovingly. It's been added as a companion in b!companions."
+                    companion_result_str += f"\n\nIn the nest, {user.display_name}, you find a much smaller snake which wraps around you finger lovingly. It's been added as a companion for {user.display_name} in b!companions."
 
                     player.get_stats().companions.companions_found += 1
         

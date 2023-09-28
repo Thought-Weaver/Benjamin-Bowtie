@@ -66,7 +66,7 @@ class VictoryView(discord.ui.View):
                 if CompanionKey.DeepwoodCub not in companions.companions.keys():
                     companions.companions[CompanionKey.DeepwoodCub] = features.companions.companion.DeepwoodCubCompanion()
                     companions.companions[CompanionKey.DeepwoodCub].set_id(player.get_id())
-                    companion_result_str += f"\n\nBounding from the woods comes another bear -- this one's a cub! It's been added as a companion in b!companions."
+                    companion_result_str += f"\n\nBounding from the woods comes another bear -- this one's a cub! It's been added as a companion for {user.display_name} in b!companions."
 
                     player.get_stats().companions.companions_found += 1
         
