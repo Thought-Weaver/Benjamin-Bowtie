@@ -274,14 +274,19 @@ class MarketView(discord.ui.View):
     def _get_current_page_buttons(self):
         self.clear_items()
         player: Player = self._get_player()
-        all_slots = player.get_inventory().get_inventory_slots()
+        inventory: Inventory = player.get_inventory()
+        inventory_slots = inventory.get_inventory_slots()
 
-        page_slots = all_slots[self._page * self._NUM_PER_PAGE:min(len(all_slots), (self._page + 1) * self._NUM_PER_PAGE)]
+        filtered_indices = inventory.get_non_bound_items()
+        filtered_items = [inventory_slots[i] for i in filtered_indices]
+
+        page_slots = filtered_items[self._page * self._NUM_PER_PAGE:min(len(filtered_items), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
-            self.add_item(InventorySellButton(i + (self._page * self._NUM_PER_PAGE), item, i))
+            exact_item_index: int = filtered_indices[i + (self._page * self._NUM_PER_PAGE)]
+            self.add_item(InventorySellButton(exact_item_index, item, i))
         if self._page != 0:
             self.add_item(PrevButton(min(4, len(page_slots))))
-        if len(all_slots) - self._NUM_PER_PAGE * (self._page + 1) > 0:
+        if len(filtered_items) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
         self.add_item(MarketExitButton(min(4, len(page_slots))))
         
