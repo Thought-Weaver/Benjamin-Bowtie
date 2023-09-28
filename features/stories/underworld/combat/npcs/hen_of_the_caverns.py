@@ -46,6 +46,7 @@ class CurseOfFrailty(Ability):
                 source_str=self.get_icon_and_name()
             )
             target.get_dueling().status_effects.append(debuff)
+            target.get_expertise().update_stats(target.get_combined_attributes())
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Con was reduced to 0!"
 
@@ -94,6 +95,7 @@ class CurseOfWeakness(Ability):
             )
 
             target.get_dueling().status_effects += [int_debuff, str_debuff]
+            target.get_expertise().update_stats(target.get_combined_attributes())
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Int and Str were reduced to 0!"
 
@@ -140,6 +142,7 @@ class CurseOfLethargy(Ability):
                 source_str=self.get_icon_and_name()
             )
             target.get_dueling().status_effects += [dex_debuff, mem_debuff]
+            target.get_expertise().update_stats(target.get_combined_attributes())
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Dex and Mem were reduced to 0!"
 

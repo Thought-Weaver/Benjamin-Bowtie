@@ -12,7 +12,7 @@ from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import DexBuff, DexDebuff, DmgReduction
+from features.shared.statuseffect import DexBuff, DexDebuff
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
@@ -49,6 +49,7 @@ class ChillingTouch(Ability):
                 source_str=self.get_icon_and_name()
             )
             target.get_dueling().status_effects.append(debuff)
+            target.get_expertise().update_stats(target.get_combined_attributes())
 
         result_str: str = "{0}" + f" used {self.get_icon_and_name()} and " + "{1}'s Dex was reduced to 0!"
 

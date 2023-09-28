@@ -159,6 +159,9 @@ class ConfusingPaths(Ability):
             con_buff_1, str_buff_1, dex_buff_1, int_buff_1, lck_buff_1
         ]
 
+        first_target.get_expertise().update_stats(first_target.get_combined_attributes())
+        second_target.get_expertise().update_stats(second_target.get_combined_attributes())
+
         result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n" + "{1} and {2} have had their stats swapped!"
 
         self.remove_mana_and_set_cd(caster)

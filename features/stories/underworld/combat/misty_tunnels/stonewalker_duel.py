@@ -130,7 +130,7 @@ class StonewalkerDuelView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Shifting Stones", description="With your gaze set ahead towards the dark tunnel, the last thing you'd expect is something to emerge from the wall itself -- but then it does. A lanky figure of mixed stone with veins of ore, humanoid but expressionless, reaches out towards your party, trying to drag you all into the rock.")
+        return Embed(title="Shifting Stones", description="With your gaze set ahead towards the dark tunnel, the last thing you'd expect is something to emerge from the wall itself -- but something does. A lanky figure of mixed stone with veins of ore, humanoid but expressionless, reaches out towards your party, trying to drag you all into the rock.")
 
     def _display_initial_buttons(self):
         self.clear_items()
