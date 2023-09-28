@@ -284,11 +284,11 @@ class WindingTunnels(NPC):
             self._equipment = Equipment()
         
         self._expertise.add_xp_to_class_until_level(200, ExpertiseClass.Alchemist)
-        self._expertise.constitution = 100
+        self._expertise.constitution = 110
         self._expertise.strength = 30
         self._expertise.dexterity = 0
         self._expertise.intelligence = 40
-        self._expertise.luck = 27
+        self._expertise.luck = 17
         self._expertise.memory = 3
 
     def _setup_equipment(self):
