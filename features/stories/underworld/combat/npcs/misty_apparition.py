@@ -146,7 +146,7 @@ class Incorporeal(Ability):
 class MistyApparition(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 36% chance of 4 player party (Lvl. 60-70) victory against 1
+        # 41% chance of 4 player party (Lvl. 60-70) victory against 1
         # Avg Number of Turns (per entity): 13
 
         super().__init__("Misty Apparition" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
