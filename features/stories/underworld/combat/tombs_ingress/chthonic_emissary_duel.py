@@ -262,20 +262,57 @@ class EmissaryDecisionView(discord.ui.View):
     def _get_player(self, user_id: int) -> Player:
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
+    def get_reward(self):
+        num_stirred: int = sum(self._get_player(user.id).get_stats().wishingwell.something_stirs for user in self._users)
+        key: ItemKey = ItemKey.InvitationToTheDreamTier0
+
+        if num_stirred >= 10:
+            key = ItemKey.InvitationToTheDreamTier1
+        elif num_stirred >= 20:
+            key = ItemKey.InvitationToTheDreamTier2
+        elif num_stirred >= 30:
+            key = ItemKey.InvitationToTheDreamTier3
+        elif num_stirred >= 40:
+            key = ItemKey.InvitationToTheDreamTier4
+        elif num_stirred >= 50:
+            key = ItemKey.InvitationToTheDreamTier5
+        elif num_stirred >= 60:
+            key = ItemKey.InvitationToTheDreamTier6
+        elif num_stirred >= 70:
+            key = ItemKey.InvitationToTheDreamTier7
+        elif num_stirred >= 80:
+            key = ItemKey.InvitationToTheDreamTier8
+        elif num_stirred >= 90:
+            key = ItemKey.InvitationToTheDreamTier9
+        elif num_stirred >= 100:
+            key = ItemKey.InvitationToTheDreamTier10
+        elif num_stirred >= 110:
+            key = ItemKey.InvitationToTheDreamTier11
+        elif num_stirred >= 120:
+            key = ItemKey.InvitationToTheDreamTier12
+        
+        return LOADED_ITEMS.get_new_item(key)
+
     def get_initial_embed(self):
         if self._show_break_chains:
+            for user in self._users:
+                player = self._get_player(user.id)
+                reward = self.get_reward()
+                player.get_inventory().add_item(reward)
+
+            dream_story: DreamStory = self._database[str(self._guild_id)]["stories"][Story.Dream]
+            dream_story.gateway_open = True
+
             return Embed(title="Break the Chains", description=(
                     "With the bonds of mana nearly depleted, severing them entirely takes little effort; with one last bit of resistance, they begin to flash and fade into oblivion.\n\n"
                     "Its arms unbound, the entity falls to the golden ground below, landing with a billowing wind that forces you all backwards away from the grand pillars that were its former prison.\n\n"
                     "At first, nothing happens: It lays there, unmoving, as though the act of shattering its bonds was what was actually needed to defeat it. Silence pierces the enormous cavern as you all wait with bated breath to see what will transpire.\n\n"
                     "Then, with great effort, one of its hands raises upwards and smashes against the ground, pushing it back upright as it flies into the air. All four of its arms stretch wide as it howls in an alien shriek, smoke billowing out from its robe in all directions.\n\n"
-                    "There's a sound like the sky itself being torn asunder, and in your mind suddenly you can all hear voices shouting: WE WELCOME YOU TO THE DREAM. And then, collapsing in a vortex that threatens to pull you all in, the entity disappears and the cavern quakes violently as it begins to fall apart."
+                    "There's a sound like the sky itself being torn asunder, and in your mind suddenly you can all hear voices shouting: WE WELCOME YOU TO THE DREAM. And then, collapsing in a vortex that threatens to pull you all in, the entity disappears and the cavern quakes violently as it begins to fall apart.\n\n"
+                    "_Each of you has received an Invitation to the Dream._"
                 )
             )
         else:
-            dream_story: DreamStory = self._database[str(self._guild_id)]["stories"][Story.Dream]
-            dream_story.gateway_open = True
-
             return Embed(title="Leave It Bound", description=(
                     "You turn away from it, knowing that while you don't possess the means to destroy the emissary, leaving it weak and chained will at least buy you more time to think of a solution -- if there's even a way to truly end its existence.\n\n"
                     "The arcane bindings begin to renew themselves with the creature's lack of resistance, leaving you all free to scour the horde of treasure accumulated here: Each temple seems to have been dedicated to a different type of wealth, including everything from food to gems to gold, though it has all since been merged in a gargantuan sprawl on the cavern floor.\n\n"
