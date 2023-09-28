@@ -625,7 +625,7 @@ class UnderworldStory():
     @staticmethod
     def generate_combat_room(bot: BenjaminBowtieBot, database: dict, guild_id: int, users: List[discord.User], dungeon_run: DungeonRun) -> Tuple[discord.ui.View, int]:
         if dungeon_run.section == UnderworldSection.MistyTunnels:
-            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_combat])
             if rand_val == 0:
                 return BreathOfDarknessDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
@@ -643,7 +643,7 @@ class UnderworldStory():
             else:
                 return WindingTunnelsDuelView(bot, database, guild_id, users, dungeon_run), rand_val
         elif dungeon_run.section == UnderworldSection.FungalCaverns:
-            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_combat])
             if rand_val == 0:
                 return AgaricAlchemistsDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
@@ -661,7 +661,7 @@ class UnderworldStory():
             else:
                 return MyceliumTreeDuelView(bot, database, guild_id, users, dungeon_run), rand_val
         else:
-            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_event])
+            rand_val: int = random.choice([i for i in range(0, 8) if i != dungeon_run.previous_combat])
             if rand_val == 0:
                 return CultistsOfAvariceDuelView(bot, database, guild_id, users, dungeon_run), rand_val
             elif rand_val == 1:
