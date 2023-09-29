@@ -955,9 +955,9 @@ class DuelView(discord.ui.View):
                 for loser in losers:
                     assert(isinstance(loser, NPC))
                     for reward_key, probability in loser.get_dueling_rewards().items():
-                        if random() < probability:
-                            new_item = LOADED_ITEMS.get_new_item(reward_key)
-                            for player in player_winners:
+                        for player in player_winners:
+                            if random() < probability:
+                                new_item = LOADED_ITEMS.get_new_item(reward_key)
                                 player.get_inventory().add_item(new_item)
                                 winner_str += f"{self.get_name(player)} received {new_item.get_full_name_and_count()}\n"
 
