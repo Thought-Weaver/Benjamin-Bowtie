@@ -4,29 +4,27 @@ from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Attribute, Expertise, ExpertiseClass
+from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
-from features.shared.constants import POISONED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import AttackingChanceToApplyStatus, Poisoned, StatsHidden, StatusEffectKey
+from features.shared.statuseffect import StatsHidden
 from features.stats import Stats
 
-from typing import List, TYPE_CHECKING
 from features.stories.underworld.combat.npcs.agaric_alchemist import PoppingPustules
 from features.stories.underworld.combat.npcs.chanterspell import HummingRegeneration
 from features.stories.underworld.combat.npcs.deathless_cap import MushroomSlam
 from features.stories.underworld.combat.npcs.glowing_moss import Luminesce
 from features.stories.underworld.combat.npcs.hen_of_the_caverns import CurseOfFrailty
-
 from features.stories.underworld.combat.npcs.malevolent_morel import Counterattack
 from features.stories.underworld.combat.npcs.mycelium_tree import ManaBurn
+
+from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.player import Player
     from features.shared.ability import NegativeAbilityResult
-    from features.shared.statuseffect import StatusEffect
 
 # -----------------------------------------------------------------------------
 # ABILITIES

@@ -18,12 +18,12 @@
         "permanent": [],
         "on_turn_start": [
             {
-                "effect_type": "DmgReflect",
-                "effect_value": 10,
+                "effect_type": "ChanceStatusEffect",
+                "effect_value": 5,
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": [],
-                "associated_status_effect": null
+                "associated_status_effect": "DmgReflect"
             }
         ],
         "on_turn_end": [],

@@ -108,7 +108,7 @@ class StunningFumes(Ability):
             icon="\uD83D\uDCAB",
             name="Stunning Fumes",
             class_key=ExpertiseClass.Alchemist,
-            description="Cause Faltering on all enemies for 3 turns.",
+            description="Cause Faltering on all enemies for 2 turns.",
             flavor_text="",
             mana_cost=40,
             cooldown=8,
@@ -121,7 +121,7 @@ class StunningFumes(Ability):
 
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = TurnSkipChance(
-            turns_remaining=3,
+            turns_remaining=2,
             value=1,
             source_str=self.get_icon_and_name()
         )

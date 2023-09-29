@@ -83,8 +83,8 @@ class VolatileIllusion(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(50, ExpertiseClass.Guardian)
-        self._expertise.constitution = 49
+        self._expertise.add_xp_to_class_until_level(40, ExpertiseClass.Guardian)
+        self._expertise.constitution = 39
         self._expertise.strength = 0
         self._expertise.dexterity = 0
         self._expertise.intelligence = 0

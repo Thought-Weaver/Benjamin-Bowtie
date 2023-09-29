@@ -37,13 +37,6 @@
                 "effect_time": -1,
                 "conditions": [],
                 "condition_values": []
-            },
-            {
-                "effect_type": "ConMod",
-                "effect_value": -10,
-                "effect_time": -1,
-                "conditions": [],
-                "condition_values": []
             }
         ]
     }

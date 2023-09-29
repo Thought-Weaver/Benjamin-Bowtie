@@ -4,19 +4,18 @@ from uuid import uuid4
 
 from features.dueling import Dueling
 from features.equipment import Equipment
-from features.expertise import Attribute, Expertise, ExpertiseClass
+from features.expertise import Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import CannotAttack, CannotUseAbilities, DmgReduction, Generating, StatusEffectKey, Tarnished
+from features.shared.statuseffect import Generating, StatusEffectKey, Tarnished
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from features.player import Player
-    from features.shared.ability import NegativeAbilityResult
 
 # -----------------------------------------------------------------------------
 # ABILITIES
@@ -115,9 +114,9 @@ class RitualOfBlood(Ability):
             flavor_text="",
             mana_cost=20,
             cooldown=5,
-            num_targets=0,
+            num_targets=-1,
             level_requirement=20,
-            target_own_group=True,
+            target_own_group=False,
             purchase_cost=0,
             scaling=[]
         )

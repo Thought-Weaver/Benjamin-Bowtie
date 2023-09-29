@@ -793,7 +793,13 @@ class DuelView(discord.ui.View):
             loser.get_dueling().temp_abilities = []
 
         if all(isinstance(entity, Player) for entity in self._turn_order):
-            # This should only happen in a PvP duel
+            if duel_result.winners == self._allies:
+                if self._player_victory_post_view is not None:
+                    self.add_item(ContinueButton(self._player_victory_post_view, False))
+            else:
+                if self._player_loss_post_view is not None:
+                    self.add_item(ContinueButton(self._player_loss_post_view, True))
+            
             winner_str = ""
             winner_xp = ceil(0.75 * sum(loser.get_expertise().level for loser in losers) / len(duel_result.winners))
             for winner in duel_result.winners:
@@ -858,7 +864,8 @@ class DuelView(discord.ui.View):
                 if loser_companion_xp_str != "":
                     loser_str += f"{loser_companion_xp_str}\n"
 
-            return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}\nPractice for the journeys yet to come.")
+            extra_str: str = "\nPractice for the journeys yet to come." if self._player_victory_post_view is None else ""
+            return Embed(title="Duel Finished", description=f"To those victorious:\n\n{winner_str}\nAnd to those who were vanquished:\n\n{loser_str}{extra_str}")
         elif all(isinstance(entity, NPC) for entity in self._enemies):
 
             if duel_result.winners == self._allies:

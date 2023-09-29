@@ -30,7 +30,7 @@ class CastIllusions(Ability):
             description="Restore two allies to full health if they're dead.",
             flavor_text="",
             mana_cost=10,
-            cooldown=0,
+            cooldown=1,
             num_targets=2,
             level_requirement=20,
             target_own_group=True,
