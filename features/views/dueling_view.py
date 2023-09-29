@@ -951,15 +951,15 @@ class DuelView(discord.ui.View):
             
             if losers == self._enemies:
                 winner_str += "\n"
-                player_winners = list(filter(lambda x: isinstance(x, Player), duel_result.winners))
+                player_winners: List[Player] = list(filter(lambda x: isinstance(x, Player), duel_result.winners)) # type: ignore
                 for loser in losers:
                     assert(isinstance(loser, NPC))
                     for reward_key, probability in loser.get_dueling_rewards().items():
                         if random() < probability:
                             new_item = LOADED_ITEMS.get_new_item(reward_key)
-                            item_winner = choice(player_winners)
-                            item_winner.get_inventory().add_item(new_item)
-                            winner_str += f"{self.get_name(item_winner)} received {new_item.get_full_name_and_count()}\n"
+                            for player in player_winners:
+                                player.get_inventory().add_item(new_item)
+                                winner_str += f"{self.get_name(player)} received {new_item.get_full_name_and_count()}\n"
 
             if any(isinstance(entity, Player) for entity in duel_result.winners):
                 return Embed(title="Duel Finished", description=f"You are victorious:\n\n{winner_str}")
