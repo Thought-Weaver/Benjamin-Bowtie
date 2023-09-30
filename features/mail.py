@@ -317,6 +317,54 @@ class MailboxButton(discord.ui.Button):
                 await interaction.response.edit_message(content=None, embed=embed, view=view)
 
 
+class OpenAllButton(discord.ui.Button):
+    def __init__(self, row: int):
+        super().__init__(style=discord.ButtonStyle.secondary, label=f"Open All", row=row)
+
+    async def callback(self, interaction: discord.Interaction):
+        if self.view is None:
+            return
+
+        await interaction.response.defer()
+
+        view: MailboxView = self.view
+        if interaction.user == view.get_user():
+            player = view.get_player()
+            mailbox: List[Mail] = player.get_mailbox()
+
+            for mail in mailbox:
+                player: Player = view.get_player()
+                player_stats: Stats = player.get_stats()
+
+                player.get_inventory().add_item(mail.get_item())
+                player.get_inventory().add_coins(mail.get_coins())
+
+                coins_received = mail.get_coins()
+                mail_message = f"From: {mail.get_sender_name()} (<t:{mail.get_send_date()}:R>)"
+                mail_item = mail.get_item()
+                if mail_item is not None:
+                    mail_message += f"\n\nItem: {mail_item.get_full_name_and_count()} each worth {mail_item.get_value_str()}"
+                    if interaction.user.id != mail.get_sender_id():
+                        player_stats.mail.items_received += 1
+                if coins_received > 0:
+                    mail_message += f"\n\nCoins: {coins_received}"
+                    if interaction.user.id != mail.get_sender_id():
+                        player_stats.mail.coins_received += coins_received
+                if mail.get_message() != "":
+                    mail_message += f"\n\nMessage:\n\n{mail.get_message()}"
+                    if interaction.user.id != mail.get_sender_id():
+                        player_stats.mail.messages_received += 1
+
+                if interaction.user.id != mail.get_sender_id():
+                    player_stats.mail.mail_opened += 1
+
+                await interaction.user.send(mail_message)
+
+            player.get_mailbox().clear()
+        
+        view._get_current_page_buttons()
+        await interaction.followup.edit_message(message_id=interaction.message.id, content=None, embed=view.get_current_page_info(), view=view)
+
 class ExitToHouseButton(discord.ui.Button):
     def __init__(self, row):
         super().__init__(style=discord.ButtonStyle.red, label="Exit", row=row)
@@ -368,6 +416,7 @@ class MailboxView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(mailbox) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
+        self.add_item(OpenAllButton(min(4, len(page_slots))))
         if self.get_house_view() is not None:
             self.add_item(ExitToHouseButton(min(4, len(page_slots))))
         
