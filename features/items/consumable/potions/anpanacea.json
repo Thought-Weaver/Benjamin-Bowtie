@@ -5,7 +5,7 @@
     "value": 5000,
     "rarity": "Artifact",
     "description": "Can be used while dueling.",
-    "flavor_text": "",
+    "flavor_text": "A not-cure for all ails! I'll take 10.",
     "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
     "state_tags": [],
     "count": 1,

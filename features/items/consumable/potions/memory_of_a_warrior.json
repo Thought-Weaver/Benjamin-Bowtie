@@ -5,7 +5,7 @@
     "value": 0,
     "rarity": "Artifact",
     "description": "Can be used while dueling.",
-    "flavor_text": "",
+    "flavor_text": "The drive to fight -- to win -- is not easily forgotten.",
     "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
     "state_tags": [],
     "count": 1,

@@ -5,7 +5,7 @@
     "value": 6936,
     "rarity": "Artifact",
     "description": "",
-    "flavor_text": "",
+    "flavor_text": "You're bound to hit your target! I swear on my soul.",
     "class_tags": [
         "Equipment",
         "Weapon",
@@ -16,7 +16,7 @@
         "Needs_Identification"
     ],
     "count": 1,
-    "level_requirement": 133,
+    "level_requirement": 120,
     "altering_item_keys": [
         ""
     ],

@@ -5,7 +5,7 @@
     "value": 5050,
     "rarity": "Artifact",
     "description": "Can be used while dueling.",
-    "flavor_text": "",
+    "flavor_text": "Laughing manically while brewing this is encouraged but not required.",
     "class_tags": ["Consumable", "Usable_Outside_Duels", "Usable_Within_Duels", "Potion"],
     "state_tags": [],
     "count": 1,
