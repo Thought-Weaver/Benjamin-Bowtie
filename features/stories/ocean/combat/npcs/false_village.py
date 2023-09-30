@@ -28,7 +28,7 @@ class PathsUpended(Ability):
             icon="\uD83C\uDFDE",
             name="Paths Upended",
             class_key=ExpertiseClass.Fisher,
-            description="Deal 80-85 damage to all enemies and cause Faltering for 1 turn.",
+            description="Deal 60-65 damage to all enemies and cause Faltering for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=5,
@@ -48,7 +48,7 @@ class PathsUpended(Ability):
             source_str=self.get_icon_and_name()
         )
         
-        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(80, 85), [debuff])
+        results: List[NegativeAbilityResult] = self._use_damage_and_effect_ability(caster, targets, range(60, 65), [debuff])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
         caster.get_stats().dueling.fisher_abilities_used += 1
@@ -131,7 +131,7 @@ class ConsumingTavern(Ability):
             icon="\uD83C\uDF7B",
             name="Consuming Tavern",
             class_key=ExpertiseClass.Fisher,
-            description="Cause a 100 damage tick on an enemy for 3 turns.",
+            description="Cause a 75 damage tick on an enemy for 3 turns.",
             flavor_text="",
             mana_cost=0,
             cooldown=6,
@@ -145,7 +145,7 @@ class ConsumingTavern(Ability):
     def use_ability(self, caster: Player | NPC, targets: List[Player | NPC]) -> str:
         debuff = FixedDmgTick(
             turns_remaining=3,
-            value=100,
+            value=75,
             source_str=self.get_icon_and_name()
         )
 
@@ -215,7 +215,7 @@ class MeltingSmithy(Ability):
             icon="\u2692\uFE0F",
             name="Melting Smithy",
             class_key=ExpertiseClass.Fisher,
-            description="Your next attack deals 150 additional damage and gain 20% Protected for 2 turns.",
+            description="Your next attack deals 150 additional damage and gain 20% Protected for 1 turn.",
             flavor_text="",
             mana_cost=0,
             cooldown=4,
@@ -234,7 +234,7 @@ class MeltingSmithy(Ability):
         )
 
         protect_buff = DmgReduction(
-            turns_remaining=2,
+            turns_remaining=1,
             value=0.2,
             source_str=self.get_icon_and_name()
         )
@@ -260,8 +260,8 @@ class MeltingSmithy(Ability):
 class FalseVillage(NPC):
     def __init__(self, name_suffix: str=""):
         # Balance Simulation Results:
-        # 4% chance of 4 player party (Lvl. 60-70) victory against 1
-        # Avg Number of Turns (per entity): 9
+        # 1% chance of 4 player party (Lvl. 60-70) victory against 1
+        # Avg Number of Turns (per entity): 10
 
         super().__init__("False Village" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.WavecallersConch: 0.01,
@@ -280,9 +280,9 @@ class FalseVillage(NPC):
         if self._equipment is None:
             self._equipment = Equipment()
         
-        self._expertise.add_xp_to_class_until_level(1000, ExpertiseClass.Guardian)
-        self._expertise.constitution = 400
-        self._expertise.strength = 300
+        self._expertise.add_xp_to_class_until_level(800, ExpertiseClass.Guardian)
+        self._expertise.constitution = 350
+        self._expertise.strength = 150
         self._expertise.dexterity = 0
         self._expertise.intelligence = 200
         self._expertise.luck = 95

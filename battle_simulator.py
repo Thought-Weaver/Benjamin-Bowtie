@@ -777,8 +777,7 @@ def get_full_equipment_str(npc: NPC):
 # -----------------------------------------------------------------------------
 
 ENEMY_CLASSES: List[List[type]] = [
-    [MistyApparition],
-    [WindingTunnels]
+    [FalseVillage]
 ]
 ALLY_CLASS_RANGE: range = range(60, 70)
 
