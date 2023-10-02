@@ -365,6 +365,7 @@ class OpenAllButton(discord.ui.Button):
         view._get_current_page_buttons()
         await interaction.followup.edit_message(message_id=interaction.message.id, content=None, embed=view.get_current_page_info(), view=view)
 
+
 class ExitToHouseButton(discord.ui.Button):
     def __init__(self, row):
         super().__init__(style=discord.ButtonStyle.red, label="Exit", row=row)
@@ -416,7 +417,6 @@ class MailboxView(discord.ui.View):
             self.add_item(PrevButton(min(4, len(page_slots))))
         if len(mailbox) - self._NUM_PER_PAGE * (self._page + 1) > 0:
             self.add_item(NextButton(min(4, len(page_slots))))
-        self.add_item(OpenAllButton(min(4, len(page_slots))))
         if self.get_house_view() is not None:
             self.add_item(ExitToHouseButton(min(4, len(page_slots))))
         
