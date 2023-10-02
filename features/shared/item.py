@@ -627,6 +627,7 @@ class ItemKey(StrEnum):
     AncientKrakenTentacles = "items/weapon/dungeon_npcs/ancient_kraken_tentacles"
     AnglerMaw = "items/weapon/dungeon_npcs/angler_maw"
     BarbedTendrils = "items/weapon/dungeon_npcs/barbed_tendrils"
+    BatForm = "items/equipment/chest_armor/bat_form"
     BehemothTendrils = "items/weapon/dungeon_npcs/behemoth_tendrils"
     BehemothCoralArmor = "items/equipment/chest_armor/behemoth_coral_armor"
     BloodcoralTendrils = "items/weapon/dungeon_npcs/bloodcoral_tendrils"

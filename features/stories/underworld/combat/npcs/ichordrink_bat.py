@@ -187,7 +187,7 @@ class IchordrinkBat(NPC):
             self._equipment = Equipment()
 
         self._equipment.equip_item_to_slot(ClassTag.Equipment.MainHand, LOADED_ITEMS.get_new_item(ItemKey.IchordrinkFangs))
-        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.AncientKrakenForm))
+        self._equipment.equip_item_to_slot(ClassTag.Equipment.ChestArmor, LOADED_ITEMS.get_new_item(ItemKey.BatForm))
 
         self._expertise.update_stats(self.get_combined_attributes())
 
