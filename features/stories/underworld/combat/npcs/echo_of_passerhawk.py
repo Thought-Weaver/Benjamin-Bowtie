@@ -8,10 +8,9 @@ from features.expertise import Attribute, Expertise, ExpertiseClass
 from features.inventory import Inventory
 from features.npcs.npc import NPC, NPCDuelingPersonas, NPCRoles
 from features.shared.ability import Ability, NegativeAbilityResult
-from features.shared.constants import BLEED_PERCENT_HP
 from features.shared.enums import ClassTag
 from features.shared.item import LOADED_ITEMS, ItemKey
-from features.shared.statuseffect import POSITIVE_STATUS_EFFECTS_ON_SELF, Bleeding, CannotAttack, CannotUseAbilities, ConBuff, DexBuff, StrBuff
+from features.shared.statuseffect import POSITIVE_STATUS_EFFECTS_ON_SELF, CannotAttack, CannotUseAbilities
 from features.stats import Stats
 
 from typing import List, TYPE_CHECKING
