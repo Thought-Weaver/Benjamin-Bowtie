@@ -147,8 +147,6 @@ class ColossalUndeadTreant(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Colossal Undead Treant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Wrathbark: 0.9,
-            ItemKey.Wrathbark: 0.8,
-            ItemKey.Wrathbark: 0.7,
             ItemKey.TreantCuttings: 0.2
         })
 

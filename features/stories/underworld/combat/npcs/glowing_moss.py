@@ -180,8 +180,7 @@ class GlowingMoss(NPC):
         # Avg Number of Turns (per entity): 13
 
         super().__init__("Glowing Moss" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
-            ItemKey.GlowingMoss: 0.7,
-            ItemKey.GlowingMoss: 0.2
+            ItemKey.GlowingMoss: 0.9,
         })
 
         self._setup_npc_params()

@@ -169,7 +169,6 @@ class StarvingDireWolf(NPC):
 
         super().__init__("Starving Dire Wolf" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.85,
-            ItemKey.Bones: 0.6,
             ItemKey.RawWolfMeat: 0.4
         })
 

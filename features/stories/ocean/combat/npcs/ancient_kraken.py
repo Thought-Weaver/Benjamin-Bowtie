@@ -157,10 +157,6 @@ class AncientKraken(NPC):
 
         super().__init__("Ancient Kraken" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Squid: 0.9,
-            ItemKey.Squid: 0.7,
-            ItemKey.Squid: 0.5,
-            ItemKey.Squid: 0.3,
-            ItemKey.Squid: 0.1,
             ItemKey.KrakenEye: 0.1
         })
 

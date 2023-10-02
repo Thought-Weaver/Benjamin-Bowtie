@@ -149,10 +149,7 @@ class BloodcoralBehemoth(NPC):
         # Avg Number of Turns (per entity): 13
 
         super().__init__("Bloodcoral Behemoth" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
-            ItemKey.Bloodcoral: 0.7,
-            ItemKey.Bloodcoral: 0.5,
-            ItemKey.Bloodcoral: 0.3,
-            ItemKey.Bloodcoral: 0.1
+            ItemKey.Bloodcoral: 1,
         })
 
         self._setup_npc_params()

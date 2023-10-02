@@ -144,8 +144,7 @@ class Chanterspell(NPC):
         # Avg Number of Turns (per entity): 11
 
         super().__init__("Chanterspell" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Healer, {
-            ItemKey.Chanterspell: 0.7,
-            ItemKey.Chanterspell: 0.3
+            ItemKey.Chanterspell: 0.9
         })
 
         self._setup_npc_params()

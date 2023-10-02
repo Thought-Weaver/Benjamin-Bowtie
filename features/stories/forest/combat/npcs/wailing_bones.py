@@ -203,8 +203,6 @@ class WailingBones(NPC):
 
         super().__init__("Wailing Bones" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Bones: 0.9,
-            ItemKey.Bones: 0.7,
-            ItemKey.Bones: 0.5,
             ItemKey.VoidseenBone: 0.2
         })
 

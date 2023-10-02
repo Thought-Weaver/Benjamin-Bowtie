@@ -156,8 +156,7 @@ class IchordrinkBat(NPC):
         # Avg Number of Turns (per entity): 23
 
         super().__init__("Ichordrink Bat" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
-            ItemKey.BlendedIchor: 0.9,
-            ItemKey.BlendedIchor: 0.5
+            ItemKey.BlendedIchor: 1
         })
 
         self._setup_npc_params()

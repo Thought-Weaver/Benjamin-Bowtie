@@ -148,7 +148,6 @@ class LitheTreant(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Lithe Treant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Lithewood: 0.9,
-            ItemKey.Lithewood: 0.6,
             ItemKey.TreantCuttings: 0.2,
             ItemKey.TreantSap: 0.1
         })

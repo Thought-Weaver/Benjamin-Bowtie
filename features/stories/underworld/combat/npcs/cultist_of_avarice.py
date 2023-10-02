@@ -177,7 +177,6 @@ class CultistOfAvarice(NPC):
 
         super().__init__("Cultist of Avarice" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.AFewCoins: 0.8,
-            ItemKey.AFewCoins: 0.5,
             ItemKey.PileOfCoins: 0.1,
             ItemKey.RitualDagger: 0.005,
         })

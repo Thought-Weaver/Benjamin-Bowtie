@@ -144,8 +144,6 @@ class HulkingBoneShambler(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Hulking Bone Shambler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.9,
-            ItemKey.Bones: 0.7,
-            ItemKey.Bones: 0.5,
             ItemKey.VoidseenBone: 0.2
         })
 

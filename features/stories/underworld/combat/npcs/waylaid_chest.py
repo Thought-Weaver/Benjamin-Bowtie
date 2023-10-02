@@ -163,7 +163,6 @@ class WaylaidChest(NPC):
 
         super().__init__("Waylaid Chest" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.PileOfCoins: 0.5,
-            ItemKey.PileOfCoins: 0.2,
             ItemKey.BagOfCoins: 0.05,
             ItemKey.Emerald: 0.7,
             ItemKey.FlawlessEmerald: 0.1,

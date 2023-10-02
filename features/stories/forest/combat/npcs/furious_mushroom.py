@@ -151,23 +151,11 @@ class FuriousMushroom(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Furious Mushroom" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.BlazeCluster: 0.8,
-            ItemKey.BlazeCluster: 0.5,
             ItemKey.FoolsDelight: 1,
-            ItemKey.FoolsDelight: 0.6,
-            ItemKey.Bloodcrown: 1,
             ItemKey.Bloodcrown: 0.9,
-            ItemKey.Bloodcrown: 0.7,
-            ItemKey.Bloodcrown: 0.5,
             ItemKey.SpeckledCap: 1,
-            ItemKey.SpeckledCap: 0.9,
-            ItemKey.SpeckledCap: 0.8,
-            ItemKey.SpeckledCap: 0.7,
             ItemKey.Slumbershroom: 0.8,
-            ItemKey.Slumbershroom: 0.5,
-            ItemKey.Slumbershroom: 0.2,
             ItemKey.SlumbershroomSpores: 1,
-            ItemKey.SlumbershroomSpores: 0.8,
-            ItemKey.SlumbershroomSpores: 0.6
         })
 
         self._setup_npc_params()

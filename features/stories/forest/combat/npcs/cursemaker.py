@@ -146,13 +146,7 @@ class Cursemaker(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Cursemaker" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Wrathbark: 0.9,
-            ItemKey.Wrathbark: 0.6,
-            ItemKey.Lithewood: 0.9,
-            ItemKey.Lithewood: 0.6,
             ItemKey.MagesBaneSeed: 0.9,
-            ItemKey.MagesBaneSeed: 0.7,
-            ItemKey.MagesBaneSeed: 0.5,
-            ItemKey.TreantCuttings: 0.3,
             ItemKey.DoomCharm: 0.1
         })
 

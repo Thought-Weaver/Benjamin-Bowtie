@@ -107,8 +107,7 @@ class WanderingBloodcoral(NPC):
         # 47% chance of 4 player party (Lvl. 40-50) victory against 1
 
         super().__init__("Wandering Bloodcoral" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
-            ItemKey.Bloodcoral: 0.6,
-            ItemKey.Bloodcoral: 0.2
+            ItemKey.Bloodcoral: 0.8
         })
 
         self._setup_npc_params()

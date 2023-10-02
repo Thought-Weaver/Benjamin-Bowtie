@@ -146,8 +146,6 @@ class VoidburntTreant(NPC):
 
         super().__init__("Voidburnt Treant" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.Wrathbark: 0.9,
-            ItemKey.Wrathbark: 0.8,
-            ItemKey.Wrathbark: 0.7,
             ItemKey.TreantCuttings: 0.3,
             ItemKey.CharredUndeadWood: 0.15
         })

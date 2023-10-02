@@ -107,8 +107,6 @@ class HorrifyingBoneAmalgam(NPC):
 
         super().__init__("Horrifying Bone Amalgam" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Bruiser, {
             ItemKey.Bones: 0.9,
-            ItemKey.Bones: 0.7,
-            ItemKey.Bones: 0.5,
             ItemKey.VoidseenBone: 0.2
         })
 

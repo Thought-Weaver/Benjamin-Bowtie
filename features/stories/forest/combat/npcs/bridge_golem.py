@@ -142,7 +142,6 @@ class BridgeGolem(NPC):
         artifact_reward = random.choice([ItemKey.GolemsEye, ItemKey.GolemicAssembly])
         super().__init__("Bridge Golem" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {    
             ItemKey.BagOfCoins: 0.6,
-            ItemKey.BagOfCoins: 0.3,
             artifact_reward: 0.1,
         })
 

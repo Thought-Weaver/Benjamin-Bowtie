@@ -173,7 +173,6 @@ class MoltenGold(NPC):
 
         super().__init__("Molten Gold" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
             ItemKey.PileOfCoins: 0.7,
-            ItemKey.PileOfCoins: 0.4,
             ItemKey.BagOfCoins: 0.1,
         })
 

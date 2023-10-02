@@ -160,9 +160,7 @@ class StranglekelpHoldfast(NPC):
         # Avg Number of Turns (per entity): 15
 
         super().__init__("Stranglekelp Holdfast" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {
-            ItemKey.Stranglekelp: 0.8,
-            ItemKey.Stranglekelp: 0.5,
-            ItemKey.Stranglekelp: 0.2
+            ItemKey.Stranglekelp: 1
         })
 
         self._setup_npc_params()

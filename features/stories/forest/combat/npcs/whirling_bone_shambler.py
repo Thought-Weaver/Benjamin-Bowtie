@@ -154,8 +154,6 @@ class WhirlingBoneShambler(NPC):
     def __init__(self, name_suffix: str=""):
         super().__init__("Whirling Bone Shambler" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Specialist, {
             ItemKey.Bones: 0.9,
-            ItemKey.Bones: 0.7,
-            ItemKey.Bones: 0.5,
             ItemKey.VoidseenBone: 0.2
         })
 
