@@ -59,7 +59,7 @@ class RubyEyesBeginToGlow(Ability):
             source_str=self.get_icon_and_name()
         )
 
-        result_str: str = "{0}" + f" used {self.get_icon_and_name()}!\n\n"
+        result_str: str = "{0}" + f" used {self.get_icon_and_name()} and has charged a powerful attack!\n\n"
         results: List[NegativeAbilityResult] = self._use_negative_status_effect_ability(caster, targets, [marked, dmg_debuff, dmg_vuln])
         result_str += "\n".join(list(map(lambda x: x.target_str, results)))
 
@@ -648,56 +648,56 @@ class ChthonicEmissary(NPC):
         # Balance Simulation Results:
         #
         # --- Number of Times Stirred: 0 ---
-        # 4% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 12
+        # 1% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 11
         #
         # --- Number of Times Stirred: 10 ---
-        # 4% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 12
+        # 1% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 13
         #
         # --- Number of Times Stirred: 20 ---
-        # 3% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 10
+        # 1% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 11
         #
         # --- Number of Times Stirred: 30 ---
         # 2% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 10
+        # Avg Number of Turns (per entity): 11
         #
         # --- Number of Times Stirred: 40 ---
-        # 3% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 12
+        # 2% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 15
         #
         # --- Number of Times Stirred: 50 ---
-        # 6% chance of 4 player party (Lvl. 90-100) victory against 1
+        # 5% chance of 4 player party (Lvl. 90-100) victory against 1
         # Avg Number of Turns (per entity): 16
         #
         # --- Number of Times Stirred: 60 ---
-        # 7% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 15
+        # 6% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 19
         #
         # --- Number of Times Stirred: 70 ---
-        # 5% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 13
+        # 7% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 19
         #
         # --- Number of Times Stirred: 80 ---
-        # 7% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 14
+        # 5% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 22
         #
         # --- Number of Times Stirred: 90 ---
-        # 5% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 15
+        # 3% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 25
         #
         # --- Number of Times Stirred: 100 ---
-        # 5% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 14
+        # 2% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 22
         #
         # --- Number of Times Stirred: 110 ---
-        # 1% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 11
+        # 3% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 16
         #
         # --- Number of Times Stirred: 120 ---
-        # 1% chance of 4 player party (Lvl. 90-100) victory against 1
-        # Avg Number of Turns (per entity): 11
+        # 2% chance of 4 player party (Lvl. 90-100) victory against 1
+        # Avg Number of Turns (per entity): 16
 
         super().__init__("Chthonic Emissary" + name_suffix, NPCRoles.DungeonEnemy, NPCDuelingPersonas.Mage, {})
 
