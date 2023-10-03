@@ -777,9 +777,9 @@ def get_full_equipment_str(npc: NPC):
 # -----------------------------------------------------------------------------
 
 ENEMY_CLASSES: List[List[type]] = [
-    [FalseVillage]
+    [ChthonicEmissary]
 ]
-ALLY_CLASS_RANGE: range = range(60, 70)
+ALLY_CLASS_RANGE: range = range(90, 100)
 
 SIMULATION_ITERATIONS = 256
 NUM_ALLIES = 4
@@ -916,9 +916,11 @@ def run_simulation(allies: List[NPC], enemies: List[NPC], dir_name: str, sim_ind
 
 def run_simulations_for_enemy_class(enemy_class_list: List[Type], num_stirred: int=-1):
     # Setup files
-    base_enemy_name: str = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_"))).replace("?", "")
+    base_enemy_name: str = ""
     if num_stirred >= 0:
-        base_enemy_name += "_" + str(num_stirred)
+        base_enemy_name = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0](num_stirred=num_stirred).get_name().lower().replace(" ", "_"))).replace("?", "") + "_" + str(num_stirred)
+    else:
+        base_enemy_name = "".join(filter(lambda ch: not ch.isdigit(), enemy_class_list[0]().get_name().lower().replace(" ", "_"))).replace("?", "")
     dir_name: str = f"./simulation_results/{base_enemy_name}"
 
     Path(dir_name).mkdir(parents=True, exist_ok=True)
@@ -1009,9 +1011,9 @@ def run_simulations_for_enemy_class(enemy_class_list: List[Type], num_stirred: i
 if __name__ == "__main__":
     freeze_support()
     
-    # for i in range(0, 130, 10):
-    #     for enemy_class in ENEMY_CLASSES:
-    #         run_simulations_for_enemy_class(enemy_class, i)
+    for i in range(0, 130, 10):
+        for enemy_class in ENEMY_CLASSES:
+            run_simulations_for_enemy_class(enemy_class, i)
 
-    for enemy_class in ENEMY_CLASSES:
-        run_simulations_for_enemy_class(enemy_class)
+    # for enemy_class in ENEMY_CLASSES:
+    #     run_simulations_for_enemy_class(enemy_class)
