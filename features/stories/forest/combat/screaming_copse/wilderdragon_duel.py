@@ -138,7 +138,7 @@ class WilderdragonTreasureRoomView(discord.ui.View):
         
         self._min_level = 20
         self._max_level = 30
-        self._valid_class_tags = [ClassTag.Equipment.Equipment, ClassTag.Valuable.Gemstone]
+        self._valid_class_tags = [ClassTag.Equipment.Equipment]
         self._possible_rewards: List[ItemKey] = [
             ItemKey.BlessingOfTheMarshes, ItemKey.EldritchBane, ItemKey.FontOfIchor, ItemKey.GildedThread, ItemKey.HeraldOfDeath,
             ItemKey.PrecisionsWeave, ItemKey.Giantcrushers, ItemKey.Windwalkers, ItemKey.CloakOfTheThreeEyedSerpent,
@@ -153,9 +153,6 @@ class WilderdragonTreasureRoomView(discord.ui.View):
                     if ClassTag.Equipment.Equipment in item.get_class_tags():
                         if self._min_level <= item.get_level_requirement() <= self._max_level:
                             self._possible_rewards.append(item_key)
-                    else:
-                        # Add additional gemstone keys to increase probability
-                        self._possible_rewards += [item_key for _ in range(15)]
         self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
 
         self._EXTRA_REWARD_LUCK_PROB = 0.01
