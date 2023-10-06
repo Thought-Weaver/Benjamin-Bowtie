@@ -142,7 +142,7 @@ class ChthonicEmissaryTreasureRoomView(discord.ui.View):
         
         self._min_level = 80
         self._max_level = 90
-        self._valid_class_tags = [ClassTag.Equipment.Equipment, ClassTag.Valuable.Gemstone]
+        self._valid_class_tags = [ClassTag.Equipment.Equipment]
         self._possible_rewards: List[ItemKey] = [
             ItemKey.MagesRetort, ItemKey.ProlificArcana, ItemKey.ScarletVow, ItemKey.WarriorsApproach, 
             ItemKey.DeliverARemedy, ItemKey.Thoughtpierce, ItemKey.MemoryOfTheRedDawn, ItemKey.ANewDream,
@@ -159,9 +159,6 @@ class ChthonicEmissaryTreasureRoomView(discord.ui.View):
                     if ClassTag.Equipment.Equipment in item.get_class_tags():
                         if self._min_level <= item.get_level_requirement() <= self._max_level:
                             self._possible_rewards.append(item_key)
-                    else:
-                        # Add additional gemstone keys to increase probability
-                        self._possible_rewards += [item_key for _ in range(10)]
         self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
 
         self._EXTRA_REWARD_LUCK_PROB = 0.01

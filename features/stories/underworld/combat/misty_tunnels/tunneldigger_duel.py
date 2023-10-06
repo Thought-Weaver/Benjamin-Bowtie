@@ -156,7 +156,7 @@ class TunneldiggerTreasureRoomView(discord.ui.View):
                             self._possible_rewards.append(item_key)
                     else:
                         # Add additional non-equipment keys to increase probability
-                        self._possible_rewards += [item_key for _ in range(5)]
+                        self._possible_rewards += [item_key for _ in range(2)]
         self._weights = [self._prob_map[LOADED_ITEMS.get_new_item(item_key).get_rarity()] for item_key in self._possible_rewards]
 
         self._EXTRA_REWARD_LUCK_PROB = 0.01
