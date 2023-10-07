@@ -909,15 +909,6 @@ class WorkshopView(discord.ui.View):
                     recipe_key: RecipeKey | None = LOADED_RECIPES.get_random_recipe_using_item(input_key, [ClassTag.Equipment.Equipment, ClassTag.Ingredient.CraftingMaterial], player_recipe_keys)
                     if recipe_key is not None:                    
                         recipe: Recipe = LOADED_RECIPES.get_new_recipe(recipe_key)
-                        
-                        incorrect_recipe_type: bool = False
-                        for output_key in recipe.outputs.keys():
-                            output_item: Item = LOADED_ITEMS.get_new_item(output_key)
-                            if ClassTag.Equipment.Equipment not in output_item.get_class_tags():
-                                incorrect_recipe_type = True
-                        
-                        if incorrect_recipe_type:
-                            continue
 
                         amount_adj_str: str = ""
                         if recipe.inputs[input_key] - quantity == 0:
