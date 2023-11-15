@@ -388,7 +388,11 @@ class StartButton(discord.ui.Button):
             initial_info: discord.Embed = ti_entrance_view.get_initial_embed()
 
             await interaction.response.edit_message(embed=initial_info, view=ti_entrance_view, content=None)
+        elif starting_section == UnderworldSection.FinalBoss:
+            final_boss_entrance_view = EyelessEchoesDuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+            initial_info: discord.Embed = final_boss_entrance_view.get_initial_embed()
 
+            await interaction.response.edit_message(embed=initial_info, view=final_boss_entrance_view, content=None)
 
 class AcceptButton(discord.ui.Button):
     def __init__(self):

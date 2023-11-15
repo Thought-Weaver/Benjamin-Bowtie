@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import discord
+from features.shared.enums import OceanSection
 import features.stories.ocean.ocean as ocean
 
 from bot import BenjaminBowtieBot
@@ -108,6 +109,10 @@ class ContinueButton(discord.ui.Button):
         if view.any_in_duels_currently():
             await interaction.response.edit_message(content="At least one person is already in a duel. This duel has been cancelled.")
             return
+
+        for player in view.get_players():
+            if player.get_dungeon_run().ocean_best_act < OceanSection.FinalBoss:
+                player.get_dungeon_run().ocean_best_act = OceanSection.FinalBoss
 
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         defeat_view: ocean.OceanDefeatView = ocean.OceanDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())

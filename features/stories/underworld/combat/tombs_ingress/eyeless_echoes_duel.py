@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import discord
+from features.shared.enums import UnderworldSection
 from features.stories.underworld.combat.tombs_ingress.chthonic_emissary_duel import ChthonicEmissaryDuelView
 import features.stories.underworld.underworld as underworld
 
@@ -110,6 +111,10 @@ class ContinueButton(discord.ui.Button):
         if view.any_in_duels_currently():
             await interaction.response.edit_message(content="At least one person is already in a duel. This duel has been cancelled.")
             return
+
+        for player in view.get_players():
+            if player.get_dungeon_run().underworld_best_act < UnderworldSection.FinalBoss:
+                player.get_dungeon_run().underworld_best_act = UnderworldSection.FinalBoss
 
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         defeat_view: underworld.UnderworldDefeatView = underworld.UnderworldDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())

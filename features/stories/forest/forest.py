@@ -384,6 +384,11 @@ class StartButton(discord.ui.Button):
             initial_info: Embed = sc_entrance_view.get_initial_embed()
 
             await interaction.response.edit_message(embed=initial_info, view=sc_entrance_view, content=None)
+        elif starting_section == ForestSection.FinalBoss:
+            final_boss_entrance_view = BriarWallDuelView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
+            initial_info: discord.Embed = final_boss_entrance_view.get_initial_embed()
+
+            await interaction.response.edit_message(embed=initial_info, view=final_boss_entrance_view, content=None)
 
 
 class AcceptButton(discord.ui.Button):

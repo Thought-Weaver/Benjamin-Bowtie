@@ -253,7 +253,7 @@ class VictoryView(discord.ui.View):
         return self._database[str(self._guild_id)]["members"][str(user_id)]
 
     def get_initial_embed(self):
-        return Embed(title="Behemoth Banished", description=f"With the bloodcoral behemoth vanquished, the rest of the woods await.")
+        return Embed(title="Behemoth Banished", description=f"With the bloodcoral behemoth vanquished, the rest of the ocean awaits.")
 
     def _display_initial_buttons(self):
         self.clear_items()

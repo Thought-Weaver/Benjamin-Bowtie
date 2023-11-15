@@ -159,21 +159,22 @@ class ForestSection(StrEnum):
     QuietGrove = "QuietGrove"
     WhisperingWoods = "WhisperingWoods"
     ScreamingCopse = "ScreamingCopse"
+    FinalBoss = "FinalBoss"
 
     def __lt__(self, section: ForestSection) -> bool:
-        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
+        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse, ForestSection.FinalBoss]
         return ordering.index(self) < ordering.index(section)
 
     def __gt__(self, section: ForestSection) -> bool:
-        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
+        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse, ForestSection.FinalBoss]
         return ordering.index(self) > ordering.index(section)
 
     def __le__(self, section: ForestSection) -> bool:
-        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
+        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse, ForestSection.FinalBoss]
         return ordering.index(self) <= ordering.index(section)
 
     def __ge__(self, section: ForestSection) -> bool:
-        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse]
+        ordering = [ForestSection.QuietGrove, ForestSection.WhisperingWoods, ForestSection.ScreamingCopse, ForestSection.FinalBoss]
         return ordering.index(self) >= ordering.index(section)
 
 
@@ -181,17 +182,18 @@ class OceanSection(StrEnum):
     TidewaterShallows = "TidewaterShallows"
     CoralForest = "CoralForest"
     AbyssalPlain = "AbyssalPlain"
+    FinalBoss = "FinalBoss"
 
     def __lt__(self, section: OceanSection) -> bool:
-        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.AbyssalPlain]
+        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.AbyssalPlain, OceanSection.FinalBoss]
         return ordering.index(self) < ordering.index(section)
 
     def __gt__(self, section: OceanSection) -> bool:
-        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.AbyssalPlain]
+        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.AbyssalPlain, OceanSection.FinalBoss]
         return ordering.index(self) > ordering.index(section)
 
     def __le__(self, section: OceanSection) -> bool:
-        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.AbyssalPlain]
+        ordering = [OceanSection.TidewaterShallows, OceanSection.CoralForest, OceanSection.AbyssalPlain, OceanSection.FinalBoss]
         return ordering.index(self) <= ordering.index(section)
 
     def __ge__(self, section: OceanSection) -> bool:
@@ -203,21 +205,22 @@ class UnderworldSection(StrEnum):
     MistyTunnels = "MistyTunnels"
     FungalCaverns = "FungalCaverns"
     TombsIngress = "TombsIngress"
+    FinalBoss = "FinalBoss"
 
     def __lt__(self, section: UnderworldSection) -> bool:
-        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress]
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress, UnderworldSection.FinalBoss]
         return ordering.index(self) < ordering.index(section)
 
     def __gt__(self, section: UnderworldSection) -> bool:
-        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress]
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress, UnderworldSection.FinalBoss]
         return ordering.index(self) > ordering.index(section)
 
     def __le__(self, section: UnderworldSection) -> bool:
-        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress]
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress, UnderworldSection.FinalBoss]
         return ordering.index(self) <= ordering.index(section)
 
     def __ge__(self, section: UnderworldSection) -> bool:
-        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress]
+        ordering = [UnderworldSection.MistyTunnels, UnderworldSection.FungalCaverns, UnderworldSection.TombsIngress, UnderworldSection.FinalBoss]
         return ordering.index(self) >= ordering.index(section)
 
 

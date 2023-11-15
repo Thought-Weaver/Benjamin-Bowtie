@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import discord
+from features.shared.enums import ForestSection
 import features.stories.forest.forest as forest
 
 from bot import BenjaminBowtieBot
@@ -108,6 +109,10 @@ class ContinueButton(discord.ui.Button):
         if view.any_in_duels_currently():
             await interaction.response.edit_message(content="At least one person is already in a duel. This duel has been cancelled.")
             return
+
+        for player in view.get_players():
+            if player.get_dungeon_run().forest_best_act < ForestSection.FinalBoss:
+                player.get_dungeon_run().forest_best_act = ForestSection.FinalBoss
 
         victory_view: VictoryView = VictoryView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
         defeat_view: forest.ForestDefeatView = forest.ForestDefeatView(view.get_bot(), view.get_database(), view.get_guild_id(), view.get_users(), view.get_dungeon_run())
