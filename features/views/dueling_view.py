@@ -2250,7 +2250,7 @@ class DuelView(discord.ui.View):
         self.add_item(ContinueToNextActionButton())
 
         additional_info_str = f"{self._additional_info_string_data}\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n" if self._additional_info_string_data != "" else ""
-        return Embed(title=f"{cur_npc.get_name()} {action_str}", description=f"{additional_info_str}{optimal_result_str}")
+        return Embed(title=f"{cur_npc.get_name()} {action_str}", description=f"{additional_info_str}{optimal_result_str}"[:1000])
 
     def create_copy(self):
         copied_allies: List[Player | NPC] = jsonpickle.decode(jsonpickle.encode(self._allies, make_refs=False)) # type: ignore
