@@ -8,6 +8,7 @@ from discord.embeds import Embed
 from discord.ext import commands
 from features.shared.nextbutton import NextButton
 from features.shared.prevbutton import PrevButton
+from math import ceil
 
 from typing import List, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -272,9 +273,10 @@ class MailModal(discord.ui.Modal):
 
 
 class MailboxButton(discord.ui.Button):
-    def __init__(self, mail_index: int, mail: Mail):
+    def __init__(self, mail_index: int, mail: Mail, block_button: bool):
         super().__init__(style=discord.ButtonStyle.secondary, label=f"✉️ From: {mail.get_sender_name()}", row=mail_index)
-        
+
+        self.disabled = block_button
         self._mail_index = mail_index
         self._mail = mail
 
@@ -318,16 +320,21 @@ class MailboxButton(discord.ui.Button):
 
 
 class OpenAllButton(discord.ui.Button):
-    def __init__(self, row: int):
+    def __init__(self, row: int, block_button: bool):
         super().__init__(style=discord.ButtonStyle.secondary, label=f"Open All", row=row)
+        self.disabled = block_button
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
             return
-
         await interaction.response.defer()
 
         view: MailboxView = self.view
+        view.block_buttons = True
+        view._get_current_page_buttons()
+        await interaction.followup.edit_message(message_id=interaction.message.id, content=None, embed=view.get_current_page_info(), view=view)
+
+        combined_message_text: str = ""
         if interaction.user == view.get_user():
             player = view.get_player()
             mailbox: List[Mail] = player.get_mailbox()
@@ -358,17 +365,23 @@ class OpenAllButton(discord.ui.Button):
                 if interaction.user.id != mail.get_sender_id():
                     player_stats.mail.mail_opened += 1
 
-                await interaction.user.send(mail_message)
+                combined_message_text += mail_message + '\n\n᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆᠆\n\n'
 
             player.get_mailbox().clear()
-        
+
+        for i in range(ceil(len(combined_message_text) / 1500)):
+            chunked_text = combined_message_text[(1500 * i):(1500 * (i + 1))]
+            await interaction.user.send(chunked_text)
+
+        view.block_buttons = False
         view._get_current_page_buttons()
         await interaction.followup.edit_message(message_id=interaction.message.id, content=None, embed=view.get_current_page_info(), view=view)
 
 
 class ExitToHouseButton(discord.ui.Button):
-    def __init__(self, row):
+    def __init__(self, row: int, block_button: bool):
         super().__init__(style=discord.ButtonStyle.red, label="Exit", row=row)
+        self.disabled = block_button
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
@@ -386,7 +399,7 @@ class ExitToHouseButton(discord.ui.Button):
 
 class MailboxView(discord.ui.View):
     def __init__(self, bot: BenjaminBowtieBot, database: dict, guild_id: int, user: discord.User, house_view: HouseView | None=None):
-        super().__init__(timeout=900)
+        super().__init__(timeout=None)
 
         self._bot = bot
         self._database = database
@@ -395,9 +408,10 @@ class MailboxView(discord.ui.View):
         self._house_view = house_view
 
         self._page = 0
-
         self._NUM_PER_PAGE = 4
         
+        self.block_buttons: bool = False
+
         self._get_current_page_buttons()
 
     def get_player(self, user_id: int | None=None) -> Player:
@@ -412,13 +426,15 @@ class MailboxView(discord.ui.View):
 
         page_slots = mailbox[self._page * self._NUM_PER_PAGE:min(len(mailbox), (self._page + 1) * self._NUM_PER_PAGE)]
         for i, item in enumerate(page_slots):
-            self.add_item(MailboxButton(i, item))
+            self.add_item(MailboxButton(i, item, self.block_buttons))
         if self._page != 0:
-            self.add_item(PrevButton(min(4, len(page_slots))))
+            self.add_item(PrevButton(min(4, len(page_slots)), self.block_buttons))
         if len(mailbox) - self._NUM_PER_PAGE * (self._page + 1) > 0:
-            self.add_item(NextButton(min(4, len(page_slots))))
+            self.add_item(NextButton(min(4, len(page_slots)), self.block_buttons))
+        if len(mailbox) > 0:
+            self.add_item(OpenAllButton(min(4, len(page_slots)), self.block_buttons))
         if self.get_house_view() is not None:
-            self.add_item(ExitToHouseButton(min(4, len(page_slots))))
+            self.add_item(ExitToHouseButton(min(4, len(page_slots)), self.block_buttons))
         
     def get_current_page_info(self):
         return Embed(

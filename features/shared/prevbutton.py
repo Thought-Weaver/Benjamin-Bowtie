@@ -2,8 +2,9 @@ import discord
 
 
 class PrevButton(discord.ui.Button):
-    def __init__(self, row: int):
+    def __init__(self, row: int, block_button: bool=False):
         super().__init__(style=discord.ButtonStyle.blurple, label="Prev", row=row)
+        self.disabled = block_button
 
     async def callback(self, interaction: discord.Interaction):
         if self.view is None:
