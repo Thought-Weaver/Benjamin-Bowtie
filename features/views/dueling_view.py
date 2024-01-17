@@ -753,7 +753,7 @@ class DuelView(discord.ui.View):
                 if companion_key is not None:
                     current_companion = player.get_companions().companions[companion_key]
 
-                    xp_gained: int = ceil(4 * current_companion.pet_battle_xp_gain)
+                    xp_gained: int = ceil(10 * current_companion.pet_battle_xp_gain)
                     final_xp: int = current_companion.add_xp(xp_gained)
 
                     current_companion.add_companion_points(COMPANION_BATTLE_POINTS)
